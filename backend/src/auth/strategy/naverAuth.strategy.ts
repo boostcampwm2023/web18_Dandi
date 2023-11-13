@@ -25,6 +25,7 @@ export class NaverStrategy extends PassportStrategy(Strategy) {
       id,
       email,
       nickname,
+      socialType: 'naver',
     };
 
     return done(null, user);
