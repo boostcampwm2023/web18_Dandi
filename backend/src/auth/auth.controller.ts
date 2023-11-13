@@ -1,5 +1,6 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { NaverAuthGuard } from './guards/naverAuth.guard';
+import { User } from './utils/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -11,9 +12,9 @@ export class AuthController {
 
   @Get('naver/callback')
   @UseGuards(NaverAuthGuard)
-  async naverLoginCallback(@Req() req, @Res() res): Promise<void> {
+  async naverLoginCallback(@User() user, @Res() res): Promise<void> {
     return res.json({
-      user: req.user,
+      user,
     });
   }
 }
