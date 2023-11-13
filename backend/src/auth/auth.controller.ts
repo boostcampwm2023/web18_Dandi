@@ -1,10 +1,12 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { NaverAuthGuard } from './guards/naverAuth.guard';
 import { User } from './utils/user.decorator';
+import { CreateUserDto } from './dto/createUserDto';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor() {}
+  constructor(private readonly authService: AuthService) {}
 
   @Get('naver/login')
   @UseGuards(NaverAuthGuard)
@@ -12,7 +14,8 @@ export class AuthController {
 
   @Get('naver/callback')
   @UseGuards(NaverAuthGuard)
-  async naverLoginCallback(@User() user, @Res() res): Promise<void> {
+  async naverLoginCallback(@User() user: CreateUserDto, @Res() res): Promise<void> {
+    this.authService.login(user);
     return res.json({
       user,
     });
