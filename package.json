@@ -1,0 +1,21 @@
+{
+  "name": "dandi",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "workspaces": [
+      "backend",
+      "frontend"
+  ],
+  "scripts": {
+    "backend": "yarn workspace backend",
+    "frontend": "yarn workspace frontend"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "eslint": "^8.42.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "typescript": "^5.0.2"
+  }
+}
