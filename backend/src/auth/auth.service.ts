@@ -6,15 +6,16 @@ import { UserRepository } from './auth.repository';
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async login(user: CreateUserDto) {
+  async login(user: CreateUserDto): number {
     const duplicateUser = await this.userRepository.findBySocialIdAndSocialType(
       user.id,
       user.socialType,
     );
     if (!duplicateUser) {
-      await this.userRepository.createUser(user);
+      return (await this.userRepository.createUser(user)).id;
     }
 
     //TODO: JWT 토큰 반환
+    return -1;
   }
 }
