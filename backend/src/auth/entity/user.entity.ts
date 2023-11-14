@@ -25,6 +25,9 @@ export class User extends BaseEntity {
   @Column()
   socialType: string;
 
+  @Column()
+  profileImage: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
