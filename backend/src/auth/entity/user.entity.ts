@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SocialType } from './socialType';
 
 @Entity()
 export class User extends BaseEntity {
@@ -23,7 +24,7 @@ export class User extends BaseEntity {
   socialId: string;
 
   @Column()
-  socialType: string;
+  socialType: SocialType;
 
   @Column()
   profileImage: string;

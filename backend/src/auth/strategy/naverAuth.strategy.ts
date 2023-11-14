@@ -1,6 +1,7 @@
 import { Profile, Strategy } from 'passport-naver-v2';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { SocialType } from '../entity/socialType';
 
 require('dotenv').config();
 
@@ -27,7 +28,7 @@ export class NaverStrategy extends PassportStrategy(Strategy) {
       id,
       email,
       nickname,
-      socialType: 'naver',
+      socialType: SocialType.NAVER,
     };
 
     return done(null, user);
