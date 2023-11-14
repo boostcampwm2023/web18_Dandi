@@ -7,7 +7,7 @@ import { CreateUserDto } from '../dto/createUserDto';
 import { VerifyCallback } from '../utils/verifyCallback';
 
 @Injectable()
-export class NaverStrategy extends PassportStrategy(Strategy) {
+export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   constructor() {
     super({
       clientID: process.env.NAVER_CLIENT_ID,

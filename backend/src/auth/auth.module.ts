@@ -5,6 +5,7 @@ import { NaverStrategy } from './strategy/naverAuth.strategy';
 import { UserRepository } from './auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import 'dotenv/config';
+import { JwtAuthStrategy } from './strategy/jwtAuth.strategy';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import 'dotenv/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserRepository, NaverStrategy],
+  providers: [AuthService, UserRepository, NaverStrategy, JwtAuthStrategy],
 })
 export class AuthModule {}
