@@ -6,7 +6,7 @@ import { UserRepository } from './auth.repository';
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async login(user: CreateUserDto): number {
+  async login(user: CreateUserDto): Promise<number> {
     const duplicateUser = await this.userRepository.findBySocialIdAndSocialType(
       user.id,
       user.socialType,

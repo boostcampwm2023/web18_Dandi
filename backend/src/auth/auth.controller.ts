@@ -15,6 +15,6 @@ export class AuthController {
   @Get('naver/callback')
   @UseGuards(NaverAuthGuard)
   async naverLoginCallback(@User() user: CreateUserDto): Promise<number> {
-    return this.authService.login(user);
+    return await this.authService.login(user);
   }
 }
