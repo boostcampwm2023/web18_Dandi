@@ -4,8 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { SocialType } from '../entity/socialType';
 import 'dotenv/config';
 import { CreateUserDto } from '../dto/createUserDto';
-
-type VerifyCallback = (error: Error, user?: any, info?: any) => void;
+import { VerifyCallback } from '../utils/verifyCallback';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy) {

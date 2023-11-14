@@ -9,6 +9,10 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
+  async findById(id: number): Promise<User> {
+    return await this.createQueryBuilder('user').where('user.id = :id', { id }).getOne();
+  }
+
   async findBySocialIdAndSocialType(socialId: string, socialType: string): Promise<User> {
     return await this.createQueryBuilder('user')
       .where('user.socialId = :socialId', { socialId })
