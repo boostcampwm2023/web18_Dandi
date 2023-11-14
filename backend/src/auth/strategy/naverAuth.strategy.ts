@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 
 require('dotenv').config();
 
+type VerifyCallback = (error: Error, user?: any, info?: any) => void;
+
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy) {
   constructor() {
@@ -14,12 +16,12 @@ export class NaverStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(
+  validate(
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-    done: any,
-  ): Promise<any> {
+    done: VerifyCallback,
+  ): void {
     const { id, email, nickname } = profile;
     const user = {
       id,
