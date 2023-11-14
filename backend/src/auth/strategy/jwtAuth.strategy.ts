@@ -4,17 +4,27 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import 'dotenv/config';
 import { VerifyCallback } from '../utils/verifyCallback';
 import { UserRepository } from '../auth.repository';
+import { Request } from 'express';
+import { Payload } from '../utils/payload';
+
+const cookieExtractor = (req: Request): string | null => {
+  if (req && req.cookies) {
+    return req.cookies['utk'];
+  }
+
+  return null;
+};
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly userRepository: UserRepository) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
       secretOrKey: process.env.JWT_SECRET,
     });
   }
 
-  async validate(payload: any, done: VerifyCallback) {
+  async validate(payload: Payload, done: VerifyCallback) {
     const user = await this.userRepository.findById(payload.id);
 
     if (!user) {
