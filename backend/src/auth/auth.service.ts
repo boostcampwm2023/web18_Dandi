@@ -1,21 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUserDto';
 import { UserRepository } from './auth.repository';
+import { JwtService } from '@nestjs/jwt';
+import { User } from './entity/user.entity';
+import { CreateUserResponseDto } from './dto/createUserResponseDto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly userRepository: UserRepository,
+  ) {}
 
-  async login(user: CreateUserDto): Promise<number> {
-    const duplicateUser = await this.userRepository.findBySocialIdAndSocialType(
-      user.id,
-      user.socialType,
+  async login(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
+    let user = await this.userRepository.findBySocialIdAndSocialType(
+      createUserDto.id,
+      createUserDto.socialType,
     );
-    if (!duplicateUser) {
-      return (await this.userRepository.createUser(user)).id;
+
+    if (!user) {
+      user = await this.signUp(createUserDto);
     }
 
-    //TODO: JWT 토큰 반환
-    return -1;
+    return {
+      userId: user.id,
+      token: this.jwtService.sign({ id: user.id, nickname: user.nickname }),
+    };
+  }
+
+  async signUp(user: CreateUserDto): Promise<User> {
+    return await this.userRepository.createUser(user);
   }
 }

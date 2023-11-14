@@ -5,4 +5,7 @@ export class CreateUserDto {
   email: string;
   nickname: string;
   socialType: SocialType;
+  profileImage: string;
+  accessToken: string;
+  refreshToken: string;
 }
