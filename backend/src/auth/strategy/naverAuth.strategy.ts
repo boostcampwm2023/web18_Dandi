@@ -2,8 +2,7 @@ import { Profile, Strategy } from 'passport-naver-v2';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { SocialType } from '../entity/socialType';
-
-require('dotenv').config();
+import 'dotenv/config';
 
 type VerifyCallback = (error: Error, user?: any, info?: any) => void;
 
