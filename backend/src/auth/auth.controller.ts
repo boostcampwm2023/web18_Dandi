@@ -3,6 +3,7 @@ import { NaverAuthGuard } from './guards/naverAuth.guard';
 import { User } from './utils/user.decorator';
 import { CreateUserDto } from './dto/createUserDto';
 import { AuthService } from './auth.service';
+import { CreateUserResponseDto } from './dto/createUserResponseDto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,9 @@ export class AuthController {
 
   @Get('naver/callback')
   @UseGuards(NaverAuthGuard)
-  async naverLoginCallback(@User() user: CreateUserDto): Promise<number> {
-    return await this.authService.login(user);
+  async naverLoginCallback(@User() user: CreateUserDto): Promise<CreateUserResponseDto> {
+    const userId = await this.authService.login(user);
+
+    return { userId };
   }
 }
