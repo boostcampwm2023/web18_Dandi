@@ -25,4 +25,4 @@ jobs:
           yarn install
           yarn frontend build
           yarn backend build
-          yarn backend run start:prod
+          pm2 reload main
