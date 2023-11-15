@@ -1,11 +1,11 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import '../../globals.css';
 
 interface ModalProps {
-  content: null;
+  children: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ content }) => {
+const Modal = ({ children } : ModalProps) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-[##ffffff80] bg-opacity-80 flex items-center justify-center">
       <div className="relative bg-[#fff] p-4 w-1/3 h-80 border border-default rounded-2xl shadow-[0_0_20px_0_rgba(0,0,0,0.25)]">
@@ -23,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({ content }) => {
             />
           </svg>
         </button>
-        {content}
+        {children}
       </div>
     </div>
   );

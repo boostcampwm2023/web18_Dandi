@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../globals.css';
 
 interface ButtonProps {
@@ -9,10 +8,10 @@ interface ButtonProps {
   backgroundColor: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ width, height, text, fontColor, backgroundColor }) => {
+const Button = ({ width, height, text, fontColor, backgroundColor }: ButtonProps) => {
   return (
     <button
-      className={`w-[${width}rem] h-[${height}rem] text-[${fontColor}] font-bold bg-[${backgroundColor}] rounded-lg`}
+      className={`w-[${width}rem] h-[${height}rem] text-${fontColor} font-bold bg-[${backgroundColor}] rounded-lg`}
     >
       {text}
     </button>
