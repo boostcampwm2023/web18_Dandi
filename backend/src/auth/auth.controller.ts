@@ -28,5 +28,6 @@ export class AuthController {
     const loginResult = await this.authService.login(user);
 
     res.cookie('utk', loginResult.token, { httpOnly: true });
+    res.status(200).json({ userId: loginResult.userId});
   }
 }
