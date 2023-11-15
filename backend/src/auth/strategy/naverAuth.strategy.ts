@@ -3,8 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { SocialType } from '../entity/socialType';
 import 'dotenv/config';
-import { CreateUserDto } from '../dto/createUserDto';
 import { VerifyCallback } from '../utils/verifyCallback';
+import { CreateUserDto } from '../dto/user.dto';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {

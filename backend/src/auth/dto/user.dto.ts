@@ -9,3 +9,8 @@ export class CreateUserDto {
   accessToken: string;
   refreshToken: string;
 }
+
+export class CreateUserResponseDto {
+  userId: number;
+  token: string;
+}
