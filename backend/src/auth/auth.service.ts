@@ -35,9 +35,7 @@ export class AuthService {
           id: user.id,
           nickname: user.nickname,
           accessToken: createUserDto.accessToken,
-        },
-        // jwt 만료기간 30분으로 설정
-        { expiresIn: `${60*30*1000}` }
+        }
       ),
     };
   }
