@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import 'dotenv/config';
@@ -28,7 +28,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT) {
     const user = await this.userRepository.findById(payload.id);
 
     if (!user) {
-      return done(new Error('인증 실패'), null);
+      return done(new UnauthorizedException(), null);
     }
     return done(null, user);
   }
