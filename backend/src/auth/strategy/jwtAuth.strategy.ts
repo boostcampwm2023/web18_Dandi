@@ -5,7 +5,7 @@ import 'dotenv/config';
 import { VerifyCallback } from '../utils/verifyCallback';
 import { UserRepository } from '../auth.repository';
 import { Request } from 'express';
-import { Payload } from '../utils/payload';
+import { JWT, Payload } from '../utils/jwt.type';
 
 const cookieExtractor = (req: Request): string | null => {
   if (req && req.cookies) {
@@ -16,7 +16,7 @@ const cookieExtractor = (req: Request): string | null => {
 };
 
 @Injectable()
-export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT) {
   constructor(private readonly userRepository: UserRepository) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
