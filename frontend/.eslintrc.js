@@ -1,5 +1,5 @@
 module.exports = {
-  extends:"../packages/eslint-config/.eslintrc.js",
+  extends:"../.eslintrc.js",
   env: { browser: true, es2020: true },
   extends: [
     "eslint:recommended",
