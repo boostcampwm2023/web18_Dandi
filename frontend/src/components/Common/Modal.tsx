@@ -5,11 +5,11 @@ interface ModalProps {
   children: ReactNode;
 }
 
-const Modal = ({ children } : ModalProps) => {
+const Modal = ({ children }: ModalProps) => {
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-[##ffffff80] bg-opacity-80 flex items-center justify-center">
-      <div className="relative bg-[#fff] p-4 w-1/3 h-80 border border-default rounded-2xl shadow-[0_0_20px_0_rgba(0,0,0,0.25)]">
-        <button className="absolute top-3 right-4 w-6 h-6">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-[##ffffff80] bg-opacity-80">
+      <div className="border-default relative h-80 w-1/3 rounded-2xl border bg-[#fff] p-4 shadow-[0_0_20px_0_rgba(0,0,0,0.25)]">
+        <button className="absolute right-4 top-3 h-6 w-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="25"

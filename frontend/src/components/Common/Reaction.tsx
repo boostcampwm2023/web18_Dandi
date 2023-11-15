@@ -6,9 +6,9 @@ interface ReactionProps {
 
 export const Reaction = ({ count }: ReactionProps) => {
   return (
-    <div className="flex justify-start items-center">
+    <div className="flex items-center justify-start">
       <img src={emojiIcon} alt="리액션 아이콘" />
-      <p className="color text-base font-bold text-default">친구들의 반응 {count}개</p>
+      <p className="color text-default text-base font-bold">친구들의 반응 {count}개</p>
     </div>
   );
 };
