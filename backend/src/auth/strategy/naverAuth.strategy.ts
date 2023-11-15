@@ -3,11 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { SocialType } from '../entity/socialType';
 import 'dotenv/config';
-
-type VerifyCallback = (error: Error, user?: any, info?: any) => void;
+import { VerifyCallback } from '../utils/verifyCallback';
+import { CreateUserDto } from '../dto/user.dto';
 
 @Injectable()
-export class NaverStrategy extends PassportStrategy(Strategy) {
+export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   constructor() {
     super({
       clientID: process.env.NAVER_CLIENT_ID,
@@ -22,11 +22,14 @@ export class NaverStrategy extends PassportStrategy(Strategy) {
     profile: Profile,
     done: VerifyCallback,
   ): void {
-    const { id, email, nickname } = profile;
-    const user = {
+    const { id, email, nickname, profileImage } = profile;
+    const user: CreateUserDto = {
       id,
       email,
       nickname,
+      profileImage,
+      accessToken,
+      refreshToken,
       socialType: SocialType.NAVER,
     };
 

@@ -1,9 +1,9 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { NaverAuthGuard } from './guards/naverAuth.guard';
 import { User } from './utils/user.decorator';
-import { CreateUserDto } from './dto/createUserDto';
 import { AuthService } from './auth.service';
-import { CreateUserResponseDto } from './dto/createUserResponseDto';
+import { Response } from 'express';
+import { CreateUserDto } from './dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,9 +15,10 @@ export class AuthController {
 
   @Get('naver/callback')
   @UseGuards(NaverAuthGuard)
-  async naverLoginCallback(@User() user: CreateUserDto): Promise<CreateUserResponseDto> {
-    const userId = await this.authService.login(user);
+  async naverLoginCallback(@User() user: CreateUserDto, @Res() res: Response): Promise<void> {
+    const loginResult = await this.authService.login(user);
 
-    return { userId };
+    res.cookie('utk', loginResult.token, { httpOnly: true, maxAge: 3600000 });
+    res.json({ userId: loginResult.userId, accessToken: user.accessToken });
   }
 }
