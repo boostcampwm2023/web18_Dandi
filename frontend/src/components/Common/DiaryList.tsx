@@ -35,7 +35,7 @@ export const DiaryList = () => {
 
   return (
     <div className="w-[60%] p-5">
-      <h1 className="text-2xl font-bold mb-5 text-[black]">{nickname}님의 일기 목록</h1>
+      <h1 className="mb-5 text-2xl font-bold text-[black]">{nickname}님의 일기 목록</h1>
       {content}
     </div>
   );

@@ -1,5 +1,4 @@
 import { Reaction } from './Reaction';
-import defaultImage from '../../assets/image/defaultImage.png';
 
 interface DiaryListProps {
   createdAt: string;
@@ -26,22 +25,22 @@ export const DiaryListItem = (props: DiaryListProps) => {
   };
 
   return (
-    <div className="bg-[white] border-solid border-2 border-brown rounded-2xl p-3 mb-3">
-      <div className="flex justify-between items-center mb-3">
+    <div className="border-brown mb-3 rounded-2xl border-2 border-solid bg-[white] p-3">
+      <div className="mb-3 flex items-center justify-between">
         <p className="text-lg font-bold text-[black]">{props.title}</p>
         <p className="text-sm font-medium text-[black]">{formatDateString(props.createdAt)}</p>
       </div>
       <div className="flex flex-col justify-center">
         <div className="flex justify-start">
-          <img className="w-[100%] mb-[23px]" src={props.thumbnail} alt="기본 이미지" />
+          <img className="mb-[23px] w-[100%]" src={props.thumbnail} alt="기본 이미지" />
         </div>
-        <div className="mb-3 text-sm font-medium text-[black] line-clamp-3 whitespace-pre-wrap">
+        <div className="mb-3 line-clamp-3 whitespace-pre-wrap text-sm font-medium text-[black]">
           <p>{props.content}</p>
         </div>
       </div>
-      <div className="flex flex-wrap mb-3 gap-3 text-base text-[black]">
+      <div className="mb-3 flex flex-wrap gap-3 text-base text-[black]">
         {props.keywords.map((keyword) => (
-          <div className="px-3 py-1 bg-mint rounded-lg">
+          <div className="bg-mint rounded-lg px-3 py-1">
             <p>#{keyword}</p>
           </div>
         ))}
