@@ -4,3 +4,6 @@ node_modules
 .DS_Store
 
 /logs
+
+# ENV FIles
+.env
