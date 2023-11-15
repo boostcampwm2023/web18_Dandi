@@ -15,6 +15,7 @@ export const logger = createLogger({
       filename: `logFile-error.log`,
       dirname: '../logs',
       maxFiles: '7d',
+      maxSize: '10m',
     }),
     new DailyRotateFile({
       level: 'info',
@@ -22,6 +23,7 @@ export const logger = createLogger({
       filename: `logFile.log`,
       dirname: '../logs',
       maxFiles: '7d',
+      maxSize: '10m',
     }),
   ],
 });
