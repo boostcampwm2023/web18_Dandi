@@ -1,6 +1,9 @@
 node_modules
 
 .vscode/settings.json
+.DS_Store
+
+/logs
 
 # ENV FIles
 .env
