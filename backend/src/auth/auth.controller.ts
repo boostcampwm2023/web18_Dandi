@@ -27,7 +27,6 @@ export class AuthController {
   async naverLoginCallback(@User() user: CreateUserDto, @Res() res: Response): Promise<void> {
     const loginResult = await this.authService.login(user);
 
-    res.cookie('utk', loginResult.token, { httpOnly: true, maxAge: 3600000 });
-    res.json({ userId: loginResult.userId, accessToken: user.accessToken });
+    res.cookie('utk', loginResult.token, { httpOnly: true });
   }
 }
