@@ -3,11 +3,11 @@ import * as DailyRotateFile from 'winston-daily-rotate-file';
 
 const { combine, timestamp, printf } = format;
 const logFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} ${level}: ${message}`;
+  return `[${timestamp}][${level}]: ${message}`;
 });
 
 export const logger = createLogger({
-  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), logFormat),
+  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }), logFormat),
   transports: [
     new DailyRotateFile({
       level: 'error',
