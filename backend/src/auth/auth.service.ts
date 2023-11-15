@@ -3,12 +3,15 @@ import { UserRepository } from './auth.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entity/user.entity';
 import { CreateUserDto, CreateUserResponseDto } from './dto/user.dto';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
+    @InjectRedis() private readonly redis: Redis
   ) {}
 
   async login(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
@@ -20,6 +23,10 @@ export class AuthService {
     if (!user) {
       user = await this.signUp(createUserDto);
     }
+
+    // refresh token 기간 2주로 설정
+    const dataForRefresh = {socialType: createUserDto.socialType, refreshToken: createUserDto.refreshToken};
+    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', 60*60*24*14);
 
     return {
       userId: user.id,
