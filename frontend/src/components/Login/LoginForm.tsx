@@ -5,10 +5,10 @@ import naverLogin from '../../assets/image/naverLogin.svg';
 const LoginForm = () => {
   return (
     <div className="border-default relative flex  w-1/4 flex-col items-center justify-center gap-9 rounded-2xl bg-[#fff] py-16 shadow-[0_0_20px_0_rgba(0,0,0,0.25)]">
-      <img src={logo} alt="logo" className="w-1/4" />
-      <p className="font-bold text-[#000]">SNS로 빠르게 단디 시작하기</p>
+      <img src={logo} alt="메인 로고" className="w-1/4" />
+      <p className="font-bold text-default">SNS로 빠르게 단디 시작하기</p>
       <button className="flex w-1/2 justify-center">
-        <img src={naverLogin} alt="login" className="w-4/5 rounded-lg" />
+        <img src={naverLogin} alt="네이버 로그인 버튼" className="w-4/5 rounded-lg" />
       </button>
     </div>
   );
