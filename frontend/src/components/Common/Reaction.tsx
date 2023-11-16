@@ -4,7 +4,7 @@ interface ReactionProps {
   count: number;
 }
 
-export const Reaction = ({ count }: ReactionProps) => {
+const Reaction = ({ count }: ReactionProps) => {
   return (
     <div className="flex items-center justify-start">
       <img src={emojiIcon} alt="리액션 아이콘" />
@@ -12,3 +12,5 @@ export const Reaction = ({ count }: ReactionProps) => {
     </div>
   );
 };
+
+export default Reaction;
