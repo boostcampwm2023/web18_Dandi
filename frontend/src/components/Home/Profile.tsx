@@ -15,30 +15,44 @@ export const Profile = ({
 }: ProfileProps) => {
   const greetMessages = ['좋은 하루예요!', '안녕하세요!', '반가워요!'];
   const getRandomIndex = Math.floor(Math.random() * greetMessages.length);
-  const friendCount = 20;
 
   return (
     <section className="flex flex-col items-center justify-center gap-14">
       <div className="flex flex-row items-center justify-center">
         <img
           className="h-52 w-52 rounded-full object-cover"
-          src="https://i.namu.wiki/i/VMIHkLm6DcUT4d9-vN4yFw7Yfitr8luT_U2YwJsugGodCQ01ooGH_kHX0D6sJ3HDS1YHfvy9B81al8rKCxqKYw.webp"
+          src={profileImage}
           alt="나의 프로필 사진"
         />
         <div className="ml-10">
-          <p className="mb-8 text-3xl font-black">
+          <p className="mb-8 text-3xl font-bold">
             {nickname}님, {greetMessages[getRandomIndex]}
           </p>
           <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid p-5 text-center text-lg font-bold">
-            <p>친구 {totalFriends}명</p>
+            <p className="cursor-pointer">친구 {totalFriends}명</p>
             <div className="border-brown w mx-5 border-l-2 border-solid" />
-            <p>친구 관리</p>
+            <p className="cursor-pointer">친구 관리</p>
             <div className="border-brown w mx-5 border-l-2 border-solid" />
-            <p>내 정보 수정</p>
+            <p className="cursor-pointer">내 정보 수정</p>
           </div>
         </div>
       </div>
       {isExistedTodayDiary ? (
+        <>
+          <div className="text-center text-2xl font-bold">
+            <p>오늘 일기를 작성하셨네요!</p>
+            <p>작성하신 일기를 보여드릴게요.</p>
+          </div>
+          <Button
+            width={36}
+            height={4.6875}
+            text={'오늘 하루 보러 가기'}
+            fontColor="default"
+            fontSize="xl"
+            backgroundColor="mint"
+          />
+        </>
+      ) : (
         <>
           <div className="text-center text-2xl font-bold">
             <p>아직 오늘 일기를 작성하지 않으셨네요!</p>
@@ -49,20 +63,7 @@ export const Profile = ({
             height={4.6875}
             text={'오늘 하루 기록하기'}
             fontColor="default"
-            backgroundColor="mint"
-          />
-        </>
-      ) : (
-        <>
-          <div className="text-center text-2xl font-bold">
-            <p>오늘 일기를 작성하셨네요!</p>
-            <p>작성하신 일기를 보여드릴게요</p>
-          </div>
-          <Button
-            width={36}
-            height={4.6875}
-            text={'오늘 하루 보러 가기'}
-            fontColor="default"
+            fontSize="2xl"
             backgroundColor="mint"
           />
         </>
