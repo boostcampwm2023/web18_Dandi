@@ -1,5 +1,3 @@
-import '../../globals.css';
-
 interface ProfileItemProps {
   img: string;
   nickName: string;

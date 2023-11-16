@@ -1,4 +1,4 @@
-import Button from '../Common/Button';
+import Button from '@components/Common/Button';
 
 interface ProfileProps {
   nickname: string;

@@ -1,4 +1,4 @@
-import emojiIcon from '../../assets/image/reactionEmoji.svg';
+import emojiIcon from '@assets/image/reactionEmoji.svg';
 
 interface ReactionProps {
   count: number;

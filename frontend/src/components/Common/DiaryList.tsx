@@ -1,4 +1,4 @@
-import DiaryListItem from './DiaryListItem';
+import DiaryListItem from '@components/Common/DiaryListItem';
 
 interface DiaryListProps {
   createdAt: string;
