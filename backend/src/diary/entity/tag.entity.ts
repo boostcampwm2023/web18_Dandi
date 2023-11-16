@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Diary } from './diary.entity';
 
-@Entity('permissions')
+@Entity()
 export class Tag {
   @PrimaryGeneratedColumn()
   id: number;
