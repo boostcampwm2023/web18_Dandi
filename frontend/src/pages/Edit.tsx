@@ -1,6 +1,6 @@
-import { NavBar } from '../components/Common/NavBar';
+import NavBar from '../components/Common/NavBar';
 
-export const Edit = () => {
+const Edit = () => {
   return (
     <div>
       <NavBar />

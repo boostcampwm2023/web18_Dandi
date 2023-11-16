@@ -1,4 +1,4 @@
-import { Reaction } from './Reaction';
+import Reaction from './Reaction';
 
 interface DiaryListProps {
   createdAt: string;
@@ -11,7 +11,7 @@ interface DiaryListProps {
   reactionCount: number;
 }
 
-export const DiaryListItem = (props: DiaryListProps) => {
+const DiaryListItem = (props: DiaryListProps) => {
   const formatDateString = (str: string) => {
     const week = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
@@ -49,3 +49,5 @@ export const DiaryListItem = (props: DiaryListProps) => {
     </div>
   );
 };
+
+export default DiaryListItem;

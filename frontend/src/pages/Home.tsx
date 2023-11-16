@@ -1,10 +1,11 @@
-import { NavBar } from '../components/Common/NavBar';
+import DiaryList from '../components/Common/DiaryList';
+import NavBar from '../components/Common/NavBar';
 
-export const Home = () => {
+const Home = () => {
   return (
     <div>
       <NavBar />
-      <h1>홈페이지</h1>
+      <DiaryList />
     </div>
   );
 };

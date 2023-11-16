@@ -1,6 +1,6 @@
-import { NavBar } from '../components/Common/NavBar';
+import NavBar from '../components/Common/NavBar';
 
-export const Feed = () => {
+const Feed = () => {
   return (
     <div>
       <NavBar />
