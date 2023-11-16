@@ -7,6 +7,7 @@ import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
 import { Request } from 'express';
 import { cookieExtractor } from './strategy/jwtAuth.strategy';
+import { REFRESH_ACCESS_TOKEN_URL, REFRESH_TOKEN_EXPIRE_DATE } from './utils/auth.constant';
 
 @Injectable()
 export class AuthService {
@@ -26,13 +27,12 @@ export class AuthService {
       user = await this.signUp(createUserDto);
     }
 
-    // refresh token 만료기간 2주로 설정
     const dataForRefresh = {
       socialType: createUserDto.socialType,
       refreshToken: createUserDto.refreshToken,
     };
-    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', 60 * 60 * 24 * 14);
-    console.log(createUserDto.refreshToken);
+    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', REFRESH_TOKEN_EXPIRE_DATE);
+
     return {
       userId: user.id,
       token: this.jwtService.sign({
@@ -51,7 +51,8 @@ export class AuthService {
     const userJwt = cookieExtractor(req);
     const payload = this.jwtService.decode(userJwt);
     const refreshTokenData = JSON.parse(await this.redis.get(payload.id));
-    const url = 'https://nid.naver.com/oauth2.0/token';
+
+    const url = REFRESH_ACCESS_TOKEN_URL;
     const params = new URLSearchParams();
     params.append('grant_type', 'refresh_token');
     params.append('client_id', process.env.NAVER_CLIENT_ID);

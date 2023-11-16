@@ -1,6 +1,7 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { JWT, JWT_EXPIRED_ERROR } from '../utils/jwt.type';
+import { JWT } from '../utils/jwt.type';
+import { JWT_EXPIRED_ERROR, JWT_EXPIRE_DATE } from '../utils/auth.constant';
 import { cookieExtractor } from '../strategy/jwtAuth.strategy';
 import Redis from 'ioredis';
 import { JwtService } from '@nestjs/jwt';
@@ -15,7 +16,7 @@ export class JwtAuthGuard extends AuthGuard(JWT) {
     const jwtService = new JwtService({
       secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: '1800s',
+        expiresIn: JWT_EXPIRE_DATE,
       },
     });
 

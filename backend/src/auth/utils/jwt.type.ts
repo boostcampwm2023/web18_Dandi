@@ -6,5 +6,3 @@ export interface Payload {
   accessToken: string;
   iat: number;
 }
-
-export const JWT_EXPIRED_ERROR = 'TokenExpiredError';
