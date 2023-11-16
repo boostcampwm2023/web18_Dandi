@@ -1,4 +1,4 @@
-import logo from '../../assets/image/logo.svg';
+import logo from '@assets/image/logo.svg';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {

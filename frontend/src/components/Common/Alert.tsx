@@ -1,5 +1,4 @@
-import Button from './Button';
-import '../../globals.css';
+import Button from '@components/Common/Button';
 
 interface AlertProps {
   text: string;

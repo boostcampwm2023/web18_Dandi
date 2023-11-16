@@ -1,4 +1,4 @@
-import NavBar from '../components/Common/NavBar';
+import NavBar from '@components/Common/NavBar';
 
 const MyDiary = () => {
   return (

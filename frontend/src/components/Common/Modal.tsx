@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import '../../globals.css';
 
 interface ModalProps {
   children: ReactNode;

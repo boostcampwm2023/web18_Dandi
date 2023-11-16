@@ -1,4 +1,4 @@
-import Reaction from './Reaction';
+import Reaction from '@components/Common/Reaction';
 
 interface DiaryListProps {
   createdAt: string;

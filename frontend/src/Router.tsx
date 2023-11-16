@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import Login from './pages/Login';
-import Home from './pages/Home';
-import Feed from './pages/Feed';
-import MyDiary from './pages/MyDiary';
-import Edit from './pages/Edit';
+import Login from '@pages/Login';
+import Home from '@pages/Home';
+import Feed from '@pages/Feed';
+import MyDiary from '@pages/MyDiary';
+import Edit from '@pages/Edit';
 
 const Router = () => {
   return (

@@ -1,5 +1,3 @@
-import '../../globals.css';
-
 interface ButtonProps {
   width: number;
   height: number;
