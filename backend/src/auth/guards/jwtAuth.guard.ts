@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JWT } from '../utils/jwt.type';
 import { JWT_EXPIRED_ERROR, JWT_EXPIRE_DATE } from '../utils/auth.constant';
@@ -6,6 +6,7 @@ import { cookieExtractor } from '../strategy/jwtAuth.strategy';
 import Redis from 'ioredis';
 import { JwtService } from '@nestjs/jwt';
 import { redisConfig } from 'src/configs/redis.config';
+import { ExpiredTokenException } from '../utils/customException';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(JWT) {
@@ -33,7 +34,7 @@ export class JwtAuthGuard extends AuthGuard(JWT) {
 
           if (refreshTokenData !== null) {
             // 해당 에러 반환 시 client에서 '/refresh_token'으로 요청 보내기로 함
-            throw new UnauthorizedException('Access Token is Expired');
+            throw new ExpiredTokenException();
           }
         }
       }
