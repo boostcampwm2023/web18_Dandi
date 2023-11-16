@@ -7,7 +7,7 @@ import { UserRepository } from '../auth.repository';
 import { Request } from 'express';
 import { JWT, Payload } from '../utils/jwt.type';
 
-const cookieExtractor = (req: Request): string | null => {
+export const cookieExtractor = (req: Request): string | null => {
   if (req && req.cookies) {
     return req.cookies['utk'];
   }

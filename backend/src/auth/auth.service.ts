@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
-    @InjectRedis() private readonly redis: Redis
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async login(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
@@ -25,18 +25,19 @@ export class AuthService {
     }
 
     // refresh token 만료기간 2주로 설정
-    const dataForRefresh = {socialType: createUserDto.socialType, refreshToken: createUserDto.refreshToken};
-    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', 60*60*24*14);
+    const dataForRefresh = {
+      socialType: createUserDto.socialType,
+      refreshToken: createUserDto.refreshToken,
+    };
+    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', 60 * 60 * 24 * 14);
 
     return {
       userId: user.id,
-      token: this.jwtService.sign(
-        {
-          id: user.id,
-          nickname: user.nickname,
-          accessToken: createUserDto.accessToken,
-        }
-      ),
+      token: this.jwtService.sign({
+        id: user.id,
+        nickname: user.nickname,
+        accessToken: createUserDto.accessToken,
+      }),
     };
   }
 
