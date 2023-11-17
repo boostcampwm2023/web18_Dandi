@@ -1,9 +1,9 @@
-import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { NaverAuthGuard } from './guards/naverAuth.guard';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { User } from './utils/user.decorator';
 import { AuthService } from './auth.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateUserDto, CreateUserResponseDto } from './dto/user.dto';
 
 @ApiTags('Authentication API')
@@ -27,7 +27,18 @@ export class AuthController {
   async naverLoginCallback(@User() user: CreateUserDto, @Res() res: Response): Promise<void> {
     const loginResult = await this.authService.login(user);
 
-    res.cookie('utk', loginResult.token, { httpOnly: true, maxAge: 3600000 });
-    res.json({ userId: loginResult.userId, accessToken: user.accessToken });
+    res.cookie('utk', loginResult.token, { httpOnly: true });
+    res.status(200).json({ userId: loginResult.userId });
+  }
+
+  @Get('refresh_token')
+  @ApiOperation({
+    description: 'access token 갱신 API',
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async refreshAccessToken(@Req() req: Request, @Res() res: Response): Promise<void> {
+    const newJwt = await this.authService.refreshAccessToken(req);
+    res.cookie('utk', newJwt, { httpOnly: true });
+    res.status(200).json({ message: '새로운 토큰 발급 완료' });
   }
 }
