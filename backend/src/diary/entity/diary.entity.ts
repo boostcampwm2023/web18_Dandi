@@ -1,0 +1,59 @@
+import { User } from 'src/auth/entity/user.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { DiaryStatus } from './diaryStatus';
+import { Tag } from './tag.entity';
+
+@Entity()
+export class Diary extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  title: string;
+
+  @Column()
+  content: string;
+
+  @Column({ nullable: false })
+  thumbnail?: string;
+
+  @Column()
+  emotion: string;
+
+  @Column()
+  mood: number;
+
+  @Column()
+  status: DiaryStatus;
+
+  @ManyToOne(() => User)
+  author: User;
+
+  @ManyToMany(() => Tag, { cascade: true })
+  @JoinTable({
+    name: 'diary_tag',
+    joinColumn: { name: 'diary_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
+  })
+  tags: Tag[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+}
