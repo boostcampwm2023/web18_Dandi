@@ -35,6 +35,7 @@ export class AuthController {
   @ApiOperation({
     description: 'access token 갱신 API',
   })
+  @ApiResponse({ status: 200, description: 'Success' })
   async refreshAccessToken(@Req() req: Request, @Res() res: Response): Promise<void> {
     const newJwt = await this.authService.refreshAccessToken(req);
     res.cookie('utk', newJwt, { httpOnly: true });
