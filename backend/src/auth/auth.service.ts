@@ -52,19 +52,12 @@ export class AuthService {
     const payload = this.jwtService.decode(userJwt);
     const refreshTokenData = JSON.parse(await this.redis.get(payload.id));
 
-    const url = REFRESH_ACCESS_TOKEN_URL;
-    const params = new URLSearchParams();
-    params.append('grant_type', 'refresh_token');
-    params.append('client_id', process.env.NAVER_CLIENT_ID);
-    params.append('client_secret', process.env.NAVER_CLIENT_SECRET);
-    params.append('refresh_token', refreshTokenData['refreshToken']);
-
-    const newData = await fetch(url, {
+    const newData = await fetch(REFRESH_ACCESS_TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: params,
+      body: this.makeNaverRefreshParams(refreshTokenData['refreshToken']),
     });
 
     const jsonData = await newData.json();
@@ -74,5 +67,15 @@ export class AuthService {
       nickname: payload.nickname,
       accessToken: jsonData['access_token'],
     });
+  }
+
+  private makeNaverRefreshParams(refreshToken: string): URLSearchParams {
+    const params = new URLSearchParams();
+    params.append('grant_type', 'refresh_token');
+    params.append('client_id', process.env.NAVER_CLIENT_ID);
+    params.append('client_secret', process.env.NAVER_CLIENT_SECRET);
+    params.append('refresh_token', refreshToken);
+
+    return params;
   }
 }
