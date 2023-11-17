@@ -3,9 +3,10 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { DiaryModule } from './diary/diary.module';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forRoot(typeORMConfig)],
+  imports: [AuthModule, TypeOrmModule.forRoot(typeORMConfig), DiaryModule],
   controllers: [],
   providers: [],
 })
