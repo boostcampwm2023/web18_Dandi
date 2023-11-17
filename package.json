@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "workspaces": [
-      "backend",
-      "frontend"
+    "backend",
+    "frontend"
   ],
   "scripts": {
     "backend": "yarn workspace backend",

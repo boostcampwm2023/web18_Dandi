@@ -1,4 +1,4 @@
-import { DiaryListItem } from './DiaryListItem';
+import DiaryListItem from '@components/Common/DiaryListItem';
 
 interface DiaryListProps {
   createdAt: string;
@@ -11,7 +11,7 @@ interface DiaryListProps {
   reactionCount: number;
 }
 
-export const DiaryList = () => {
+const DiaryList = () => {
   const dummyData = [
     {
       createdAt: '2023-11-13T13:50:17.106Z',
@@ -35,8 +35,10 @@ export const DiaryList = () => {
 
   return (
     <div className="w-[60%] p-5">
-      <h1 className="text-2xl font-bold mb-5 text-[black]">{nickname}님의 일기 목록</h1>
+      <h1 className="mb-5 text-2xl font-bold text-[black]">{nickname}님의 일기 목록</h1>
       {content}
     </div>
   );
 };
+
+export default DiaryList;
