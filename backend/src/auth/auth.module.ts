@@ -7,6 +7,7 @@ import 'dotenv/config';
 import { JwtAuthStrategy } from './strategy/jwtAuth.strategy';
 import { JWT_EXPIRE_DATE } from './utils/auth.constant';
 import { UsersModule } from 'src/users/users.module';
+import { AuthRepository } from './auth.repository';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { UsersModule } from 'src/users/users.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, NaverStrategy, JwtAuthStrategy],
+  providers: [AuthService, AuthRepository, NaverStrategy, JwtAuthStrategy],
 })
 export class AuthModule {}

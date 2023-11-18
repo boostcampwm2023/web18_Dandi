@@ -3,17 +3,16 @@ import { UserRepository } from '../users/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entity/user.entity';
 import { CreateUserDto, CreateUserResponseDto } from '../users/dto/user.dto';
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import Redis from 'ioredis';
 import { Request } from 'express';
 import { cookieExtractor } from './strategy/jwtAuth.strategy';
-import { REFRESH_ACCESS_TOKEN_URL, REFRESH_TOKEN_EXPIRE_DATE } from './utils/auth.constant';
+import { REFRESH_ACCESS_TOKEN_URL } from './utils/auth.constant';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRedis() private readonly redis: Redis,
+    private readonly authRepository: AuthRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
@@ -27,11 +26,11 @@ export class AuthService {
       user = await this.signUp(createUserDto);
     }
 
-    const dataForRefresh = {
-      socialType: createUserDto.socialType,
-      refreshToken: createUserDto.refreshToken,
-    };
-    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', REFRESH_TOKEN_EXPIRE_DATE);
+    this.authRepository.setRefreshToken(
+      user.id,
+      createUserDto.socialType,
+      createUserDto.refreshToken,
+    );
 
     return {
       userId: user.id,
@@ -50,7 +49,7 @@ export class AuthService {
   async refreshAccessToken(req: Request) {
     const userJwt = cookieExtractor(req);
     const payload = this.jwtService.decode(userJwt);
-    const refreshTokenData = JSON.parse(await this.redis.get(payload.id));
+    const refreshTokenData = JSON.parse(await this.authRepository.getRefreshToken(payload.id));
 
     const newData = await fetch(REFRESH_ACCESS_TOKEN_URL, {
       method: 'POST',
