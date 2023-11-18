@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from './auth.repository';
+import { UserRepository } from '../users/auth.repository';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './entity/user.entity';
-import { CreateUserDto, CreateUserResponseDto } from './dto/user.dto';
+import { User } from '../users/entity/user.entity';
+import { CreateUserDto, CreateUserResponseDto } from '../users/dto/user.dto';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
 import { Request } from 'express';
@@ -13,8 +13,8 @@ import { REFRESH_ACCESS_TOKEN_URL, REFRESH_TOKEN_EXPIRE_DATE } from './utils/aut
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userRepository: UserRepository,
     @InjectRedis() private readonly redis: Redis,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async login(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {

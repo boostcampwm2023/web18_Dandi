@@ -1,10 +1,10 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { NaverAuthGuard } from './guards/naverAuth.guard';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { User } from './utils/user.decorator';
+import { User } from '../users/utils/user.decorator';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
-import { CreateUserDto, CreateUserResponseDto } from './dto/user.dto';
+import { CreateUserDto, CreateUserResponseDto } from '../users/dto/user.dto';
 
 @ApiTags('Authentication API')
 @Controller('auth')

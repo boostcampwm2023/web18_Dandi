@@ -11,10 +11,10 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     AuthModule,
+    UsersModule,
     TypeOrmModule.forRoot(typeORMConfig),
     RedisModule.forRoot({ config: redisConfig }),
     DiaryModule,
-    UsersModule,
   ],
   controllers: [],
   providers: [],
