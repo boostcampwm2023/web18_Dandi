@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import 'dotenv/config';
 import { VerifyCallback } from '../utils/verifyCallback';
-import { UserRepository } from '../../users/auth.repository';
+import { UserRepository } from '../../users/user.repository';
 import { Request } from 'express';
 import { JWT, Payload } from '../utils/jwt.type';
 
