@@ -1,28 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import { User } from './entity/user.entity';
-import { CreateUserDto } from './dto/user.dto';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
+import { REFRESH_TOKEN_EXPIRE_DATE } from './utils/auth.constant';
 
-@Injectable()
-export class UserRepository extends Repository<User> {
-  constructor(private dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
+export class AuthRepository {
+  constructor(@InjectRedis() private readonly redis: Redis) {}
+
+  setRefreshToken(userId: number, socialType: string, refreshToken: string): void {
+    const dataForRefresh = { socialType, refreshToken };
+    this.redis.set(`${userId}`, JSON.stringify(dataForRefresh), 'EX', REFRESH_TOKEN_EXPIRE_DATE);
   }
 
-  async findById(id: number): Promise<User> {
-    return await this.createQueryBuilder('user').where('user.id = :id', { id }).getOne();
-  }
-
-  async findBySocialIdAndSocialType(socialId: string, socialType: string): Promise<User> {
-    return await this.createQueryBuilder('user')
-      .where('user.socialId = :socialId', { socialId })
-      .andWhere('user.socialType = :socialType', { socialType })
-      .getOne();
-  }
-
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { id, email, nickname, socialType, profileImage } = createUserDto;
-
-    return this.save({ socialId: id, email, nickname, socialType, profileImage });
+  async getRefreshToken(userId: string): Promise<string> {
+    return await this.redis.get(userId);
   }
 }

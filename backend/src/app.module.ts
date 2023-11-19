@@ -6,9 +6,16 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { redisConfig } from './configs/redis.config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { DiaryModule } from './diary/diary.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forRoot(typeORMConfig), RedisModule.forRoot({config: redisConfig}), DiaryModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    TypeOrmModule.forRoot(typeORMConfig),
+    RedisModule.forRoot({ config: redisConfig }),
+    DiaryModule,
+  ],
   controllers: [],
   providers: [],
 })

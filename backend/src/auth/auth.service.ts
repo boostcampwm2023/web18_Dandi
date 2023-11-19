@@ -1,56 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from './auth.repository';
+import { UserRepository } from '../users/user.repository';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './entity/user.entity';
-import { CreateUserDto, CreateUserResponseDto } from './dto/user.dto';
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import Redis from 'ioredis';
+import { User } from '../users/entity/user.entity';
+import { AuthUserDto, AuthUserResponseDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { cookieExtractor } from './strategy/jwtAuth.strategy';
-import { REFRESH_ACCESS_TOKEN_URL, REFRESH_TOKEN_EXPIRE_DATE } from './utils/auth.constant';
+import { REFRESH_ACCESS_TOKEN_URL } from './utils/auth.constant';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
+    private readonly authRepository: AuthRepository,
     private readonly userRepository: UserRepository,
-    @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  async login(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
+  async login(authUserDto: AuthUserDto): Promise<AuthUserResponseDto> {
     let user = await this.userRepository.findBySocialIdAndSocialType(
-      createUserDto.id,
-      createUserDto.socialType,
+      authUserDto.id,
+      authUserDto.socialType,
     );
 
     if (!user) {
-      user = await this.signUp(createUserDto);
+      user = await this.signUp(authUserDto);
     }
 
-    const dataForRefresh = {
-      socialType: createUserDto.socialType,
-      refreshToken: createUserDto.refreshToken,
-    };
-    this.redis.set(`${user.id}`, JSON.stringify(dataForRefresh), 'EX', REFRESH_TOKEN_EXPIRE_DATE);
+    this.authRepository.setRefreshToken(user.id, authUserDto.socialType, authUserDto.refreshToken);
 
     return {
       userId: user.id,
       token: this.jwtService.sign({
         id: user.id,
         nickname: user.nickname,
-        accessToken: createUserDto.accessToken,
+        accessToken: authUserDto.accessToken,
       }),
     };
   }
 
-  async signUp(user: CreateUserDto): Promise<User> {
+  async signUp(user: AuthUserDto): Promise<User> {
     return await this.userRepository.createUser(user);
   }
 
   async refreshAccessToken(req: Request) {
     const userJwt = cookieExtractor(req);
     const payload = this.jwtService.decode(userJwt);
-    const refreshTokenData = JSON.parse(await this.redis.get(payload.id));
+    const refreshTokenData = JSON.parse(await this.authRepository.getRefreshToken(payload.id));
 
     const newData = await fetch(REFRESH_ACCESS_TOKEN_URL, {
       method: 'POST',
