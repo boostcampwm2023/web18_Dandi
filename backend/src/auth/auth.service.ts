@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../users/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entity/user.entity';
-import { CreateUserDto, CreateUserResponseDto } from '../users/dto/user.dto';
+import { AuthUserDto, AuthUserResponseDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { cookieExtractor } from './strategy/jwtAuth.strategy';
 import { REFRESH_ACCESS_TOKEN_URL } from './utils/auth.constant';
@@ -16,33 +16,29 @@ export class AuthService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async login(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
+  async login(authUserDto: AuthUserDto): Promise<AuthUserResponseDto> {
     let user = await this.userRepository.findBySocialIdAndSocialType(
-      createUserDto.id,
-      createUserDto.socialType,
+      authUserDto.id,
+      authUserDto.socialType,
     );
 
     if (!user) {
-      user = await this.signUp(createUserDto);
+      user = await this.signUp(authUserDto);
     }
 
-    this.authRepository.setRefreshToken(
-      user.id,
-      createUserDto.socialType,
-      createUserDto.refreshToken,
-    );
+    this.authRepository.setRefreshToken(user.id, authUserDto.socialType, authUserDto.refreshToken);
 
     return {
       userId: user.id,
       token: this.jwtService.sign({
         id: user.id,
         nickname: user.nickname,
-        accessToken: createUserDto.accessToken,
+        accessToken: authUserDto.accessToken,
       }),
     };
   }
 
-  async signUp(user: CreateUserDto): Promise<User> {
+  async signUp(user: AuthUserDto): Promise<User> {
     return await this.userRepository.createUser(user);
   }
 

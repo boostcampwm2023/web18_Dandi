@@ -1,7 +1,7 @@
-import { SocialType } from '../entity/socialType';
+import { SocialType } from '../../users/entity/socialType';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class AuthUserDto {
   id: string;
   email: string;
   nickname: string;
@@ -11,7 +11,7 @@ export class CreateUserDto {
   refreshToken: string;
 }
 
-export class CreateUserResponseDto {
+export class AuthUserResponseDto {
   @ApiProperty({ description: '사용자 ID' })
   userId: number;
 
