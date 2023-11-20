@@ -7,10 +7,10 @@ const KeywordSearch = () => {
     setKeyword(e.target.value);
   };
   return (
-    <div className="border-brown flex flex-row rounded-2xl border border-solid px-4 py-3">
+    <div className="border-brown flex flex-row rounded-2xl border border-solid px-4 py-2">
       <p className="text-2xl font-bold">#</p>
       <input
-        className="mx-3"
+        className="mx-3 w-[20rem] outline-none"
         placeholder="키워드를 입력하세요"
         value={keyword}
         type="text"

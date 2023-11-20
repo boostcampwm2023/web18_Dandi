@@ -1,6 +1,6 @@
 import DiaryListItem from '@components/Common/DiaryListItem';
 
-interface DiaryListProps {
+export interface DiaryListProps {
   createdAt: string;
   profileImage: string;
   nickname: string;
