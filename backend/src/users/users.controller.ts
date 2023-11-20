@@ -13,7 +13,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '닉네임으로 사용자 검색 API' })
   @ApiOkResponse({ description: '닉네임을 사용자 검색 성공', type: Array<SearchUserResponseDto> })
-  async searchUsers(@Param('nickname') nickname: string): Promise<SearchUserResponseDto[]> {
+  searchUsers(@Param('nickname') nickname: string): Promise<SearchUserResponseDto[]> {
     return this.usersService.searchUsers(nickname);
   }
 }
