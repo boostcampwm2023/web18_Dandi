@@ -2,10 +2,9 @@ import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@ne
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateDiaryDto } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
-import { AuthGuard } from '@nestjs/passport';
-import { JWT } from 'src/auth/utils/jwt.type';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 
 @ApiTags('Diary API')
 @Controller('diaries')
@@ -13,7 +12,7 @@ export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
 
   @Post()
-  @UseGuards(AuthGuard(JWT))
+  @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   @ApiOperation({ description: '일기 저장 API' })
   @ApiOkResponse({ description: '일기 저장 성공' })
