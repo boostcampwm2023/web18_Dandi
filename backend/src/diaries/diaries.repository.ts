@@ -22,7 +22,7 @@ export class DiariesRepository extends Repository<Diary> {
       mood,
       tags,
       status,
-      user,
+      author: user,
     });
   }
 

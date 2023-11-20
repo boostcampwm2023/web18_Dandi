@@ -37,7 +37,7 @@ export class Diary extends BaseEntity {
   @Column()
   status: DiaryStatus;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: false })
   author: User;
 
   @ManyToMany(() => Tag, { cascade: true })
