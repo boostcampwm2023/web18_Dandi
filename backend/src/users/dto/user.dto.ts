@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class searchUserResponseDto {
+export class SearchUserResponseDto {
   @ApiProperty({ description: '사용자 ID' })
   id: number;
 
@@ -11,5 +11,5 @@ export class searchUserResponseDto {
   nickname: string;
 
   @ApiProperty({ description: '사용자 프로필 이미지' })
-  profile_image: string;
+  profileImage: string;
 }
