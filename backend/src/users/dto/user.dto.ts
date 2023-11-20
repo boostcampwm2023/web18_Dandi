@@ -4,6 +4,9 @@ export class searchUserResponseDto {
   @ApiProperty({ description: '사용자 ID' })
   id: number;
 
+  @ApiProperty({ description: '사용자 이메일' })
+  email: string;
+
   @ApiProperty({ description: '사용자 닉네임' })
   nickname: string;
 
