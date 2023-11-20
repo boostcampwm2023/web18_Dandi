@@ -16,10 +16,14 @@ export class FriendsRepository extends Repository<Friend> {
     this.save(friend);
   }
 
-  async findFriendRequest(senderId: number, receiverId: number) {
+  async findFriendRequest(senderId: number, receiverId: number): Promise<Friend[]> {
     return this.createQueryBuilder('friend')
       .where('friend.sender = :sender', { sender: senderId })
       .andWhere('friend.receiver = :receiver', { receiver: receiverId })
       .getMany();
+  }
+
+  removeRelation(relation: Friend): void {
+    this.remove(relation);
   }
 }
