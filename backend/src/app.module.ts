@@ -8,6 +8,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { DiariesModule } from './diaries/diaries.module';
 import { UsersModule } from './users/users.module';
 import { TagsModule } from './tags/tags.module';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TagsModule } from './tags/tags.module';
     RedisModule.forRoot({ config: redisConfig }),
     DiariesModule,
     TagsModule,
+    FriendsModule,
   ],
   controllers: [],
   providers: [],
