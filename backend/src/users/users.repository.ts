@@ -4,7 +4,7 @@ import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
 
 @Injectable()
-export class UserRepository extends Repository<User> {
+export class UsersRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
