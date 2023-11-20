@@ -43,7 +43,10 @@ const Header = () => {
             onClick={toggleEmoji}
             readOnly
           />
-          <select className="border-brown h-[2.5rem] rounded-xl border-[1px] px-2" name="emotion">
+          <select
+            className="border-brown h-[2.5rem] rounded-xl border-[1px] px-2 outline-none"
+            name="emotion"
+          >
             <option value="5">아주 좋음</option>
             <option value="4">좋음</option>
             <option value="3">그럭저럭</option>
