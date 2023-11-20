@@ -12,7 +12,7 @@ export class CreateDiaryDto {
   @ApiProperty({ description: '일기 내용' })
   content: string;
 
-  @ApiProperty({ description: '섬네일 이미지의 S3 주소' })
+  @ApiProperty({ description: '섬네일 이미지의 S3 주소', required: false })
   thumbnail: string;
 
   @IsNotEmpty()
@@ -23,7 +23,7 @@ export class CreateDiaryDto {
   @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)' })
   mood: number;
 
-  @ApiProperty({ description: 'tag 이름' })
+  @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
 
   @IsNotEmpty()
