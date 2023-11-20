@@ -20,7 +20,7 @@ export class DiariesService {
 
   async findDiary(user: User, id: number) {
     const diary = await this.diariesRepository.findById(id);
-    console.log(diary);
+
     if (!diary) {
       throw new Error('존재하지 않는 일기입니다.');
     }
