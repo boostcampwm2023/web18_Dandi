@@ -16,4 +16,12 @@ export class DiariesRepository extends Repository<Diary> {
 
     return await this.save({ title, content, thumbnail, emotion, mood, tags, status, user });
   }
+
+  async findById(id: number) {
+    return await this.findOne({
+      where: {
+        id,
+      },
+    });
+  }
 }
