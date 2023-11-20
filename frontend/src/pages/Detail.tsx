@@ -6,14 +6,10 @@ import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
 
 const Detail = () => {
-  const [showModal, setShowModal] = useState(false);
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const toggleShowModal = () =>{
+    setShowModal((prev) => !prev);
+  }
 
   const diaryData = {
     createdAt: '2023-11-13T13:50:17.106Z',
@@ -48,12 +44,12 @@ const Detail = () => {
             fontColor="white"
             fontSize="0.875rem"
             backgroundColor="red"
-            onClick={openModal}
+            onClick={toggleShowModal}
           />
-          <Modal showModal={showModal} closeModal={closeModal}>
+          <Modal showModal={showModal} closeModal={toggleShowModal}>
             <Alert
               text="이 일기를 정말 삭제하시겠습니까?"
-              onUndoButtonClick={closeModal}
+              onUndoButtonClick={toggleShowModal}
               onAcceptButtonClick={() => console.log('삭제하러 가기')}
             />
           </Modal>

@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
+import Modal from '@components/Common/Modal';
+import ReactionList from '@components/Diary/ReactionList';
 
 interface DiaryContentProps {
   createdAt: string;
@@ -11,7 +14,20 @@ interface DiaryContentProps {
   reactionCount: number;
 }
 
-const DiaryContent = ({createdAt, profileImage, authorName, title, content, keywords, reactionCount}:DiaryContentProps) => {
+const DiaryContent = ({
+  createdAt,
+  profileImage,
+  authorName,
+  title,
+  content,
+  keywords,
+  reactionCount,
+}: DiaryContentProps) => {
+  const [showModal, setShowModal] = useState(false);
+  const toggleShowModal = () => {
+    setShowModal((prev) => !prev);
+  };
+
   const formatDateString = (str: string) => {
     const week = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
@@ -30,9 +46,7 @@ const DiaryContent = ({createdAt, profileImage, authorName, title, content, keyw
         <ProfileItem img={profileImage} nickName={authorName} />
         <div className="mb-3 flex items-center justify-between">
           <p className="text-lg font-bold text-[black]">{title}</p>
-          <p className="text-sm font-medium text-[black]">
-            {formatDateString(createdAt)}
-          </p>
+          <p className="text-sm font-medium text-[black]">{formatDateString(createdAt)}</p>
         </div>
         <div className="flex flex-col justify-center">
           <div className="mb-3  whitespace-pre-wrap text-sm font-medium text-[black]">
@@ -46,7 +60,10 @@ const DiaryContent = ({createdAt, profileImage, authorName, title, content, keyw
             </div>
           ))}
         </div>
-        <Reaction count={reactionCount} />
+        <Reaction count={reactionCount} onClick={toggleShowModal} />
+        <Modal showModal={showModal} closeModal={toggleShowModal}>
+          <ReactionList  />
+        </Modal>
       </div>
     </div>
   );

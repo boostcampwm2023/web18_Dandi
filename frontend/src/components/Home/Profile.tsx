@@ -50,6 +50,7 @@ export const Profile = ({
             fontColor="default"
             fontSize="xl"
             backgroundColor="mint"
+            onClick={() => console.log('일기 보러 가기')}
           />
         </>
       ) : (
@@ -65,6 +66,7 @@ export const Profile = ({
             fontColor="default"
             fontSize="2xl"
             backgroundColor="mint"
+            onClick={() => console.log('일기 쓰러 가기')}
           />
         </>
       )}
