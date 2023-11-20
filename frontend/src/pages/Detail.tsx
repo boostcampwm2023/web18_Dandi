@@ -7,9 +7,9 @@ import Alert from '@components/Common/Alert';
 
 const Detail = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const toggleShowModal = () =>{
+  const toggleShowModal = () => {
     setShowModal((prev) => !prev);
-  }
+  };
 
   const diaryData = {
     createdAt: '2023-11-13T13:50:17.106Z',

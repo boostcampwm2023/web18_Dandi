@@ -7,7 +7,6 @@ interface AlertProps {
 }
 
 const Alert = ({ text, onUndoButtonClick, onAcceptButtonClick }: AlertProps) => {
-
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-5">
       <span className="font-bold">{text}</span>
@@ -17,7 +16,7 @@ const Alert = ({ text, onUndoButtonClick, onAcceptButtonClick }: AlertProps) => 
           height={3}
           text="취소"
           fontColor="default"
-          backgroundColor="brown"
+          backgroundColor="gray"
           onClick={onUndoButtonClick}
         />
         <Button

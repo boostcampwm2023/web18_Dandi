@@ -8,7 +8,15 @@ interface ButtonProps {
   onClick: () => void;
 }
 
-const Button = ({ width, height, text, fontColor, fontSize, backgroundColor, onClick }: ButtonProps) => {
+const Button = ({
+  width,
+  height,
+  text,
+  fontColor,
+  fontSize,
+  backgroundColor,
+  onClick,
+}: ButtonProps) => {
   return (
     <button
       className={`w-[${width}rem] h-[${height}rem] text-${fontColor} font-bold text-${fontSize} bg-${backgroundColor} rounded-lg`}
