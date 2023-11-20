@@ -44,7 +44,6 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDiaryDto: UpdateDiaryDto,
   ) {
-    console.log(updateDiaryDto);
     await this.diariesService.updateDiary(id, user, updateDiaryDto);
 
     return '일기가 수정되었습니다.';
