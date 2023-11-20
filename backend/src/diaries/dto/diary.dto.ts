@@ -33,25 +33,25 @@ export class CreateDiaryDto {
 }
 
 export class UpdateDiaryDto {
-  @ApiProperty({ description: '일기 제목' })
+  @ApiProperty({ description: '일기 제목', required: false })
   title: string;
 
-  @ApiProperty({ description: '일기 내용' })
+  @ApiProperty({ description: '일기 내용', required: false })
   content: string;
 
   @ApiProperty({ description: '섬네일 이미지의 S3 주소', required: false })
   thumbnail: string;
 
-  @ApiProperty({ description: '감정(이모지)' })
+  @ApiProperty({ description: '감정(이모지)', required: false })
   emotion: string;
 
-  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)' })
+  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)', required: false })
   mood: number;
 
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
 
   @Validate(DiaryStatusValidator)
-  @ApiProperty({ description: '공개/비공개 여부' })
+  @ApiProperty({ description: '공개/비공개 여부', required: false })
   status: DiaryStatus;
 }
