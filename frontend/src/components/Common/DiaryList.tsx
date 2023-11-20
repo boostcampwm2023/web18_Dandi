@@ -31,7 +31,9 @@ const DiaryList = () => {
     diaryData: dummyData,
   };
 
-  const content = diaryData.map((data: DiaryListProps) => <DiaryListItem {...data} />);
+  const content = diaryData.map((data: DiaryListProps, index) => (
+    <DiaryListItem key={index} {...data} />
+  ));
 
   return (
     <div className="w-[60%] p-5">

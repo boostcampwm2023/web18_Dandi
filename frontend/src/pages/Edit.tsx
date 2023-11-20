@@ -1,10 +1,19 @@
 import NavBar from '@components/Common/NavBar';
+import Header from '@components/Edit/Header';
+import Editor from '@components/Edit/Editor';
+import KeywordBox from '@components/Edit/KeywordBox';
+
+import { useState } from 'react';
 
 const Edit = () => {
+  const [keywordList, setKeywordList] = useState<string[]>([]);
+
   return (
-    <div>
+    <div className="flex flex-col items-center justify-start">
       <NavBar />
-      <h1>일기 작성 페이지</h1>
+      <Header />
+      <Editor />
+      <KeywordBox keywordList={keywordList} setKeywordList={setKeywordList} />
     </div>
   );
 };
