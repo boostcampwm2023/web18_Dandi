@@ -1,11 +1,17 @@
 import NavBar from '@components/Common/NavBar';
+import KeywordSearch from '../components/MyDiary/KeywordSearch';
 
 const MyDiary = () => {
   return (
-    <div>
-      <NavBar />
-      <h1>내 일기 페이지</h1>
-    </div>
+    <>
+      <main className="mb-28 flex flex-col items-center">
+        <NavBar />
+        <header>
+          <KeywordSearch />
+        </header>
+        <section>안녕</section>
+      </main>
+    </>
   );
 };
 
