@@ -1,8 +1,20 @@
+import { useState } from 'react';
 import NavBar from '@components/Common/NavBar';
 import Button from '@components/Common/Button';
+import Modal from '@components/Common/Modal';
 import DiaryContent from '@components/Detail/DiaryContent';
+import Alert from '@components/Common/Alert';
 
 const Detail = () => {
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   const diaryData = {
     createdAt: '2023-11-13T13:50:17.106Z',
     profileImage: '',
@@ -13,7 +25,7 @@ const Detail = () => {
     keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
     reactionCount: 10,
   };
-  const content = <DiaryContent {...diaryData}/>
+  const content = <DiaryContent {...diaryData} />;
 
   return (
     <div className="flex flex-col items-center">
@@ -27,6 +39,7 @@ const Detail = () => {
             fontColor="default"
             fontSize="0.875rem"
             backgroundColor="gray"
+            onClick={() => console.log('수정하러 가기')}
           />
           <Button
             width={3.4}
@@ -35,9 +48,17 @@ const Detail = () => {
             fontColor="white"
             fontSize="0.875rem"
             backgroundColor="red"
+            onClick={openModal}
           />
+          <Modal showModal={showModal} closeModal={closeModal}>
+            <Alert
+              text="이 일기를 정말 삭제하시겠습니까?"
+              onUndoButtonClick={closeModal}
+              onAcceptButtonClick={() => console.log('삭제하러 가기')}
+            />
+          </Modal>
         </div>
-       {content}
+        {content}
       </div>
     </div>
   );
