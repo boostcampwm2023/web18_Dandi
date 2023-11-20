@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { DiariesRepository } from './diaries.repository';
 import { CreateDiaryDto } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
@@ -22,10 +22,10 @@ export class DiariesService {
     const diary = await this.diariesRepository.findById(id);
 
     if (!diary) {
-      throw new Error('존재하지 않는 일기입니다.');
+      throw new BadRequestException('존재하지 않는 일기입니다.');
     }
     if (diary.status === DiaryStatus.PRIVATE && diary.author.id !== user.id) {
-      throw new Error('조회 권한이 없는 사용자입니다.');
+      throw new ForbiddenException('조회 권한이 없는 사용자입니다.');
     }
 
     return diary;
