@@ -33,11 +33,8 @@ const MyDiary = () => {
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>
         <section>
-          {viewType === 'Day' ? (
-            diaryData.map((data, index) => <DiaryListItem {...data} key={index} />)
-          ) : (
-            <></>
-          )}
+          {viewType === 'Day' &&
+            diaryData.map((data, index) => <DiaryListItem {...data} key={index} />)}
         </section>
       </main>
     </>
