@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FriendsRepository } from './friends.repository';
 import { UsersRepository } from 'src/users/users.repository';
-import { createFriendto } from './dto/friend.dto';
+import { FriendRelationDto } from './dto/friend.dto';
 
 @Injectable()
 export class FriendsService {
@@ -10,8 +10,8 @@ export class FriendsService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async requestFriend(createFriendto: createFriendto): Promise<void> {
-    const { senderId, receiverId } = createFriendto;
+  async requestFriend(friendRelationDto: FriendRelationDto): Promise<void> {
+    const { senderId, receiverId } = friendRelationDto;
 
     // 예외처리
     const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
@@ -20,7 +20,19 @@ export class FriendsService {
 
     const sender = await this.usersRepository.findById(senderId);
     const receiver = await this.usersRepository.findById(receiverId);
-
     this.friendsRepository.createFriend(sender, receiver);
+  }
+
+  async cancelFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
+    const { senderId, receiverId } = friendRelationDto;
+    await this.checkFriendData(senderId, receiverId);
+  }
+
+  // 예외처리
+  private async checkFriendData(senderId: number, receiverId: number) {
+    if (senderId === receiverId) throw new BadRequestException();
+
+    const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
+    if (relations.length !== 1) throw new BadRequestException();
   }
 }
