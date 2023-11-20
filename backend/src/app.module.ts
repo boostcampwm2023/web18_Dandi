@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeORMConfig } from './configs/typeorm.config';
+import { typeORMDevConfig, typeORMProdConfig } from './configs/typeorm.config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { redisConfig } from './configs/redis.config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
@@ -13,7 +13,9 @@ import { TagsModule } from './tags/tags.module';
   imports: [
     AuthModule,
     UsersModule,
-    TypeOrmModule.forRoot(typeORMConfig),
+    TypeOrmModule.forRoot(
+      process.env.NODE_ENV === 'production' ? typeORMProdConfig : typeORMDevConfig,
+    ),
     RedisModule.forRoot({ config: redisConfig }),
     DiariesModule,
     TagsModule,
