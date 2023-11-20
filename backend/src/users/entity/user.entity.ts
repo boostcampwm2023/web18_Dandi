@@ -4,10 +4,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { SocialType } from './socialType';
+import { Friend } from 'src/friends/entity/friend.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -37,4 +39,14 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToMany(() => Friend, (friend) => friend.sender, {
+    cascade: true,
+  })
+  sender: Friend[];
+
+  @OneToMany(() => Friend, (friend) => friend.receiver, {
+    cascade: true,
+  })
+  receiver: Friend[];
 }
