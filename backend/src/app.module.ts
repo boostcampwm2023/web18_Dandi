@@ -5,8 +5,9 @@ import { typeORMConfig } from './configs/typeorm.config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { redisConfig } from './configs/redis.config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { DiaryModule } from './diary/diary.module';
+import { DiariesModule } from './diaries/diaries.module';
 import { UsersModule } from './users/users.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     TypeOrmModule.forRoot(typeORMConfig),
     RedisModule.forRoot({ config: redisConfig }),
-    DiaryModule,
+    DiariesModule,
+    TagsModule,
   ],
   controllers: [],
   providers: [],
