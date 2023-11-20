@@ -15,4 +15,11 @@ export class FriendsRepository extends Repository<Friend> {
     friend.receiver = receiver;
     this.save(friend);
   }
+
+  async findFriendRequest(senderId: number, receiverId: number) {
+    return this.createQueryBuilder('friend')
+      .where('friend.sender = :sender', { sender: senderId })
+      .andWhere('friend.receiver = :receiver', { receiver: receiverId })
+      .getMany();
+  }
 }

@@ -10,11 +10,11 @@ export class FriendsController {
 
   @Post('/:receiverId')
   @UseGuards(JwtAuthGuard)
-  requestFriend(
+  async requestFriend(
     @User() user: UserEntity,
     @Param('receiverId', ParseIntPipe) receiverId: number,
-  ): string {
-    this.friendsService.requestFriend({ senderId: user.id, receiverId });
+  ): Promise<string> {
+    await this.friendsService.requestFriend({ senderId: user.id, receiverId });
     return '친구 신청이 완료되었습니다.';
   }
 }
