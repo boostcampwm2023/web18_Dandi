@@ -26,9 +26,8 @@ export class UsersRepository extends Repository<User> {
     return this.save({ socialId: id, email, nickname, socialType, profileImage });
   }
 
-  async searchUsers(nickname: string): Promise<User[]> {
+  async findByNickname(nickname: string): Promise<User[]> {
     return await this.createQueryBuilder('user')
-      .select(['user.id', 'user.email', 'user.nickname', 'user.profileImage'])
       .where('user.nickname LIKE :nickname', { nickname: `%${nickname}%` })
       .getMany();
   }

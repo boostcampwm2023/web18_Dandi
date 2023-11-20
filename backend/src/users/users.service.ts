@@ -7,6 +7,12 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async searchUsers(nickname: string): Promise<SearchUserResponseDto[]> {
-    return await this.usersRepository.searchUsers(nickname);
+    const users = await this.usersRepository.findByNickname(nickname);
+    return users.map((user) => ({
+      id: user.id,
+      email: user.email,
+      nickname: user.nickname,
+      profileImage: user.profileImage,
+    }));
   }
 }
