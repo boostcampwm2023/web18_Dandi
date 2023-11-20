@@ -9,7 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateDiaryDto, UpdateDiaryDto } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -36,13 +36,17 @@ export class DiariesController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
+  @ApiOperation({ description: '일기 수정 API' })
+  @ApiOkResponse({ description: '일기 수정 성공' })
+  @ApiBody({ type: UpdateDiaryDto })
   async updateDiary(
     @User() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDiaryDto: UpdateDiaryDto,
   ) {
+    console.log(updateDiaryDto);
     await this.diariesService.updateDiary(id, user, updateDiaryDto);
 
-    return '일기가 저장되었습니다.';
+    return '일기가 수정되었습니다.';
   }
 }
