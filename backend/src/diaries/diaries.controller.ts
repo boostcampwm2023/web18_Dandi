@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateDiaryDto } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,6 +15,8 @@ export class DiariesController {
   @Post()
   @UseGuards(AuthGuard(JWT))
   @UsePipes(ValidationPipe)
+  @ApiOperation({ description: '일기 저장 API' })
+  @ApiOkResponse({ description: '일기 저장 성공' })
   async createDiary(@User() user: UserEntity, @Body() createDiaryDto: CreateDiaryDto) {
     await this.diariesService.saveDiary(user, createDiaryDto);
 
