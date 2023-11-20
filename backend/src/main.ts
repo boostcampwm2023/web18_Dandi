@@ -7,8 +7,9 @@ import { swaggerConfig } from './configs/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+
   app.use(cookieParser());
-  
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
