@@ -31,3 +31,23 @@ export class CreateDiaryDto {
   @ApiProperty({ description: '공개/비공개 여부' })
   status: DiaryStatus;
 }
+
+export interface GetDiaryResponseDto {
+  userId: number;
+
+  authorName: string;
+
+  title: string;
+
+  content: string;
+
+  thumbnail: string;
+
+  emotion: string;
+
+  mood: number;
+
+  keywords: string[];
+
+  reactionCount: number;
+}
