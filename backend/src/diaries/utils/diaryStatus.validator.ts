@@ -8,6 +8,7 @@ import { DiaryStatus } from '../entity/diaryStatus';
 @ValidatorConstraint({ name: 'diaryStatusValidator', async: false })
 export class DiaryStatusValidator implements ValidatorConstraintInterface {
   validate(status: any, args: ValidationArguments) {
+    if (!status) return true;
     return Object.values(DiaryStatus).includes(status);
   }
 
