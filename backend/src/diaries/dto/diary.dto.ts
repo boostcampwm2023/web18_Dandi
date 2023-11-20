@@ -47,7 +47,7 @@ export interface GetDiaryResponseDto {
 
   mood: number;
 
-  keywords: string[];
+  tags: string[];
 
   reactionCount: number;
 }

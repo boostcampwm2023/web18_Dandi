@@ -39,7 +39,7 @@ export class DiariesController {
       thumbnail: diary.thumbnail,
       emotion: diary.emotion,
       mood: diary.mood,
-      keywords: diary.tags?.map((t) => t.name),
+      tags: diary.tags?.map((t) => t.name),
       reactionCount: null,
     };
   }
