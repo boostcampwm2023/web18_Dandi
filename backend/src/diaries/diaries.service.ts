@@ -20,14 +20,14 @@ export class DiariesService {
 
   async findDiary(user: User, id: number) {
     const diary = await this.diariesRepository.findById(id);
+    const author = await diary.author;
 
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
     }
-    if (diary.status === DiaryStatus.PRIVATE && diary.author.id !== user.id) {
+    if (diary.status === DiaryStatus.PRIVATE && author.id !== user.id) {
       throw new ForbiddenException('조회 권한이 없는 사용자입니다.');
     }
-
     return diary;
   }
 }

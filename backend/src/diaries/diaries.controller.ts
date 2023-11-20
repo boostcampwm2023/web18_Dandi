@@ -24,12 +24,13 @@ export class DiariesController {
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '일기 조회 API' })
-  @ApiOkResponse({ description: '일기 조회 성공' })
+  @ApiOkResponse({ description: '일기 조회 성공', type: GetDiaryResponseDto })
   async findDiary(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserEntity,
   ): Promise<GetDiaryResponseDto> {
     const diary = await this.diariesService.findDiary(user, id);
+    const tags = await diary.tags;
 
     return {
       userId: diary.author.id,
@@ -39,7 +40,7 @@ export class DiariesController {
       thumbnail: diary.thumbnail,
       emotion: diary.emotion,
       mood: diary.mood,
-      tags: diary.tags?.map((t) => t.name),
+      tags: tags.map((t) => t.name),
       reactionCount: null,
     };
   }

@@ -27,9 +27,6 @@ export class DiariesRepository extends Repository<Diary> {
   }
 
   async findById(id: number) {
-    return await this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .where('diary.id = :id', { id })
-      .getOne();
+    return await this.createQueryBuilder('diary').where('diary.id = :id', { id }).getOne();
   }
 }
