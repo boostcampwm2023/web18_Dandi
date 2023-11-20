@@ -25,4 +25,10 @@ export class UsersRepository extends Repository<User> {
 
     return this.save({ socialId: id, email, nickname, socialType, profileImage });
   }
+
+  async findByNickname(nickname: string): Promise<User[]> {
+    return await this.createQueryBuilder('user')
+      .where('user.nickname LIKE :nickname', { nickname: `%${nickname}%` })
+      .getMany();
+  }
 }
