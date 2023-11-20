@@ -39,8 +39,8 @@ const DiaryListItem = (props: DiaryListProps) => {
         </div>
       </div>
       <div className="mb-3 flex flex-wrap gap-3 text-base text-[black]">
-        {props.keywords.map((keyword) => (
-          <div className="bg-mint rounded-lg px-3 py-1">
+        {props.keywords.map((keyword, index) => (
+          <div key={index} className="bg-mint rounded-lg px-3 py-1">
             <p>#{keyword}</p>
           </div>
         ))}

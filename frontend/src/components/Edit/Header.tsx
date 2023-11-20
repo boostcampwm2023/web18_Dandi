@@ -7,8 +7,16 @@ const Header = () => {
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const [status, setStatus] = useState<string>('나만 보기');
 
+  const emotionList = [
+    ['아주 좋음', 5],
+    ['좋음', 4],
+    ['그저그럼', 3],
+    ['나쁨', 2],
+    ['아주 나쁨', 1],
+  ];
+
   const toggleEmoji = () => {
-    setShowEmoji((pre) => !pre);
+    setShowEmoji((prev) => !prev);
   };
 
   const changeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,14 +52,17 @@ const Header = () => {
             readOnly
           />
           <select
-            className="border-brown h-[2.5rem] rounded-xl border-[1px] px-2 outline-none"
+            className="border-brown h-[2.5rem] rounded-xl border px-2 outline-none"
             name="emotion"
           >
-            <option value="5">아주 좋음</option>
-            <option value="4">좋음</option>
-            <option value="3">그럭저럭</option>
-            <option value="2">나쁨</option>
-            <option value="1">아주 나쁨</option>
+            {emotionList.map((item, index) => {
+              const [emotion, value] = item;
+              return (
+                <option key={index} value={value}>
+                  {emotion}
+                </option>
+              );
+            })}
           </select>
         </div>
         {showEmoji && <EmojiPicker onEmojiClick={onClickEmoji} />}
@@ -60,7 +71,7 @@ const Header = () => {
         <input
           type="text"
           placeholder="제목을 입력하세요"
-          className="border-brown mb-5 mr-10 h-[3rem] w-[60%] rounded-xl border-[1px] pl-4 outline-none"
+          className="border-brown mb-5 mr-10 h-[3rem] w-[60%] rounded-xl border pl-4 outline-none"
           onChange={changeTitle}
           value={title}
         />

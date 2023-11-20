@@ -36,7 +36,7 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
         value={keyword}
         onChange={changeKeyword}
         onKeyPress={addKeyword}
-        className="border-brown mb-3 h-[2.5rem]  w-[30%] rounded-xl border-[1px] pl-4 outline-none"
+        className="border-brown mb-3 h-[2.5rem]  w-[30%] rounded-xl border pl-4 outline-none"
       />
       <KeywordItem keywordList={keywordList} />
     </div>
