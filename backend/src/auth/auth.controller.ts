@@ -38,6 +38,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Success' })
   async refreshAccessToken(@Req() req: Request, @Res() res: Response): Promise<void> {
     const newJwt = await this.authService.refreshAccessToken(req);
+
     res.cookie('utk', newJwt, { httpOnly: true });
     res.status(200).json({ message: '새로운 토큰 발급 완료' });
   }

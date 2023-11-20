@@ -2,7 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { CreateDiaryDto } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
-import { Tag } from './entity/tag.entity';
+import { Tag } from '../tags/entity/tag.entity';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

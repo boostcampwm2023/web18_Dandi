@@ -7,6 +7,7 @@ import { redisConfig } from './configs/redis.config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { DiariesModule } from './diaries/diaries.module';
 import { UsersModule } from './users/users.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot(typeORMConfig),
     RedisModule.forRoot({ config: redisConfig }),
     DiariesModule,
+    TagsModule,
   ],
   controllers: [],
   providers: [],
