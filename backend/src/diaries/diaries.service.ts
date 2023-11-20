@@ -19,7 +19,6 @@ export class DiariesService {
 
   async mapTagNameToTagType(tagNames: string[]) {
     if (!tagNames) return null;
-    console.log(tagNames);
 
     return await Promise.all(
       tagNames.map(async (tagName) => {
