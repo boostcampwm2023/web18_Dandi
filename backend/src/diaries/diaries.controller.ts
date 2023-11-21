@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -10,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateDiaryDto, UpdateDiaryDto } from './dto/diary.dto';
+import { CreateDiaryDto, GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
@@ -20,6 +21,30 @@ import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 @Controller('diaries')
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
+
+  @Get('/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '일기 조회 API' })
+  @ApiOkResponse({ description: '일기 조회 성공', type: GetDiaryResponseDto })
+  async findDiary(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: UserEntity,
+  ): Promise<GetDiaryResponseDto> {
+    const diary = await this.diariesService.findDiary(user, id);
+    const tags = await diary.tags;
+
+    return {
+      userId: diary.author.id,
+      authorName: diary.author.nickname,
+      title: diary.title,
+      content: diary.content,
+      thumbnail: diary.thumbnail,
+      emotion: diary.emotion,
+      mood: diary.mood,
+      tags: tags.map((t) => t.name),
+      reactionCount: null,
+    };
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)
