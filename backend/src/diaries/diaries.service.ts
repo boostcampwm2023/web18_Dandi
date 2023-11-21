@@ -16,6 +16,27 @@ export class DiariesService {
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto) {
     const tags = await this.tagsService.mapTagNameToTagType(createDiaryDto.tagNames);
 
+    const response = await fetch(
+      'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
+      {
+        method: 'POST',
+        headers: {
+          'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
+          'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          document: {
+            title: createDiaryDto.title,
+            content: createDiaryDto.content,
+          },
+          option: { language: 'ko' },
+        }),
+      },
+    );
+    const body = await response.json();
+    console.log(body);
+
     await this.diariesRepository.saveDiary(user, createDiaryDto, tags);
   }
 
@@ -59,4 +80,9 @@ export class DiariesService {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }
+}
+
+interface DocumentObject {
+  content: string;
+  title: string;
 }
