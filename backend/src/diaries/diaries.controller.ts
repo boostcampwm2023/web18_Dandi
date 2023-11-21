@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -30,7 +31,7 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserEntity,
   ): Promise<GetDiaryResponseDto> {
-    const diary = await this.diariesService.findDiary(user, id);
+    const diary = await this.diariesService.findDiary(user, id, true);
     const tags = await diary.tags;
 
     return {
@@ -72,5 +73,15 @@ export class DiariesController {
     await this.diariesService.updateDiary(id, user, updateDiaryDto);
 
     return '일기가 수정되었습니다.';
+  }
+
+  @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '일기 삭제 API' })
+  @ApiCreatedResponse({ description: '일기 삭제 성공' })
+  async deleteDiary(@User() user: UserEntity, @Param('id', ParseIntPipe) id: number) {
+    await this.diariesService.deleteDiary(user, id);
+
+    return '일기가 삭제되었습니다.';
   }
 }

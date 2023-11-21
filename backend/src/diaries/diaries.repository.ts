@@ -14,7 +14,7 @@ export class DiariesRepository extends Repository<Diary> {
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto, tags: Tag[]): Promise<Diary> {
     const { title, content, thumbnail, emotion, mood, status } = createDiaryDto;
 
-    return await this.save({
+    return this.save({
       title,
       content,
       thumbnail,
@@ -27,13 +27,9 @@ export class DiariesRepository extends Repository<Diary> {
   }
 
   async findById(id: number) {
-    return await this.createQueryBuilder('diary').where('diary.id = :id', { id }).getOne();
-  }
-
-  async findById(id: number) {
     return this.findOne({
       where: {
-        id: id,
+        id,
       },
     });
   }
