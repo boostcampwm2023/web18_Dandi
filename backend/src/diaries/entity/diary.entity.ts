@@ -39,19 +39,19 @@ export class Diary extends BaseEntity {
   @Column()
   status: DiaryStatus;
 
-  @ManyToOne(() => User, { nullable: false })
-  author: Promise<User>;
+  @ManyToOne(() => User, { nullable: false, lazy: true })
+  author: User;
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
-  reactions: Promise<Reaction[]>;
+  reactions: Reaction[];
 
-  @ManyToMany(() => Tag, { cascade: true })
+  @ManyToMany(() => Tag, { cascade: true, lazy: true })
   @JoinTable({
     name: 'diary_tag',
     joinColumn: { name: 'diary_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
   })
-  tags: Promise<Tag[]>;
+  tags: Tag[];
 
   @CreateDateColumn()
   createdAt: Date;
