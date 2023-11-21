@@ -13,8 +13,7 @@ export class DiariesRepository extends Repository<Diary> {
 
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto, tags: Tag[]): Promise<Diary> {
     const { title, content, thumbnail, emotion, mood, status } = createDiaryDto;
-
-    return this.save({
+    const diary = this.create({
       title,
       content,
       thumbnail,
@@ -24,6 +23,8 @@ export class DiariesRepository extends Repository<Diary> {
       status,
       author: user,
     });
+
+    return this.save(diary);
   }
 
   async findById(id: number) {
