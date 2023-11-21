@@ -46,6 +46,16 @@ export class DiariesService {
     return await this.diariesRepository.save(existingDiary);
   }
 
+  async deleteDiary(user: User, id: number) {
+    const diary = await this.diariesRepository.findById(id);
+    this.existsDiary(diary);
+
+    const author = await diary.author;
+    this.checkAuthorization(author, user);
+
+    await this.diariesRepository.softDelete(id);
+  }
+
   private existsDiary(diary: Diary) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
