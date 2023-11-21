@@ -27,10 +27,6 @@ export class DiariesRepository extends Repository<Diary> {
   }
 
   async findById(id: number) {
-    return await this.createQueryBuilder('diary').where('diary.id = :id', { id }).getOne();
-  }
-
-  async findById(id: number) {
     return this.findOne({
       where: {
         id: id,
