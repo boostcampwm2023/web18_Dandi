@@ -4,7 +4,7 @@ import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
 
 @Injectable()
-export class UserRepository extends Repository<User> {
+export class UsersRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
@@ -24,5 +24,11 @@ export class UserRepository extends Repository<User> {
     const { id, email, nickname, socialType, profileImage } = authUserDto;
 
     return this.save({ socialId: id, email, nickname, socialType, profileImage });
+  }
+
+  async findByNickname(nickname: string): Promise<User[]> {
+    return await this.createQueryBuilder('user')
+      .where('user.nickname LIKE :nickname', { nickname: `%${nickname}%` })
+      .getMany();
   }
 }

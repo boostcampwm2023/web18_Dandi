@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { DiaryStatus } from './diaryStatus';
-import { Tag } from './tag.entity';
+import { Tag } from '../../tags/entity/tag.entity';
 
 @Entity()
 export class Diary extends BaseEntity {
@@ -25,7 +25,7 @@ export class Diary extends BaseEntity {
   @Column()
   content: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   thumbnail?: string;
 
   @Column()
@@ -37,10 +37,10 @@ export class Diary extends BaseEntity {
   @Column()
   status: DiaryStatus;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: false, lazy: true })
   author: User;
 
-  @ManyToMany(() => Tag, { cascade: true })
+  @ManyToMany(() => Tag, { cascade: true, lazy: true })
   @JoinTable({
     name: 'diary_tag',
     joinColumn: { name: 'diary_id', referencedColumnName: 'id' },

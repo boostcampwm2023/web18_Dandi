@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../users/user.repository';
+import { UsersRepository } from '../users/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entity/user.entity';
 import { AuthUserDto, AuthUserResponseDto } from './dto/auth.dto';
@@ -13,11 +13,11 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly authRepository: AuthRepository,
-    private readonly userRepository: UserRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   async login(authUserDto: AuthUserDto): Promise<AuthUserResponseDto> {
-    let user = await this.userRepository.findBySocialIdAndSocialType(
+    let user = await this.usersRepository.findBySocialIdAndSocialType(
       authUserDto.id,
       authUserDto.socialType,
     );
@@ -39,7 +39,7 @@ export class AuthService {
   }
 
   async signUp(user: AuthUserDto): Promise<User> {
-    return await this.userRepository.createUser(user);
+    return await this.usersRepository.createUser(user);
   }
 
   async refreshAccessToken(req: Request) {

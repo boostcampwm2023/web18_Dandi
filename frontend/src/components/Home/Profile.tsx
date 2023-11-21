@@ -7,14 +7,19 @@ interface ProfileProps {
   isExistedTodayDiary: boolean;
 }
 
-export const Profile = ({
-  nickname,
-  profileImage,
-  totalFriends,
-  isExistedTodayDiary,
-}: ProfileProps) => {
+const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileProps) => {
   const greetMessages = ['좋은 하루예요!', '안녕하세요!', '반가워요!'];
   const getRandomIndex = Math.floor(Math.random() * greetMessages.length);
+  const textAboutIsExistedTodayDiary = {
+    true: {
+      buttonText: '오늘 하루 보러 가기',
+      noticeText: ['오늘 일기를 작성하셨네요!', '작성하신 일기를 보여드릴게요.'],
+    },
+    false: {
+      buttonText: '오늘 하루 기록하기',
+      noticeText: ['아직 오늘 일기를 작성하지 않으셨네요!', '일기를 작성해볼까요?'],
+    },
+  };
 
   return (
     <section className="flex flex-col items-center justify-center gap-14">
@@ -37,39 +42,21 @@ export const Profile = ({
           </div>
         </div>
       </div>
-      {isExistedTodayDiary ? (
-        <>
-          <div className="text-center text-2xl font-bold">
-            <p>오늘 일기를 작성하셨네요!</p>
-            <p>작성하신 일기를 보여드릴게요.</p>
-          </div>
-          <Button
-            width={36}
-            height={4.6875}
-            text={'오늘 하루 보러 가기'}
-            fontColor="default"
-            fontSize="xl"
-            backgroundColor="mint"
-            onClick={() => console.log('일기 보러 가기')}
-          />
-        </>
-      ) : (
-        <>
-          <div className="text-center text-2xl font-bold">
-            <p>아직 오늘 일기를 작성하지 않으셨네요!</p>
-            <p>일기를 작성해볼까요?</p>
-          </div>
-          <Button
-            width={36}
-            height={4.6875}
-            text={'오늘 하루 기록하기'}
-            fontColor="default"
-            fontSize="2xl"
-            backgroundColor="mint"
-            onClick={() => console.log('일기 쓰러 가기')}
-          />
-        </>
-      )}
+      <div className="text-center text-2xl font-bold leading-relaxed">
+        {textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
+          <p key={index}>{text}</p>
+        ))}
+      </div>
+      <Button
+        width={36}
+        height={4.6875}
+        text={textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['buttonText']}
+        fontColor="default"
+        fontSize="xl"
+        backgroundColor="mint"
+      />
     </section>
   );
 };
+
+export default Profile;
