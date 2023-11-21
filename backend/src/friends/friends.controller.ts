@@ -21,6 +21,7 @@ export class FriendsController {
   ): Promise<Record<string, SearchUserResponseDto[] | StrangerResponseDto[]>> {
     const friends = await this.friendsService.getFriendsList(userId);
     const strangers = await this.friendsService.getStrangerList(userId);
+
     return { friends, strangers };
   }
 
@@ -33,6 +34,7 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.requestFriend({ senderId: user.id, receiverId });
+
     return '친구 신청이 완료되었습니다.';
   }
 
@@ -45,6 +47,7 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.cancelFriendRequest({ senderId: user.id, receiverId });
+
     return '친구 신청이 취소되었습니다.';
   }
 }
