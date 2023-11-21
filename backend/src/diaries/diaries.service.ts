@@ -22,7 +22,7 @@ export class DiariesService {
 
     diary.author = user;
     diary.tags = tags;
-    diary.summary = await this.getSummary(createDiaryDto);
+    diary.summary = await this.getSummary(diary.title, diary.content);
 
     await this.diariesRepository.save(diary);
   }
@@ -68,7 +68,9 @@ export class DiariesService {
     }
   }
 
-  private async getSummary(createDiaryDto: CreateDiaryDto) {
+  private async getSummary(title: string, content: string) {
+    content = content.substring(0, 2000);
+
     const response = await fetch(
       'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
       {
@@ -79,10 +81,7 @@ export class DiariesService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          document: {
-            title: createDiaryDto.title,
-            content: createDiaryDto.content,
-          },
+          document: { title, content },
           option: { language: 'ko' },
         }),
       },
