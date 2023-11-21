@@ -1,4 +1,5 @@
 import Reaction from '@components/Common/Reaction';
+import ProfileItem from '@components/Common/ProfileItem';
 
 interface DiaryListProps {
   createdAt: string;
@@ -9,6 +10,7 @@ interface DiaryListProps {
   content: string;
   keywords: string[];
   reactionCount: number;
+  pageType: string;
 }
 
 const DiaryListItem = (props: DiaryListProps) => {
@@ -26,6 +28,11 @@ const DiaryListItem = (props: DiaryListProps) => {
 
   return (
     <div className="border-brown mb-3 rounded-2xl border border-solid bg-[white] p-3">
+      {props.pageType === 'feed' && (
+        <div className="mb-3 ">
+          <ProfileItem img={props.profileImage} nickName={props.nickname} />
+        </div>
+      )}
       <div className="mb-3 flex items-center justify-between">
         <p className="text-lg font-bold text-[black]">{props.title}</p>
         <p className="text-sm font-medium text-[black]">{formatDateString(props.createdAt)}</p>
@@ -45,7 +52,10 @@ const DiaryListItem = (props: DiaryListProps) => {
           </div>
         ))}
       </div>
-      <Reaction count={props.reactionCount} onClick={() => console.log('여기도 모달 나오게 하나?')}/>
+      <Reaction
+        count={props.reactionCount}
+        onClick={() => console.log('여기도 모달 나오게 하나?')}
+      />
     </div>
   );
 };
