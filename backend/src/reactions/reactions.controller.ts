@@ -25,7 +25,7 @@ export class ReactionsController {
   @UsePipes(ValidationPipe)
   @ApiOperation({ description: '일기 리액션 API' })
   @ApiCreatedResponse({ description: '리액션 저장 성공' })
-  async createDiary(
+  async createReaction(
     @User() user: UserEntity,
     @Param('diaryId', ParseIntPipe) diaryId: number,
     @Body() createReactionDto: CreateReactionDto,
