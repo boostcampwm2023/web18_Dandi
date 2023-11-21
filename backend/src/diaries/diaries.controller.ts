@@ -7,12 +7,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateDiaryDto, GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
+import {
+  CreateDiaryDto,
+  GetDiaryResponseDto,
+  ReadUserDiariesDto,
+  UpdateDiaryDto,
+} from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
@@ -84,5 +90,17 @@ export class DiariesController {
     await this.diariesService.deleteDiary(user, id);
 
     return '일기가 삭제되었습니다.';
+  }
+
+  @Get('/users/:id')
+  @UseGuards(JwtAuthGuard)
+  async readUsersDiary(
+    @User() user: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Query(ValidationPipe) readUserDiariesDto: ReadUserDiariesDto,
+  ) {
+    console.log(readUserDiariesDto);
+    console.log(typeof readUserDiariesDto.endDate);
+    console.log(readUserDiariesDto.endDate);
   }
 }
