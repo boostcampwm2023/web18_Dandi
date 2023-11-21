@@ -14,6 +14,25 @@ export class FriendsService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
+  async requestFriend(friendRelationDto: FriendRelationDto): Promise<void> {
+    const { senderId, receiverId } = friendRelationDto;
+
+    // 예외처리
+    const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
+    if (relations.length > 0) throw new BadRequestException('이미 친구신청을 하셨습니다.');
+    if (senderId === receiverId) throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
+
+    const sender = await this.usersRepository.findById(senderId);
+    const receiver = await this.usersRepository.findById(receiverId);
+    this.friendsRepository.createFriend(sender, receiver);
+  }
+
+  async cancelFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
+    const { senderId, receiverId } = friendRelationDto;
+    const friendRequest = await this.checkFriendData(senderId, receiverId);
+    this.friendsRepository.removeRelation(friendRequest);
+  }
+
   async getFriendsList(userId: number): Promise<SearchUserResponseDto[]> {
     const friendRelations = await this.friendsRepository.findUserRelationsByStatus(
       userId,
@@ -46,23 +65,37 @@ export class FriendsService {
     });
   }
 
-  async requestFriend(friendRelationDto: FriendRelationDto): Promise<void> {
-    const { senderId, receiverId } = friendRelationDto;
+  async getStrangerList(userId: number): Promise<StrangerResponseDto[]> {
+    const strangerRelations = await this.friendsRepository.findUserRelationsByStatus(
+      userId,
+      FriendStatus.WAITING,
+    );
 
-    // 예외처리
-    const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
-    if (relations.length > 0) throw new BadRequestException('이미 친구신청을 하셨습니다.');
-    if (senderId === receiverId) throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
+    const strangers = [];
+    strangerRelations.forEach((relation) => {
+      let stranger: User;
+      if (relation.sender.id === userId) {
+        stranger = relation.receiver;
+      } else {
+        stranger = relation.sender;
+      }
 
-    const sender = await this.usersRepository.findById(senderId);
-    const receiver = await this.usersRepository.findById(receiverId);
-    this.friendsRepository.createFriend(sender, receiver);
-  }
+      strangers.push({
+        senderId: relation.sender.id,
+        receiverId: relation.receiver.id,
+        email: stranger.email,
+        nickname: stranger.nickname,
+        profileImage: stranger.profileImage,
+      });
+    });
 
-  async cancelFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
-    const { senderId, receiverId } = friendRelationDto;
-    const friendRequest = await this.checkFriendData(senderId, receiverId);
-    this.friendsRepository.removeRelation(friendRequest);
+    return strangers.sort((a: StrangerResponseDto, b: StrangerResponseDto) => {
+      const nameA = a.nickname.toUpperCase();
+      const nameB = b.nickname.toUpperCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
   }
 
   // 예외처리(친구 신청 제외한 모든 로직)

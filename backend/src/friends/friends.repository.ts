@@ -23,6 +23,8 @@ export class FriendsRepository extends Repository<Friend> {
 
   async findUserRelationsByStatus(userId: number, status: FriendStatus): Promise<Friend[]> {
     return this.createQueryBuilder('friend')
+      .leftJoinAndSelect('friend.sender', 'sender')
+      .leftJoinAndSelect('friend.receiver', 'receiver')
       .where('friend.status = :status', { status: status })
       .andWhere(
         new Brackets((qb) => {

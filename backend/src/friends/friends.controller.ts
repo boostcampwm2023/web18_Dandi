@@ -14,11 +14,12 @@ export class FriendsController {
 
   @Get('search/:userId')
   @UseGuards(JwtAuthGuard)
-  getFriendsManageList(
+  async getFriendsManageList(
     @Param('userId', ParseIntPipe) userId: number,
-  ): Array<SearchUserResponseDto[] | StrangerResponseDto[]> {
+  ): Promise<Record<string, SearchUserResponseDto[] | StrangerResponseDto[]>> {
     const friends = await this.friendsService.getFriendsList(userId);
-    return;
+    const strangers = await this.friendsService.getStrangerList(userId);
+    return { friends, strangers };
   }
 
   @Post('/:receiverId')
