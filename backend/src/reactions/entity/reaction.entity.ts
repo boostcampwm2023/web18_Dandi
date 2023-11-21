@@ -10,9 +10,9 @@ export class Reaction extends BaseEntity {
   @Column()
   reaction: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: false })
   user: User;
 
-  @ManyToOne(() => Diary, (diary) => diary.reactions)
+  @ManyToOne(() => Diary, (diary) => diary.reactions, { nullable: false })
   diary: Diary;
 }
