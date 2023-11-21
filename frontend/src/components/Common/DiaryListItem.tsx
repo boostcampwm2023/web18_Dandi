@@ -45,7 +45,7 @@ const DiaryListItem = (props: DiaryListProps) => {
           </div>
         ))}
       </div>
-      <Reaction count={props.reactionCount} />
+      <Reaction count={props.reactionCount} onClick={() => console.log('여기도 모달 나오게 하나?')}/>
     </div>
   );
 };
