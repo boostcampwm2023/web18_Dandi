@@ -14,6 +14,8 @@ export class FriendsController {
 
   @Get('/:userId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '특정 사용자의 친구 목록 조회' })
+  @ApiOkResponse({ description: '친구 목록 조회 성공' })
   async getFriendsManageList(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<Record<string, SearchUserResponseDto[] | StrangerResponseDto[]>> {
