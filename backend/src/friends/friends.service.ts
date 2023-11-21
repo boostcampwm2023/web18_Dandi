@@ -26,24 +26,23 @@ export class FriendsService {
   }
 
   async cancelFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
-    const { senderId, receiverId } = friendRelationDto;
-    const friendRequest = await this.checkFriendData(senderId, receiverId);
-
-    if (friendRequest.status === FriendStatus.COMPLETE) {
-      throw new BadRequestException('이미 수락된 친구신청입니다.');
-    }
-
+    const friendRequest = await this.checkFriendData(friendRelationDto);
     this.friendsRepository.removeRelation(friendRequest);
   }
 
-  // 예외처리(친구 신청 제외한 모든 로직)
-  private async checkFriendData(senderId: number, receiverId: number): Promise<Friend> {
-    if (senderId === receiverId) throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
+  // 예외처리(친구 신청 제외한 로직)
+  private async checkFriendData(friendRelationDto: FriendRelationDto): Promise<Friend> {
+    const { senderId, receiverId } = friendRelationDto;
+    if (senderId === receiverId)
+      throw new BadRequestException('나와는 친구신청 관리를 할 수 없습니다.');
 
     const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
     if (relation.length !== 1)
-      throw new BadRequestException('해당 사용자에게 친구신청을 보낸 기록이 없습니다.');
+      throw new BadRequestException('해당 사용자 사이의 친구신청 기록이 없습니다.');
 
+    if (relation[0].status === FriendStatus.COMPLETE) {
+      throw new BadRequestException('이미 수락된 친구신청입니다.');
+    }
     return relation[0];
   }
 }
