@@ -36,6 +36,8 @@ export class FriendsController {
 
   @Delete('allow/:senderId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '내가 받은 친구 신청 거절 API' })
+  @ApiOkResponse({ description: '친구 신청 거절 성공' })
   async rejectFriendRequest(
     @User() user: UserEntity,
     @Param('senderId', ParseIntPipe) senderId: number,
