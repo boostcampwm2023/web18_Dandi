@@ -1,5 +1,5 @@
-import search from '@assets/image/search.svg';
 import { useState } from 'react';
+import Icon from '@components/Common/Icon';
 
 const KeywordSearch = () => {
   const [keyword, setKeyword] = useState<string>('');
@@ -7,7 +7,7 @@ const KeywordSearch = () => {
     setKeyword(e.target.value);
   };
   return (
-    <div className="border-brown flex flex-row rounded-2xl border border-solid px-4 py-2">
+    <div className="border-brown flex flex-row items-center rounded-2xl border border-solid px-4 py-2">
       <p className="text-2xl font-bold">#</p>
       <input
         className="mx-3 w-[20rem] outline-none"
@@ -16,7 +16,7 @@ const KeywordSearch = () => {
         type="text"
         onChange={onChangeKeyword}
       />
-      <img src={search} />
+      <Icon id="search" />
     </div>
   );
 };

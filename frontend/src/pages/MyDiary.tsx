@@ -1,9 +1,9 @@
-import NavBar from '@components/Common/NavBar';
-import KeywordSearch from '../components/MyDiary/KeywordSearch';
-import ViewType from '../components/MyDiary/ViewType';
 import { useState } from 'react';
-import DiaryListItem from '../components/Common/DiaryListItem';
-import { DiaryListProps } from '../components/Common/DiaryList';
+import NavBar from '@components/Common/NavBar';
+import KeywordSearch from '@components/MyDiary/KeywordSearch';
+import ViewType from '@components/MyDiary/ViewType';
+import DiaryListItem from '@components/Common/DiaryListItem';
+import { DiaryListProps } from '@components/Common/DiaryList';
 
 export type viewTypes = 'Day' | 'Week' | 'Month';
 
