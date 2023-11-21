@@ -103,20 +103,17 @@ export class DiariesController {
   ): Promise<ReadUserDiariesResponseDto> {
     const diaries = await this.diariesService.findDiaryByAuthorId(user, id, readUserDiariesDto);
 
-    //TODO:N+1 문제 발생 중..., summary 필드 추가 필요
+    //TODO:summary 필드 추가 필요
     const diaryList: DiaryPeedResponseDto[] = await Promise.all(
       diaries.map(async (diary) => {
-        const tags = await diary.tags;
-        const reactions = await diary.reactions;
-
         return {
           diaryId: diary.id,
           createdAt: diary.createdAt,
           thumbnail: diary.thumbnail,
           title: diary.title,
-          tags: tags.map((t) => t.name),
+          tags: (await diary.tags).map((t) => t.name),
           emotion: diary.emotion,
-          reactionCount: reactions ? reactions.length : 0,
+          reactionCount: (await diary.reactions) ? diary.reactions.length : 0,
         };
       }),
     );

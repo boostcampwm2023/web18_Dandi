@@ -44,6 +44,8 @@ export class DiariesRepository extends Repository<Diary> {
       .where('diary.status = :status', { status })
       .andWhere('diary.authorId = :authorId', { authorId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .leftJoinAndSelect('diary.tags', 'tags')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
       .getMany();
   }
 
