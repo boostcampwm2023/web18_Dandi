@@ -3,6 +3,7 @@ import { FriendsRepository } from './friends.repository';
 import { UsersRepository } from 'src/users/users.repository';
 import { FriendRelationDto } from './dto/friend.dto';
 import { Friend } from './entity/friend.entity';
+import { FriendStatus } from './entity/friendStatus';
 
 @Injectable()
 export class FriendsService {
@@ -27,6 +28,11 @@ export class FriendsService {
   async cancelFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
     const { senderId, receiverId } = friendRelationDto;
     const friendRequest = await this.checkFriendData(senderId, receiverId);
+
+    if (friendRequest.status === FriendStatus.COMPLETE) {
+      throw new BadRequestException('이미 수락된 친구신청입니다.');
+    }
+
     this.friendsRepository.removeRelation(friendRequest);
   }
 

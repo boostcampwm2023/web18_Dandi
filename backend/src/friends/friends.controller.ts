@@ -33,4 +33,14 @@ export class FriendsController {
     await this.friendsService.cancelFriendRequest({ senderId: user.id, receiverId });
     return '친구 신청이 취소되었습니다.';
   }
+
+  @Delete('allow/:senderId')
+  @UseGuards(JwtAuthGuard)
+  async rejectFriendRequest(
+    @User() user: UserEntity,
+    @Param('senderId', ParseIntPipe) senderId: number,
+  ): Promise<string> {
+    await this.friendsService.cancelFriendRequest({ senderId, receiverId: user.id });
+    return '친구 신청을 거절했습니다.';
+  }
 }
