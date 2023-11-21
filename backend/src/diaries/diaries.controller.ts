@@ -31,7 +31,7 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserEntity,
   ): Promise<GetDiaryResponseDto> {
-    const diary = await this.diariesService.findDiary(user, id);
+    const diary = await this.diariesService.findDiary(user, id, true);
     const tags = await diary.tags;
 
     return {
