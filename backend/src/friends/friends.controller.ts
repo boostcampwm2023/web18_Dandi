@@ -36,6 +36,8 @@ export class FriendsController {
 
   @Post('allow/:senderId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '친구 신청 수락 API' })
+  @ApiOkResponse({ description: '친구 신청 수락 성공' })
   async allowFriendRequest(
     @User() user: UserEntity,
     @Param('senderId', ParseIntPipe) senderId: number,
