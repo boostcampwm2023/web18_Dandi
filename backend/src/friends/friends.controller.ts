@@ -53,6 +53,8 @@ export class FriendsController {
 
   @Get('search/:nickname')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '나의 친구 목록에서 친구 검색' })
+  @ApiOkResponse({ description: '친구 검색 성공' })
   async searchFriend(
     @User() user: UserEntity,
     @Param('nickname') nickname: string,
