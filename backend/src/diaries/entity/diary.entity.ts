@@ -27,6 +27,9 @@ export class Diary extends BaseEntity {
   @Column({ length: 10000 })
   content: string;
 
+  @Column()
+  summary: string;
+
   @Column({ length: 2083, nullable: true })
   thumbnail?: string;
 

@@ -5,6 +5,7 @@ import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class DiariesService {
@@ -15,29 +16,15 @@ export class DiariesService {
 
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto) {
     const tags = await this.tagsService.mapTagNameToTagType(createDiaryDto.tagNames);
+    const diary = plainToClass(Diary, createDiaryDto, {
+      excludePrefixes: ['tag'],
+    });
 
-    const response = await fetch(
-      'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
-      {
-        method: 'POST',
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          document: {
-            title: createDiaryDto.title,
-            content: createDiaryDto.content,
-          },
-          option: { language: 'ko' },
-        }),
-      },
-    );
-    const body = await response.json();
-    console.log(body);
+    diary.author = user;
+    diary.tags = tags;
+    diary.summary = await this.getSummary(createDiaryDto);
 
-    await this.diariesRepository.saveDiary(user, createDiaryDto, tags);
+    await this.diariesRepository.save(diary);
   }
 
   async findDiary(user: User, id: number, readonlyMode: boolean) {
@@ -80,9 +67,28 @@ export class DiariesService {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }
-}
 
-interface DocumentObject {
-  content: string;
-  title: string;
+  private async getSummary(createDiaryDto: CreateDiaryDto) {
+    const response = await fetch(
+      'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
+      {
+        method: 'POST',
+        headers: {
+          'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
+          'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          document: {
+            title: createDiaryDto.title,
+            content: createDiaryDto.content,
+          },
+          option: { language: 'ko' },
+        }),
+      },
+    );
+
+    const body = await response.json();
+    return body.summary;
+  }
 }
