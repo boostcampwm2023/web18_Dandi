@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Friend } from './entity/friend.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
@@ -10,17 +10,14 @@ export class FriendsRepository extends Repository<Friend> {
   }
 
   createFriend(sender: User, receiver: User): void {
-    const friend = new Friend();
-    friend.sender = sender;
-    friend.receiver = receiver;
-    this.save(friend);
+    this.save({ sender, receiver });
   }
 
   async findFriendRequest(senderId: number, receiverId: number): Promise<Friend[]> {
-    return this.createQueryBuilder('friend')
-      .where('friend.sender = :sender', { sender: senderId })
-      .andWhere('friend.receiver = :receiver', { receiver: receiverId })
-      .getMany();
+    return await this.findBy({
+      sender: Equal(senderId),
+      receiver: Equal(receiverId),
+    });
   }
 
   removeRelation(relation: Friend): void {
