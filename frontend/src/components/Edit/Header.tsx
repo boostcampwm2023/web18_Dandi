@@ -74,7 +74,7 @@ const Header = () => {
           <input
             type="checkbox"
             id="status"
-            className={`h-[2rem] w-[2rem] cursor-pointer appearance-none bg-[url("./assets/image/icons.svg#lock")] bg-no-repeat checked:bg-[url("./assets/image/icons.svg#unlock")]`}
+            className={`h-[2rem] w-[2rem] cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
             onChange={toggleStatus}
           />
         </div>

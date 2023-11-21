@@ -11,22 +11,8 @@ const Alert = ({ text, onUndoButtonClick, onAcceptButtonClick }: AlertProps) => 
     <div className="flex h-full w-full flex-col items-center justify-center gap-5">
       <span className="font-bold">{text}</span>
       <div className="flex w-full flex-wrap items-center justify-center gap-5">
-        <Button
-          width={8}
-          height={3}
-          text="취소"
-          fontColor="default"
-          backgroundColor="gray"
-          onClick={onUndoButtonClick}
-        />
-        <Button
-          width={8}
-          height={3}
-          text="삭제"
-          fontColor="white"
-          backgroundColor="red"
-          onClick={onAcceptButtonClick}
-        />
+        <Button text="취소" type="normal" size="large" onClick={onUndoButtonClick} />
+        <Button text="삭제" type="delete" size="large" onClick={onAcceptButtonClick} />
       </div>
     </div>
   );

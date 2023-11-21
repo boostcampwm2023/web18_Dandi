@@ -26,24 +26,8 @@ const Detail = () => {
       <NavBar />
       <div className="flex w-2/3 flex-col gap-2">
         <div className="flex justify-end gap-2">
-          <Button
-            width={3.4}
-            height={1.8}
-            text="수정"
-            fontColor="default"
-            fontSize="sm"
-            backgroundColor="gray"
-            onClick={() => console.log('수정하러 가기')}
-          />
-          <Button
-            width={3.4}
-            height={1.8}
-            text="삭제"
-            fontColor="white"
-            fontSize="sm"
-            backgroundColor="red"
-            onClick={toggleShowModal}
-          />
+          <Button text="수정" type="normal" onClick={() => console.log('수정하러 가기')} />
+          <Button text="삭제" type="delete" onClick={toggleShowModal} />
           <Modal showModal={showModal} closeModal={toggleShowModal}>
             <Alert
               text="이 일기를 정말 삭제하시겠습니까?"
