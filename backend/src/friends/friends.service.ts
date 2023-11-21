@@ -5,7 +5,7 @@ import { FriendRelationDto, StrangerResponseDto } from './dto/friend.dto';
 import { Friend } from './entity/friend.entity';
 import { SearchUserResponseDto } from 'src/users/dto/user.dto';
 import { FriendStatus } from './entity/friendStatus';
-import { User } from 'src/users/entity/user.entity';
+import { SortedUsersType } from './utils/friendsType';
 
 @Injectable()
 export class FriendsService {
@@ -39,14 +39,9 @@ export class FriendsService {
       FriendStatus.COMPLETE,
     );
 
-    const friends = [];
+    const friends: SearchUserResponseDto[] = [];
     friendRelations.forEach((relation) => {
-      let friend: User;
-      if (relation.sender.id === userId) {
-        friend = relation.receiver;
-      } else {
-        friend = relation.sender;
-      }
+      const friend = relation.sender.id === userId ? relation.receiver : relation.sender;
 
       friends.push({
         id: friend.id,
@@ -56,13 +51,7 @@ export class FriendsService {
       });
     });
 
-    return friends.sort((a: SearchUserResponseDto, b: SearchUserResponseDto) => {
-      const nameA = a.nickname.toUpperCase();
-      const nameB = b.nickname.toUpperCase();
-      if (nameA < nameB) return -1;
-      if (nameA > nameB) return 1;
-      return 0;
-    });
+    return this.sortByNickname(friends);
   }
 
   async getStrangerList(userId: number): Promise<StrangerResponseDto[]> {
@@ -71,14 +60,9 @@ export class FriendsService {
       FriendStatus.WAITING,
     );
 
-    const strangers = [];
+    const strangers: StrangerResponseDto[] = [];
     strangerRelations.forEach((relation) => {
-      let stranger: User;
-      if (relation.sender.id === userId) {
-        stranger = relation.receiver;
-      } else {
-        stranger = relation.sender;
-      }
+      const stranger = relation.sender.id === userId ? relation.receiver : relation.sender;
 
       strangers.push({
         senderId: relation.sender.id,
@@ -89,13 +73,19 @@ export class FriendsService {
       });
     });
 
-    return strangers.sort((a: StrangerResponseDto, b: StrangerResponseDto) => {
+    return this.sortByNickname(strangers);
+  }
+
+  private sortByNickname<T extends SearchUserResponseDto[] | StrangerResponseDto[]>(
+    users: T,
+  ): SortedUsersType<T> {
+    return users.sort((a, b) => {
       const nameA = a.nickname.toUpperCase();
       const nameB = b.nickname.toUpperCase();
       if (nameA < nameB) return -1;
       if (nameA > nameB) return 1;
       return 0;
-    });
+    }) as SortedUsersType<T>;
   }
 
   // 예외처리(친구 신청 제외한 모든 로직)

@@ -12,7 +12,7 @@ import { StrangerResponseDto } from './dto/friend.dto';
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) {}
 
-  @Get('search/:userId')
+  @Get('/:userId')
   @UseGuards(JwtAuthGuard)
   async getFriendsManageList(
     @Param('userId', ParseIntPipe) userId: number,
