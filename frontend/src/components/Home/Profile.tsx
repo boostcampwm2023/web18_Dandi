@@ -1,6 +1,7 @@
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
 import FriendList from '@components/Home/FriendList';
+import FriendRequest from '@components/Home/FriendRequest';
 import { useState } from 'react';
 
 interface ProfileProps {
@@ -23,7 +24,17 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
     setShowModalType(type);
   };
 
-  const modalContent = 'a';
+  const getModalContent = (type: string) => {
+    if (type === 'list') {
+      return <FriendList />;
+    }
+
+    if (type === 'request') {
+      return <FriendRequest />;
+    }
+  };
+
+  const modalContent = getModalContent(showModalType);
 
   const greetMessages = ['좋은 하루예요!', '안녕하세요!', '반가워요!'];
   const getRandomIndex = Math.floor(Math.random() * greetMessages.length);
@@ -55,7 +66,7 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
               친구 {totalFriends}명
             </p>
             <div className="border-brown w mx-5 border-l-2 border-solid" />
-            <p className="cursor-pointer" onClick={() => onClickButton('received')}>
+            <p className="cursor-pointer" onClick={() => onClickButton('request')}>
               친구 관리
             </p>
             <div className="border-brown w mx-5 border-l-2 border-solid" />
@@ -77,7 +88,7 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
       />
       {showModal && (
         <Modal showModal={showModal} closeModal={closeModal}>
-          <FriendList />
+          {modalContent}
         </Modal>
       )}
     </section>
