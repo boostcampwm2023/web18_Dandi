@@ -19,22 +19,18 @@ export class DiariesService {
     await this.diariesRepository.saveDiary(user, createDiaryDto, tags);
   }
 
-  async findDiary(user: User, id: number) {
+  async findDiary(user: User, id: number, readonlyMode: boolean) {
     const diary = await this.diariesRepository.findById(id);
-    this.existsDiary(diary);
-
     const author = await diary.author;
-    this.checkAuthorization(author, user, true);
+
+    this.existsDiary(diary);
+    this.checkAuthorization(author, user, diary.status, readonlyMode);
 
     return diary;
   }
 
   async updateDiary(id: number, user: User, updateDiaryDto: UpdateDiaryDto) {
-    const existingDiary = await this.diariesRepository.findById(id);
-    this.existsDiary(existingDiary);
-
-    const author = await existingDiary.author;
-    this.checkAuthorization(author, user);
+    const existingDiary = await this.findDiary(user, id, false);
 
     existingDiary.tags = await this.tagsService.mapTagNameToTagType(updateDiaryDto.tagNames);
     Object.keys(updateDiaryDto).forEach((key) => {
@@ -47,11 +43,7 @@ export class DiariesService {
   }
 
   async deleteDiary(user: User, id: number) {
-    const diary = await this.diariesRepository.findById(id);
-    this.existsDiary(diary);
-
-    const author = await diary.author;
-    this.checkAuthorization(author, user);
+    await this.findDiary(user, id, false);
 
     await this.diariesRepository.softDelete(id);
   }
@@ -62,8 +54,8 @@ export class DiariesService {
     }
   }
 
-  private checkAuthorization(author: User, user: User, status: DiaryStatus = DiaryStatus.PUBLIC) {
-    if (status === DiaryStatus.PRIVATE && author.id !== user.id) {
+  private checkAuthorization(author: User, user: User, status: DiaryStatus, readonlyMode: boolean) {
+    if ((!readonlyMode || status === DiaryStatus.PRIVATE) && author.id !== user.id) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }
