@@ -16,8 +16,8 @@ export class FriendsService {
 
     // 예외처리
     const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
-    if (relations.length > 0) throw new BadRequestException();
-    if (senderId === receiverId) throw new BadRequestException();
+    if (relations.length > 0) throw new BadRequestException('이미 친구신청을 하셨습니다.');
+    if (senderId === receiverId) throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
 
     const sender = await this.usersRepository.findById(senderId);
     const receiver = await this.usersRepository.findById(receiverId);
@@ -32,10 +32,11 @@ export class FriendsService {
 
   // 예외처리(친구 신청 제외한 모든 로직)
   private async checkFriendData(senderId: number, receiverId: number): Promise<Friend> {
-    if (senderId === receiverId) throw new BadRequestException();
+    if (senderId === receiverId) throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
 
     const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
-    if (relation.length !== 1) throw new BadRequestException();
+    if (relation.length !== 1)
+      throw new BadRequestException('해당 사용자에게 친구신청을 보낸 기록이 없습니다.');
 
     return relation[0];
   }
