@@ -53,6 +53,8 @@ export class DiariesRepository extends Repository<Diary> {
     return this.createQueryBuilder('diary')
       .where('diary.status = :status', { status })
       .andWhere('diary.authorId = :authorId', { authorId })
+      .leftJoinAndSelect('diary.tags', 'tags')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
       .skip(dto.page * ITEM_PER_PAGE)
       .take(ITEM_PER_PAGE)
       .getMany();

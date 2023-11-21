@@ -18,6 +18,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
 
     if (!(exception instanceof HttpException)) {
+      console.log(exception);
       exception = new InternalServerErrorException();
     }
 
