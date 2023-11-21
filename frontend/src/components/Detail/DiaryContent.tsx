@@ -41,19 +41,19 @@ const DiaryContent = ({
   };
 
   return (
-    <div className="">
-      <div className="border-brown mb-3 rounded-2xl border-2 border-solid bg-[white] p-3">
+    <>
+      <div className="border-brown mb-3 rounded-2xl border-2 border-solid bg-white p-3">
         <ProfileItem img={profileImage} nickName={authorName} />
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-lg font-bold text-[black]">{title}</p>
-          <p className="text-sm font-medium text-[black]">{formatDateString(createdAt)}</p>
+          <p className="text-lg font-bold">{title}</p>
+          <p className="text-sm font-medium">{formatDateString(createdAt)}</p>
         </div>
         <div className="flex flex-col justify-center">
-          <div className="mb-3  whitespace-pre-wrap text-sm font-medium text-[black]">
+          <div className="mb-3  whitespace-pre-wrap text-sm font-medium">
             <p>{content}</p>
           </div>
         </div>
-        <div className="mb-3 flex flex-wrap gap-3 text-base text-[black]">
+        <div className="mb-3 flex flex-wrap gap-3 text-base">
           {keywords.map((keyword, index) => (
             <div key={index} className="bg-mint rounded-lg px-3 py-1">
               <p>#{keyword}</p>
@@ -65,7 +65,7 @@ const DiaryContent = ({
           <ReactionList />
         </Modal>
       </div>
-    </div>
+    </>
   );
 };
 

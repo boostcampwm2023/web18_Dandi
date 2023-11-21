@@ -4,9 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 const NavBar = () => {
   const navigate = useNavigate();
 
-  const logout = () => {
-    navigate('/login');
-  };
+  const logout = () => navigate('/login');
 
   return (
     <div className="border-brown mb-6 flex h-[121px] w-full min-w-[590px] items-center justify-between border-b-[1px] border-solid">

@@ -6,10 +6,8 @@ import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
 
 const Detail = () => {
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const toggleShowModal = () => {
-    setShowModal((prev) => !prev);
-  };
+  const [showModal, setShowModal] = useState(false);
+  const toggleShowModal = () => setShowModal((prev) => !prev);
 
   const diaryData = {
     createdAt: '2023-11-13T13:50:17.106Z',
@@ -33,7 +31,7 @@ const Detail = () => {
             height={1.8}
             text="수정"
             fontColor="default"
-            fontSize="0.875rem"
+            fontSize="sm"
             backgroundColor="gray"
             onClick={() => console.log('수정하러 가기')}
           />
@@ -42,7 +40,7 @@ const Detail = () => {
             height={1.8}
             text="삭제"
             fontColor="white"
-            fontSize="0.875rem"
+            fontSize="sm"
             backgroundColor="red"
             onClick={toggleShowModal}
           />
