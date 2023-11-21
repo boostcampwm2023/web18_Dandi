@@ -50,4 +50,13 @@ export class FriendsController {
 
     return '친구 신청이 취소되었습니다.';
   }
+
+  @Get('search/:nickname')
+  @UseGuards(JwtAuthGuard)
+  async searchFriend(
+    @User() user: UserEntity,
+    @Param('nickname') nickname: string,
+  ): Promise<SearchUserResponseDto[]> {
+    return this.friendsService.searchFriend(user.id, nickname);
+  }
 }

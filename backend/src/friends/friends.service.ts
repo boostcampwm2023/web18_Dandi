@@ -76,6 +76,11 @@ export class FriendsService {
     return this.sortByNickname(strangers);
   }
 
+  async searchFriend(userId: number, nickname: string): Promise<SearchUserResponseDto[]> {
+    const friends = await this.getFriendsList(userId);
+    return friends.filter((friend) => friend.nickname.includes(nickname));
+  }
+
   private sortByNickname<T extends SearchUserResponseDto[] | StrangerResponseDto[]>(
     users: T,
   ): SortedUsersType<T> {
