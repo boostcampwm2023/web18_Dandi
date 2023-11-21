@@ -25,11 +25,15 @@ import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @ApiTags('Diary API')
 @Controller('diaries')
 export class DiariesController {
-  constructor(private readonly diariesService: DiariesService) {}
+  constructor(
+    private readonly diariesService: DiariesService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
@@ -101,6 +105,7 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @Query(ValidationPipe) readUserDiariesDto: ReadUserDiariesDto,
   ): Promise<ReadUserDiariesResponseDto> {
+    const author = await this.usersService.findUserById(id);
     const diaries = await this.diariesService.findDiaryByAuthorId(user, id, readUserDiariesDto);
 
     //TODO:summary 필드 추가 필요
@@ -119,7 +124,7 @@ export class DiariesController {
     );
 
     return {
-      nickname: 'hi',
+      nickname: author.nickname,
       diaryList,
     };
   }
