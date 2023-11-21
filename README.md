@@ -1,7 +1,10 @@
 <h1>📔 단디</h1>
 
+<img  src="https://cdn.discordapp.com/attachments/1170919342456700992/1176352843448451153/52d1f8d5a948a299.png?ex=656e8ef5&is=655c19f5&hm=7104f6e4ce7497f81ad8b8eb2e27bc1e24d2f743fc61c5068ea74803f911b5e0&"/>
+
 > 꾸준히 일기를 쓰고 싶은 모두를 위한 일기 플랫폼
 
+<br/>
 <p>
 <a href="http://223.130.146.253/">서비스 배포 링크 🔗</a>
 </p>
