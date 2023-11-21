@@ -42,11 +42,13 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Friend, (friend) => friend.sender, {
     cascade: true,
+    lazy: true,
   })
   sender: Promise<Friend[]>;
 
   @OneToMany(() => Friend, (friend) => friend.receiver, {
     cascade: true,
+    lazy: true,
   })
   receiver: Promise<Friend[]>;
 }

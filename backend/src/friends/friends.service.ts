@@ -1,8 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FriendsRepository } from './friends.repository';
 import { UsersRepository } from 'src/users/users.repository';
-import { FriendRelationDto } from './dto/friend.dto';
+import { FriendRelationDto, StrangerResponseDto } from './dto/friend.dto';
 import { Friend } from './entity/friend.entity';
+import { SearchUserResponseDto } from 'src/users/dto/user.dto';
+import { FriendStatus } from './entity/friendStatus';
+import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
 export class FriendsService {
@@ -10,6 +13,38 @@ export class FriendsService {
     private readonly friendsRepository: FriendsRepository,
     private readonly usersRepository: UsersRepository,
   ) {}
+
+  async getFriendsList(userId: number): Promise<SearchUserResponseDto[]> {
+    const friendRelations = await this.friendsRepository.findUserRelationsByStatus(
+      userId,
+      FriendStatus.COMPLETE,
+    );
+
+    const friends = [];
+    friendRelations.forEach((relation) => {
+      let friend: User;
+      if (relation.sender.id === userId) {
+        friend = relation.receiver;
+      } else {
+        friend = relation.sender;
+      }
+
+      friends.push({
+        id: friend.id,
+        email: friend.email,
+        nickname: friend.nickname,
+        profileImage: friend.profileImage,
+      });
+    });
+
+    return friends.sort((a: SearchUserResponseDto, b: SearchUserResponseDto) => {
+      const nameA = a.nickname.toUpperCase();
+      const nameB = b.nickname.toUpperCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
+  }
 
   async requestFriend(friendRelationDto: FriendRelationDto): Promise<void> {
     const { senderId, receiverId } = friendRelationDto;
