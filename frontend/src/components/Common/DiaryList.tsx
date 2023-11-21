@@ -14,6 +14,8 @@ export interface IDiaryContent {
   content: string;
   keywords: string[];
   reactionCount: number;
+  diaryId: string | number;
+  authorId: string | number;
 }
 
 const DiaryList = ({ pageType, diaryData }: DiaryListProps) => {
