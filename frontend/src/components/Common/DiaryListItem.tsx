@@ -1,6 +1,9 @@
 import Reaction from '@components/Common/Reaction';
 import ProfileItem from '@components/Common/ProfileItem';
+import Modal from '@components/Common/Modal';
+import ReactionList from '@components/Diary/ReactionList';
 
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface DiaryListProps {
@@ -20,6 +23,11 @@ interface DiaryListProps {
 const DiaryListItem = (props: DiaryListProps) => {
   const navigate = useNavigate();
 
+  const [showModal, setShowModal] = useState(false);
+  const toggleShowModal = () => {
+    setShowModal((prev) => !prev);
+  };
+
   const goDetail = () => navigate(`/detail/${props.diaryId}`);
   const goFriendHome = () => navigate(`/home/${props.authorId}`);
 
@@ -38,12 +46,12 @@ const DiaryListItem = (props: DiaryListProps) => {
   return (
     <div className="border-brown mb-3 rounded-2xl border border-solid bg-[white] p-3">
       {props.pageType === 'feed' && (
-        <div className="mb-3" onClick={goFriendHome}>
+        <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
           <ProfileItem img={props.profileImage} nickName={props.nickname} />
         </div>
       )}
 
-      <div onClick={goDetail}>
+      <div className="cursor-pointer" onClick={goDetail}>
         <header className="mb-3 flex items-center justify-between">
           <p className="text-lg font-bold text-[black]">{props.title}</p>
           <p className="text-sm font-medium text-[black]">{formatDateString(props.createdAt)}</p>
@@ -67,10 +75,10 @@ const DiaryListItem = (props: DiaryListProps) => {
         ))}
       </div>
 
-      <Reaction
-        count={props.reactionCount}
-        onClick={() => console.log('여기도 모달 나오게 하나?')}
-      />
+      <Reaction count={props.reactionCount} onClick={toggleShowModal} />
+      <Modal showModal={showModal} closeModal={toggleShowModal}>
+        <ReactionList />
+      </Modal>
     </div>
   );
 };
