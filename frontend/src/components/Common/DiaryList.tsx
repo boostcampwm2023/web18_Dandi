@@ -1,21 +1,9 @@
 import DiaryListItem from '@components/Common/DiaryListItem';
+import { IDiaryContent } from '@/src/types/components/Common/DiaryList';
 
 interface DiaryListProps {
   pageType: string;
   diaryData: IDiaryContent[];
-}
-
-export interface IDiaryContent {
-  createdAt: string;
-  profileImage: string;
-  nickname: string;
-  thumbnail: string;
-  title: string;
-  content: string;
-  keywords: string[];
-  reactionCount: number;
-  diaryId: string | number;
-  authorId: string | number;
 }
 
 const DiaryList = ({ pageType, diaryData }: DiaryListProps) => {

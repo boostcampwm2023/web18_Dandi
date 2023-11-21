@@ -1,4 +1,4 @@
-import { viewTypes } from '@/src/pages/MyDiary';
+import { viewTypes } from '@/src/types/pages/MyDiary';
 
 interface ViewTypeProp {
   viewType: viewTypes;

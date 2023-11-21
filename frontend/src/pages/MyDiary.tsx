@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import NavBar from '@components/Common/NavBar';
 import KeywordSearch from '@components/MyDiary/KeywordSearch';
 import ViewType from '@components/MyDiary/ViewType';
+import { useState } from 'react';
 import DiaryListItem from '@components/Common/DiaryListItem';
-import { DiaryListProps } from '@components/Common/DiaryList';
-
-export type viewTypes = 'Day' | 'Week' | 'Month';
+import { IDiaryContent } from '../types/components/Common/DiaryList';
+import { viewTypes } from '../types/pages/MyDiary';
+import DateController from '../components/MyDiary/DateController';
+import { getNowMonth } from '../util/MyDiary';
 
 const dummyData = [
   {
@@ -18,12 +19,24 @@ const dummyData = [
     content: `일기내용입니다.\n일기내용입니다.\n세 번째 줄까지만 보입니다다다다다다다다다다다다다다다다다다다다\n4줄부터 안보입니다!!\n`,
     keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
     reactionCount: 10,
+    pageType: '',
+    authorId: 1,
+    diaryId: 1,
   },
 ];
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
-  const [diaryData, setDiaryData] = useState<DiaryListProps[]>(dummyData);
+  const [diaryData, setDiaryData] = useState<IDiaryContent[]>(dummyData);
+  const [nowMonth, setNowMonth] = useState(new Date());
+  const [nowWeek, setNowWeek] = useState();
+
+  const setPrevOrNextMonth = (plus: number) => {
+    const month = new Date(nowMonth);
+    month.setMonth(month.getMonth() + plus);
+    setNowMonth(month);
+  };
+
   return (
     <>
       <NavBar />
@@ -34,7 +47,14 @@ const MyDiary = () => {
         </header>
         <section>
           {viewType === 'Day' &&
-            diaryData.map((data, index) => <DiaryListItem {...data} key={index} />)}
+            diaryData.map((data, index) => <DiaryListItem {...data} key={index} pageType="" />)}
+          {viewType === 'Week' && (
+            <DateController
+              titles={[getNowMonth(nowMonth).join(' ')]}
+              leftOnClick={() => setPrevOrNextMonth(-1)}
+              rightOnClick={() => setPrevOrNextMonth(1)}
+            />
+          )}
         </section>
       </main>
     </>
