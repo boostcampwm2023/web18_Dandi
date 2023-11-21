@@ -8,11 +8,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { DiaryStatus } from './diaryStatus';
 import { Tag } from '../../tags/entity/tag.entity';
+import { Reaction } from 'src/reactions/entity/reaction.entity';
 
 @Entity()
 export class Diary extends BaseEntity {
@@ -39,6 +41,9 @@ export class Diary extends BaseEntity {
 
   @ManyToOne(() => User, { nullable: false, lazy: true })
   author: User;
+
+  @OneToMany(() => Reaction, (reaction) => reaction.user)
+  reactions: Reaction[];
 
   @ManyToMany(() => Tag, { cascade: true, lazy: true })
   @JoinTable({
