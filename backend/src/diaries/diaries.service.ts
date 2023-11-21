@@ -19,12 +19,12 @@ export class DiariesService {
     await this.diariesRepository.saveDiary(user, createDiaryDto, tags);
   }
 
-  async findDiary(user: User, id: number, readonlyMode: boolean) {
+  async findDiary(user: User, id: number, readMode: boolean) {
     const diary = await this.diariesRepository.findById(id);
     this.existsDiary(diary);
 
     const author = await diary.author;
-    this.checkAuthorization(author, user, diary.status, readonlyMode);
+    this.checkAuthorization(author, user, diary.status, readMode);
 
     return diary;
   }

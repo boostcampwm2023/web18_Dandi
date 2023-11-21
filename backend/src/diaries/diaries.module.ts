@@ -8,6 +8,6 @@ import { TagsModule } from 'src/tags/tags.module';
   controllers: [DiariesController],
   providers: [DiariesService, DiariesRepository],
   imports: [TagsModule],
-  exports: [DiariesRepository],
+  exports: [DiariesService],
 })
 export class DiariesModule {}
