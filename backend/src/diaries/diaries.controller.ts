@@ -33,6 +33,7 @@ export class DiariesController {
   ): Promise<GetDiaryResponseDto> {
     const diary = await this.diariesService.findDiary(user, id, true);
     const tags = await diary.tags;
+    const reactions = await diary.reactions;
 
     return {
       userId: diary.author.id,
@@ -43,7 +44,7 @@ export class DiariesController {
       emotion: diary.emotion,
       mood: diary.mood,
       tags: tags.map((t) => t.name),
-      reactionCount: null,
+      reactionCount: reactions.length,
     };
   }
 
