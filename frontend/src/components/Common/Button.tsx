@@ -10,7 +10,7 @@ interface ButtonProps {
 const Button = ({ width, height, text, fontColor, fontSize, backgroundColor }: ButtonProps) => {
   return (
     <button
-      className={`w-[${width}rem] h-[${height}rem] text-${fontColor} font-bold text-${fontSize} bg-[${backgroundColor}] rounded-lg`}
+      className={`w-[${width}rem] h-[${height}rem] text-${fontColor} font-bold text-${fontSize} bg-${backgroundColor} rounded-lg`}
     >
       {text}
     </button>

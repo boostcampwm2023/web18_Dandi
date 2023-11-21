@@ -25,7 +25,7 @@ const DiaryListItem = (props: DiaryListProps) => {
   };
 
   return (
-    <div className="border-brown mb-3 rounded-2xl border-2 border-solid bg-[white] p-3">
+    <div className="border-brown mb-3 rounded-2xl border border-solid bg-[white] p-3">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-lg font-bold text-[black]">{props.title}</p>
         <p className="text-sm font-medium text-[black]">{formatDateString(props.createdAt)}</p>
