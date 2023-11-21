@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty, IsNumber, Matches, Validate, ValidateIf } from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, Matches, Min, ValidateIf } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { TimeUnit } from './timeUnit.enum';
@@ -90,16 +90,19 @@ export class ReadUserDiariesDto {
   @IsIn(Object.values(TimeUnit))
   type: TimeUnit;
 
-  @ValidateIf((o) => o.type !== TimeUnit.Day)
+  @ValidateIf((o) => o.type !== TimeUnit.DAY)
   @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
   startDate: Date;
 
-  @ValidateIf((o) => o.type !== TimeUnit.Day)
+  @ValidateIf((o) => o.type !== TimeUnit.DAY)
   @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
   endDate: Date;
 
-  @ValidateIf((o) => o.type === TimeUnit.Day)
+  @ValidateIf((o) => o.type === TimeUnit.DAY)
   @Type(() => Number)
   @IsNumber()
+  @Min(0)
   page: number;
 }
+
+export class ReadUserDiariesResponseDto {}
