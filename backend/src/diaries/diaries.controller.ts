@@ -99,8 +99,8 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @Query(ValidationPipe) readUserDiariesDto: ReadUserDiariesDto,
   ) {
-    console.log(readUserDiariesDto);
-    console.log(typeof readUserDiariesDto.endDate);
-    console.log(readUserDiariesDto.endDate);
+    const diaries = await this.diariesService.findDiaryByAuthorId(user, id, readUserDiariesDto);
+
+    return diaries;
   }
 }

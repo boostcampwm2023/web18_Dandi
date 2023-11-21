@@ -1,10 +1,11 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { DiariesRepository } from './diaries.repository';
-import { CreateDiaryDto, UpdateDiaryDto } from './dto/diary.dto';
+import { CreateDiaryDto, ReadUserDiariesDto, UpdateDiaryDto } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
+import { TimeUnit } from './dto/timeUnit.enum';
 
 @Injectable()
 export class DiariesService {
@@ -46,6 +47,15 @@ export class DiariesService {
     await this.findDiary(user, id, false);
 
     await this.diariesRepository.softDelete(id);
+  }
+
+  async findDiaryByAuthorId(user: User, id: number, readUserDiariesDto: ReadUserDiariesDto) {
+    const status = user.id === id ? DiaryStatus.PUBLIC : DiaryStatus.PRIVATE;
+
+    if (readUserDiariesDto.type === TimeUnit.DAY) {
+      return this.diariesRepository.findByAuthorIdWithPaging(id, status, readUserDiariesDto);
+    }
+    return this.diariesRepository.findByAuthorId(id, status, readUserDiariesDto);
   }
 
   private existsDiary(diary: Diary) {

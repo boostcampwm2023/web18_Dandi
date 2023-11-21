@@ -1,9 +1,12 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
-import { CreateDiaryDto } from './dto/diary.dto';
+import { CreateDiaryDto, ReadUserDiariesDto } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { Tag } from '../tags/entity/tag.entity';
 import { Injectable } from '@nestjs/common';
+import { DiaryStatus } from './entity/diaryStatus';
+
+const ITEM_PER_PAGE = 5;
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -32,5 +35,24 @@ export class DiariesRepository extends Repository<Diary> {
         id,
       },
     });
+  }
+
+  async findByAuthorId(authorId: number, status: DiaryStatus, dto: ReadUserDiariesDto) {
+    const { startDate, endDate } = dto;
+
+    return this.createQueryBuilder('diary')
+      .where('diary.status = :status', { status })
+      .andWhere('diary.authorId = :authorId', { authorId })
+      .andWhere('diary.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .getMany();
+  }
+
+  async findByAuthorIdWithPaging(authorId: number, status: DiaryStatus, dto: ReadUserDiariesDto) {
+    return this.createQueryBuilder('diary')
+      .where('diary.status = :status', { status })
+      .andWhere('diary.authorId = :authorId', { authorId })
+      .skip(dto.page * ITEM_PER_PAGE)
+      .take(ITEM_PER_PAGE)
+      .getMany();
   }
 }

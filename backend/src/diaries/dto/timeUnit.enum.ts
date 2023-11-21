@@ -1,5 +1,5 @@
 export enum TimeUnit {
-  Day = 'Day',
-  Week = 'Week',
-  Month = 'Month',
+  DAY = 'Day',
+  WEEK = 'Week',
+  MONTH = 'Month',
 }
