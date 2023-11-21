@@ -15,8 +15,10 @@ import {
 import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   CreateDiaryDto,
+  DiaryPeedResponseDto,
   GetDiaryResponseDto,
   ReadUserDiariesDto,
+  ReadUserDiariesResponseDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
@@ -98,9 +100,30 @@ export class DiariesController {
     @User() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Query(ValidationPipe) readUserDiariesDto: ReadUserDiariesDto,
-  ) {
+  ): Promise<ReadUserDiariesResponseDto> {
     const diaries = await this.diariesService.findDiaryByAuthorId(user, id, readUserDiariesDto);
 
-    return diaries;
+    //TODO:N+1 문제 발생 중..., summary 필드 추가 필요
+    const diaryList: DiaryPeedResponseDto[] = await Promise.all(
+      diaries.map(async (diary) => {
+        const tags = await diary.tags;
+        const reactions = await diary.reactions;
+
+        return {
+          diaryId: diary.id,
+          createdAt: diary.createdAt,
+          thumbnail: diary.thumbnail,
+          title: diary.title,
+          tags: tags.map((t) => t.name),
+          emotion: diary.emotion,
+          reactionCount: reactions ? reactions.length : 0,
+        };
+      }),
+    );
+
+    return {
+      nickname: 'hi',
+      diaryList,
+    };
   }
 }

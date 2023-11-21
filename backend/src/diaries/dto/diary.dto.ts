@@ -105,4 +105,18 @@ export class ReadUserDiariesDto {
   page: number;
 }
 
-export class ReadUserDiariesResponseDto {}
+export class ReadUserDiariesResponseDto {
+  nickname: string;
+  diaryList: DiaryPeedResponseDto[];
+}
+
+export class DiaryPeedResponseDto {
+  diaryId: number;
+  createdAt: Date;
+  thumbnail: string;
+  title: string;
+  // summary: diary.summary,TODO: 머지 후 변경 예정
+  tags: string[];
+  emotion: string;
+  reactionCount: number;
+}
