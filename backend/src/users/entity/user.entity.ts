@@ -43,10 +43,10 @@ export class User extends BaseEntity {
   @OneToMany(() => Friend, (friend) => friend.sender, {
     cascade: true,
   })
-  sender: Friend[];
+  sender: Promise<Friend[]>;
 
   @OneToMany(() => Friend, (friend) => friend.receiver, {
     cascade: true,
   })
-  receiver: Friend[];
+  receiver: Promise<Friend[]>;
 }
