@@ -49,12 +49,15 @@ const MyDiary = () => {
         <section className="flex flex-col items-center">
           {viewType === 'Day' &&
             diaryData.map((data, index) => <DiaryListItem {...data} key={index} pageType="" />)}
-          {viewType === 'Week' && (
-            <DateController
-              titles={[getNowMonth(nowMonth).join(' ')]}
-              leftOnClick={() => setPrevOrNextMonth(-1)}
-              rightOnClick={() => setPrevOrNextMonth(1)}
-            />
+          {viewType === 'Month' && (
+            <>
+              <DateController
+                titles={[getNowMonth(nowMonth).join(' '), String(nowMonth.getFullYear())]}
+                leftOnClick={() => setPrevOrNextMonth(-1)}
+                rightOnClick={() => setPrevOrNextMonth(1)}
+              />
+              <Calendar date={nowMonth} />
+            </>
           )}
         </section>
       </main>

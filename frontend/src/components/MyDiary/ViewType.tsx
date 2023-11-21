@@ -14,7 +14,7 @@ const ViewType = ({ viewType, setViewType }: ViewTypeProp) => {
           key={index}
           onClick={() => setViewType(type)}
           className={`${
-            viewType === type ? 'bg-mint text-white' : 'text-mint '
+            viewType === type ? 'bg-mint text-white' : 'text-default '
           } border-mint rounded-xl border px-4 text-lg font-bold`}
         >
           {type}
