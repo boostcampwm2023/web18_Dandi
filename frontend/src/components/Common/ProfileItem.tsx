@@ -7,7 +7,7 @@ const ProfileItem = ({ img, nickName }: ProfileItemProps) => {
   return (
     <div className="flex h-16 w-28 items-center gap-2">
       <img className="h-12 w-12 rounded-full object-cover" src={img} alt="Profile Img" />
-      <span className="text-default w-1/2 text-lg ">{nickName}</span>
+      <span className="w-1/2 text-lg ">{nickName}</span>
     </div>
   );
 };

@@ -24,9 +24,7 @@ const DiaryListItem = (props: DiaryListProps) => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
-  const toggleShowModal = () => {
-    setShowModal((prev) => !prev);
-  };
+  const toggleShowModal = () => setShowModal((prev) => !prev);
 
   const goDetail = () => navigate(`/detail/${props.diaryId}`);
   const goFriendHome = () => navigate(`/home/${props.authorId}`);
@@ -44,7 +42,7 @@ const DiaryListItem = (props: DiaryListProps) => {
   };
 
   return (
-    <div className="border-brown mb-3 rounded-2xl border border-solid bg-[white] p-3">
+    <div className="border-brown mb-3 rounded-2xl border border-solid bg-white p-3">
       {props.pageType === 'feed' && (
         <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
           <ProfileItem img={props.profileImage} nickName={props.nickname} />
@@ -53,21 +51,21 @@ const DiaryListItem = (props: DiaryListProps) => {
 
       <div className="cursor-pointer" onClick={goDetail}>
         <header className="mb-3 flex items-center justify-between">
-          <p className="text-lg font-bold text-[black]">{props.title}</p>
-          <p className="text-sm font-medium text-[black]">{formatDateString(props.createdAt)}</p>
+          <p className="text-lg font-bold">{props.title}</p>
+          <p className="text-sm font-medium">{formatDateString(props.createdAt)}</p>
         </header>
 
         <main className="flex flex-col justify-center">
           <div className="flex justify-start">
-            <img className="mb-[23px] w-[100%]" src={props.thumbnail} alt="기본 이미지" />
+            <img className="mb-6 w-[100%]" src={props.thumbnail} alt="기본 이미지" />
           </div>
-          <div className="mb-3 line-clamp-3 whitespace-pre-wrap text-sm font-medium text-[black]">
+          <div className="mb-3 line-clamp-3 whitespace-pre-wrap text-sm font-medium">
             <p>{props.content}</p>
           </div>
         </main>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-3 text-base text-[black]">
+      <div className="mb-3 flex flex-wrap gap-3 text-base">
         {props.keywords.map((keyword, index) => (
           <div key={index} className="bg-mint rounded-lg px-3 py-1">
             <p>#{keyword}</p>
