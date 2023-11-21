@@ -48,12 +48,9 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
         ))}
       </div>
       <Button
-        width={36}
-        height={4.6875}
         text={textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['buttonText']}
-        fontColor="default"
-        fontSize="xl"
-        backgroundColor="mint"
+        type="default"
+        onClick={() => console.log('일기 쓰기')}
       />
     </section>
   );
