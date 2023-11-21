@@ -54,8 +54,8 @@ export class DiariesService {
     }
   }
 
-  private checkAuthorization(author: User, user: User, status: DiaryStatus, readonlyMode: boolean) {
-    if ((!readonlyMode || status === DiaryStatus.PRIVATE) && author.id !== user.id) {
+  private checkAuthorization(author: User, user: User, status: DiaryStatus, readMode: boolean) {
+    if ((!readMode || status === DiaryStatus.PRIVATE) && author.id !== user.id) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }
