@@ -24,10 +24,10 @@ export class Diary extends BaseEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ length: 10000 })
   content: string;
 
-  @Column({ nullable: true })
+  @Column({ length: 2083, nullable: true })
   thumbnail?: string;
 
   @Column()
@@ -42,7 +42,7 @@ export class Diary extends BaseEntity {
   @ManyToOne(() => User, { nullable: false, lazy: true })
   author: User;
 
-  @OneToMany(() => Reaction, (reaction) => reaction.user)
+  @OneToMany(() => Reaction, (reaction) => reaction.user, { lazy: true })
   reactions: Reaction[];
 
   @ManyToMany(() => Tag, { cascade: true, lazy: true })
