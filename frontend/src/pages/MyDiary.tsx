@@ -7,6 +7,7 @@ import { IDiaryContent } from '../types/components/Common/DiaryList';
 import { viewTypes } from '../types/pages/MyDiary';
 import DateController from '../components/MyDiary/DateController';
 import { getNowMonth } from '../util/MyDiary';
+import Calendar from '../components/MyDiary/Calendar';
 
 const dummyData = [
   {
@@ -41,11 +42,11 @@ const MyDiary = () => {
     <>
       <NavBar />
       <main className="mx-auto mb-28 flex max-w-5xl flex-col items-center justify-start">
-        <header className="my-10 flex w-[100%] justify-between">
+        <header className="my-10 flex w-full justify-between">
           <KeywordSearch />
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>
-        <section>
+        <section className="flex flex-col items-center">
           {viewType === 'Day' &&
             diaryData.map((data, index) => <DiaryListItem {...data} key={index} pageType="" />)}
           {viewType === 'Week' && (

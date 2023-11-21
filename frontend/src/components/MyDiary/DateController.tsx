@@ -10,13 +10,16 @@ interface DateControllerProp {
 const DateController = ({ titles, leftOnClick, rightOnClick }: DateControllerProp) => {
   return (
     <>
-      <div className="flex w-56 justify-between gap-3.5">
+      <div className="mb-8 flex w-72 justify-between gap-3.5">
         <img src={leftArrow} onClick={leftOnClick} className="cursor-pointer" />
-        {titles.map((title, index) => (
-          <p key={index} className="text-2xl font-bold">
-            {title}
-          </p>
-        ))}
+        <div className="text-center">
+          {titles.map((title, index) => (
+            <p key={index} className="first:mb-1 first:text-2xl first:font-bold last:text-base">
+              {title}
+            </p>
+          ))}
+        </div>
+
         <img src={rightArrow} onClick={rightOnClick} className="cursor-pointer" />
       </div>
     </>
