@@ -7,9 +7,10 @@ export default {
       white: '#FFF',
       brown: '#C7C1BB',
       gray: '#D9D9D9',
-      mint: '#D5E0D8',
+      mint: '#B5C6B0',
       red: '#F96A6A',
       white: '#FFFFFF',
+      blue: '#6AB4F9',
       emotion: {
         1: '#DE8080',
         2: '#E9AAAA',

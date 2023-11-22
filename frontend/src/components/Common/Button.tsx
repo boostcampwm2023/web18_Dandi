@@ -1,27 +1,14 @@
 interface ButtonProps {
-  width: number;
-  height: number;
   text: string;
-  fontColor: string;
-  fontSize?: string;
-  backgroundColor: string;
+  type: 'default' | 'delete' | 'normal';
+  size?: 'large';
   onClick: () => void;
 }
 
-const Button = ({
-  width,
-  height,
-  text,
-  fontColor,
-  fontSize,
-  backgroundColor,
-  onClick,
-}: ButtonProps) => {
+const Button = ({ text, type, size, onClick }: ButtonProps) => {
+  const buttonClass = `btn btn-${type} ${size === 'large' ? 'btn-large' : ''}`;
   return (
-    <button
-      className={`w-[${width}rem] h-[${height}rem] text-${fontColor} font-bold text-${fontSize} bg-${backgroundColor} rounded-lg`}
-      onClick={onClick}
-    >
+    <button className={buttonClass} onClick={onClick}>
       {text}
     </button>
   );

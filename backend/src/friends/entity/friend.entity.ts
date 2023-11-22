@@ -7,7 +7,7 @@ export class Friend extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: FriendStatus.WAITING, nullable: true })
+  @Column({ default: FriendStatus.WAITING })
   status?: FriendStatus;
 
   @ManyToOne(() => User, (user) => user.sender, {
