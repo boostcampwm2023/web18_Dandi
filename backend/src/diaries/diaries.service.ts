@@ -24,9 +24,9 @@ export class DiariesService {
     diary.author = user;
     diary.tags = tags;
     diary.summary = await this.getSummary(diary.title, diary.content);
-    diary.mood = MoodDegree['매우 긍정'];
-    this.judgeOverallMood(diary.content);
+    diary.mood = await this.judgeOverallMood(diary.content);
 
+    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -94,13 +94,32 @@ export class DiariesService {
     return body.summary;
   }
 
-  private async judgeOverallMood(content: string) {}
+  private async judgeOverallMood(fullContent: string) {
+    const [statistics, totalNumber] = await this.sumMoodAnalysis(fullContent);
 
-  private async sumMoodAnalysis(fullContent: string) {
+    const [type, sum] = Object.entries(statistics).reduce((max, cur) => {
+      return cur[1] > max[1] ? cur : max;
+    });
+
+    const figure = sum / totalNumber;
+
+    switch (type) {
+      case MoodType.POSITIVE:
+        if (figure > 50) return MoodDegree.SO_GOOD;
+        return MoodDegree.GOOD;
+      case MoodType.NEGATIVE:
+        if (figure > 50) return MoodDegree.SO_BAD;
+        return MoodDegree.BAD;
+      default:
+        return MoodDegree.SO_SO;
+    }
+  }
+
+  private async sumMoodAnalysis(fullContent: string): Promise<[Record<string, number>, number]> {
     const plainContent = fullContent.replace(/<img[^>]*>/g, '');
     const splitNumber = Math.floor(plainContent.length / 1000);
 
-    const moodStatics = {
+    const moodStatistics = {
       [MoodType.POSITIVE]: 0,
       [MoodType.NEGATIVE]: 0,
       [MoodType.NEUTRAL]: 0,
@@ -113,11 +132,11 @@ export class DiariesService {
       const analysis = await this.analyzeMood(plainContent.slice(start, end));
 
       Object.keys(analysis).forEach((key) => {
-        moodStatics[key] += analysis[key];
+        moodStatistics[key] += analysis[key];
       });
     }
 
-    return moodStatics;
+    return [moodStatistics, splitNumber + 1];
   }
 
   private async analyzeMood(content: string) {
@@ -134,24 +153,5 @@ export class DiariesService {
     const jsonResponse = await response.json();
 
     return jsonResponse.document.confidence;
-
-    // switch (analysis.sentiment) {
-    //   case MoodType.NEUTRAL:
-    //     return MoodDegree.SO_SO;
-    //   case MoodType.POSITIVE:
-    //     if (analysis.confidence[MoodType.POSITIVE] > 50) {
-    //       return MoodDegree.SO_GOOD;
-    //     } else {
-    //       return MoodDegree.GOOD;
-    //     }
-    //   case MoodType.NEGATIVE:
-    //     if (analysis.confidence[MoodType.NEGATIVE] > 50) {
-    //       return MoodDegree.SO_BAD;
-    //     } else {
-    //       return MoodDegree.BAD;
-    //     }
-    //   default:
-    //     throw new
-    // }
   }
 }
