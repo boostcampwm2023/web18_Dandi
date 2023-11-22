@@ -5,7 +5,7 @@ import ReactionList from '@components/Diary/ReactionList';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IDiaryContent } from '@/src/types/components/Common/DiaryList';
+import { IDiaryContent } from '@type/components/Common/DiaryList';
 
 interface DiaryListItemProps {
   pageType?: string;
