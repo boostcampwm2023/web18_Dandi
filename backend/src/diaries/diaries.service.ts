@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { DiariesRepository } from './diaries.repository';
-import { CreateDiaryDto, UpdateDiaryDto } from './dto/diary.dto';
+import { CreateDiaryDto, GetAllDiaryEmotionsDto, UpdateDiaryDto } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
@@ -54,6 +54,27 @@ export class DiariesService {
     await this.findDiary(user, id, false);
 
     await this.diariesRepository.softDelete(id);
+  }
+
+  async getAllDiaryEmotions(
+    user: User,
+    userId: number,
+    getAllDiaryEmotionsDto: GetAllDiaryEmotionsDto,
+  ) {
+    let { startDate, lastDate } = getAllDiaryEmotionsDto;
+    if (!getAllDiaryEmotionsDto.startDate || !getAllDiaryEmotionsDto.lastDate) {
+      const currentDate = new Date();
+
+      startDate = currentDate.toLocaleString();
+      lastDate = currentDate.setMonth(currentDate.getMonth() + 1).toLocaleString();
+    }
+
+    return await this.diariesRepository.findAllDiaryEmotions(
+      user,
+      user.id === userId,
+      startDate,
+      lastDate,
+    );
   }
 
   private existsDiary(diary: Diary) {

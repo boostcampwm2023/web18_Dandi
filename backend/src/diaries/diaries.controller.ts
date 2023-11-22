@@ -7,12 +7,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateDiaryDto, GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
+import {
+  CreateDiaryDto,
+  GetAllDiaryEmotionsDto,
+  GetDiaryResponseDto,
+  UpdateDiaryDto,
+} from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
@@ -84,5 +90,25 @@ export class DiariesController {
     await this.diariesService.deleteDiary(user, id);
 
     return '일기가 삭제되었습니다.';
+  }
+
+  @Get('/emotions/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '일기 삭제 API' })
+  @ApiCreatedResponse({ description: '일기 삭제 성공' })
+  async getAllDiaryEmotions(
+    @User() user: UserEntity,
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query(ValidationPipe) getAllDiaryEmotionsDto: GetAllDiaryEmotionsDto,
+  ) {
+    const diaries = await this.diariesService.getAllDiaryEmotions(
+      user,
+      userId,
+      getAllDiaryEmotionsDto,
+    );
+
+    console.log(diaries);
+
+    return [];
   }
 }
