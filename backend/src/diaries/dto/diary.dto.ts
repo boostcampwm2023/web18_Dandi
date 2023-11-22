@@ -19,10 +19,6 @@ export class CreateDiaryDto {
   @ApiProperty({ description: '감정(이모지)' })
   emotion: string;
 
-  @IsNotEmpty()
-  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)' })
-  mood: number;
-
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
 
@@ -51,7 +47,7 @@ export class GetDiaryResponseDto {
   @ApiProperty({ description: '감정(이모지)' })
   emotion: string;
 
-  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)' })
+  @ApiProperty({ description: '사용자의 기분(1 ~ 5 사이의 실수 값)' })
   mood: number;
 
   @ApiProperty({ description: '일기 태그 배열' })
@@ -73,9 +69,6 @@ export class UpdateDiaryDto {
 
   @ApiProperty({ description: '감정(이모지)', required: false })
   emotion: string;
-
-  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)', required: false })
-  mood: number;
 
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
