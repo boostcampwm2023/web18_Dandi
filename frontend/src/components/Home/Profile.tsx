@@ -67,11 +67,11 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
             <p className="cursor-pointer" onClick={() => onClickButton('list')}>
               친구 {totalFriends}명
             </p>
-            <div className="border-brown w mx-5 border-l-2 border-solid" />
+            <div className="border-brown mx-5 border-l-2 border-solid" />
             <p className="cursor-pointer" onClick={() => onClickButton('request')}>
               친구 관리
             </p>
-            <div className="border-brown w mx-5 border-l-2 border-solid" />
+            <div className="border-brown mx-5 border-l-2 border-solid" />
             <p className="cursor-pointer" onClick={() => onClickButton('profileEdit')}>
               내 정보 수정
             </p>
