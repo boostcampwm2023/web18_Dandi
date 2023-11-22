@@ -47,7 +47,7 @@ export class GetDiaryResponseDto {
   @ApiProperty({ description: '감정(이모지)' })
   emotion: string;
 
-  @ApiProperty({ description: '사용자의 기분(1 ~ 5 사이의 실수 값)' })
+  @ApiProperty({ description: '사용자의 기분(1 ~ 5 사이의 정수 값)' })
   mood: number;
 
   @ApiProperty({ description: '일기 태그 배열' })
