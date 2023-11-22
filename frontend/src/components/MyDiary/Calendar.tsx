@@ -1,4 +1,4 @@
-import { week } from '@util/Calendar';
+import { DAY_OF_WEEK } from '@/src/util/Calendar';
 import DayItem from './DayItem';
 
 interface CalendarProp {
@@ -29,7 +29,7 @@ const Calendar = ({ date }: CalendarProp) => {
     <table className="overflow-hidden rounded-lg border-hidden shadow-[0_0_0_1px_#C7C1BB]">
       <thead>
         <tr className="bg-brown text-base text-white">
-          {week.map((dayName) => (
+          {DAY_OF_WEEK.map((dayName) => (
             <th key={dayName} className="px-7 py-4 font-medium">
               {dayName}
             </th>
