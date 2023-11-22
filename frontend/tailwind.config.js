@@ -3,22 +3,13 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   safelist: [
     {
-      pattern: /bg-+/,
-    },
-    {
-      pattern: /text-+/,
-    },
-    {
-      pattern: /font-+/,
-    },
-    {
-      pattern: /w-+/,
-    },
-    {
-      pattern: /h-+/,
+      pattern: /(bg|text|font|w|h)-+/,
     },
     {
       pattern: /btn-(default|delete|normal|large)/,
+    },
+    {
+      pattern: /btn/,
     },
   ],
   theme: {
