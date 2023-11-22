@@ -51,7 +51,7 @@ export class AuthService {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: this.makeNaverOauthParam(oAuthLoginDto),
+      body: this.makeNaverOauthParam(null, oAuthLoginDto),
     });
 
     const data = await response.json();
@@ -94,20 +94,19 @@ export class AuthService {
     });
   }
 
-  private makeNaverOauthParam(paramData: string | OAuthLoginDto): URLSearchParams {
+  private makeNaverOauthParam(refreshToken: string, dto: OAuthLoginDto = null): URLSearchParams {
     const params = new URLSearchParams();
     params.append('client_id', process.env.NAVER_CLIENT_ID);
     params.append('client_secret', process.env.NAVER_CLIENT_SECRET);
 
-    if (paramData instanceof OAuthLoginDto) {
+    if (!refreshToken) {
       params.append('grant_type', 'authorization_code');
-      params.append('code', paramData.code);
-      params.append('state', paramData.state);
+      params.append('code', dto.code);
+      params.append('state', dto.state);
     } else {
       params.append('grant_type', 'refresh_token');
-      params.append('refresh_token', paramData);
+      params.append('refresh_token', refreshToken);
     }
-
     return params;
   }
 }
