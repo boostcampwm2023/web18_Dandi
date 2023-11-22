@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useMemo } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import GrassTooltip from '@components/Home/GrassTooltip';
 
 interface GrassDataProps {
@@ -31,6 +31,7 @@ const Grass = () => {
   ];
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const currentDate: Date = new Date();
   const lastYear: Date = new Date(currentDate);
@@ -44,7 +45,7 @@ const Grass = () => {
     dates[index] = mood;
   });
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
-
+  
   const getTooltipContent = (index: number) => {
     const tmpDate = new Date(lastYear);
     tmpDate.setDate(tmpDate.getDate() + index);
@@ -52,43 +53,27 @@ const Grass = () => {
     return `${moodContent} mood on ${tmpDate.toLocaleDateString()}`;
   };
 
-  const renderGrass = useCallback(
-    (scrollLeft: number) => {
-      return grassData.map((mood, index) => {
-        return (
-          <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent(index)}>
-            <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
-          </GrassTooltip>
-        );
-      });
-    },
-    [grassData],
-  );
-
-  const throttle = (func: (arg: number) => void, delay: number) => {
-    let lastCall = 0;
-    return (arg: number) => {
-      const now = new Date().getTime();
-      if (now - lastCall >= delay) {
-        func(arg);
-        lastCall = now;
-      }
-    };
+  const renderGrass = (scrollLeft: number) => {
+    return grassData.map((mood, index) => {
+      return (
+        <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent(index)}>
+          <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
+        </GrassTooltip>
+      );
+    });
   };
-
-  const throttledRenderGrass = useMemo(() => throttle(renderGrass, 200), [renderGrass]);
 
   useEffect(() => {
     const handleScroll = () => {
       if (scrollRef.current) {
-        throttledRenderGrass(scrollRef.current.scrollLeft);
+        setScrollLeft(scrollRef.current.scrollLeft);
       }
     };
     scrollRef.current?.addEventListener('scroll', handleScroll);
     return () => {
       scrollRef.current?.removeEventListener('scroll', handleScroll);
     };
-  }, [throttledRenderGrass]);
+  }, []);
 
   return (
     <div className="flex h-full w-3/5 flex-col gap-2 p-5">

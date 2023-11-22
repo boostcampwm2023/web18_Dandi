@@ -8,6 +8,7 @@ interface GrassTooltipProps {
 
 const GrassTooltip = ({ content, scrollLeft, children }: GrassTooltipProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  console.log(scrollLeft)
   return (
     <div
       className="whitespace-pre"
@@ -21,7 +22,7 @@ const GrassTooltip = ({ content, scrollLeft, children }: GrassTooltipProps) => {
         <div className="absolute">
           <p
             style={{ transform: `translateX(calc(-50% - ${scrollLeft}px))` }}
-            className={`relative -top-16 bg-default rounded p-2 text-white opacity-90`}
+            className={`bg-default rounded p-2 text-white opacity-90`}
           >
             {content}
           </p>
