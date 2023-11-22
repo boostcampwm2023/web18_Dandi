@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
@@ -9,7 +9,7 @@ import { OAuthLoginDto, OAuthLoginResponseDto } from './dto/auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('/login')
+  @Post('/login')
   @ApiOperation({
     description: 'Oauth 로그인 검증 및 토큰 발급 API',
   })
