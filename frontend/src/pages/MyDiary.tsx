@@ -3,12 +3,12 @@ import KeywordSearch from '@components/MyDiary/KeywordSearch';
 import ViewType from '@components/MyDiary/ViewType';
 import { useEffect, useState } from 'react';
 import DiaryListItem from '@components/Common/DiaryListItem';
-import { IDiaryContent } from '../types/components/Common/DiaryList';
-import { viewTypes } from '../types/pages/MyDiary';
-import DateController from '../components/MyDiary/DateController';
-import { getNowMonth } from '../util/MyDiary';
-import Calendar from '../components/MyDiary/Calendar';
-import { dummyData } from '../util/dummyData';
+import { IDiaryContent } from '@type/components/Common/DiaryList';
+import { viewTypes } from '@type/pages/MyDiary';
+import DateController from '@components/MyDiary/DateController';
+import { getNowMonth } from '@util/MyDiary';
+import Calendar from '@components/MyDiary/Calendar';
+import { dummyData } from '@util/dummyData';
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
