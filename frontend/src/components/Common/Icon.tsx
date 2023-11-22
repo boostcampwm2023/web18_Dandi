@@ -5,6 +5,7 @@ interface ReactionProps {
   styles?: string;
 }
 
+// large일 때 추가하기
 const Icon = ({ id, styles }: ReactionProps) => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" className={styles}>
