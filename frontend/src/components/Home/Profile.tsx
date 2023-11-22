@@ -26,16 +26,13 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
   };
 
   const getModalContent = (type: string) => {
-    if (type === 'list') {
-      return <FriendList />;
-    }
-
-    if (type === 'request') {
-      return <FriendRequest />;
-    }
-
-    if (type === 'profileEdit') {
-      return <ProfileEdit />;
+    switch (type) {
+      case 'list':
+        return <FriendList />;
+      case 'request':
+        return <FriendRequest />;
+      case 'profileEdit':
+        return <ProfileEdit />;
     }
   };
 

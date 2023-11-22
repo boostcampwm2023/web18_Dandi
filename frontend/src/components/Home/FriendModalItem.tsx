@@ -15,32 +15,30 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
   };
 
   const getButtonElement = (type: string) => {
-    if (type === 'list') {
-      return (
-        <button className="bg-mint w-[80%] rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
-          친구 삭제
-        </button>
-      );
-    }
-    if (type === 'received') {
-      return (
-        <div className="flex gap-2">
-          <button className="bg-red w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
-            거절
+    switch (type) {
+      case 'list':
+        return (
+          <button className="bg-mint w-[80%] rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+            친구 삭제
           </button>
-          <button className="bg-mint w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
-            수락
+        );
+      case 'received':
+        return (
+          <div className="flex gap-2">
+            <button className="bg-red w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+              거절
+            </button>
+            <button className="bg-mint w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+              수락
+            </button>
+          </div>
+        );
+      case 'send':
+        return (
+          <button className="bg-red w-[80%] rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+            신청 취소
           </button>
-        </div>
-      );
-    }
-
-    if (type === 'send') {
-      return (
-        <button className="bg-red w-[80%] rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
-          신청 취소
-        </button>
-      );
+        );
     }
   };
 
