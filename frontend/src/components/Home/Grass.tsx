@@ -1,3 +1,6 @@
+import { useRef, useEffect, useState } from 'react';
+import GrassTooltip from '@components/Home/GrassTooltip';
+
 interface GrassDataProps {
   date: string;
   mood: string;
@@ -27,10 +30,13 @@ const Grass = () => {
     { date: '2023-10-15', mood: 'good' },
   ];
 
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
   const currentDate: Date = new Date();
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
-  const dates: (string | null)[] = new Array(365).fill(null);
+  const dates: string[] = new Array(365).fill(null);
   data.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate: Date = new Date(date);
     const index: number = Math.floor(
@@ -39,17 +45,44 @@ const Grass = () => {
     dates[index] = mood;
   });
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
-  const renderGrass = () => {
-    return grassData.map((mood, index) => (
-      <div key={index} className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
-    ));
+
+  const renderGrass = (scrollLeft: number) => {
+    return grassData.map((mood, index) => {
+      const getTooltipContent = () => {
+        const tmpDate = new Date(lastYear);
+        tmpDate.setDate(tmpDate.getDate() + index);
+        const moodContent = mood === null ? 'no' : mood;
+        return `${moodContent} mood on ${tmpDate.toLocaleDateString()}`;
+      };
+
+      return (
+        <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent()}>
+          <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
+        </GrassTooltip>
+      );
+    });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRef.current) {
+        setScrollLeft(scrollRef.current.scrollLeft);
+      }
+    };
+    scrollRef.current?.addEventListener('scroll', handleScroll);
+    return () => {
+      scrollRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="flex w-3/5 flex-col gap-2 p-5 ">
+    <div className="z-0 flex h-full w-3/5 flex-col gap-2 p-5">
       <p className="text-2xl font-bold">지난 1년간 {data.length}개의 일기를 작성하셨어요.</p>
-      <div className="overflow-x-scroll grid-rows-7 border-brown grid grid-flow-col rounded-lg border p-2">
-        {renderGrass()}
+      <div
+        ref={scrollRef}
+        className="grid-rows-7 border-brown z-0 grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2"
+      >
+        {renderGrass(scrollRef.current?.scrollLeft || 0)}
       </div>
     </div>
   );

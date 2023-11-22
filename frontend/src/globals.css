@@ -30,6 +30,7 @@
     @apply text-default bg-gray;
   }
 }
+
 ::-webkit-scrollbar {
   height: 10px;
 }
