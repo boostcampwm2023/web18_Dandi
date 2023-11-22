@@ -34,12 +34,12 @@ export class ReactionsService {
 
   async deleteReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
     const diary = await this.diariesService.findDiary(user, diaryId, true);
-
     const reaction = await this.reactionsRepository.findReactionByDiaryAndUserAndReaction(
       user,
       diary,
       reactionRequestDto.reaction,
     );
+
     if (!reaction) {
       throw new BadRequestException('이미 삭제된 리액션 정보입니다.');
     }
