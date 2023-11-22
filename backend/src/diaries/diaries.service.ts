@@ -26,7 +26,6 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, diary.content);
     diary.mood = await this.judgeOverallMood(diary.content);
 
-    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -49,6 +48,11 @@ export class DiariesService {
         existingDiary[key] = updateDiaryDto[key];
       }
     });
+
+    if (updateDiaryDto.content) {
+      existingDiary.summary = await this.getSummary(existingDiary.title, updateDiaryDto.content);
+      existingDiary.mood = await this.judgeOverallMood(updateDiaryDto.content);
+    }
 
     return await this.diariesRepository.save(existingDiary);
   }
