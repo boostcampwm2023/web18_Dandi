@@ -1,20 +1,25 @@
-import { SocialType } from '../../users/entity/socialType';
 import { ApiProperty } from '@nestjs/swagger';
+import { SocialType } from 'src/users/entity/socialType';
 
 export class AuthUserDto {
   id: string;
   email: string;
   nickname: string;
-  socialType: SocialType;
-  profileImage: string;
-  accessToken: string;
-  refreshToken: string;
+  profile_image: string;
 }
 
-export class AuthUserResponseDto {
-  @ApiProperty({ description: '사용자 ID' })
-  userId: number;
+export class OAuthLoginDto {
+  code: string;
+  state: string;
+  socialType: SocialType;
+}
 
-  @ApiProperty({ description: 'jwt 토큰' })
+export class LoginResultDto {
+  userId: number;
   token: string;
+}
+
+export class OAuthLoginResponseDto {
+  @ApiProperty({ description: '사용자 ID' })
+  id: number;
 }
