@@ -1,10 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    {
+      pattern: /bg-+/,
+    },
+    {
+      pattern: /text-+/,
+    },
+    {
+      pattern: /font-+/,
+    },
+    {
+      pattern: /w-+/,
+    },
+    {
+      pattern: /h-+/,
+    },
+    {
+      pattern: /btn-(default|delete|normal|large)/,
+    },
+  ],
   theme: {
     colors: {
       default: '#4B4B4B',
-      white: '#FFF',
       brown: '#C7C1BB',
       gray: '#D9D9D9',
       mint: '#B5C6B0',
