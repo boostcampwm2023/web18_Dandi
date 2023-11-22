@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { NaverAuthGuard } from './guards/naverAuth.guard';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { User } from '../users/utils/user.decorator';
@@ -11,7 +11,7 @@ import { AuthUserDto, AuthUserResponseDto } from './dto/auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('naver/login')
+  @Post('naver/login')
   @UseGuards(NaverAuthGuard)
   @ApiOperation({
     description: '네이버 소셜 로그인/회원가입을 위한 요청 api',
