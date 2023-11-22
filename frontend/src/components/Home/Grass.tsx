@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useCallback, useMemo } from 'react';
 import GrassTooltip from '@components/Home/GrassTooltip';
 
 interface GrassDataProps {
@@ -31,7 +31,6 @@ const Grass = () => {
   ];
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [scrollLeft, setScrollLeft] = useState(0);
 
   const currentDate: Date = new Date();
   const lastYear: Date = new Date(currentDate);
@@ -46,41 +45,57 @@ const Grass = () => {
   });
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
 
-  const renderGrass = (scrollLeft: number) => {
-    return grassData.map((mood, index) => {
-      const getTooltipContent = () => {
-        const tmpDate = new Date(lastYear);
-        tmpDate.setDate(tmpDate.getDate() + index);
-        const moodContent = mood === null ? 'no' : mood;
-        return `${moodContent} mood on ${tmpDate.toLocaleDateString()}`;
-      };
-
-      return (
-        <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent()}>
-          <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
-        </GrassTooltip>
-      );
-    });
+  const getTooltipContent = (index: number) => {
+    const tmpDate = new Date(lastYear);
+    tmpDate.setDate(tmpDate.getDate() + index);
+    const moodContent = grassData[index] === null ? 'no' : grassData[index];
+    return `${moodContent} mood on ${tmpDate.toLocaleDateString()}`;
   };
+
+  const renderGrass = useCallback(
+    (scrollLeft: number) => {
+      return grassData.map((mood, index) => {
+        return (
+          <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent(index)}>
+            <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
+          </GrassTooltip>
+        );
+      });
+    },
+    [grassData],
+  );
+
+  const throttle = (func: (arg: number) => void, delay: number) => {
+    let lastCall = 0;
+    return (arg: number) => {
+      const now = new Date().getTime();
+      if (now - lastCall >= delay) {
+        func(arg);
+        lastCall = now;
+      }
+    };
+  };
+
+  const throttledRenderGrass = useMemo(() => throttle(renderGrass, 200), [renderGrass]);
 
   useEffect(() => {
     const handleScroll = () => {
       if (scrollRef.current) {
-        setScrollLeft(scrollRef.current.scrollLeft);
+        throttledRenderGrass(scrollRef.current.scrollLeft);
       }
     };
     scrollRef.current?.addEventListener('scroll', handleScroll);
     return () => {
       scrollRef.current?.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [throttledRenderGrass]);
 
   return (
-    <div className="z-0 flex h-full w-3/5 flex-col gap-2 p-5">
+    <div className="flex h-full w-3/5 flex-col gap-2 p-5">
       <p className="text-2xl font-bold">지난 1년간 {data.length}개의 일기를 작성하셨어요.</p>
       <div
         ref={scrollRef}
-        className="grid-rows-7 border-brown z-0 grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2"
+        className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2"
       >
         {renderGrass(scrollRef.current?.scrollLeft || 0)}
       </div>

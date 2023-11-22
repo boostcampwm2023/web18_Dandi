@@ -21,7 +21,7 @@ const GrassTooltip = ({ content, scrollLeft, children }: GrassTooltipProps) => {
         <div className="absolute">
           <p
             style={{ transform: `translateX(calc(-50% - ${scrollLeft}px))` }}
-            className={`bg-default rounded p-2 text-white opacity-90`}
+            className={`relative -top-16 bg-default rounded p-2 text-white opacity-90`}
           >
             {content}
           </p>
