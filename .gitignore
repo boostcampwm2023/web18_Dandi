@@ -1,5 +1,4 @@
 node_modules
-dist
 
 .vscode/settings.json
 .DS_Store
