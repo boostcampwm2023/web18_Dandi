@@ -1,5 +1,4 @@
 import KeywordItem from '@components/Edit/KeywordItem';
-
 import { useState } from 'react';
 
 interface KeywordBoxProps {

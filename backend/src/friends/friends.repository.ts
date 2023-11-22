@@ -40,4 +40,8 @@ export class FriendsRepository extends Repository<Friend> {
   removeRelation(relation: Friend): void {
     this.remove(relation);
   }
+
+  updateStatus(relation: Friend): void {
+    this.update(relation.id, { status: FriendStatus.COMPLETE });
+  }
 }

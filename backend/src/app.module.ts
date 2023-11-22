@@ -9,6 +9,7 @@ import { DiariesModule } from './diaries/diaries.module';
 import { UsersModule } from './users/users.module';
 import { TagsModule } from './tags/tags.module';
 import { FriendsModule } from './friends/friends.module';
+import { ReactionsModule } from './reactions/reactions.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FriendsModule } from './friends/friends.module';
     DiariesModule,
     TagsModule,
     FriendsModule,
+    ReactionsModule,
   ],
   controllers: [],
   providers: [],

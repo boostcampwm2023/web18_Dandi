@@ -5,6 +5,7 @@ import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class DiariesService {
@@ -15,16 +16,23 @@ export class DiariesService {
 
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto) {
     const tags = await this.tagsService.mapTagNameToTagType(createDiaryDto.tagNames);
+    const diary = plainToClass(Diary, createDiaryDto, {
+      excludePrefixes: ['tag'],
+    });
 
-    await this.diariesRepository.saveDiary(user, createDiaryDto, tags);
+    diary.author = user;
+    diary.tags = tags;
+    diary.summary = await this.getSummary(diary.title, diary.content);
+
+    await this.diariesRepository.save(diary);
   }
 
-  async findDiary(user: User, id: number, readonlyMode: boolean) {
+  async findDiary(user: User, id: number, readMode: boolean) {
     const diary = await this.diariesRepository.findById(id);
     this.existsDiary(diary);
 
     const author = await diary.author;
-    this.checkAuthorization(author, user, diary.status, readonlyMode);
+    this.checkAuthorization(author, user, diary.status, readMode);
 
     return diary;
   }
@@ -58,5 +66,28 @@ export class DiariesService {
     if ((!readMode || status === DiaryStatus.PRIVATE) && author.id !== user.id) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
+  }
+
+  private async getSummary(title: string, content: string) {
+    content = content.substring(0, 2000);
+
+    const response = await fetch(
+      'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
+      {
+        method: 'POST',
+        headers: {
+          'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
+          'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          document: { title, content },
+          option: { language: 'ko' },
+        }),
+      },
+    );
+
+    const body = await response.json();
+    return body.summary;
   }
 }

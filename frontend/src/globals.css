@@ -8,3 +8,25 @@
     color: #4b4b4b;
   }
 }
+
+@layer components {
+  .btn {
+    @apply min-w-[3.5rem] h-7 font-bold rounded-lg;
+  }
+
+  .btn-large {
+    @apply w-40 h-14 text-xl;
+  }
+
+  .btn-default {
+    @apply text-default bg-mint;
+  }
+
+  .btn-delete {
+    @apply text-white bg-red;
+  }
+
+  .btn-normal {
+    @apply text-default bg-gray;
+  }
+}
