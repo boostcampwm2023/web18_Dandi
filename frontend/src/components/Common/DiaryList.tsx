@@ -1,29 +1,17 @@
 import DiaryListItem from '@components/Common/DiaryListItem';
+import { IDiaryContent } from '@/src/types/components/Common/DiaryList';
 
-interface DiaryListProps {
+interface DiaryList {
   pageType: string;
   diaryData: IDiaryContent[];
 }
 
-export interface IDiaryContent {
-  createdAt: string;
-  profileImage: string;
-  nickname: string;
-  thumbnail: string;
-  title: string;
-  content: string;
-  keywords: string[];
-  reactionCount: number;
-  diaryId: string | number;
-  authorId: string | number;
-}
-
-const DiaryList = ({ pageType, diaryData }: DiaryListProps) => {
+const DiaryList = ({ pageType, diaryData }: DiaryList) => {
   const { nickname } = diaryData[0];
   const pageTitle = pageType === 'home' ? `${nickname}님의 일기 목록` : '친구들의 일기';
 
   const content = diaryData.map((data: IDiaryContent, index) => (
-    <DiaryListItem key={index} pageType={pageType} {...data} />
+    <DiaryListItem key={index} pageType={pageType} diaryItem={data} />
   ));
 
   return (
