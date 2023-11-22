@@ -6,6 +6,7 @@ import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
+import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
 
 @Injectable()
 export class DiariesService {
@@ -23,6 +24,8 @@ export class DiariesService {
     diary.author = user;
     diary.tags = tags;
     diary.summary = await this.getSummary(diary.title, diary.content);
+    // diary.mood = MoodDegree['매우 긍정'];
+    // this.analyzeMood(diary.content);
 
     await this.diariesRepository.save(diary);
   }
@@ -89,5 +92,45 @@ export class DiariesService {
 
     const body = await response.json();
     return body.summary;
+  }
+
+  private async analyzeMood(content: string) {
+    const plainContent = content.replace(/<img[^>]*>/g, '');
+
+    const response = await fetch(CLOVA_SENTIMENT_URL, {
+      method: 'POST',
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SENTIMENT_API_KEY_ID,
+        'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SENTIMENT_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: plainContent,
+      }),
+    });
+
+    const jsonResponse = await response.json();
+    const analysis = jsonResponse.document.confidence;
+
+    return [analysis.positive, analysis.negative, analysis.neutral];
+
+    // switch (analysis.sentiment) {
+    //   case MoodType.NEUTRAL:
+    //     return MoodDegree.SO_SO;
+    //   case MoodType.POSITIVE:
+    //     if (analysis.confidence[MoodType.POSITIVE] > 50) {
+    //       return MoodDegree.SO_GOOD;
+    //     } else {
+    //       return MoodDegree.GOOD;
+    //     }
+    //   case MoodType.NEGATIVE:
+    //     if (analysis.confidence[MoodType.NEGATIVE] > 50) {
+    //       return MoodDegree.SO_BAD;
+    //     } else {
+    //       return MoodDegree.BAD;
+    //     }
+    //   default:
+    //     throw new
+    // }
   }
 }
