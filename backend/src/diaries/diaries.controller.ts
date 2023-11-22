@@ -15,8 +15,8 @@ import {
 import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   CreateDiaryDto,
-  GetAllDiaryEmotionsDto,
-  GetAllDiaryEmotionsResponseDto,
+  GetAllEmotionsDto,
+  GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
@@ -100,9 +100,9 @@ export class DiariesController {
   async getAllDiaryEmotions(
     @User() user: UserEntity,
     @Param('userId', ParseIntPipe) userId: number,
-    @Query(ValidationPipe) getAllDiaryEmotionsDto: GetAllDiaryEmotionsDto,
-  ): Promise<Record<string, GetAllDiaryEmotionsResponseDto[]>> {
-    const emotions = await this.diariesService.getAllDiaryEmotions(
+    @Query(ValidationPipe) getAllDiaryEmotionsDto: GetAllEmotionsDto,
+  ): Promise<Record<string, GetAllEmotionsResponseDto[]>> {
+    const emotions = await this.diariesService.findAllDiaryEmotions(
       user,
       userId,
       getAllDiaryEmotionsDto,

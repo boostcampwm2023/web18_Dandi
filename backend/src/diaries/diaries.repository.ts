@@ -2,7 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
-import { GetAllDiaryEmotionsResponseDto } from './dto/diary.dto';
+import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -23,7 +23,7 @@ export class DiariesRepository extends Repository<Diary> {
     isOwner: boolean,
     startDate: string,
     lastDate: string,
-  ): Promise<GetAllDiaryEmotionsResponseDto[]> {
+  ): Promise<GetAllEmotionsResponseDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
       .select(['diary.emotion as emotion', 'COUNT(diary.emotion) as emotionCount'])
       .where('diary.author.id = :userId', { userId: user.id })
