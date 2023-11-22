@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entity/user.entity';
@@ -54,6 +59,10 @@ export class AuthService {
       body: this.makeNaverOauthParam(null, oAuthLoginDto),
     });
 
+    if (response.status !== 200) {
+      throw new UnauthorizedException('유효하지 않은 인가 코드입니다.');
+    }
+
     const data = await response.json();
     return {
       accessToken: data.access_token,
@@ -68,6 +77,14 @@ export class AuthService {
         Authorization: 'Bearer ' + accessToken,
       },
     });
+
+    if (response.status === 401) {
+      throw new UnauthorizedException('유효하지 않은 accessToken입니다.');
+    } else if (response.status === 403) {
+      throw new ForbiddenException('데이터 호출 권한이 없습니다.');
+    } else if (response.status !== 200) {
+      throw new InternalServerErrorException('Naver 서버 에러입니다.');
+    }
 
     const data = await response.json();
     return data.response as AuthUserDto;
