@@ -13,11 +13,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestj
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
-import {
-  CreateReactionDto,
-  GetReactionResponseDto,
-  ReactionInfoResponseDto,
-} from './dto/reaction.dto';
+import { CreateReactionDto, ReactionInfoResponseDto } from './dto/reaction.dto';
 import { ReactionsService } from './reactions.service';
 
 @ApiTags('Reaction API')
@@ -32,7 +28,7 @@ export class ReactionsController {
   async getReactions(
     @User() user: UserEntity,
     @Param('diaryId', ParseIntPipe) diaryId: number,
-  ): Promise<GetReactionResponseDto> {
+  ): Promise<Record<string, ReactionInfoResponseDto[]>> {
     const reactions = await this.reactionsService.getReaction(user, diaryId);
 
     const reactionList = reactions.map<ReactionInfoResponseDto>((reaction) => {

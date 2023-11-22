@@ -5,10 +5,6 @@ export class CreateReactionDto {
   reaction: string;
 }
 
-export class GetReactionResponseDto {
-  reactionList: ReactionInfoResponseDto[];
-}
-
 export class ReactionInfoResponseDto {
   userId: number;
   nickname: string;
