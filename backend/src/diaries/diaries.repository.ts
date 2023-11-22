@@ -2,6 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
+import { GetAllDiaryEmotionsResponseDto } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -17,17 +18,21 @@ export class DiariesRepository extends Repository<Diary> {
     });
   }
 
-  async findAllDiaryEmotions(user: User, isOwner: boolean, startDate: string, lastDate: string) {
+  async findAllDiaryEmotions(
+    user: User,
+    isOwner: boolean,
+    startDate: string,
+    lastDate: string,
+  ): Promise<GetAllDiaryEmotionsResponseDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .where('author.id = :userId', { user })
-      .andWhere('diary.createdAt BETWEEN :start AND :last', { startDate, lastDate })
+      .select(['diary.emotion as emotion', 'COUNT(diary.emotion) as emotionCount'])
+      .where('diary.author.id = :userId', { userId: user.id })
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
       .groupBy('diary.emotion');
 
     if (!isOwner) {
-      queryBuilder.andWhere('diary.status = :status', { status: 'PRIVATE' });
+      queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
-    console.log((await queryBuilder).getRawMany());
-    return await queryBuilder.getMany();
+    return await queryBuilder.getRawMany();
   }
 }
