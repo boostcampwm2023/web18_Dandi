@@ -66,7 +66,7 @@ export class DiariesService {
     }
 
     return await this.diariesRepository.findAllDiaryEmotions(
-      user,
+      userId,
       user.id === userId,
       startDate,
       lastDate,
