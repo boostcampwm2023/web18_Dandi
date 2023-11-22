@@ -1,5 +1,4 @@
-import leftArrow from '@assets/image/leftArrow.svg';
-import rightArrow from '@assets/image/rightArrow.svg';
+import Icon from '../Common/Icon';
 
 interface DateControllerProp {
   titles: string[];
@@ -10,8 +9,10 @@ interface DateControllerProp {
 const DateController = ({ titles, leftOnClick, rightOnClick }: DateControllerProp) => {
   return (
     <>
-      <div className="mb-8 flex w-72 justify-between gap-3.5">
-        <img src={leftArrow} onClick={leftOnClick} className="cursor-pointer" />
+      <div className="mb-8 flex w-72 items-center justify-between gap-3.5">
+        <button onClick={leftOnClick}>
+          <Icon id="leftArrow" />
+        </button>
         <div className="text-center">
           {titles.map((title, index) => (
             <p key={index} className="first:mb-1 first:text-2xl first:font-bold last:text-base">
@@ -19,8 +20,9 @@ const DateController = ({ titles, leftOnClick, rightOnClick }: DateControllerPro
             </p>
           ))}
         </div>
-
-        <img src={rightArrow} onClick={rightOnClick} className="cursor-pointer" />
+        <button onClick={rightOnClick}>
+          <Icon id="rightArrow" />
+        </button>
       </div>
     </>
   );
