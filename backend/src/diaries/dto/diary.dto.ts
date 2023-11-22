@@ -90,16 +90,21 @@ export class GetAllEmotionsDto {
   @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
     message: '유효하지 않은 날짜 형식입니다.',
   })
+  @ApiProperty({ description: '시작 날짜', required: false, example: '2023-11-22' })
   startDate: string;
 
   @IsOptional()
   @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
     message: '유효하지 않은 날짜 형식입니다.',
   })
+  @ApiProperty({ description: '마지막 날짜', required: false, example: '2023-11-22' })
   lastDate: string;
 }
 
 export class GetAllEmotionsResponseDto {
+  @ApiProperty({ description: '이모지' })
   emotion: string;
-  count: number;
+
+  @ApiProperty({ description: '이모지 갯수' })
+  emotionCount: number;
 }

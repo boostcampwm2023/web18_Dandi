@@ -12,7 +12,14 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   CreateDiaryDto,
   GetAllEmotionsDto,
@@ -96,7 +103,11 @@ export class DiariesController {
   @Get('/emotions/:userId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '일기 삭제 API' })
-  @ApiCreatedResponse({ description: '일기 삭제 성공' })
+  @ApiCreatedResponse({
+    description: '일기 삭제 성공',
+    type: [GetAllEmotionsResponseDto],
+  })
+  @ApiQuery({ type: GetAllEmotionsDto })
   async getAllDiaryEmotions(
     @User() user: UserEntity,
     @Param('userId', ParseIntPipe) userId: number,
