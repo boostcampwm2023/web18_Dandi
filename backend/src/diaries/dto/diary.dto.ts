@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsNumber, Matches, Min, Validate } from 'class-validator';
+import { IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -86,9 +86,15 @@ export class UpdateDiaryDto {
 }
 
 export class GetAllDiaryEmotionsDto {
-  @Matches(/^(\d{4}-\d{2}-\d{2})?$/, { message: '유효하지 않은 날짜 형식입니다.' })
+  @IsOptional()
+  @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
+    message: '유효하지 않은 날짜 형식입니다.',
+  })
   startDate: string;
 
-  @Matches(/^(\d{4}-\d{2}-\d{2})?$/, { message: '유효하지 않은 날짜 형식입니다.' })
+  @IsOptional()
+  @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
+    message: '유효하지 않은 날짜 형식입니다.',
+  })
   lastDate: string;
 }
