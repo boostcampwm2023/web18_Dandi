@@ -52,12 +52,12 @@ const MyDiary = () => {
   return (
     <>
       <NavBar />
-      <main className="mx-auto mb-28 flex max-w-5xl flex-col items-center justify-start">
+      <main className="mx-auto mb-28 flex max-w-6xl flex-col items-center justify-start">
         <header className="my-10 flex w-full justify-between">
           <KeywordSearch />
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>
-        <section className="flex flex-col items-center">
+        <section className="flex flex-col items-center overflow-hidden">
           {viewType === 'Day' &&
             diaryData.map((data, index) => <DiaryListItem diaryItem={data} key={index} />)}
           {viewType === 'Week' && (
@@ -73,11 +73,11 @@ const MyDiary = () => {
               {DUMMY_DATA.length < 3 && (
                 <section className="flex gap-5">
                   {DUMMY_DATA.map((data) => (
-                    <Card {...data} />
+                    <Card data={data} />
                   ))}
                 </section>
               )}
-              {DUMMY_DATA.length >= 3 && <CarouselContainer />}
+              {DUMMY_DATA.length >= 3 && <CarouselContainer {...DUMMY_DATA} />}
             </>
           )}
           {viewType === 'Month' && (
