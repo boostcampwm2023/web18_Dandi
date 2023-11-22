@@ -24,8 +24,8 @@ export class DiariesService {
     diary.author = user;
     diary.tags = tags;
     diary.summary = await this.getSummary(diary.title, diary.content);
-    // diary.mood = MoodDegree['매우 긍정'];
-    // this.analyzeMood(diary.content);
+    diary.mood = MoodDegree['매우 긍정'];
+    this.judgeOverallMood(diary.content);
 
     await this.diariesRepository.save(diary);
   }
@@ -94,9 +94,33 @@ export class DiariesService {
     return body.summary;
   }
 
-  private async analyzeMood(content: string) {
-    const plainContent = content.replace(/<img[^>]*>/g, '');
+  private async judgeOverallMood(content: string) {}
 
+  private async sumMoodAnalysis(fullContent: string) {
+    const plainContent = fullContent.replace(/<img[^>]*>/g, '');
+    const splitNumber = Math.floor(plainContent.length / 1000);
+
+    const moodStatics = {
+      [MoodType.POSITIVE]: 0,
+      [MoodType.NEGATIVE]: 0,
+      [MoodType.NEUTRAL]: 0,
+    };
+
+    for (let i = 0; i < splitNumber + 1; i++) {
+      const start = i * 1000;
+      const end = i < splitNumber ? start + 1000 : start + (plainContent.length % 1000);
+
+      const analysis = await this.analyzeMood(plainContent.slice(start, end));
+
+      Object.keys(analysis).forEach((key) => {
+        moodStatics[key] += analysis[key];
+      });
+    }
+
+    return moodStatics;
+  }
+
+  private async analyzeMood(content: string) {
     const response = await fetch(CLOVA_SENTIMENT_URL, {
       method: 'POST',
       headers: {
@@ -104,15 +128,12 @@ export class DiariesService {
         'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SENTIMENT_API_KEY,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        content: plainContent,
-      }),
+      body: JSON.stringify({ content }),
     });
 
     const jsonResponse = await response.json();
-    const analysis = jsonResponse.document.confidence;
 
-    return [analysis.positive, analysis.negative, analysis.neutral];
+    return jsonResponse.document.confidence;
 
     // switch (analysis.sentiment) {
     //   case MoodType.NEUTRAL:
