@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Friend } from './entity/friend.entity';
-import { DataSource, Equal, Repository } from 'typeorm';
+import { Brackets, DataSource, Equal, Repository } from 'typeorm';
 import { User } from 'src/users/entity/user.entity';
 import { FriendStatus } from './entity/friendStatus';
 
@@ -19,6 +19,22 @@ export class FriendsRepository extends Repository<Friend> {
       sender: Equal(senderId),
       receiver: Equal(receiverId),
     });
+  }
+
+  async findUserRelationsByStatus(userId: number, status: FriendStatus): Promise<Friend[]> {
+    return this.createQueryBuilder('friend')
+      .leftJoinAndSelect('friend.sender', 'sender')
+      .leftJoinAndSelect('friend.receiver', 'receiver')
+      .where('friend.status = :status', { status: status })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('friend.sender = :senderId', { senderId: userId }).orWhere(
+            'friend.receiver = :receiverId',
+            { receiverId: userId },
+          );
+        }),
+      )
+      .getMany();
   }
 
   removeRelation(relation: Friend): void {
