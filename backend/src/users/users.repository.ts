@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
+import { SocialType } from './entity/socialType';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
@@ -20,10 +21,10 @@ export class UsersRepository extends Repository<User> {
       .getOne();
   }
 
-  async createUser(authUserDto: AuthUserDto): Promise<User> {
-    const { id, email, nickname, socialType, profileImage } = authUserDto;
+  async createUser(authUserDto: AuthUserDto, socialType: SocialType): Promise<User> {
+    const { id, email, nickname, profile_image } = authUserDto;
 
-    return this.save({ socialId: id, email, nickname, socialType, profileImage });
+    return this.save({ socialId: id, email, nickname, socialType, profileImage: profile_image });
   }
 
   async findByNickname(nickname: string): Promise<User[]> {
