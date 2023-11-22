@@ -16,6 +16,7 @@ import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } fro
 import {
   CreateDiaryDto,
   GetAllDiaryEmotionsDto,
+  GetAllDiaryEmotionsResponseDto,
   GetDiaryResponseDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
@@ -100,15 +101,13 @@ export class DiariesController {
     @User() user: UserEntity,
     @Param('userId', ParseIntPipe) userId: number,
     @Query(ValidationPipe) getAllDiaryEmotionsDto: GetAllDiaryEmotionsDto,
-  ) {
-    const diaries = await this.diariesService.getAllDiaryEmotions(
+  ): Promise<Record<string, GetAllDiaryEmotionsResponseDto[]>> {
+    const emotions = await this.diariesService.getAllDiaryEmotions(
       user,
       userId,
       getAllDiaryEmotionsDto,
     );
 
-    console.log(diaries);
-
-    return [];
+    return { emotions };
   }
 }

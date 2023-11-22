@@ -98,3 +98,8 @@ export class GetAllDiaryEmotionsDto {
   })
   lastDate: string;
 }
+
+export class GetAllDiaryEmotionsResponseDto {
+  emotion: string;
+  count: number;
+}
