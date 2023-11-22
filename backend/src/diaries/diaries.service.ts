@@ -26,6 +26,7 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, diary.content);
     diary.mood = await this.judgeOverallMood(diary.content);
 
+    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -109,10 +110,14 @@ export class DiariesService {
 
     switch (type) {
       case MoodType.POSITIVE:
-        if (figure > 50) return MoodDegree.SO_GOOD;
+        if (figure > 50) {
+          return MoodDegree.SO_GOOD;
+        }
         return MoodDegree.GOOD;
       case MoodType.NEGATIVE:
-        if (figure > 50) return MoodDegree.SO_BAD;
+        if (figure > 50) {
+          return MoodDegree.SO_BAD;
+        }
         return MoodDegree.BAD;
       default:
         return MoodDegree.SO_SO;
@@ -121,7 +126,7 @@ export class DiariesService {
 
   private async sumMoodAnalysis(fullContent: string): Promise<[Record<string, number>, number]> {
     const plainContent = fullContent.replace(/<img[^>]*>/g, '');
-    const splitNumber = Math.floor(plainContent.length / 1000);
+    const numberOfChunk = Math.floor(plainContent.length / 1000) + 1;
 
     const moodStatistics = {
       [MoodType.POSITIVE]: 0,
@@ -129,9 +134,13 @@ export class DiariesService {
       [MoodType.NEUTRAL]: 0,
     };
 
-    for (let i = 0; i < splitNumber + 1; i++) {
+    for (let i = 0; i < numberOfChunk; i++) {
       const start = i * 1000;
-      const end = i < splitNumber ? start + 1000 : start + (plainContent.length % 1000);
+      const end = i < numberOfChunk - 1 ? start + 1000 : start + (plainContent.length % 1000);
+
+      if (start === end) {
+        break;
+      }
 
       const analysis = await this.analyzeMood(plainContent.slice(start, end));
 
@@ -140,10 +149,10 @@ export class DiariesService {
       });
     }
 
-    return [moodStatistics, splitNumber + 1];
+    return [moodStatistics, numberOfChunk];
   }
 
-  private async analyzeMood(content: string) {
+  private async analyzeMood(content: string): Promise<Record<string, number>> {
     const response = await fetch(CLOVA_SENTIMENT_URL, {
       method: 'POST',
       headers: {
