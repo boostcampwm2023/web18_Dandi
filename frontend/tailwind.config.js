@@ -22,12 +22,12 @@ export default {
       white: '#FFFFFF',
       blue: '#6AB4F9',
       emotion: {
-        null: '#EDEDED',
-        terrible: '#DE8080',
-        bad: '#E9AAAA',
-        soso: '#F5E096',
-        good: '#B8D3A2',
-        excellent: '#99B384',
+        0: '#EDEDED',
+        1: '#DE8080',
+        2: '#E9AAAA',
+        3: '#F5E096',
+        4: '#B8D3A2',
+        5: '#99B384',
       },
     },
     extend: {
