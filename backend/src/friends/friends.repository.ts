@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Friend } from './entity/friend.entity';
-import { Brackets, DataSource, Equal, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 import { User } from 'src/users/entity/user.entity';
 import { FriendStatus } from './entity/friendStatus';
 
@@ -26,14 +26,10 @@ export class FriendsRepository extends Repository<Friend> {
       .leftJoinAndSelect('friend.sender', 'sender')
       .leftJoinAndSelect('friend.receiver', 'receiver')
       .where('friend.status = :status', { status: status })
-      .andWhere(
-        new Brackets((qb) => {
-          qb.where('friend.sender = :senderId', { senderId: userId }).orWhere(
-            'friend.receiver = :receiverId',
-            { receiverId: userId },
-          );
-        }),
-      )
+      .andWhere('(friend.sender = :senderId OR friend.receiver = :receiverId)', {
+        senderId: userId,
+        receiverId: userId,
+      })
       .getMany();
   }
 

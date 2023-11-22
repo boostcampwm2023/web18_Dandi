@@ -21,6 +21,7 @@ export class FriendsController {
   ): Promise<Record<string, SearchUserResponseDto[] | StrangerResponseDto[]>> {
     const friends = await this.friendsService.getFriendsList(userId);
     const strangers = await this.friendsService.getStrangerList(userId);
+
     return { friends, strangers };
   }
 
@@ -33,6 +34,7 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.requestFriend({ senderId: user.id, receiverId });
+
     return '친구 신청이 완료되었습니다.';
   }
 
@@ -45,6 +47,7 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.cancelFriendRequest({ senderId: user.id, receiverId });
+
     return '친구 신청이 취소되었습니다.';
   }
 
@@ -70,5 +73,16 @@ export class FriendsController {
   ): Promise<string> {
     await this.friendsService.cancelFriendRequest({ senderId, receiverId: user.id });
     return '친구 신청을 거절했습니다.';
+  }
+  
+  @Get('search/:nickname')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '나의 친구 목록에서 친구 검색' })
+  @ApiOkResponse({ description: '친구 검색 성공' })
+  async searchFriend(
+    @User() user: UserEntity,
+    @Param('nickname') nickname: string,
+  ): Promise<SearchUserResponseDto[]> {
+    return this.friendsService.searchFriend(user.id, nickname);
   }
 }
