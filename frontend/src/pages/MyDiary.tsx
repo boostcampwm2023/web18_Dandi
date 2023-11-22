@@ -6,13 +6,13 @@ import DiaryListItem from '@components/Common/DiaryListItem';
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 import { viewTypes } from '@type/pages/MyDiary';
 import DateController from '@components/MyDiary/DateController';
-import { getNowMonth } from '@util/MyDiary';
+import { getNowMonth } from '@util/funcs';
 import Calendar from '@components/MyDiary/Calendar';
-import { dummyData } from '@util/dummyData';
+import { DUMMY_DATA } from '@/util/constants';
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
-  const [diaryData, setDiaryData] = useState<IDiaryContent[]>(dummyData);
+  const [diaryData, setDiaryData] = useState<IDiaryContent[]>(DUMMY_DATA);
   const [nowMonth, setNowMonth] = useState(new Date());
 
   const setPrevOrNextMonth = (plus: number) => {
@@ -21,7 +21,7 @@ const MyDiary = () => {
     setNowMonth(month);
   };
 
-  useEffect(() => setDiaryData(dummyData), []);
+  useEffect(() => setDiaryData(DUMMY_DATA), []);
 
   return (
     <>

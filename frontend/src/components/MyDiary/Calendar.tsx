@@ -1,4 +1,4 @@
-import { DAY_OF_WEEK } from '@util/Calendar';
+import { DAY_OF_WEEK } from '@util/constants';
 import DayItem from './DayItem';
 
 interface CalendarProp {
