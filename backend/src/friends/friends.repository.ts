@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Friend } from './entity/friend.entity';
 import { DataSource, Equal, Repository } from 'typeorm';
 import { User } from 'src/users/entity/user.entity';
+import { FriendStatus } from './entity/friendStatus';
 
 @Injectable()
 export class FriendsRepository extends Repository<Friend> {
@@ -22,5 +23,9 @@ export class FriendsRepository extends Repository<Friend> {
 
   removeRelation(relation: Friend): void {
     this.remove(relation);
+  }
+
+  updateStatus(relation: Friend): void {
+    this.update(relation.id, { status: FriendStatus.COMPLETE });
   }
 }
