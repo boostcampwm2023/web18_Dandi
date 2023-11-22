@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   @Column()
   socialType: SocialType;
 
-  @Column()
+  @Column({ length: 2083 })
   profileImage: string;
 
   @CreateDateColumn()
@@ -44,11 +44,11 @@ export class User extends BaseEntity {
     cascade: true,
     lazy: true,
   })
-  sender: Promise<Friend[]>;
+  sender: Friend[];
 
   @OneToMany(() => Friend, (friend) => friend.receiver, {
     cascade: true,
     lazy: true,
   })
-  receiver: Promise<Friend[]>;
+  receiver: Friend[];
 }

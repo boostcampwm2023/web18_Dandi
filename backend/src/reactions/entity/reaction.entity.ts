@@ -1,10 +1,10 @@
 import { Diary } from 'src/diaries/entity/diary.entity';
 import { User } from 'src/users/entity/user.entity';
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Reaction extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()

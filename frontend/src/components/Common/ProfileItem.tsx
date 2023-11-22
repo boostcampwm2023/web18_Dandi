@@ -6,8 +6,8 @@ interface ProfileItemProps {
 const ProfileItem = ({ img, nickName }: ProfileItemProps) => {
   return (
     <div className="flex h-16 w-28 items-center gap-2">
-      <img className="w-1/2 rounded-full" src={img} alt="Profile Img" />
-      <span className="w-1/2 text-xl font-bold">{nickName}</span>
+      <img className="h-12 w-12 rounded-full object-cover" src={img} alt="Profile Img" />
+      <span className="w-1/2 text-lg ">{nickName}</span>
     </div>
   );
 };

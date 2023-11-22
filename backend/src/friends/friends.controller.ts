@@ -51,6 +51,30 @@ export class FriendsController {
     return '친구 신청이 취소되었습니다.';
   }
 
+  @Post('allow/:senderId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '친구 신청 수락 API' })
+  @ApiOkResponse({ description: '친구 신청 수락 성공' })
+  async allowFriendRequest(
+    @User() user: UserEntity,
+    @Param('senderId', ParseIntPipe) senderId: number,
+  ): Promise<string> {
+    await this.friendsService.allowFriendRequest({ senderId, receiverId: user.id });
+    return '친구 신청을 수락했습니다.';
+  }
+
+  @Delete('allow/:senderId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '내가 받은 친구 신청 거절 API' })
+  @ApiOkResponse({ description: '친구 신청 거절 성공' })
+  async rejectFriendRequest(
+    @User() user: UserEntity,
+    @Param('senderId', ParseIntPipe) senderId: number,
+  ): Promise<string> {
+    await this.friendsService.cancelFriendRequest({ senderId, receiverId: user.id });
+    return '친구 신청을 거절했습니다.';
+  }
+  
   @Get('search/:nickname')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '나의 친구 목록에서 친구 검색' })
