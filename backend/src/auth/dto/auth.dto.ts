@@ -14,6 +14,11 @@ export class OAuthLoginDto {
   socialType: SocialType;
 }
 
+export class LoginResultDto {
+  userId: number;
+  token: string;
+}
+
 export class OAuthLoginResponseDto {
   @ApiProperty({ description: '사용자 ID' })
   id: number;

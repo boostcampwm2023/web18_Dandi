@@ -7,7 +7,7 @@ import {
 import { UsersRepository } from '../users/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entity/user.entity';
-import { AuthUserDto, OAuthLoginDto } from './dto/auth.dto';
+import { AuthUserDto, LoginResultDto, OAuthLoginDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { cookieExtractor } from './strategy/jwtAuth.strategy';
 import { REFRESH_ACCESS_TOKEN_URL } from './utils/auth.constant';
@@ -22,7 +22,7 @@ export class AuthService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async login(oAuthLoginDto: OAuthLoginDto): Promise<any> {
+  async login(oAuthLoginDto: OAuthLoginDto): Promise<LoginResultDto> {
     const { accessToken, refreshToken } = await this.getToken(oAuthLoginDto);
     const profile = await this.getUserProfile(accessToken);
 
