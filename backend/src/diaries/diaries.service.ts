@@ -112,6 +112,8 @@ export class DiariesService {
     }, []);
   }
 
+  async getFeedDiary(userId: number, lastIndex: number) {}
+
   private existsDiary(diary: Diary) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');

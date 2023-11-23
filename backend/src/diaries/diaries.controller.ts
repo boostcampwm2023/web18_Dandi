@@ -26,6 +26,8 @@ import {
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
   UpdateDiaryDto,
+  getFeedDiaryRequestDto,
+  getFeedDiaryResponseDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -36,6 +38,16 @@ import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 @Controller('diaries')
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
+
+  @Get('/friends')
+  @UseGuards(JwtAuthGuard)
+  async getFeedDiary(
+    @User() user: UserEntity,
+    @Query(new ValidationPipe()) queryString: getFeedDiaryRequestDto,
+  ): Promise<getFeedDiaryResponseDto> {
+    console.log(typeof queryString.lastIndex);
+    return;
+  }
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)

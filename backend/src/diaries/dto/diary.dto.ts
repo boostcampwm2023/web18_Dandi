@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateDiaryDto {
   @IsNotEmpty()
@@ -109,6 +110,14 @@ class DiaryInfos {
   id: number;
   title: string;
   createdAt: Date;
+}
+
+export class getFeedDiaryRequestDto {
+  @ApiProperty({ description: '커서 방식 페이지네이션을 위한 diary Index' })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  lastIndex: number;
 }
 
 export class FeedDiaryDto {
