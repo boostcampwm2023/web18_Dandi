@@ -21,7 +21,7 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
   };
 
   return (
-    <div className="flex w-[80%] flex-col ">
+    <div className="flex w-4/5 flex-col ">
       <div className="flex w-full justify-between">
         <label className="mb-3 text-xl font-bold" htmlFor="keyword">
           키워드 입력
@@ -35,7 +35,7 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
         value={keyword}
         onChange={changeKeyword}
         onKeyPress={addKeyword}
-        className="border-brown mb-3 h-[2.5rem]  w-[30%] rounded-xl border pl-4 outline-none"
+        className="border-brown mb-3 h-10  w-[30%] rounded-xl border pl-4 outline-none"
       />
       <KeywordItem keywordList={keywordList} />
     </div>

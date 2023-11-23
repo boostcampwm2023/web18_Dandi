@@ -22,13 +22,13 @@ const ProfileEdit = () => {
           alt={`${nickname} 프로필 이미지`}
         />
         <input
-          className="border-brown mb-3 h-10 w-[50%] rounded-xl border pl-3 outline-none"
+          className="border-brown mb-3 h-10 w-1/2 rounded-xl border pl-3 outline-none"
           type="text"
           name="friendSearch"
           id="friendSearch"
           placeholder={nickname}
         />
-        <button className="bg-mint w-[50%] rounded-xl py-2 font-bold">수정하기</button>
+        <button className="bg-mint w-1/2 rounded-xl py-2 font-bold">수정하기</button>
       </div>
     </div>
   );

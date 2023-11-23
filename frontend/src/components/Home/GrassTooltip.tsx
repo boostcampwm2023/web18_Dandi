@@ -11,20 +11,16 @@ const GrassTooltip = ({ content, scrollLeft, children }: GrassTooltipProps) => {
   return (
     <div
       className="whitespace-pre"
-      onMouseEnter={() => {
-        setShowTooltip(true);
-      }}
+      onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
       {children}
       {showTooltip && (
-        <div className="absolute">
-          <p
-            style={{ transform: `translateX(calc(-50% - ${scrollLeft}px))` }}
-            className={`relative -top-16 bg-default rounded p-2 text-white opacity-90`}
-          >
-            {content}
-          </p>
+        <div
+          style={{ transform: `translateX(calc(-50% - ${scrollLeft}px))` }}
+          className="bg-default absolute rounded p-2 text-white opacity-90"
+        >
+          {content}
         </div>
       )}
     </div>
