@@ -133,7 +133,6 @@ export class ReadUserDiariesRequestDto {
 
 export class ReadUserDiariesResponseDto {
   nickname: string;
-  // isLast: boolean;
   diaryList: AllDiaryInfosDto[];
 }
 
