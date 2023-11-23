@@ -39,7 +39,6 @@ export class DiariesRepository extends Repository<Diary> {
     return await this.createQueryBuilder('diary')
       .where('diary.author = :userId', { userId })
       .andWhere('diary.createdAt > :date', { date })
-      .orderBy('diary.createdAt', 'DESC')
       .getMany();
   }
 }

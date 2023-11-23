@@ -125,6 +125,11 @@ export class DiariesController {
 
   @Get('/mood/:userId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '1년의 일기 mood조회' })
+  @ApiCreatedResponse({
+    description: '일기 mood 조회 성공',
+    type: [getYearMoodResponseDto],
+  })
   async getMoodForYear(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<Record<string, getYearMoodResponseDto[]>> {
