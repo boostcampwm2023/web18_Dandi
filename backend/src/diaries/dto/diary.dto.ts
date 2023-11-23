@@ -132,7 +132,24 @@ export class ReadUserDiariesRequestDto {
 }
 
 export class ReadUserDiariesResponseDto {
+  @ApiProperty({ description: '일기 작성자 닉네임' })
   nickname: string;
+
+  @ApiProperty({
+    description: '일기 정보',
+    example: [
+      {
+        diaryId: 1,
+        thumbnail: 'imageURL',
+        title: '제목',
+        summary: '요약 정보',
+        tags: ['태그1'],
+        emotion: '😮‍💨',
+        reactionCount: 1,
+        createdAt: '2023-11-13T13:50:17.106Z',
+      },
+    ],
+  })
   diaryList: AllDiaryInfosDto[];
 }
 

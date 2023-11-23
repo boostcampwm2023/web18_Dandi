@@ -108,7 +108,7 @@ export class DiariesController {
   @ApiOperation({ description: '기간 내 일기 리스트 조회 API' })
   @ApiCreatedResponse({
     description: '일기 리스트 조회 성공',
-    type: [GetAllEmotionsResponseDto],
+    type: [ReadUserDiariesResponseDto],
   })
   @ApiQuery({ type: GetAllEmotionsRequestDto })
   async readUsersDiary(
