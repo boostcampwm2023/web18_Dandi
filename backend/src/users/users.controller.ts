@@ -2,7 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common'
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SearchUserResponseDto, getUserResponseDto } from './dto/user.dto';
+import { SearchUserResponseDto, GetUserResponseDto } from './dto/user.dto';
 
 @ApiTags('Users API')
 @Controller('users')
@@ -12,8 +12,8 @@ export class UsersController {
   @Get('/:userId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '사용자 정보 조회 API' })
-  @ApiOkResponse({ description: '사용자 정보 조회 성공', type: getUserResponseDto })
-  async getUserInfo(@Param('userId', ParseIntPipe) userId: number): Promise<getUserResponseDto> {
+  @ApiOkResponse({ description: '사용자 정보 조회 성공', type: GetUserResponseDto })
+  async getUserInfo(@Param('userId', ParseIntPipe) userId: number): Promise<GetUserResponseDto> {
     const { user, totalFriends, isExistedTodayDiary } =
       await this.usersService.findUserInfo(userId);
 

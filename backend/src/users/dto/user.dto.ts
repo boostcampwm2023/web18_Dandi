@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class getUserResponseDto {
+export class GetUserResponseDto {
   @ApiProperty({ description: '사용자 닉네임' })
   nickname: string;
 
