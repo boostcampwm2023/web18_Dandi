@@ -1,6 +1,8 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/users/entity/user.entity';
+import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -14,5 +16,23 @@ export class DiariesRepository extends Repository<Diary> {
         id,
       },
     });
+  }
+
+  async findAllDiaryEmotions(
+    userId: number,
+    isOwner: boolean,
+    startDate: string,
+    lastDate: string,
+  ): Promise<GetAllEmotionsResponseDto[]> {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .select(['diary.emotion as emotion', 'COUNT(diary.emotion) as emotionCount'])
+      .where('diary.author.id = :userId', { userId })
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
+      .groupBy('diary.emotion');
+
+    if (!isOwner) {
+      queryBuilder.andWhere('diary.status = :status', { status: 'public' });
+    }
+    return await queryBuilder.getRawMany();
   }
 }
