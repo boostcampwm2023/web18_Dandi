@@ -26,7 +26,6 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, diary.content);
     diary.mood = await this.judgeOverallMood(diary.content);
 
-    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -98,6 +97,9 @@ export class DiariesService {
   }
 
   private async getSummary(title: string, content: string) {
+    if (this.isShortContent(content)) {
+      return content;
+    }
     content = content.substring(0, 2000);
 
     const response = await fetch(
@@ -118,6 +120,12 @@ export class DiariesService {
 
     const body = await response.json();
     return body.summary;
+  }
+
+  private isShortContent(content: string) {
+    const sentences = content.split(/[.!?]/).filter((sentence) => sentence.trim() !== '');
+
+    return sentences.length <= 3;
   }
 
   private async judgeOverallMood(fullContent: string) {
