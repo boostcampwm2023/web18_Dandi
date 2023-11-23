@@ -1,13 +1,23 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SearchUserResponseDto } from './dto/user.dto';
+import { SearchUserResponseDto, getUserResponseDto } from './dto/user.dto';
 
 @ApiTags('Users API')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @Get('/users/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '사용자 정보 조회 API' })
+  @ApiOkResponse({ description: '사용자 정보 조회 성공', type: getUserResponseDto })
+  async getUserInfo(@Param('userId', ParseIntPipe) userId: number): Promise<getUserResponseDto> {
+    const user = await this.usersService.findUserById(userId);
+
+    return null;
+  }
 
   @Get('/search/:nickname')
   @UseGuards(JwtAuthGuard)
