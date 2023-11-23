@@ -110,3 +110,43 @@ class DiaryInfos {
   title: string;
   createdAt: Date;
 }
+
+export class FeedDiaryDto {
+  @ApiProperty({ description: '일기 ID' })
+  diaryId: number;
+
+  @ApiProperty({ description: '작성자 ID' })
+  authorId: number;
+
+  @ApiProperty({ description: '작성일' })
+  createdAt: string;
+
+  @ApiProperty({ description: '작성자 프로필 사진' })
+  profileImage: string;
+
+  @ApiProperty({ description: '작성자 닉네임' })
+  nickname: string;
+
+  @ApiProperty({ description: '일기 썸네일 사진' })
+  thumbnail: string;
+
+  @ApiProperty({ description: '일기 제목' })
+  title: string;
+
+  @ApiProperty({ description: '일기 태그 배열' })
+  tags: string[];
+
+  @ApiProperty({ description: '일기 3줄 요약' })
+  summary: string;
+
+  @ApiProperty({ description: '일기의 리액션 개수' })
+  reactionCount: number;
+}
+
+export class getFeedDiaryResponseDto {
+  @ApiProperty({ description: '마지막으로 조회한 일기 id' })
+  lastIndex: number;
+
+  @ApiProperty({ description: '친구 일기 배열' })
+  diaries: FeedDiaryDto[];
+}
