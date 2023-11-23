@@ -1,6 +1,6 @@
-export const EMOTION_LEVELS = ['no', 'terrible', 'bad', 'soso', 'good', 'excellent']
+export const EMOTION_LEVELS = ['no', 'terrible', 'bad', 'soso', 'good', 'excellent'];
 
-export const dummyData = [
+export const DUMMY_DATA = [
   { date: '2023-01-12', mood: 3 },
   { date: '2023-01-13', mood: 2 },
   { date: '2023-01-31', mood: 2 },

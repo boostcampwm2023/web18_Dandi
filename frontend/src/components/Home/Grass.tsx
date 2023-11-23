@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { EMOTION_LEVELS, dummyData } from '@/util/Grass';
+import { EMOTION_LEVELS, DUMMY_DATA } from '@util/Grass';
 import GrassTooltip from '@components/Home/GrassTooltip';
 
 interface GrassDataProps {
@@ -9,13 +9,13 @@ interface GrassDataProps {
 
 const Grass = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [_, setScrollLeft] = useState(0);
 
   const currentDate: Date = new Date();
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
   const dates: number[] = new Array(365).fill(0);
-  dummyData.forEach(({ date, mood }: GrassDataProps) => {
+  DUMMY_DATA.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate: Date = new Date(date);
     const index: number = Math.floor(
       (dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000),
@@ -55,7 +55,7 @@ const Grass = () => {
 
   return (
     <div className="flex h-full w-3/5 flex-col gap-2 p-5">
-      <p className="text-2xl font-bold">지난 1년간 {dummyData.length}개의 일기를 작성하셨어요.</p>
+      <p className="text-2xl font-bold">지난 1년간 {DUMMY_DATA.length}개의 일기를 작성하셨어요.</p>
       <div
         ref={scrollRef}
         className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2"
