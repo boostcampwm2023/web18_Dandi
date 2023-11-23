@@ -6,6 +6,30 @@ import { SearchUserResponseDto } from './dto/user.dto';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
+  async findUserInfo(userId: number) {
+    const user = await this.usersRepository.findUserInfoById(userId);
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
+    }
+    const sender = await user.sender;
+    const receiver = await user.receiver;
+    const diaries = await user.diaries;
+
+    const totalFriends = sender.length + receiver.length;
+    const isExistedTodayDiary = diaries.length !== 0 && this.isToday(diaries[0].createdAt);
+    return { user, totalFriends, isExistedTodayDiary };
+  }
+
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return (
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate()
+    );
+  }
+
   async findUserById(userId: number) {
     const user = await this.usersRepository.findById(userId);
 

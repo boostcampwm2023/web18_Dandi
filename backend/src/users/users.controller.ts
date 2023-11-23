@@ -9,14 +9,20 @@ import { SearchUserResponseDto, getUserResponseDto } from './dto/user.dto';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Get('/users/:userId')
+  @Get('/:userId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '사용자 정보 조회 API' })
   @ApiOkResponse({ description: '사용자 정보 조회 성공', type: getUserResponseDto })
   async getUserInfo(@Param('userId', ParseIntPipe) userId: number): Promise<getUserResponseDto> {
-    const user = await this.usersService.findUserById(userId);
+    const { user, totalFriends, isExistedTodayDiary } =
+      await this.usersService.findUserInfo(userId);
 
-    return null;
+    return {
+      nickname: user.nickname,
+      profileImage: user.profileImage,
+      totalFriends,
+      isExistedTodayDiary,
+    };
   }
 
   @Get('/search/:nickname')
