@@ -13,7 +13,7 @@ const Editor = () => {
   };
 
   return (
-    <div className="w-[80%]">
+    <div className="w-4/5">
       <div className="mb-6">
         <DiaryEditor
           ref={editorRef}

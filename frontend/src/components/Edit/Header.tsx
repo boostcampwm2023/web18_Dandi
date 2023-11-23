@@ -43,10 +43,7 @@ const Header = () => {
             onClick={toggleEmoji}
             readOnly
           />
-          <select
-            className="border-brown h-[2.5rem] rounded-xl border px-2 outline-none"
-            name="emotion"
-          >
+          <select className="border-brown h-10 rounded-xl border px-2 outline-none" name="emotion">
             {emotionList.map((item, index) => {
               const [emotion, value] = item;
               return (
@@ -63,7 +60,7 @@ const Header = () => {
         <input
           type="text"
           placeholder="제목을 입력하세요"
-          className="border-brown mb-5 mr-10 h-[3rem] w-[60%] rounded-xl border pl-4 outline-none"
+          className="border-brown mb-5 mr-10 h-12 w-3/5 rounded-xl border pl-4 outline-none"
           onChange={changeTitle}
           value={title}
         />
@@ -74,7 +71,7 @@ const Header = () => {
           <input
             type="checkbox"
             id="status"
-            className={`h-[2rem] w-[2rem] cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
+            className={`h-8 w-8 cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
             onChange={toggleStatus}
           />
         </div>
