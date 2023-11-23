@@ -112,11 +112,11 @@ export class DiariesController {
   async readUsersDiary(
     @User() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
-    @Query(ValidationPipe) readUserDiariesRequestDto: ReadUserDiariesRequestDto,
+    @Query(ValidationPipe) requestDto: ReadUserDiariesRequestDto,
   ) {
-    console.log(readUserDiariesRequestDto);
-    console.log(typeof readUserDiariesRequestDto.endDate);
-    console.log(readUserDiariesRequestDto.endDate);
+    const diaries = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
+
+    return diaries;
   }
 
   @Get('/emotions/:userId')

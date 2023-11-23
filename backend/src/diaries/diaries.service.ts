@@ -4,6 +4,7 @@ import {
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
+  ReadUserDiariesRequestDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
@@ -31,7 +32,6 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, diary.content);
     diary.mood = await this.judgeOverallMood(diary.content);
 
-    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -110,6 +110,10 @@ export class DiariesService {
       }
       return acc;
     }, []);
+  }
+
+  async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
+    await this.diariesRepository.findDiaryByAuthorIdWithPagination(id, user.id === id, requestDto);
   }
 
   private existsDiary(diary: Diary) {

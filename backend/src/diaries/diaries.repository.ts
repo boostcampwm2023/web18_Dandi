@@ -1,8 +1,9 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
-import { GetAllEmotionsResponseDto } from './dto/diary.dto';
+import { GetAllEmotionsResponseDto, ReadUserDiariesRequestDto } from './dto/diary.dto';
+
+const ITEM_PER_PAGE = 5;
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -16,6 +17,25 @@ export class DiariesRepository extends Repository<Diary> {
         id,
       },
     });
+  }
+
+  async findDiaryByAuthorIdWithPagination(
+    authorId: number,
+    isOwner: boolean,
+    requestDto: ReadUserDiariesRequestDto,
+  ) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .where('diary.author.id = :authorId', {
+        authorId,
+      })
+      .andWhere('diary.id < :lastIndex', { lastIndex: requestDto.lastIndex })
+      .orderBy('diary.id', 'DESC')
+      .limit(ITEM_PER_PAGE);
+
+    if (!isOwner) {
+      queryBuilder.andWhere('diary.status = :status', { status: 'public' });
+    }
+    return await queryBuilder.getRawMany();
   }
 
   async findAllDiaryBetweenDates(
