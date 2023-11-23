@@ -19,18 +19,14 @@ export class DiariesRepository extends Repository<Diary> {
     });
   }
 
-  async findDiariesByAuthorIdWithPagination(
-    authorId: number,
-    isOwner: boolean,
-    requestDto: ReadUserDiariesRequestDto,
-  ) {
+  async findDiariesByAuthorIdWithPagination(authorId: number, isOwner: boolean, lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoin('diary.reactions', 'reactions')
       .where('diary.author.id = :authorId', {
         authorId,
       })
-      .andWhere('diary.id < :lastIndex', { lastIndex: requestDto.lastIndex })
+      .andWhere('diary.id < :lastIndex', { lastIndex })
       .orderBy('diary.id', 'DESC')
       .limit(ITEM_PER_PAGE);
 

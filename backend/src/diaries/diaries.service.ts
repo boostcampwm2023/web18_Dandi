@@ -123,7 +123,7 @@ export class DiariesService {
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
         id,
         user.id === id,
-        requestDto,
+        requestDto.lastIndex,
       );
     } else {
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
