@@ -1,5 +1,5 @@
-import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 import { useRef } from 'react';
+import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
 const Editor = () => {
   const editorRef = useRef<DiaryEditor>(null);

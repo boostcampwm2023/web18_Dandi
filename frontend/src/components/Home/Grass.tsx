@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
-import { EMOTION_LEVELS, DUMMY_DATA } from '@util/Grass';
+
 import GrassTooltip from '@components/Home/GrassTooltip';
+
+import { EMOTION_LEVELS, DUMMY_DATA } from '@util/Grass';
 
 interface GrassDataProps {
   date: string;

@@ -1,5 +1,6 @@
-import DiaryListItem from '@components/Common/DiaryListItem';
 import { IDiaryContent } from '@type/components/Common/DiaryList';
+
+import DiaryListItem from '@components/Common/DiaryListItem';
 
 interface DiaryList {
   pageType: string;

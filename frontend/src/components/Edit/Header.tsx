@@ -1,5 +1,5 @@
-import EmojiPicker from 'emoji-picker-react';
 import { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 
 const Header = () => {
   const [title, setTitle] = useState('');
