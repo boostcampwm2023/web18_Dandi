@@ -98,6 +98,15 @@ export class GetAllEmotionsResponseDto {
   @ApiProperty({ description: '이모지' })
   emotion: string;
 
-  @ApiProperty({ description: '이모지 갯수' })
-  emotionCount: number;
+  @ApiProperty({
+    description: '이모지가 같은 일기 정보 배열',
+    example: [{ id: '1', title: '제목', createdAt: '2023-11-23T02:00:59.661Z' }],
+  })
+  diaryInfos: DiaryInfos[];
+}
+
+class DiaryInfos {
+  id: number;
+  title: string;
+  createdAt: Date;
 }
