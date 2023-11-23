@@ -126,7 +126,7 @@ export class DiariesService {
         requestDto,
       );
     } else {
-      diaries = await this.diariesRepository.findAllDiaryBetweenDates(
+      diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
         id,
         user.id === id,
         requestDto.startDate,
