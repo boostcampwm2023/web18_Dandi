@@ -18,7 +18,7 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
     switch (type) {
       case 'list':
         return (
-          <button className="bg-mint w-[80%] rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+          <button className="bg-mint w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
             친구 삭제
           </button>
         );
@@ -35,7 +35,7 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
         );
       case 'send':
         return (
-          <button className="bg-red w-[80%] rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+          <button className="bg-red w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
             신청 취소
           </button>
         );
