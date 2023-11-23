@@ -150,6 +150,9 @@ export class FeedDiaryDto {
 
   @ApiProperty({ description: '일기의 리액션 개수' })
   reactionCount: number;
+
+  @ApiProperty({ description: '사용자 본인이 남긴 이모지(없으면 null)' })
+  leavedReaction: string;
 }
 
 export class getFeedDiaryResponseDto {
