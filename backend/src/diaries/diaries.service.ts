@@ -12,12 +12,14 @@ import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
+import { FriendsService } from 'src/friends/friends.service';
 
 @Injectable()
 export class DiariesService {
   constructor(
     private readonly diariesRepository: DiariesRepository,
     private readonly tagsService: TagsService,
+    private readonly friendsService: FriendsService,
   ) {}
 
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto) {
