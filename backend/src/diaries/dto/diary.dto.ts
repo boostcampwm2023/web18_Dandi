@@ -1,7 +1,17 @@
-import { IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Matches,
+  Validate,
+  ValidateIf,
+} from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { TimeUnit } from './TimeUnit.enum';
 
 export class CreateDiaryDto {
   @IsNotEmpty()
@@ -109,4 +119,22 @@ class DiaryInfos {
   id: number;
   title: string;
   createdAt: Date;
+}
+
+export class ReadUserDiariesRequestDto {
+  @IsIn(Object.values(TimeUnit))
+  type: TimeUnit;
+
+  @ValidateIf((o) => o.type !== TimeUnit.Day)
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
+  startDate: Date;
+
+  @ValidateIf((o) => o.type !== TimeUnit.Day)
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
+  endDate: Date;
+
+  @ValidateIf((o) => o.type === TimeUnit.Day)
+  @Type(() => Number)
+  @IsNumber()
+  lastIndex: number;
 }

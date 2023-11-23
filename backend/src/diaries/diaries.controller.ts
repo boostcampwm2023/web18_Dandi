@@ -25,6 +25,7 @@ import {
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
+  ReadUserDiariesRequestDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
@@ -98,6 +99,24 @@ export class DiariesController {
     await this.diariesService.deleteDiary(user, id);
 
     return '일기가 삭제되었습니다.';
+  }
+
+  @Get('/user/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '기간 내 일기 emotion 조회 API' })
+  @ApiCreatedResponse({
+    description: '일기 emotion 조회 성공',
+    type: [GetAllEmotionsResponseDto],
+  })
+  @ApiQuery({ type: GetAllEmotionsRequestDto })
+  async readUsersDiary(
+    @User() user: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Query(ValidationPipe) readUserDiariesRequestDto: ReadUserDiariesRequestDto,
+  ) {
+    console.log(readUserDiariesRequestDto);
+    console.log(typeof readUserDiariesRequestDto.endDate);
+    console.log(readUserDiariesRequestDto.endDate);
   }
 
   @Get('/emotions/:userId')
