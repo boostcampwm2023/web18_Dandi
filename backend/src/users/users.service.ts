@@ -21,7 +21,7 @@ export class UsersService {
     return { user, totalFriends, isExistedTodayDiary };
   }
 
-  isToday(date: Date): boolean {
+  private isToday(date: Date): boolean {
     const today = new Date();
     return (
       date.getFullYear() === today.getFullYear() &&
