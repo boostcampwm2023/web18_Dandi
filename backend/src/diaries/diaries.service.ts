@@ -13,7 +13,7 @@ import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
-import { TimeUnit } from './dto/TimeUnit.enum';
+import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()

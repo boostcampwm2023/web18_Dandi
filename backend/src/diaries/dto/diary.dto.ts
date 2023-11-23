@@ -2,7 +2,7 @@ import { IsIn, IsNotEmpty, IsNumber, IsOptional, Matches, ValidateIf } from 'cla
 import { DiaryStatus } from '../entity/diaryStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { TimeUnit } from './TimeUnit.enum';
+import { TimeUnit } from './timeUnit.enum';
 
 export class CreateDiaryDto {
   @IsNotEmpty()

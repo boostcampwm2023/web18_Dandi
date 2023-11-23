@@ -1,7 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-import { ReadUserDiariesRequestDto } from './dto/diary.dto';
 
 const ITEM_PER_PAGE = 5;
 
