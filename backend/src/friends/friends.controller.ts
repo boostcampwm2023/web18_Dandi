@@ -1,14 +1,29 @@
-import { Controller, Delete, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { User } from 'src/users/utils/user.decorator';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SearchUserResponseDto } from 'src/users/dto/user.dto';
+import { StrangerResponseDto } from './dto/friend.dto';
 
 @ApiTags('friends API')
 @Controller('friends')
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) {}
+
+  @Get('/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '특정 사용자의 친구 목록 조회' })
+  @ApiOkResponse({ description: '친구 목록 조회 성공' })
+  async getFriendsManageList(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Record<string, SearchUserResponseDto[] | StrangerResponseDto[]>> {
+    const friends = await this.friendsService.getFriendsList(userId);
+    const strangers = await this.friendsService.getStrangerList(userId);
+
+    return { friends, strangers };
+  }
 
   @Post('/:receiverId')
   @UseGuards(JwtAuthGuard)
@@ -19,6 +34,7 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.requestFriend({ senderId: user.id, receiverId });
+
     return '친구 신청이 완료되었습니다.';
   }
 
@@ -31,6 +47,7 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.cancelFriendRequest({ senderId: user.id, receiverId });
+
     return '친구 신청이 취소되었습니다.';
   }
 
@@ -56,5 +73,16 @@ export class FriendsController {
   ): Promise<string> {
     await this.friendsService.cancelFriendRequest({ senderId, receiverId: user.id });
     return '친구 신청을 거절했습니다.';
+  }
+  
+  @Get('search/:nickname')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '나의 친구 목록에서 친구 검색' })
+  @ApiOkResponse({ description: '친구 검색 성공' })
+  async searchFriend(
+    @User() user: UserEntity,
+    @Param('nickname') nickname: string,
+  ): Promise<SearchUserResponseDto[]> {
+    return this.friendsService.searchFriend(user.id, nickname);
   }
 }

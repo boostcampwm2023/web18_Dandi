@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -13,7 +14,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestj
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
-import { CreateReactionDto, ReactionInfoResponseDto } from './dto/reaction.dto';
+import { ReactionRequestDto, ReactionInfoResponseDto } from './dto/reaction.dto';
 import { ReactionsService } from './reactions.service';
 
 @ApiTags('Reaction API')
@@ -29,7 +30,7 @@ export class ReactionsController {
     @User() user: UserEntity,
     @Param('diaryId', ParseIntPipe) diaryId: number,
   ): Promise<Record<string, ReactionInfoResponseDto[]>> {
-    const reactions = await this.reactionsService.getReaction(user, diaryId);
+    const reactions = await this.reactionsService.getAllReaction(user, diaryId);
 
     const reactionList = reactions.map<ReactionInfoResponseDto>((reaction) => {
       return {
@@ -50,10 +51,24 @@ export class ReactionsController {
   async createReaction(
     @User() user: UserEntity,
     @Param('diaryId', ParseIntPipe) diaryId: number,
-    @Body() createReactionDto: CreateReactionDto,
+    @Body() createReactionDto: ReactionRequestDto,
   ) {
     await this.reactionsService.saveReaction(user, diaryId, createReactionDto);
 
     return '일기에 반응을 남겼습니다.';
+  }
+
+  @Delete('/:diaryId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '리액션 삭제 API' })
+  @ApiOkResponse({ description: '리액션 삭제 성공' })
+  async deleteReaction(
+    @User() user: UserEntity,
+    @Param('diaryId', ParseIntPipe) diaryId: number,
+    @Body() reactionRequestDto: ReactionRequestDto,
+  ) {
+    await this.reactionsService.deleteReaction(user, diaryId, reactionRequestDto);
+
+    return '일기에 반응을 삭제했습니다.';
   }
 }

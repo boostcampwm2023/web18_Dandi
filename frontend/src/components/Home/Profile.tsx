@@ -1,9 +1,10 @@
+import { useState } from 'react';
+
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
 import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
-import { useState } from 'react';
 
 interface ProfileProps {
   nickname: string;
@@ -67,11 +68,11 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
             <p className="cursor-pointer" onClick={() => onClickButton('list')}>
               친구 {totalFriends}명
             </p>
-            <div className="border-brown w mx-5 border-l-2 border-solid" />
+            <div className="border-brown mx-5 border-l-2 border-solid" />
             <p className="cursor-pointer" onClick={() => onClickButton('request')}>
               친구 관리
             </p>
-            <div className="border-brown w mx-5 border-l-2 border-solid" />
+            <div className="border-brown mx-5 border-l-2 border-solid" />
             <p className="cursor-pointer" onClick={() => onClickButton('profileEdit')}>
               내 정보 수정
             </p>

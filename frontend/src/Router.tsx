@@ -6,7 +6,6 @@ import Feed from '@pages/Feed';
 import MyDiary from '@pages/MyDiary';
 import Edit from '@pages/Edit';
 import Detail from '@pages/Detail';
-import AuthLogin from '@pages/OAuthLogin';
 
 const Router = () => {
   return (
@@ -19,7 +18,6 @@ const Router = () => {
         <Route path="/my-diary" element={<MyDiary />} />
         <Route path="/edit" element={<Edit />} />
         <Route path="/detail/:diaryId" element={<Detail />} />
-        <Route path="/auth" element={<AuthLogin />} />
       </Routes>
     </BrowserRouter>
   );

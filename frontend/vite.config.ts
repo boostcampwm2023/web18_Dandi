@@ -11,9 +11,9 @@ export default defineConfig({
       '@pages': resolve(__dirname, 'src/pages'),
       '@components': resolve(__dirname, 'src/components'),
       '@assets': resolve(__dirname, 'src/assets'),
-      '@types': resolve(__dirname, 'src/types'),
       '@util': resolve(__dirname, 'src/util'),
       '@api': resolve(__dirname, 'src/api'),
+      '@type': resolve(__dirname, 'src/types'),
     },
   },
 });

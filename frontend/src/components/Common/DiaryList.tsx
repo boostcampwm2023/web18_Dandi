@@ -1,5 +1,6 @@
+import { IDiaryContent } from '@type/components/Common/DiaryList';
+
 import DiaryListItem from '@components/Common/DiaryListItem';
-import { IDiaryContent } from '@/src/types/components/Common/DiaryList';
 
 interface DiaryList {
   pageType: string;
@@ -15,8 +16,8 @@ const DiaryList = ({ pageType, diaryData }: DiaryList) => {
   ));
 
   return (
-    <div className="w-[60%] p-5">
-      <h1 className="mb-5 text-2xl font-bold text-[black]">{pageTitle}</h1>
+    <div className="w-3/5 p-5">
+      <h1 className="mb-5 text-2xl font-bold">{pageTitle}</h1>
       {content}
     </div>
   );
