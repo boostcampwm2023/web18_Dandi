@@ -1,5 +1,6 @@
-import KeywordItem from '@components/Edit/KeywordItem';
 import { useState } from 'react';
+
+import KeywordItem from '@components/Edit/KeywordItem';
 
 interface KeywordBoxProps {
   keywordList: string[];

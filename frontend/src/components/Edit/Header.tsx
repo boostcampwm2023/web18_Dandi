@@ -1,5 +1,5 @@
-import EmojiPicker from 'emoji-picker-react';
 import { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 
 const Header = () => {
   const [title, setTitle] = useState('');
@@ -34,7 +34,7 @@ const Header = () => {
         <p className="mb-5 text-2xl font-bold">오늘 기분은 어떠세요?</p>
         <div className="relative mb-5 flex items-center">
           <input
-            className="mr-3 w-[2.8rem] h-[2.8rem] cursor-pointer text-4xl outline-none"
+            className="mr-3 h-[2.8rem] w-[2.8rem] cursor-pointer text-4xl outline-none"
             type="text"
             name="emoji"
             id="emoji"

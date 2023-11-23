@@ -42,3 +42,5 @@ export const DUMMY_DATA = [
     diaryId: 1,
   },
 ];
+
+export const DATE_CONTROL_INDEX = 1;

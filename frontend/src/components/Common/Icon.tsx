@@ -6,7 +6,6 @@ interface ReactionProps {
   size?: 'default' | 'large';
 }
 
-// large일 때 추가하기
 const Icon = ({ id, styles, size = 'default' }: ReactionProps) => {
   const widthSize = size === 'large' ? 95 : 24;
   const heightSize = size === 'large' ? 82 : 24;

@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import Keyword from '../Common/Keyword';
-import Reaction from '../Common/Reaction';
-import ReactionList from '../Diary/ReactionList';
-import Modal from '../Common/Modal';
-import { IDiaryContent } from '@/types/components/Common/DiaryList';
-import { formatDate } from '@/util/funcs';
+
+import { IDiaryContent } from '@type/components/Common/DiaryList';
+
+import Keyword from '@components/Common/Keyword';
+import Reaction from '@components/Common/Reaction';
+import ReactionList from '@components/Diary/ReactionList';
+import Modal from '@components/Common/Modal';
+
+import { formatDate } from '@util/funcs';
 
 interface CardProps {
   data: IDiaryContent;

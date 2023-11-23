@@ -1,9 +1,10 @@
+import { useState } from 'react';
+
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
 import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
-import { useState } from 'react';
 
 interface ProfileProps {
   nickname: string;

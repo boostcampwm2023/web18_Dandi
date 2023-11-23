@@ -1,4 +1,5 @@
 import Icon from '@components/Common/Icon';
+
 interface ReactionProps {
   count: number;
   onClick: () => void;

@@ -1,4 +1,4 @@
-import Icon from '../Common/Icon';
+import Icon from '@components/Common/Icon';
 
 interface DateControllerProp {
   titles: string[];

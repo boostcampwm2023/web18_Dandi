@@ -1,5 +1,6 @@
+import DayItem from '@components/MyDiary/DayItem';
+
 import { DAY_OF_WEEK } from '@util/constants';
-import DayItem from './DayItem';
 
 interface CalendarProp {
   date: Date;

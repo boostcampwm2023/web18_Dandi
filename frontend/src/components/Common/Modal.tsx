@@ -1,5 +1,6 @@
 import { ReactNode, useState, useEffect } from 'react';
-import Icon from './Icon';
+
+import Icon from '@components/Common/Icon';
 
 interface ModalProps {
   showModal: boolean;

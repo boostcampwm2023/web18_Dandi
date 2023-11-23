@@ -1,12 +1,13 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { IDiaryContent } from '@type/components/Common/DiaryList';
+
 import Reaction from '@components/Common/Reaction';
 import ProfileItem from '@components/Common/ProfileItem';
 import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { IDiaryContent } from '@type/components/Common/DiaryList';
-import Keyword from './Keyword';
+import Keyword from '@components/Common/Keyword';
 
 interface DiaryListItemProps {
   pageType?: string;

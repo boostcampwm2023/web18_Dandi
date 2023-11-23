@@ -2,7 +2,8 @@ import DiaryList from '@components/Common/DiaryList';
 import NavBar from '@components/Common/NavBar';
 import Profile from '@components/Home/Profile';
 import Grass from '@components/Home/Grass';
-import { DUMMY_DATA } from '@/util/constants';
+
+import { DUMMY_DATA } from '@util/constants';
 
 const Home = () => {
   return (

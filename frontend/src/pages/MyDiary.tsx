@@ -1,24 +1,26 @@
+import { useEffect, useState } from 'react';
+
+import { viewTypes } from '@type/pages/MyDiary';
+import { IDiaryContent } from '@type/components/Common/DiaryList';
+
 import NavBar from '@components/Common/NavBar';
 import KeywordSearch from '@components/MyDiary/KeywordSearch';
 import ViewType from '@components/MyDiary/ViewType';
-import { useEffect, useState } from 'react';
 import DiaryListItem from '@components/Common/DiaryListItem';
-import { IDiaryContent } from '@type/components/Common/DiaryList';
-import { viewTypes } from '@type/pages/MyDiary';
 import DateController from '@components/MyDiary/DateController';
-import { getNowMonth, getNowWeek } from '@util/funcs';
 import Calendar from '@components/MyDiary/Calendar';
-import { DUMMY_DATA } from '@util/constants';
 import Card from '@components/MyDiary/Card';
-import { formatDate } from '@util/funcs';
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 
+import { getNowMonth, getNowWeek } from '@util/funcs';
+import { formatDate } from '@util/funcs';
+import { DUMMY_DATA } from '@util/constants';
+
 const calPeriod = () => {
-  const date = new Date();
-  let startDate = new Date(date);
-  startDate.setDate(date.getDate() - date.getDay());
-  let endDate = new Date(date);
-  endDate.setDate(date.getDate() + (6 - date.getDay()));
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - startDate.getDay());
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
   return [startDate, endDate];
 };
 
@@ -47,7 +49,9 @@ const MyDiary = () => {
     return [startDate, endDate];
   };
 
-  useEffect(() => setDiaryData(DUMMY_DATA), []);
+  useEffect(() => {
+    setDiaryData(DUMMY_DATA);
+  }, []);
 
   return (
     <>
