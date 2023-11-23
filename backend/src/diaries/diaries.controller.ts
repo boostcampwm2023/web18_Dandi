@@ -21,11 +21,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
+  AllDiaryInfosDto,
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
   ReadUserDiariesRequestDto,
+  ReadUserDiariesResponseDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
@@ -101,7 +103,7 @@ export class DiariesController {
     return '일기가 삭제되었습니다.';
   }
 
-  @Get('/user/:id')
+  @Get('/users/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '기간 내 일기 리스트 조회 API' })
   @ApiCreatedResponse({
@@ -113,10 +115,26 @@ export class DiariesController {
     @User() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Query(ValidationPipe) requestDto: ReadUserDiariesRequestDto,
-  ) {
-    const diaries = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
+  ): Promise<ReadUserDiariesResponseDto> {
+    const { author, diaries } = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
 
-    return diaries;
+    const diaryInfos = diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
+      const tags = await diary.tags;
+      const reactions = await diary.reactions;
+
+      return {
+        diaryId: diary.id,
+        title: diary.title,
+        thumbnail: diary.thumbnail,
+        summary: diary.summary,
+        tags: tags.map((t) => t.name),
+        emotion: diary.emotion,
+        reactionCount: reactions.length,
+        createdAt: diary.createdAt,
+      };
+    });
+
+    return { nickname: author.nickname, diaryList: await Promise.all(diaryInfos) };
   }
 
   @Get('/emotions/:userId')

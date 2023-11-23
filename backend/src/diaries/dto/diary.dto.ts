@@ -130,3 +130,20 @@ export class ReadUserDiariesRequestDto {
   @IsNumber()
   lastIndex: number;
 }
+
+export class ReadUserDiariesResponseDto {
+  nickname: string;
+  // isLast: boolean;
+  diaryList: AllDiaryInfosDto[];
+}
+
+export class AllDiaryInfosDto {
+  diaryId: number;
+  thumbnail: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  emotion: string;
+  reactionCount: number;
+  createdAt: Date;
+}
