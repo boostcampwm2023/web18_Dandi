@@ -103,9 +103,9 @@ export class DiariesController {
 
   @Get('/user/:id')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '기간 내 일기 emotion 조회 API' })
+  @ApiOperation({ description: '기간 내 일기 리스트 조회 API' })
   @ApiCreatedResponse({
-    description: '일기 emotion 조회 성공',
+    description: '일기 리스트 조회 성공',
     type: [GetAllEmotionsResponseDto],
   })
   @ApiQuery({ type: GetAllEmotionsRequestDto })
