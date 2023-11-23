@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import {
   CreateDiaryDto,
-  GetAllEmotionsDto,
+  GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
   UpdateDiaryDto,
@@ -102,16 +102,16 @@ export class DiariesController {
 
   @Get('/emotions/:userId')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '일기 삭제 API' })
+  @ApiOperation({ description: '기간 내 일기 emotion 조회 API' })
   @ApiCreatedResponse({
-    description: '일기 삭제 성공',
+    description: '일기 emotion 조회 성공',
     type: [GetAllEmotionsResponseDto],
   })
-  @ApiQuery({ type: GetAllEmotionsDto })
+  @ApiQuery({ type: GetAllEmotionsRequestDto })
   async getAllDiaryEmotions(
     @User() user: UserEntity,
     @Param('userId', ParseIntPipe) userId: number,
-    @Query(ValidationPipe) getAllDiaryEmotionsDto: GetAllEmotionsDto,
+    @Query(ValidationPipe) getAllDiaryEmotionsDto: GetAllEmotionsRequestDto,
   ): Promise<Record<string, GetAllEmotionsResponseDto[]>> {
     const emotions = await this.diariesService.findAllDiaryEmotions(
       user,

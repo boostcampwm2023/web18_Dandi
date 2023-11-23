@@ -85,7 +85,7 @@ export class UpdateDiaryDto {
   status: DiaryStatus;
 }
 
-export class GetAllEmotionsDto {
+export class GetAllEmotionsRequestDto {
   @IsOptional()
   @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
     message: '유효하지 않은 날짜 형식입니다.',
