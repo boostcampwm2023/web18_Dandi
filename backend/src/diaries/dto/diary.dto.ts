@@ -103,7 +103,7 @@ export class GetAllEmotionsResponseDto {
   emotionCount: number;
 }
 
-export class getAllMoodResponseDto {
+export class getYearMoodResponseDto {
   @ApiProperty({ description: '날짜' })
   date: Date;
 
