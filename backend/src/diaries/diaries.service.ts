@@ -14,11 +14,13 @@ import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
 import { TimeUnit } from './dto/TimeUnit.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class DiariesService {
   constructor(
     private readonly diariesRepository: DiariesRepository,
+    private readonly usersService: UsersService,
     private readonly tagsService: TagsService,
   ) {}
 
@@ -114,19 +116,25 @@ export class DiariesService {
   }
 
   async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
+    const author = await this.usersService.findUserById(id);
+
+    let diaries: Diary[];
     if (requestDto.type === TimeUnit.Day) {
-      return this.diariesRepository.findDiaryByAuthorIdWithPagination(
+      diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
         id,
         user.id === id,
         requestDto,
       );
+    } else {
+      diaries = await this.diariesRepository.findAllDiaryBetweenDates(
+        id,
+        user.id === id,
+        requestDto.startDate,
+        requestDto.endDate,
+      );
     }
-    return this.diariesRepository.findAllDiaryBetweenDates(
-      id,
-      user.id === id,
-      requestDto.startDate,
-      requestDto.endDate,
-    );
+
+    return { author, diaries };
   }
 
   private existsDiary(diary: Diary) {
