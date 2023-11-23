@@ -1,9 +1,7 @@
 import DiaryList from '@components/Common/DiaryList';
 import NavBar from '@components/Common/NavBar';
 import Profile from '@components/Home/Profile';
-import Grass from '@components/Home/Grass';
-
-import { DUMMY_DATA } from '@util/constants';
+import { dummyData } from '../util/dummyData';
 
 const Home = () => {
   return (
@@ -15,8 +13,7 @@ const Home = () => {
         totalFriends={10}
         profileImage="https://i.namu.wiki/i/VMIHkLm6DcUT4d9-vN4yFw7Yfitr8luT_U2YwJsugGodCQ01ooGH_kHX0D6sJ3HDS1YHfvy9B81al8rKCxqKYw.webp"
       />
-      <Grass />
-      <DiaryList pageType="home" diaryData={DUMMY_DATA} />
+      <DiaryList pageType="home" diaryData={dummyData} />
     </main>
   );
 };

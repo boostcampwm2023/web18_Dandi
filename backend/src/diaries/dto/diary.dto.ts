@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
+import { IsNotEmpty, Validate } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -18,6 +18,10 @@ export class CreateDiaryDto {
   @IsNotEmpty()
   @ApiProperty({ description: '감정(이모지)' })
   emotion: string;
+
+  @IsNotEmpty()
+  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)' })
+  mood: number;
 
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
@@ -47,7 +51,7 @@ export class GetDiaryResponseDto {
   @ApiProperty({ description: '감정(이모지)' })
   emotion: string;
 
-  @ApiProperty({ description: '사용자의 기분(1 ~ 5 사이의 정수 값)' })
+  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)' })
   mood: number;
 
   @ApiProperty({ description: '일기 태그 배열' })
@@ -70,43 +74,13 @@ export class UpdateDiaryDto {
   @ApiProperty({ description: '감정(이모지)', required: false })
   emotion: string;
 
+  @ApiProperty({ description: '사용자의 기분(a ~ b 사이의 실수 값)', required: false })
+  mood: number;
+
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
 
   @Validate(DiaryStatusValidator)
   @ApiProperty({ description: '공개/비공개 여부', required: false })
   status: DiaryStatus;
-}
-
-export class GetAllEmotionsRequestDto {
-  @IsOptional()
-  @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
-    message: '유효하지 않은 날짜 형식입니다.',
-  })
-  @ApiProperty({ description: '시작 날짜', required: false, example: '2023-11-22' })
-  startDate: string;
-
-  @IsOptional()
-  @Matches(/^$|^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, {
-    message: '유효하지 않은 날짜 형식입니다.',
-  })
-  @ApiProperty({ description: '마지막 날짜', required: false, example: '2023-11-22' })
-  lastDate: string;
-}
-
-export class GetAllEmotionsResponseDto {
-  @ApiProperty({ description: '이모지' })
-  emotion: string;
-
-  @ApiProperty({
-    description: '이모지가 같은 일기 정보 배열',
-    example: [{ id: '1', title: '제목', createdAt: '2023-11-23T02:00:59.661Z' }],
-  })
-  diaryInfos: DiaryInfos[];
-}
-
-class DiaryInfos {
-  id: number;
-  title: string;
-  createdAt: Date;
 }

@@ -3,19 +3,11 @@ import icons from '@assets/image/icons.svg';
 interface ReactionProps {
   id: string;
   styles?: string;
-  size?: 'default' | 'large';
 }
 
-const Icon = ({ id, styles, size = 'default' }: ReactionProps) => {
-  const widthSize = size === 'large' ? 95 : 24;
-  const heightSize = size === 'large' ? 82 : 24;
+const Icon = ({ id, styles }: ReactionProps) => {
   return (
-    <svg
-      width={widthSize}
-      height={heightSize}
-      viewBox={`0 0 ${widthSize} ${heightSize}`}
-      className={styles}
-    >
+    <svg width="24" height="24" viewBox="0 0 24 24" className={styles}>
       <use href={`${icons}#${id}`} />
     </svg>
   );

@@ -1,13 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { IDiaryContent } from '@type/components/Common/DiaryList';
-
 import Reaction from '@components/Common/Reaction';
 import ProfileItem from '@components/Common/ProfileItem';
 import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
-import Keyword from '@components/Common/Keyword';
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IDiaryContent } from '@/src/types/components/Common/DiaryList';
 
 interface DiaryListItemProps {
   pageType?: string;
@@ -51,7 +49,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
         <main className="flex flex-col justify-center">
           <div className="flex justify-start">
-            <img className="mb-6 w-full" src={diaryItem.thumbnail} alt="기본 이미지" />
+            <img className="mb-6 w-[100%]" src={diaryItem.thumbnail} alt="기본 이미지" />
           </div>
           <div className="mb-3 line-clamp-3 whitespace-pre-wrap text-sm font-medium">
             <p>{diaryItem.content}</p>
@@ -61,7 +59,9 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
       <div className="mb-3 flex flex-wrap gap-3 text-base">
         {diaryItem.keywords.map((keyword, index) => (
-          <Keyword key={index} text={keyword} />
+          <div key={index} className="bg-mint rounded-lg px-3 py-1">
+            <p>#{keyword}</p>
+          </div>
         ))}
       </div>
 

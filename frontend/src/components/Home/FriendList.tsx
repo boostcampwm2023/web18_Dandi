@@ -30,7 +30,7 @@ const FriendList = () => {
           id="friendSearch"
           placeholder="닉네임이나 이메일을 입력해주세요."
         />
-        <Icon id={'search'} styles="absolute top-2/3 right-[1%]" />
+        <Icon id={'search'} styles="absolute top-[66%] right-[1%]" />
       </div>
 
       <div>

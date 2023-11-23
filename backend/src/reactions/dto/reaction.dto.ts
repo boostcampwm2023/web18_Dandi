@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class ReactionRequestDto {
+export class CreateReactionDto {
   @IsNotEmpty()
   reaction: string;
 }

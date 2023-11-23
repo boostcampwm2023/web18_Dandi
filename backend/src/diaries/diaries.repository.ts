@@ -1,8 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
-import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -16,22 +14,5 @@ export class DiariesRepository extends Repository<Diary> {
         id,
       },
     });
-  }
-
-  async findAllDiaryBetweenDates(
-    userId: number,
-    isOwner: boolean,
-    startDate: string,
-    lastDate: string,
-  ): Promise<Diary[]> {
-    const queryBuilder = this.createQueryBuilder('diary')
-      .where('diary.author.id = :userId', { userId })
-      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate });
-
-    if (!isOwner) {
-      queryBuilder.andWhere('diary.status = :status', { status: 'public' });
-    }
-
-    return queryBuilder.getMany();
   }
 }

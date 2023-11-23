@@ -2,13 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./*"],
       "@components/*": ["./src/components/*"],
       "@pages/*": ["./src/pages/*"],
+      "@types/*": ["./src/types/*"],
       "@util/*": ["./src/util/*"],
-      "@assets/*": ["./src/assets/*"],
-      "@api/*": ["./src/api/*"],
-      "@type/*": ["src/types/*"]
+      "@asset/*": ["./src/asset/*"],
+      "@api/*": ["./src/api/*"]
     },
     "target": "ES2020",
     "useDefineForClassFields": true,

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { NaverStrategy } from './strategy/naverAuth.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import 'dotenv/config';
 import { JwtAuthStrategy } from './strategy/jwtAuth.strategy';
@@ -19,6 +20,6 @@ import { AuthRepository } from './auth.repository';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, JwtAuthStrategy],
+  providers: [AuthService, AuthRepository, NaverStrategy, JwtAuthStrategy],
 })
 export class AuthModule {}

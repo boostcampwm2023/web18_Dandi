@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
 import Modal from '@components/Common/Modal';
