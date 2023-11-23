@@ -1,10 +1,11 @@
 node_modules
 dist
 
-.vscode/settings.json
+### IDE
+.vscode
 .DS_Store
 
 /logs
 
-# ENV FIles
+### ENV Files
 .env
