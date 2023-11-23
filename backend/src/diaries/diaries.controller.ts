@@ -26,6 +26,7 @@ import {
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
   UpdateDiaryDto,
+  getYearMoodResponseDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -120,5 +121,15 @@ export class DiariesController {
     );
 
     return { emotions };
+  }
+
+  @Get('/mood/:userId')
+  @UseGuards(JwtAuthGuard)
+  async getMoodForYear(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Record<string, getYearMoodResponseDto[]>> {
+    const yearMood = await this.diariesService.getMoodForYear(userId);
+
+    return { yearMood };
   }
 }

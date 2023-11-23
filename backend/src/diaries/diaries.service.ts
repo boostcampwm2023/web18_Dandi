@@ -1,6 +1,11 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { DiariesRepository } from './diaries.repository';
-import { CreateDiaryDto, GetAllEmotionsRequestDto, UpdateDiaryDto } from './dto/diary.dto';
+import {
+  CreateDiaryDto,
+  GetAllEmotionsRequestDto,
+  UpdateDiaryDto,
+  getYearMoodResponseDto,
+} from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
@@ -83,6 +88,21 @@ export class DiariesService {
       startDate,
       lastDate,
     );
+  }
+
+  async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
+    const today = new Date();
+    const oneYearAgo = new Date(today);
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    const yearMood: getYearMoodResponseDto[] = [];
+    const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
+
+    diariesForYear.forEach((diary) => {
+      yearMood.push({ date: diary.createdAt, mood: diary.mood });
+    });
+
+    return yearMood;
   }
 
   private existsDiary(diary: Diary) {
