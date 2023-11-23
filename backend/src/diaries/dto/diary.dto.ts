@@ -119,11 +119,11 @@ export class ReadUserDiariesRequestDto {
 
   @ValidateIf((o) => o.type !== TimeUnit.Day)
   @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
-  startDate: Date;
+  startDate: string;
 
   @ValidateIf((o) => o.type !== TimeUnit.Day)
   @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
-  endDate: Date;
+  endDate: string;
 
   @ValidateIf((o) => o.type === TimeUnit.Day)
   @Type(() => Number)

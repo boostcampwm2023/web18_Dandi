@@ -13,6 +13,7 @@ import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
+import { TimeUnit } from './dto/TimeUnit.enum';
 
 @Injectable()
 export class DiariesService {
@@ -91,7 +92,7 @@ export class DiariesService {
     return this.groupDiariesByEmotion(diaries);
   }
 
-  groupDiariesByEmotion(diaries: Diary[]) {
+  private groupDiariesByEmotion(diaries: Diary[]) {
     return diaries.reduce<GetAllEmotionsResponseDto[]>((acc, crr) => {
       const diaryInfo = {
         id: crr.id,
@@ -113,7 +114,19 @@ export class DiariesService {
   }
 
   async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
-    await this.diariesRepository.findDiaryByAuthorIdWithPagination(id, user.id === id, requestDto);
+    if (requestDto.type === TimeUnit.Day) {
+      return this.diariesRepository.findDiaryByAuthorIdWithPagination(
+        id,
+        user.id === id,
+        requestDto,
+      );
+    }
+    return this.diariesRepository.findAllDiaryBetweenDates(
+      id,
+      user.id === id,
+      requestDto.startDate,
+      requestDto.endDate,
+    );
   }
 
   private existsDiary(diary: Diary) {
