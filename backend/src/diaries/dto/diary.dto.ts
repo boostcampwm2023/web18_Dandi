@@ -1,14 +1,5 @@
-import {
-  IsIn,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  Matches,
-  Validate,
-  ValidateIf,
-} from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, Matches, ValidateIf } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
-import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { TimeUnit } from './TimeUnit.enum';
@@ -33,7 +24,7 @@ export class CreateDiaryDto {
   tagNames: string[];
 
   @IsNotEmpty()
-  @Validate(DiaryStatusValidator)
+  @IsIn(Object.values(DiaryStatus))
   @ApiProperty({ description: '공개/비공개 여부' })
   status: DiaryStatus;
 }
@@ -83,7 +74,8 @@ export class UpdateDiaryDto {
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
 
-  @Validate(DiaryStatusValidator)
+  @IsOptional()
+  @IsIn(Object.values(DiaryStatus))
   @ApiProperty({ description: '공개/비공개 여부', required: false })
   status: DiaryStatus;
 }
