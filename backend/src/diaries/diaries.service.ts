@@ -95,12 +95,11 @@ export class DiariesService {
     const oneYearAgo = new Date(today);
     oneYearAgo.setFullYear(today.getFullYear() - 1);
 
-    const yearMood: getYearMoodResponseDto[] = [];
     const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
 
-    diariesForYear.forEach((diary) => {
-      yearMood.push({ date: diary.createdAt, mood: diary.mood });
-    });
+    const yearMood: getYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
+      return [...acc, { date: cur.createdAt, mood: cur.mood }];
+    }, []);
 
     return yearMood;
   }
