@@ -41,6 +41,8 @@ export class DiariesController {
 
   @Get('/friends')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '피드 일기 조회 API' })
+  @ApiOkResponse({ description: '피드 일기 조회 성공', type: getFeedDiaryResponseDto })
   async getFeedDiary(
     @User() user: UserEntity,
     @Query(ValidationPipe) queryString: getFeedDiaryRequestDto,

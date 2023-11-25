@@ -159,6 +159,22 @@ export class getFeedDiaryResponseDto {
   @ApiProperty({ description: '마지막으로 조회한 일기 id' })
   lastIndex: number;
 
-  @ApiProperty({ description: '친구 일기 배열' })
+  @ApiProperty({
+    description: '친구 일기 배열',
+    example: [
+      {
+        diaryId: 1,
+        createdAt: '2023-11-25T13:56:02.027Z',
+        profileImage: 'aldskf',
+        nickname: 'cuhyun',
+        thumbnail: null,
+        title: '카페에서 공부한 날',
+        summary: '카공은 즐거워',
+        tags: ['카페'],
+        reactionCount: 2,
+        leavedReaction: '🥤',
+      },
+    ],
+  })
   diaryList: FeedDiaryDto[];
 }
