@@ -43,10 +43,14 @@ export class DiariesController {
   @UseGuards(JwtAuthGuard)
   async getFeedDiary(
     @User() user: UserEntity,
-    @Query(new ValidationPipe()) queryString: getFeedDiaryRequestDto,
+    @Query(ValidationPipe) queryString: getFeedDiaryRequestDto,
   ): Promise<getFeedDiaryResponseDto> {
-    console.log(typeof queryString.lastIndex);
-    return;
+    const [diaryList, lastIndex] = await this.diariesService.getFeedDiary(
+      user.id,
+      queryString.lastIndex,
+    );
+
+    return { lastIndex, diaryList };
   }
 
   @Get('/:id')

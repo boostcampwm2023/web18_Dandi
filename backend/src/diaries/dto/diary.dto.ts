@@ -128,7 +128,7 @@ export class FeedDiaryDto {
   authorId: number;
 
   @ApiProperty({ description: '작성일' })
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty({ description: '작성자 프로필 사진' })
   profileImage: string;
@@ -151,8 +151,8 @@ export class FeedDiaryDto {
   @ApiProperty({ description: '일기의 리액션 개수' })
   reactionCount: number;
 
-  @ApiProperty({ description: '사용자 본인이 남긴 이모지(없으면 null)' })
-  leavedReaction: string;
+  @ApiProperty({ description: '사용자 본인이 남긴 리액션(없으면 null)' })
+  leavedReaction: string | null;
 }
 
 export class getFeedDiaryResponseDto {
@@ -160,5 +160,5 @@ export class getFeedDiaryResponseDto {
   lastIndex: number;
 
   @ApiProperty({ description: '친구 일기 배열' })
-  diaries: FeedDiaryDto[];
+  diaryList: FeedDiaryDto[];
 }

@@ -45,7 +45,7 @@ export class Diary extends BaseEntity {
   @ManyToOne(() => User, { nullable: false, lazy: true })
   author: User;
 
-  @OneToMany(() => Reaction, (reaction) => reaction.user, { lazy: true })
+  @OneToMany(() => Reaction, (reaction) => reaction.diary, { lazy: true })
   reactions: Reaction[];
 
   @ManyToMany(() => Tag, { cascade: true, lazy: true })

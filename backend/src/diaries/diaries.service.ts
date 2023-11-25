@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/com
 import { DiariesRepository } from './diaries.repository';
 import {
   CreateDiaryDto,
+  FeedDiaryDto,
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
   UpdateDiaryDto,
@@ -11,7 +12,12 @@ import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
-import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
+import {
+  CLOVA_SENTIMENT_URL,
+  MoodDegree,
+  MoodType,
+  PAGINATION_SIZE,
+} from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 
 @Injectable()
@@ -114,7 +120,54 @@ export class DiariesService {
     }, []);
   }
 
-  async getFeedDiary(userId: number, lastIndex: number) {}
+  async getFeedDiary(
+    userId: number,
+    lastIndex: number | undefined,
+  ): Promise<[FeedDiaryDto[], number]> {
+    const today = new Date();
+    const oneWeekAgo = new Date(today);
+    oneWeekAgo.setDate(today.getDate() - 7);
+
+    const friends = await this.friendsService.getFriendsList(userId);
+    const friendsIdList = friends.map((friend) => friend.id);
+
+    const diaries = await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
+      oneWeekAgo,
+      friendsIdList,
+      PAGINATION_SIZE,
+      lastIndex,
+    );
+
+    const feedDiaryList = await Promise.all(
+      diaries.map(async (diary) => {
+        const author = await diary.author;
+        const reactions = await diary.reactions;
+        const tags = await diary.tags;
+
+        const myReaction = reactions.find((reaction) => reaction.user.id === userId);
+
+        return {
+          diaryId: diary.id,
+          authorId: diary.author.id,
+          createdAt: diary.createdAt,
+          profileImage: author.profileImage,
+          nickname: author.nickname,
+          thumbnail: diary.thumbnail,
+          title: diary.title,
+          summary: diary.summary,
+          tags: tags.map((tag) => tag.name),
+          reactionCount: reactions.length,
+          leavedReaction: myReaction === undefined ? null : myReaction.reaction,
+        };
+      }),
+    );
+
+    if (diaries.length > 0) {
+      lastIndex = diaries[0].id;
+    }
+
+    return [feedDiaryList, lastIndex];
+  }
 
   private existsDiary(diary: Diary) {
     if (!diary) {
