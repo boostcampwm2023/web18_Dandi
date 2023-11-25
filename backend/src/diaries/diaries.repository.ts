@@ -17,22 +17,21 @@ export class DiariesRepository extends Repository<Diary> {
     });
   }
 
-  async findAllDiaryEmotions(
+  async findAllDiaryBetweenDates(
     userId: number,
     isOwner: boolean,
     startDate: string,
     lastDate: string,
-  ): Promise<GetAllEmotionsResponseDto[]> {
+  ): Promise<Diary[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .select(['diary.emotion as emotion', 'COUNT(diary.emotion) as emotionCount'])
       .where('diary.author.id = :userId', { userId })
-      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
-      .groupBy('diary.emotion');
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate });
 
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
-    return await queryBuilder.getRawMany();
+
+    return queryBuilder.getMany();
   }
 
   async findLatestDiaryByDate(userId: number, date: Date) {

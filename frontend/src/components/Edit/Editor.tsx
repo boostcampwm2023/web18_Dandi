@@ -1,5 +1,5 @@
-import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 import { useRef } from 'react';
+import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
 const Editor = () => {
   const editorRef = useRef<DiaryEditor>(null);
@@ -13,7 +13,7 @@ const Editor = () => {
   };
 
   return (
-    <div className="w-[80%]">
+    <div className="w-4/5">
       <div className="mb-6">
         <DiaryEditor
           ref={editorRef}

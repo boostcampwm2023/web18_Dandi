@@ -1,5 +1,5 @@
-import EmojiPicker from 'emoji-picker-react';
 import { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 
 const Header = () => {
   const [title, setTitle] = useState('');
@@ -34,7 +34,7 @@ const Header = () => {
         <p className="mb-5 text-2xl font-bold">오늘 기분은 어떠세요?</p>
         <div className="relative mb-5 flex items-center">
           <input
-            className="mr-3 w-[2.8rem] h-[2.8rem] cursor-pointer text-4xl outline-none"
+            className="mr-3 h-[2.8rem] w-[2.8rem] cursor-pointer text-4xl outline-none"
             type="text"
             name="emoji"
             id="emoji"
@@ -43,10 +43,7 @@ const Header = () => {
             onClick={toggleEmoji}
             readOnly
           />
-          <select
-            className="border-brown h-[2.5rem] rounded-xl border px-2 outline-none"
-            name="emotion"
-          >
+          <select className="border-brown h-10 rounded-xl border px-2 outline-none" name="emotion">
             {emotionList.map((item, index) => {
               const [emotion, value] = item;
               return (
@@ -63,7 +60,7 @@ const Header = () => {
         <input
           type="text"
           placeholder="제목을 입력하세요"
-          className="border-brown mb-5 mr-10 h-[3rem] w-[60%] rounded-xl border pl-4 outline-none"
+          className="border-brown mb-5 mr-10 h-12 w-3/5 rounded-xl border pl-4 outline-none"
           onChange={changeTitle}
           value={title}
         />
@@ -74,7 +71,7 @@ const Header = () => {
           <input
             type="checkbox"
             id="status"
-            className={`h-[2rem] w-[2rem] cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
+            className={`h-8 w-8 cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
             onChange={toggleStatus}
           />
         </div>

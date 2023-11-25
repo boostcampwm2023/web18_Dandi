@@ -3,8 +3,9 @@ import { DiariesRepository } from './diaries.repository';
 import {
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
-  UpdateDiaryDto,
   getYearMoodResponseDto,
+  GetAllEmotionsResponseDto,
+  UpdateDiaryDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
@@ -82,12 +83,34 @@ export class DiariesService {
       lastDate = currentDate.setMonth(currentDate.getMonth() + 1).toLocaleString();
     }
 
-    return await this.diariesRepository.findAllDiaryEmotions(
+    const diaries = await this.diariesRepository.findAllDiaryBetweenDates(
       userId,
       user.id === userId,
       startDate,
       lastDate,
     );
+    return this.groupDiariesByEmotion(diaries);
+  }
+
+  groupDiariesByEmotion(diaries: Diary[]) {
+    return diaries.reduce<GetAllEmotionsResponseDto[]>((acc, crr) => {
+      const diaryInfo = {
+        id: crr.id,
+        title: crr.title,
+        createdAt: crr.createdAt,
+      };
+
+      const existingEmotion = acc.find((e) => e.emotion === crr.emotion);
+      if (existingEmotion) {
+        existingEmotion.diaryInfos.push(diaryInfo);
+      } else {
+        acc.push({
+          emotion: crr.emotion,
+          diaryInfos: [diaryInfo],
+        });
+      }
+      return acc;
+    }, []);
   }
 
   async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {

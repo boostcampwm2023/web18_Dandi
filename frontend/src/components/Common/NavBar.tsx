@@ -1,5 +1,5 @@
-import logo from '@assets/image/logo.svg';
 import { NavLink, useNavigate } from 'react-router-dom';
+import logo from '@assets/image/logo.svg';
 
 const NavBar = () => {
   const navigate = useNavigate();
