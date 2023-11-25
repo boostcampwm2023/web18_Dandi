@@ -2,6 +2,7 @@ import { IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { MoodDegree } from '../utils/diaries.constant';
 
 export class CreateDiaryDto {
   @IsNotEmpty()
@@ -109,4 +110,12 @@ class DiaryInfos {
   id: number;
   title: string;
   createdAt: Date;
+}
+
+export class getYearMoodResponseDto {
+  @ApiProperty({ description: '날짜' })
+  date: Date;
+
+  @ApiProperty({ description: '그날 일기의 기분' })
+  mood: MoodDegree;
 }

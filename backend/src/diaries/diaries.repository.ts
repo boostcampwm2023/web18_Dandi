@@ -1,7 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
 import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 
 @Injectable()
@@ -33,5 +32,12 @@ export class DiariesRepository extends Repository<Diary> {
     }
 
     return queryBuilder.getMany();
+  }
+
+  async findLatestDiaryByDate(userId: number, date: Date) {
+    return await this.createQueryBuilder('diary')
+      .where('diary.author = :userId', { userId })
+      .andWhere('diary.createdAt > :date', { date })
+      .getMany();
   }
 }
