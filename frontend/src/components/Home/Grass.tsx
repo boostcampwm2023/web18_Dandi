@@ -1,5 +1,3 @@
-import { useRef, useEffect, useState } from 'react';
-
 import GrassTooltip from '@components/Home/GrassTooltip';
 
 import { EMOTION_LEVELS, DUMMY_DATA } from '@util/Grass';
@@ -10,9 +8,6 @@ interface GrassDataProps {
 }
 
 const Grass = () => {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [_, setScrollLeft] = useState(0);
-
   const currentDate: Date = new Date();
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
@@ -33,13 +28,13 @@ const Grass = () => {
     return `${moodContent} mood on ${tmpDate.toLocaleDateString()}`;
   };
 
-  const renderGrass = (scrollLeft: number) => {
+  const renderGrass = () => {
     return grassData.map((mood, index) => {
       if (mood === undefined) {
         return <div className={`m-[0.1rem] h-4 w-4`}></div>;
       } else {
         return (
-          <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent(index)}>
+          <GrassTooltip key={index} content={getTooltipContent(index)}>
             <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
           </GrassTooltip>
         );
@@ -47,26 +42,11 @@ const Grass = () => {
     });
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollRef.current) {
-        setScrollLeft(scrollRef.current.scrollLeft);
-      }
-    };
-    scrollRef.current?.addEventListener('scroll', handleScroll);
-    return () => {
-      scrollRef.current?.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   return (
     <div className="flex h-full w-3/5 flex-col gap-2 p-5">
       <p className="text-2xl font-bold">지난 1년간 {DUMMY_DATA.length}개의 일기를 작성하셨어요.</p>
-      <div
-        ref={scrollRef}
-        className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2"
-      >
-        {renderGrass(scrollRef.current?.scrollLeft || 0)}
+      <div className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2">
+        {renderGrass()}
       </div>
     </div>
   );
