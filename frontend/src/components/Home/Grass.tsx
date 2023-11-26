@@ -35,11 +35,15 @@ const Grass = () => {
 
   const renderGrass = (scrollLeft: number) => {
     return grassData.map((mood, index) => {
-      return (
-        <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent(index)}>
-          <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
-        </GrassTooltip>
-      );
+      if (mood === undefined) {
+        return <div className={`m-[0.1rem] h-4 w-4`}></div>;
+      } else {
+        return (
+          <GrassTooltip key={index} scrollLeft={scrollLeft} content={getTooltipContent(index)}>
+            <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
+          </GrassTooltip>
+        );
+      }
     });
   };
 
