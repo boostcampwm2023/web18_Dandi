@@ -1,15 +1,27 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect, useRef } from 'react';
 
 interface GrassTooltipProps {
   content: string;
-  scrollLeft: number;
   children: ReactNode;
 }
 
-const GrassTooltip = ({ content, scrollLeft, children }: GrassTooltipProps) => {
+const GrassTooltip = ({ content, children }: GrassTooltipProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const grassDiv = useRef<HTMLDivElement>(null);
+  const tooltipDiv = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const grassNode = grassDiv.current;
+    const tooltipNode = tooltipDiv.current;
+    if (grassNode && tooltipNode) {
+      const rect = grassNode.getBoundingClientRect();
+      tooltipNode.style.left = `${rect.left}px`;
+    }
+  }, [showTooltip]);
+
   return (
     <div
+      ref={grassDiv}
       className="whitespace-pre"
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
@@ -17,8 +29,8 @@ const GrassTooltip = ({ content, scrollLeft, children }: GrassTooltipProps) => {
       {children}
       {showTooltip && (
         <div
-          style={{ transform: `translateX(calc(-50% - ${scrollLeft}px))` }}
-          className="bg-default absolute rounded p-2 text-white opacity-90"
+          ref={tooltipDiv}
+          className="bg-default absolute -translate-x-1/2 rounded p-2 text-white opacity-90"
         >
           {content}
         </div>

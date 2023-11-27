@@ -4,7 +4,9 @@ import {
   CreateDiaryDto,
   FeedDiaryDto,
   GetAllEmotionsRequestDto,
+  getYearMoodResponseDto,
   GetAllEmotionsResponseDto,
+  ReadUserDiariesRequestDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
@@ -14,11 +16,14 @@ import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
+import { TimeUnit } from './dto/timeUnit.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class DiariesService {
   constructor(
     private readonly diariesRepository: DiariesRepository,
+    private readonly usersService: UsersService,
     private readonly tagsService: TagsService,
     private readonly friendsService: FriendsService,
   ) {}
@@ -34,7 +39,6 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, diary.content);
     diary.mood = await this.judgeOverallMood(diary.content);
 
-    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -94,7 +98,7 @@ export class DiariesService {
     return this.groupDiariesByEmotion(diaries);
   }
 
-  groupDiariesByEmotion(diaries: Diary[]) {
+  private groupDiariesByEmotion(diaries: Diary[]) {
     return diaries.reduce<GetAllEmotionsResponseDto[]>((acc, crr) => {
       const diaryInfo = {
         id: crr.id,
@@ -163,6 +167,42 @@ export class DiariesService {
     return [feedDiaryList, lastIndex];
   }
 
+  async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
+    const author = await this.usersService.findUserById(id);
+
+    let diaries: Diary[];
+    if (requestDto.type === TimeUnit.Day) {
+      diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
+        id,
+        user.id === id,
+        requestDto.lastIndex,
+      );
+    } else {
+      diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
+        id,
+        user.id === id,
+        requestDto.startDate,
+        requestDto.endDate,
+      );
+    }
+
+    return { author, diaries };
+  }
+
+  async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
+    const today = new Date();
+    const oneYearAgo = new Date(today);
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
+
+    const yearMood: getYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
+      return [...acc, { date: cur.createdAt, mood: cur.mood }];
+    }, []);
+
+    return yearMood;
+  }
+
   private existsDiary(diary: Diary) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
@@ -176,6 +216,9 @@ export class DiariesService {
   }
 
   private async getSummary(title: string, content: string) {
+    if (this.isShortContent(content)) {
+      return content;
+    }
     content = content.substring(0, 2000);
 
     const response = await fetch(
@@ -196,6 +239,12 @@ export class DiariesService {
 
     const body = await response.json();
     return body.summary;
+  }
+
+  private isShortContent(content: string) {
+    const sentences = content.split(/[.!?]/).filter((sentence) => sentence.trim() !== '');
+
+    return sentences.length <= 3;
   }
 
   private async judgeOverallMood(fullContent: string) {

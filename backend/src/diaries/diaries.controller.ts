@@ -21,13 +21,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
+  AllDiaryInfosDto,
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
+  ReadUserDiariesRequestDto,
+  ReadUserDiariesResponseDto,
   UpdateDiaryDto,
   getFeedDiaryRequestDto,
   getFeedDiaryResponseDto,
+  getYearMoodResponseDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -118,6 +122,40 @@ export class DiariesController {
     return '일기가 삭제되었습니다.';
   }
 
+  @Get('/users/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '기간 내 일기 리스트 조회 API' })
+  @ApiCreatedResponse({
+    description: '일기 리스트 조회 성공',
+    type: [ReadUserDiariesResponseDto],
+  })
+  @ApiQuery({ type: GetAllEmotionsRequestDto })
+  async readUsersDiary(
+    @User() user: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Query(ValidationPipe) requestDto: ReadUserDiariesRequestDto,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const { author, diaries } = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
+
+    const diaryInfos = diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
+      const tags = await diary.tags;
+      const reactions = await diary.reactions;
+
+      return {
+        diaryId: diary.id,
+        title: diary.title,
+        thumbnail: diary.thumbnail,
+        summary: diary.summary,
+        tags: tags.map((t) => t.name),
+        emotion: diary.emotion,
+        reactionCount: reactions.length,
+        createdAt: diary.createdAt,
+      };
+    });
+
+    return { nickname: author.nickname, diaryList: await Promise.all(diaryInfos) };
+  }
+
   @Get('/emotions/:userId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '기간 내 일기 emotion 조회 API' })
@@ -138,5 +176,20 @@ export class DiariesController {
     );
 
     return { emotions };
+  }
+
+  @Get('/mood/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '1년의 일기 mood조회' })
+  @ApiCreatedResponse({
+    description: '일기 mood 조회 성공',
+    type: [getYearMoodResponseDto],
+  })
+  async getMoodForYear(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Record<string, getYearMoodResponseDto[]>> {
+    const yearMood = await this.diariesService.getMoodForYear(userId);
+
+    return { yearMood };
   }
 }

@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { SocialType } from './socialType';
 import { Friend } from 'src/friends/entity/friend.entity';
+import { Diary } from 'src/diaries/entity/diary.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -40,15 +41,12 @@ export class User extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @OneToMany(() => Friend, (friend) => friend.sender, {
-    cascade: true,
-    lazy: true,
-  })
+  @OneToMany(() => Diary, (diary) => diary.author, { cascade: true, lazy: true })
+  diaries: Diary[];
+
+  @OneToMany(() => Friend, (friend) => friend.sender, { cascade: true, lazy: true })
   sender: Friend[];
 
-  @OneToMany(() => Friend, (friend) => friend.receiver, {
-    cascade: true,
-    lazy: true,
-  })
+  @OneToMany(() => Friend, (friend) => friend.receiver, { cascade: true, lazy: true })
   receiver: Friend[];
 }

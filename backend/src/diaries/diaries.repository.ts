@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 import { DiaryStatus } from './entity/diaryStatus';
-import { PAGINATION_SIZE } from './utils/diaries.constant';
+import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -20,6 +20,43 @@ export class DiariesRepository extends Repository<Diary> {
     });
   }
 
+  async findDiariesByAuthorIdWithPagination(authorId: number, isOwner: boolean, lastIndex: number) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .where('diary.author.id = :authorId', {
+        authorId,
+      })
+      .andWhere('diary.id < :lastIndex', { lastIndex })
+      .orderBy('diary.id', 'DESC')
+      .limit(ITEM_PER_PAGE);
+
+    if (!isOwner) {
+      queryBuilder.andWhere('diary.status = :status', { status: 'public' });
+    }
+    return await queryBuilder.getMany();
+  }
+
+  async findDiariesByAuthorIdWithDates(
+    authorId: number,
+    isOwner: boolean,
+    startDate: string,
+    lastDate: string,
+  ) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .where('diary.author.id = :authorId', { authorId })
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
+      .orderBy('diary.id', 'DESC');
+
+    if (!isOwner) {
+      queryBuilder.andWhere('diary.status = :status', { status: 'public' });
+    }
+
+    return queryBuilder.getMany();
+  }
+
   async findAllDiaryBetweenDates(
     userId: number,
     isOwner: boolean,
@@ -27,6 +64,8 @@ export class DiariesRepository extends Repository<Diary> {
     lastDate: string,
   ): Promise<Diary[]> {
     const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
       .where('diary.author.id = :userId', { userId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate });
 
@@ -58,5 +97,12 @@ export class DiariesRepository extends Repository<Diary> {
     }
 
     return await queryBuilder.getMany();
+  }
+
+  async findLatestDiaryByDate(userId: number, date: Date) {
+    return await this.createQueryBuilder('diary')
+      .where('diary.author = :userId', { userId })
+      .andWhere('diary.createdAt > :date', { date })
+      .getMany();
   }
 }

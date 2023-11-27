@@ -3,11 +3,39 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
 import { SocialType } from './entity/socialType';
+import { FriendStatus } from 'src/friends/entity/friendStatus';
+import { endOfDay, startOfDay } from 'date-fns';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
+  }
+
+  async findUserInfoById(userId: number) {
+    const today = new Date();
+
+    const user = this.createQueryBuilder('user')
+      .leftJoinAndSelect(
+        'user.diaries',
+        'diary',
+        'diary.createdAt >= :startOfDay AND diary.createdAt <= :endOfDay',
+        {
+          startOfDay: startOfDay(today),
+          endOfDay: endOfDay(today),
+        },
+      )
+      .leftJoinAndSelect('user.sender', 'sender', 'sender.status = :status', {
+        status: FriendStatus.COMPLETE,
+      })
+      .leftJoinAndSelect('user.receiver', 'receiver', 'receiver.status = :status', {
+        status: FriendStatus.COMPLETE,
+      })
+      .where('user.id = :userId', { userId })
+      .orderBy('diary.createdAt', 'DESC')
+      .getOne();
+
+    return user;
   }
 
   async findById(id: number): Promise<User> {
