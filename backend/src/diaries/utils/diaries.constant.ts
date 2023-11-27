@@ -1,6 +1,8 @@
 export const CLOVA_SENTIMENT_URL =
   'https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze';
 
+export const ITEM_PER_PAGE = 5;
+
 export enum MoodType {
   POSITIVE = 'positive',
   NEUTRAL = 'neutral',

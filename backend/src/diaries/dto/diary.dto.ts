@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsOptional, Matches, Validate } from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, Matches, ValidateIf } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
-import { DiaryStatusValidator } from '../utils/diaryStatus.validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { TimeUnit } from './timeUnit.enum';
 import { MoodDegree } from '../utils/diaries.constant';
 
 export class CreateDiaryDto {
@@ -24,7 +25,7 @@ export class CreateDiaryDto {
   tagNames: string[];
 
   @IsNotEmpty()
-  @Validate(DiaryStatusValidator)
+  @IsIn(Object.values(DiaryStatus))
   @ApiProperty({ description: '공개/비공개 여부' })
   status: DiaryStatus;
 }
@@ -74,7 +75,8 @@ export class UpdateDiaryDto {
   @ApiProperty({ description: 'tag 이름', required: false })
   tagNames: string[];
 
-  @Validate(DiaryStatusValidator)
+  @IsOptional()
+  @IsIn(Object.values(DiaryStatus))
   @ApiProperty({ description: '공개/비공개 여부', required: false })
   status: DiaryStatus;
 }
@@ -112,6 +114,57 @@ class DiaryInfos {
   createdAt: Date;
 }
 
+export class ReadUserDiariesRequestDto {
+  @IsIn(Object.values(TimeUnit))
+  type: TimeUnit;
+
+  @ValidateIf((o) => o.type !== TimeUnit.Day)
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
+  startDate: string;
+
+  @ValidateIf((o) => o.type !== TimeUnit.Day)
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: '유효하지 않은 날짜 형식입니다.' })
+  endDate: string;
+
+  @ValidateIf((o) => o.type === TimeUnit.Day)
+  @Type(() => Number)
+  @IsNumber()
+  lastIndex: number;
+}
+
+export class ReadUserDiariesResponseDto {
+  @ApiProperty({ description: '일기 작성자 닉네임' })
+  nickname: string;
+
+  @ApiProperty({
+    description: '일기 정보',
+    example: [
+      {
+        diaryId: 1,
+        thumbnail: 'imageURL',
+        title: '제목',
+        summary: '요약 정보',
+        tags: ['태그1'],
+        emotion: '😮‍💨',
+        reactionCount: 1,
+        createdAt: '2023-11-13T13:50:17.106Z',
+      },
+    ],
+  })
+  diaryList: AllDiaryInfosDto[];
+}
+
+export class AllDiaryInfosDto {
+  diaryId: number;
+  thumbnail: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  emotion: string;
+  reactionCount: number;
+  createdAt: Date;
+}
+  
 export class getYearMoodResponseDto {
   @ApiProperty({ description: '날짜' })
   date: Date;

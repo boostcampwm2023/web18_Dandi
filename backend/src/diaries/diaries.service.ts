@@ -5,6 +5,7 @@ import {
   GetAllEmotionsRequestDto,
   getYearMoodResponseDto,
   GetAllEmotionsResponseDto,
+  ReadUserDiariesRequestDto,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
@@ -13,11 +14,14 @@ import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
+import { TimeUnit } from './dto/timeUnit.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class DiariesService {
   constructor(
     private readonly diariesRepository: DiariesRepository,
+    private readonly usersService: UsersService,
     private readonly tagsService: TagsService,
   ) {}
 
@@ -32,7 +36,6 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, diary.content);
     diary.mood = await this.judgeOverallMood(diary.content);
 
-    console.log(diary);
     await this.diariesRepository.save(diary);
   }
 
@@ -92,7 +95,7 @@ export class DiariesService {
     return this.groupDiariesByEmotion(diaries);
   }
 
-  groupDiariesByEmotion(diaries: Diary[]) {
+  private groupDiariesByEmotion(diaries: Diary[]) {
     return diaries.reduce<GetAllEmotionsResponseDto[]>((acc, crr) => {
       const diaryInfo = {
         id: crr.id,
@@ -111,6 +114,28 @@ export class DiariesService {
       }
       return acc;
     }, []);
+  }
+
+  async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
+    const author = await this.usersService.findUserById(id);
+
+    let diaries: Diary[];
+    if (requestDto.type === TimeUnit.Day) {
+      diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
+        id,
+        user.id === id,
+        requestDto.lastIndex,
+      );
+    } else {
+      diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
+        id,
+        user.id === id,
+        requestDto.startDate,
+        requestDto.endDate,
+      );
+    }
+
+    return { author, diaries };
   }
 
   async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
