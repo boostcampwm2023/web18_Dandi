@@ -1,4 +1,12 @@
-import { IsIn, IsNotEmpty, IsNumber, IsOptional, Matches, Validate, ValidateIf } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Matches,
+  ValidateIf,
+} from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -231,7 +239,7 @@ export class AllDiaryInfosDto {
   reactionCount: number;
   createdAt: Date;
 }
-  
+
 export class getYearMoodResponseDto {
   @ApiProperty({ description: '날짜' })
   date: Date;

@@ -1,8 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
-import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
 
