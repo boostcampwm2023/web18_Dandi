@@ -87,6 +87,7 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
       <Button
         text={textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['buttonText']}
         type="default"
+        size='large'
         onClick={() => console.log('일기 쓰기')}
       />
       {showModal && (
