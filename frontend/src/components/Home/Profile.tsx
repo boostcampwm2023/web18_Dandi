@@ -53,8 +53,8 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
   };
 
   return (
-    <section className="flex flex-col items-center justify-center gap-14">
-      <div className="flex flex-row items-center justify-center">
+    <section className="flex flex-col items-center justify-center mb-10">
+      <div className="flex flex-row items-center justify-center mb-10">
         <img
           className="h-52 w-52 rounded-full object-cover"
           src={profileImage}
@@ -79,7 +79,7 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
           </div>
         </div>
       </div>
-      <div className="text-center text-2xl font-bold leading-relaxed">
+      <div className="text-center text-2xl font-bold leading-relaxed mb-5">
         {textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
           <p key={index}>{text}</p>
         ))}
@@ -87,6 +87,7 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
       <Button
         text={textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['buttonText']}
         type="default"
+        size='large'
         onClick={() => console.log('일기 쓰기')}
       />
       {showModal && (

@@ -8,9 +8,6 @@ export default {
     {
       pattern: /btn-(default|delete|normal|large)/,
     },
-    {
-      pattern: /btn/,
-    },
   ],
   theme: {
     colors: {
