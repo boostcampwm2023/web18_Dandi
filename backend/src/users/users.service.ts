@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { SearchUserResponseDto } from './dto/user.dto';
+import { isToday } from 'date-fns';
 
 @Injectable()
 export class UsersService {
@@ -16,18 +17,11 @@ export class UsersService {
     const receiver = await user.receiver;
     const diaries = await user.diaries;
 
-    const totalFriends = sender.length + receiver.length;
-    const isExistedTodayDiary = diaries.length !== 0 && this.isToday(diaries[0].createdAt);
-    return { user, totalFriends, isExistedTodayDiary };
-  }
+    console.log(diaries);
 
-  private isToday(date: Date): boolean {
-    const today = new Date();
-    return (
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate()
-    );
+    const totalFriends = sender.length + receiver.length;
+    const isExistedTodayDiary = diaries.length !== 0 && isToday(diaries[0].createdAt);
+    return { user, totalFriends, isExistedTodayDiary };
   }
 
   async findUserById(userId: number) {

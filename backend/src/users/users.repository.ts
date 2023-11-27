@@ -4,6 +4,7 @@ import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
 import { SocialType } from './entity/socialType';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
+import { endOfDay, startOfDay } from 'date-fns';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
@@ -12,8 +13,18 @@ export class UsersRepository extends Repository<User> {
   }
 
   async findUserInfoById(userId: number) {
+    const today = new Date();
+
     const user = this.createQueryBuilder('user')
-      .leftJoinAndSelect('user.diaries', 'diary')
+      .leftJoinAndSelect(
+        'user.diaries',
+        'diary',
+        'diary.createdAt >= :startOfDay AND diary.createdAt <= :endOfDay',
+        {
+          startOfDay: startOfDay(today),
+          endOfDay: endOfDay(today),
+        },
+      )
       .leftJoinAndSelect('user.sender', 'sender', 'sender.status = :status', {
         status: FriendStatus.COMPLETE,
       })
