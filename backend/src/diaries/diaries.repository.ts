@@ -1,7 +1,8 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-import { ITEM_PER_PAGE } from './utils/diaries.constant';
+import { DiaryStatus } from './entity/diaryStatus';
+import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -71,6 +72,29 @@ export class DiariesRepository extends Repository<Diary> {
     }
 
     return queryBuilder.getMany();
+  }
+
+  async findPaginatedDiaryByDateAndIdList(
+    date: Date,
+    idList: number[],
+    lastIndex: number | undefined,
+  ) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoinAndSelect('diary.author', 'user')
+      .leftJoinAndSelect('diary.tags', 'tags')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .where('diary.author IN (:...idList)', { idList })
+      .andWhere('diary.createdAt > :date', { date })
+      .andWhere('diary.status = :status', { status: DiaryStatus.PUBLIC })
+      .orderBy('diary.id', 'DESC')
+      .limit(PAGINATION_SIZE);
+
+    if (lastIndex !== undefined) {
+      queryBuilder.where('diary.id < :lastIndex', { lastIndex });
+    }
+
+    return await queryBuilder.getMany();
   }
 
   async findLatestDiaryByDate(userId: number, date: Date) {

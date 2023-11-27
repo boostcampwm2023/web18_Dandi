@@ -16,3 +16,5 @@ export enum MoodDegree {
   GOOD = 4,
   SO_GOOD = 5,
 }
+
+export const PAGINATION_SIZE = 5;

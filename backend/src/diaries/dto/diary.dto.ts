@@ -1,4 +1,12 @@
-import { IsIn, IsNotEmpty, IsNumber, IsOptional, Matches, ValidateIf } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Matches,
+  ValidateIf,
+} from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -114,6 +122,73 @@ class DiaryInfos {
   createdAt: Date;
 }
 
+export class getFeedDiaryRequestDto {
+  @ApiProperty({ description: '커서 방식 페이지네이션을 위한 diary Index' })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  lastIndex: number;
+}
+
+export class FeedDiaryDto {
+  @ApiProperty({ description: '일기 ID' })
+  diaryId: number;
+
+  @ApiProperty({ description: '작성자 ID' })
+  authorId: number;
+
+  @ApiProperty({ description: '작성일' })
+  createdAt: Date;
+
+  @ApiProperty({ description: '작성자 프로필 사진' })
+  profileImage: string;
+
+  @ApiProperty({ description: '작성자 닉네임' })
+  nickname: string;
+
+  @ApiProperty({ description: '일기 썸네일 사진' })
+  thumbnail: string;
+
+  @ApiProperty({ description: '일기 제목' })
+  title: string;
+
+  @ApiProperty({ description: '일기 태그 배열' })
+  tags: string[];
+
+  @ApiProperty({ description: '일기 3줄 요약' })
+  summary: string;
+
+  @ApiProperty({ description: '일기의 리액션 개수' })
+  reactionCount: number;
+
+  @ApiProperty({ description: '사용자 본인이 남긴 리액션(없으면 null)' })
+  leavedReaction: string | null;
+}
+
+export class getFeedDiaryResponseDto {
+  @ApiProperty({ description: '마지막으로 조회한 일기 id' })
+  lastIndex: number;
+
+  @ApiProperty({
+    description: '친구 일기 배열',
+    example: [
+      {
+        diaryId: 1,
+        createdAt: '2023-11-25T13:56:02.027Z',
+        profileImage: 'aldskf',
+        nickname: 'cuhyun',
+        thumbnail: null,
+        title: '카페에서 공부한 날',
+        summary: '카공은 즐거워',
+        tags: ['카페'],
+        reactionCount: 2,
+        leavedReaction: '🥤',
+      },
+    ],
+  })
+  diaryList: FeedDiaryDto[];
+}
+
 export class ReadUserDiariesRequestDto {
   @IsIn(Object.values(TimeUnit))
   type: TimeUnit;
@@ -164,7 +239,7 @@ export class AllDiaryInfosDto {
   reactionCount: number;
   createdAt: Date;
 }
-  
+
 export class getYearMoodResponseDto {
   @ApiProperty({ description: '날짜' })
   date: Date;

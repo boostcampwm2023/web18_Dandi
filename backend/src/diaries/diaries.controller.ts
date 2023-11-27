@@ -29,6 +29,8 @@ import {
   ReadUserDiariesRequestDto,
   ReadUserDiariesResponseDto,
   UpdateDiaryDto,
+  getFeedDiaryRequestDto,
+  getFeedDiaryResponseDto,
   getYearMoodResponseDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
@@ -40,6 +42,22 @@ import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 @Controller('diaries')
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
+
+  @Get('/friends')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '피드 일기 조회 API' })
+  @ApiOkResponse({ description: '피드 일기 조회 성공', type: getFeedDiaryResponseDto })
+  async getFeedDiary(
+    @User() user: UserEntity,
+    @Query(ValidationPipe) queryString: getFeedDiaryRequestDto,
+  ): Promise<getFeedDiaryResponseDto> {
+    const [diaryList, lastIndex] = await this.diariesService.getFeedDiary(
+      user.id,
+      queryString.lastIndex,
+    );
+
+    return { lastIndex, diaryList };
+  }
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
