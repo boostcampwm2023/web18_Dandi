@@ -17,8 +17,6 @@ export class UsersService {
     const receiver = await user.receiver;
     const diaries = await user.diaries;
 
-    console.log(diaries);
-
     const totalFriends = sender.length + receiver.length;
     const isExistedTodayDiary = diaries.length !== 0 && isToday(diaries[0].createdAt);
     return { user, totalFriends, isExistedTodayDiary };
