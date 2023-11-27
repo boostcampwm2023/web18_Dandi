@@ -61,7 +61,7 @@ const MyDiary = () => {
           <KeywordSearch />
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>
-        <section className="flex flex-col items-center overflow-hidden">
+        <section className="flex flex-col items-center">
           {viewType === DIARY_VIEW_TYPE.DAY &&
             diaryData.map((data, index) => <DiaryListItem diaryItem={data} key={index} />)}
           {viewType === DIARY_VIEW_TYPE.WEEK && (

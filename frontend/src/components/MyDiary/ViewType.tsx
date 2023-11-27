@@ -1,5 +1,6 @@
-import { DIARY_VIEW_TYPE_LIST } from '@/util/constants';
 import { viewTypes } from '@type/pages/MyDiary';
+
+import { DIARY_VIEW_TYPE_LIST } from '@util/constants';
 
 interface ViewTypeProp {
   viewType: viewTypes;

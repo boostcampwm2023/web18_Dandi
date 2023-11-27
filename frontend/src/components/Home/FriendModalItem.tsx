@@ -1,5 +1,6 @@
-import { PROFILE_BUTTON_TYPE } from '@/util/constants';
 import { useNavigate } from 'react-router-dom';
+
+import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface FriendModalItemProps {
   email: string;

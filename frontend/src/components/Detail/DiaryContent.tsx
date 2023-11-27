@@ -51,7 +51,7 @@ const DiaryContent = ({
             </div>
           ))}
         </div>
-        <Reaction count={reactionCount} onClick={toggleShowModal} />
+        <Reaction count={reactionCount} textOnClick={toggleShowModal} />
         <Modal showModal={showModal} closeModal={toggleShowModal}>
           <ReactionList />
         </Modal>

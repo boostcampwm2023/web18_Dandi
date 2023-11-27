@@ -11,7 +11,7 @@ export const DUMMY_DATA = [
     title: '첫번째',
     content: `일기내용입니다.\n일기내용입니다.\n세 번째 줄까지만 보입니다다다다다다다다다다다다다다다다다다다다`,
     keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
-    reactionCount: 10,
+    reactionCount: 1000,
     authorId: 1,
     diaryId: 1,
   },

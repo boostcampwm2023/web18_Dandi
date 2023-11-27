@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
@@ -7,7 +8,7 @@ import Reaction from '@components/Common/Reaction';
 import ReactionList from '@components/Diary/ReactionList';
 import Modal from '@components/Common/Modal';
 
-import { formatDate } from '@util/funcs';
+import { formatDateString } from '@util/funcs';
 import { SMALL } from '@util/constants';
 
 interface CardProps {
@@ -18,14 +19,21 @@ interface CardProps {
 
 const Card = ({ data, styles, size }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState('');
+
   const toggleShowModal = () => setShowModal((prev) => !prev);
+  const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+  const onClickEmoji = (emojiData: any) => {
+    setSelectedEmoji(emojiData.emoji);
+    toggleShowEmojiPicker();
+  };
+
   return (
     <div
-      className={`border-brown flex flex-col gap-5 rounded-xl border border-solid p-7 ${styles}`}
+      className={`border-brown relative flex flex-col gap-5 rounded-xl border border-solid p-7 ${styles}`}
     >
-      <p className={`${size === SMALL ? 'text-sm' : ''}`}>
-        {formatDate(new Date(data.createdAt), 'kor')}
-      </p>
+      <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(data.createdAt)}</p>
       <h3 className="text-xl font-bold">{data.title}</h3>
       <img src={data.thumbnail} />
       <div className="whitespace-pre-wrap text-sm">
@@ -37,10 +45,21 @@ const Card = ({ data, styles, size }: CardProps) => {
         ))}
       </div>
 
-      <Reaction count={0} onClick={toggleShowModal} styles={`${size === SMALL ? 'text-sm' : ''}`} />
+      <Reaction
+        count={data.reactionCount}
+        textOnClick={toggleShowModal}
+        iconOnClick={toggleShowEmojiPicker}
+        emoji={selectedEmoji}
+        styles={`${size === SMALL ? 'text-sm' : ''}`}
+      />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
         <ReactionList />
       </Modal>
+      {showEmojiPicker && (
+        <aside className="absolute z-50 mt-2">
+          <EmojiPicker onEmojiClick={onClickEmoji} />
+        </aside>
+      )}
     </div>
   );
 };

@@ -22,7 +22,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
   const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [_, setSelectedEmoji] = useState('');
+  const [selectedEmoji, setSelectedEmoji] = useState('');
   const toggleShowModal = () => setShowModal((prev) => !prev);
   const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
 
@@ -41,6 +41,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
   const onClickEmoji = (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
+    toggleShowEmojiPicker();
   };
 
   return (
@@ -75,14 +76,15 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
       <Reaction
         count={diaryItem.reactionCount}
-        onClick={pageType === FEED ? toggleShowEmojiPicker : toggleShowModal}
-        type={pageType === FEED ? 'leave' : 'check'}
+        iconOnClick={toggleShowEmojiPicker}
+        textOnClick={toggleShowModal}
+        emoji={selectedEmoji}
       />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
         <ReactionList />
       </Modal>
       {showEmojiPicker && (
-        <aside className="absolute mt-2">
+        <aside className="absolute z-50 mt-2">
           <EmojiPicker onEmojiClick={onClickEmoji} />
         </aside>
       )}

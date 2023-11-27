@@ -1,5 +1,6 @@
 import NavBar from '@components/Common/NavBar';
 import DiaryList from '@components/Common/DiaryList';
+
 import { FEED } from '@util/constants';
 
 const Feed = () => {
