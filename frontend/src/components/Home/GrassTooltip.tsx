@@ -12,12 +12,10 @@ const GrassTooltip = ({ content, children }: GrassTooltipProps) => {
 
   useEffect(() => {
     const grassNode = grassDiv.current;
-
-    if (grassNode) {
+    const tooltipNode = tooltipDiv.current;
+    if (grassNode && tooltipNode) {
       const rect = grassNode.getBoundingClientRect();
-      if (tooltipDiv.current) {
-        tooltipDiv.current.style.left = `${rect.left}px`;
-      }
+      tooltipNode.style.left = `${rect.left}px`;
     }
   }, [showTooltip]);
 
