@@ -1,8 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
-
-const ITEM_PER_PAGE = 5;
+import { ITEM_PER_PAGE } from './utils/diaries.constant';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -42,8 +41,8 @@ export class DiariesRepository extends Repository<Diary> {
     lastDate: string,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
       .orderBy('diary.id', 'DESC');
@@ -62,8 +61,8 @@ export class DiariesRepository extends Repository<Diary> {
     lastDate: string,
   ): Promise<Diary[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
       .where('diary.author.id = :userId', { userId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate });
 
