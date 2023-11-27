@@ -53,7 +53,7 @@ const ReactionList = () => {
       {Object.entries(groupedReactions).map(([emoji, friends]) => (
         <div key={emoji} className="flex items-center gap-4">
           <div className="text-4xl">{emoji}</div>
-          <ul className="flex w-full rounded-2xl border bg-white p-4">
+          <ul className="flex w-full flex-wrap rounded-2xl border bg-white p-4">
             {friends.map((friend, index) => (
               <li key={index} className="">
                 <ProfileItem img={friend.img} nickName={friend.nickName} />
