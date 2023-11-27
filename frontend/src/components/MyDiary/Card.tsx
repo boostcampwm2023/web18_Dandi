@@ -8,6 +8,7 @@ import ReactionList from '@components/Diary/ReactionList';
 import Modal from '@components/Common/Modal';
 
 import { formatDate } from '@util/funcs';
+import { SMALL } from '@util/constants';
 
 interface CardProps {
   data: IDiaryContent;
@@ -22,7 +23,7 @@ const Card = ({ data, styles, size }: CardProps) => {
     <div
       className={`border-brown flex flex-col gap-5 rounded-xl border border-solid p-7 ${styles}`}
     >
-      <p className={`${size === 'small' ? 'text-sm' : ''}`}>
+      <p className={`${size === SMALL ? 'text-sm' : ''}`}>
         {formatDate(new Date(data.createdAt), 'kor')}
       </p>
       <h3 className="text-xl font-bold">{data.title}</h3>
@@ -32,15 +33,11 @@ const Card = ({ data, styles, size }: CardProps) => {
       </div>
       <div className="flex w-full flex-wrap gap-3">
         {data.keywords.map((keyword, index) => (
-          <Keyword key={index} text={keyword} styles={`${size === 'small' ? 'text-xs' : ''}`} />
+          <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />
         ))}
       </div>
 
-      <Reaction
-        count={0}
-        onClick={toggleShowModal}
-        styles={`${size === 'small' ? 'text-sm' : ''}`}
-      />
+      <Reaction count={0} onClick={toggleShowModal} styles={`${size === SMALL ? 'text-sm' : ''}`} />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
         <ReactionList />
       </Modal>

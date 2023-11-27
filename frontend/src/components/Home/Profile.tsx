@@ -5,6 +5,13 @@ import Modal from '@components/Common/Modal';
 import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
+import {
+  DEFAULT,
+  GREET_MESSAGES,
+  PROFILE_MODAL_CONTENT_TYPE,
+  TEXT_ABOUT_EXISTED_TODAY,
+  LARGE,
+} from '@util/constants';
 
 interface ProfileProps {
   nickname: string;
@@ -28,33 +35,22 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
 
   const getModalContent = (type: string) => {
     switch (type) {
-      case 'list':
+      case PROFILE_MODAL_CONTENT_TYPE.LIST:
         return <FriendList />;
-      case 'request':
+      case PROFILE_MODAL_CONTENT_TYPE.REQUEST:
         return <FriendRequest />;
-      case 'profileEdit':
+      case PROFILE_MODAL_CONTENT_TYPE.EDIT:
         return <ProfileEdit />;
     }
   };
 
   const modalContent = getModalContent(showModalType);
 
-  const greetMessages = ['좋은 하루예요!', '안녕하세요!', '반가워요!'];
-  const getRandomIndex = Math.floor(Math.random() * greetMessages.length);
-  const textAboutIsExistedTodayDiary = {
-    true: {
-      buttonText: '오늘 하루 보러 가기',
-      noticeText: ['오늘 일기를 작성하셨네요!', '작성하신 일기를 보여드릴게요.'],
-    },
-    false: {
-      buttonText: '오늘 하루 기록하기',
-      noticeText: ['아직 오늘 일기를 작성하지 않으셨네요!', '일기를 작성해볼까요?'],
-    },
-  };
+  const getRandomIndex = Math.floor(Math.random() * GREET_MESSAGES.length);
 
   return (
-    <section className="flex flex-col items-center justify-center mb-10">
-      <div className="flex flex-row items-center justify-center mb-10">
+    <section className="mb-10 flex flex-col items-center justify-center">
+      <div className="mb-10 flex flex-row items-center justify-center">
         <img
           className="h-52 w-52 rounded-full object-cover"
           src={profileImage}
@@ -62,32 +58,41 @@ const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: 
         />
         <div className="ml-10">
           <p className="mb-8 text-3xl font-bold">
-            {nickname}님, {greetMessages[getRandomIndex]}
+            {nickname}님, {GREET_MESSAGES[getRandomIndex]}
           </p>
           <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid p-5 text-center text-lg font-bold">
-            <p className="cursor-pointer" onClick={() => onClickButton('list')}>
+            <p
+              className="cursor-pointer"
+              onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.LIST)}
+            >
               친구 {totalFriends}명
             </p>
             <div className="border-brown mx-5 border-l-2 border-solid" />
-            <p className="cursor-pointer" onClick={() => onClickButton('request')}>
+            <p
+              className="cursor-pointer"
+              onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.REQUEST)}
+            >
               친구 관리
             </p>
             <div className="border-brown mx-5 border-l-2 border-solid" />
-            <p className="cursor-pointer" onClick={() => onClickButton('profileEdit')}>
+            <p
+              className="cursor-pointer"
+              onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.EDIT)}
+            >
               내 정보 수정
             </p>
           </div>
         </div>
       </div>
-      <div className="text-center text-2xl font-bold leading-relaxed mb-5">
-        {textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
+      <div className="mb-5 text-center text-2xl font-bold leading-relaxed">
+        {TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
           <p key={index}>{text}</p>
         ))}
       </div>
       <Button
-        text={textAboutIsExistedTodayDiary[`${isExistedTodayDiary}`]['buttonText']}
-        type="default"
-        size='large'
+        text={TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['buttonText']}
+        type={DEFAULT}
+        size={LARGE}
         onClick={() => console.log('일기 쓰기')}
       />
       {showModal && (

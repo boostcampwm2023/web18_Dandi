@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import EmojiPicker from 'emoji-picker-react';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
@@ -8,6 +9,8 @@ import ProfileItem from '@components/Common/ProfileItem';
 import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
+
+import { DAY_OF_WEEK, FEED } from '@util/constants';
 
 interface DiaryListItemProps {
   pageType?: string;
@@ -18,26 +21,31 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [_, setSelectedEmoji] = useState('');
   const toggleShowModal = () => setShowModal((prev) => !prev);
+  const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
 
   const goDetail = () => navigate(`/detail/${diaryItem.diaryId}`);
   const goFriendHome = () => navigate(`/home/${diaryItem.authorId}`);
 
   const formatDateString = (str: string) => {
-    const week = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-
     const DateObject = new Date(str);
     const year = DateObject.getFullYear();
     const month = DateObject.getMonth() + 1;
     const day = DateObject.getDate();
     const date = DateObject.getDay();
 
-    return `${year}년 ${month}월 ${day}일 ${week[date]}`;
+    return `${year}년 ${month}월 ${day}일 ${DAY_OF_WEEK[date]}`;
+  };
+
+  const onClickEmoji = (emojiData: any) => {
+    setSelectedEmoji(emojiData.emoji);
   };
 
   return (
-    <div className="border-brown mb-3 rounded-2xl border border-solid bg-white p-3">
-      {pageType === 'feed' && (
+    <div className="border-brown relative mb-3 rounded-2xl border border-solid bg-white p-3">
+      {pageType === FEED && (
         <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
           <ProfileItem img={diaryItem.profileImage} nickName={diaryItem.nickname} />
         </div>
@@ -65,10 +73,19 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         ))}
       </div>
 
-      <Reaction count={diaryItem.reactionCount} onClick={toggleShowModal} />
+      <Reaction
+        count={diaryItem.reactionCount}
+        onClick={pageType === FEED ? toggleShowEmojiPicker : toggleShowModal}
+        type={pageType === FEED ? 'leave' : 'check'}
+      />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
         <ReactionList />
       </Modal>
+      {showEmojiPicker && (
+        <aside className="absolute mt-2">
+          <EmojiPicker onEmojiClick={onClickEmoji} />
+        </aside>
+      )}
     </div>
   );
 };

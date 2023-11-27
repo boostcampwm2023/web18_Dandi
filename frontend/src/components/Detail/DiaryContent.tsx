@@ -5,6 +5,8 @@ import Reaction from '@components/Common/Reaction';
 import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
 
+import { formatDateString } from '@util/funcs';
+
 interface DiaryContentProps {
   createdAt: string;
   profileImage: string;
@@ -27,18 +29,6 @@ const DiaryContent = ({
   const [showModal, setShowModal] = useState(false);
   const toggleShowModal = () => {
     setShowModal((prev) => !prev);
-  };
-
-  const formatDateString = (str: string) => {
-    const week = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-
-    const DateObject = new Date(str);
-    const year = DateObject.getFullYear();
-    const month = DateObject.getMonth() + 1;
-    const day = DateObject.getDate();
-    const date = DateObject.getDay();
-
-    return `${year}년 ${month}월 ${day}일 ${week[date]}`;
   };
 
   return (

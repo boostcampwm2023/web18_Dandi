@@ -8,18 +8,20 @@ import Edit from '@pages/Edit';
 import Detail from '@pages/Detail';
 import AuthLogin from '@pages/OAuthLogin';
 
+import { PAGE_URL } from './util/constants';
+
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home/:userId" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/my-diary" element={<MyDiary />} />
-        <Route path="/edit" element={<Edit />} />
-        <Route path="/detail/:diaryId" element={<Detail />} />
-        <Route path="/auth" element={<AuthLogin />} />
+        <Route path={`${PAGE_URL.HOME}`} element={<Home />} />
+        <Route path={`${PAGE_URL.HOME}/:userId`} element={<Home />} />
+        <Route path={`${PAGE_URL.LOGIN}`} element={<Login />} />
+        <Route path={`${PAGE_URL.FEED}`} element={<Feed />} />
+        <Route path={`${PAGE_URL.MY_DIARY}`} element={<MyDiary />} />
+        <Route path={`${PAGE_URL.EDIT}`} element={<Edit />} />
+        <Route path={`${PAGE_URL.DETAIL}/:diaryId`} element={<Detail />} />
+        <Route path={`${PAGE_URL.AUTH}`} element={<AuthLogin />} />
       </Routes>
     </BrowserRouter>
   );
