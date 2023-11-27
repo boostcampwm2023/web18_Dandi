@@ -15,6 +15,7 @@ import {
 import { DiaryStatus } from './diaryStatus';
 import { Tag } from '../../tags/entity/tag.entity';
 import { Reaction } from 'src/reactions/entity/reaction.entity';
+import { MoodDegree } from '../utils/diaries.constant';
 
 @Entity()
 export class Diary extends BaseEntity {
@@ -37,7 +38,7 @@ export class Diary extends BaseEntity {
   emotion: string;
 
   @Column()
-  mood: number;
+  mood: MoodDegree;
 
   @Column()
   status: DiaryStatus;

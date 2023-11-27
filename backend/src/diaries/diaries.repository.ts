@@ -72,4 +72,11 @@ export class DiariesRepository extends Repository<Diary> {
 
     return queryBuilder.getMany();
   }
+
+  async findLatestDiaryByDate(userId: number, date: Date) {
+    return await this.createQueryBuilder('diary')
+      .where('diary.author = :userId', { userId })
+      .andWhere('diary.createdAt > :date', { date })
+      .getMany();
+  }
 }

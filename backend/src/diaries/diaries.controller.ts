@@ -29,6 +29,7 @@ import {
   ReadUserDiariesRequestDto,
   ReadUserDiariesResponseDto,
   UpdateDiaryDto,
+  getYearMoodResponseDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -157,5 +158,20 @@ export class DiariesController {
     );
 
     return { emotions };
+  }
+
+  @Get('/mood/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '1년의 일기 mood조회' })
+  @ApiCreatedResponse({
+    description: '일기 mood 조회 성공',
+    type: [getYearMoodResponseDto],
+  })
+  async getMoodForYear(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Record<string, getYearMoodResponseDto[]>> {
+    const yearMood = await this.diariesService.getMoodForYear(userId);
+
+    return { yearMood };
   }
 }

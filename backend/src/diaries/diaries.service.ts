@@ -3,6 +3,7 @@ import { DiariesRepository } from './diaries.repository';
 import {
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
+  getYearMoodResponseDto,
   GetAllEmotionsResponseDto,
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
@@ -135,6 +136,20 @@ export class DiariesService {
     }
 
     return { author, diaries };
+  }
+
+  async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
+    const today = new Date();
+    const oneYearAgo = new Date(today);
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
+
+    const yearMood: getYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
+      return [...acc, { date: cur.createdAt, mood: cur.mood }];
+    }, []);
+
+    return yearMood;
   }
 
   private existsDiary(diary: Diary) {

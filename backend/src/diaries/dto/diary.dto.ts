@@ -3,6 +3,7 @@ import { DiaryStatus } from '../entity/diaryStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { TimeUnit } from './timeUnit.enum';
+import { MoodDegree } from '../utils/diaries.constant';
 
 export class CreateDiaryDto {
   @IsNotEmpty()
@@ -162,4 +163,12 @@ export class AllDiaryInfosDto {
   emotion: string;
   reactionCount: number;
   createdAt: Date;
+}
+  
+export class getYearMoodResponseDto {
+  @ApiProperty({ description: '날짜' })
+  date: Date;
+
+  @ApiProperty({ description: '그날 일기의 기분' })
+  mood: MoodDegree;
 }

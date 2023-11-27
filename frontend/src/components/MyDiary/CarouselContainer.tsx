@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
