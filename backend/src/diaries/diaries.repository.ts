@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { GetAllEmotionsResponseDto } from './dto/diary.dto';
 import { DiaryStatus } from './entity/diaryStatus';
+import { PAGINATION_SIZE } from './utils/diaries.constant';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -39,7 +40,6 @@ export class DiariesRepository extends Repository<Diary> {
   async findPaginatedDiaryByDateAndIdList(
     date: Date,
     idList: number[],
-    pageSize: number,
     lastIndex: number | undefined,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
@@ -51,7 +51,7 @@ export class DiariesRepository extends Repository<Diary> {
       .andWhere('diary.createdAt > :date', { date })
       .andWhere('diary.status = :status', { status: DiaryStatus.PUBLIC })
       .orderBy('diary.id', 'DESC')
-      .limit(pageSize);
+      .limit(PAGINATION_SIZE);
 
     if (lastIndex !== undefined) {
       queryBuilder.where('diary.id < :lastIndex', { lastIndex });

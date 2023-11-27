@@ -12,12 +12,7 @@ import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
-import {
-  CLOVA_SENTIMENT_URL,
-  MoodDegree,
-  MoodType,
-  PAGINATION_SIZE,
-} from './utils/diaries.constant';
+import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 
 @Injectable()
@@ -134,7 +129,6 @@ export class DiariesService {
     const diaries = await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
       oneWeekAgo,
       friendsIdList,
-      PAGINATION_SIZE,
       lastIndex,
     );
 
