@@ -12,7 +12,7 @@ const Grass = () => {
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
-  const dates = Array.from({ length: 365 }, () => 0);
+  const dates = Array.from({ length: 366 }, () => 0);
   DUMMY_DATA.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate = new Date(date);
     const index = Math.floor((dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000));
