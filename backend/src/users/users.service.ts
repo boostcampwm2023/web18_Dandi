@@ -33,6 +33,7 @@ export class UsersService {
 
   async searchUsers(nickname: string): Promise<SearchUserResponseDto[]> {
     const users = await this.usersRepository.findByNickname(nickname);
+
     return users.map((user) => ({
       id: user.id,
       email: user.email,
