@@ -223,6 +223,7 @@ export class ReadUserDiariesResponseDto {
         emotion: '😮‍💨',
         reactionCount: 1,
         createdAt: '2023-11-13T13:50:17.106Z',
+        leavedReaction: '🙃',
       },
     ],
   })
@@ -238,6 +239,7 @@ export class AllDiaryInfosDto {
   emotion: string;
   reactionCount: number;
   createdAt: Date;
+  leavedReaction?: string;
 }
 
 export class getYearMoodResponseDto {

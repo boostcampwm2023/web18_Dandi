@@ -150,6 +150,7 @@ export class DiariesController {
         emotion: diary.emotion,
         reactionCount: reactions.length,
         createdAt: diary.createdAt,
+        leavedReaction: reactions.find((reaction) => reaction.user.id === id)?.reaction,
       };
     });
 
@@ -191,5 +192,21 @@ export class DiariesController {
     const yearMood = await this.diariesService.getMoodForYear(userId);
 
     return { yearMood };
+  }
+
+  @Get('/search/:keyword')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '키워드로 일기 검색' })
+  @ApiCreatedResponse({
+    description: '일기 검색 성공',
+    type: ReadUserDiariesResponseDto,
+  })
+  async searchDiaryByKeyword(
+    @User() author: UserEntity,
+    @Param('keyword') keyword: string,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaryList = await this.diariesService.searchDiaryByKeyword(author, keyword);
+
+    return { nickname: author.nickname, diaryList };
   }
 }

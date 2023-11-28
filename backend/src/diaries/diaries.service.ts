@@ -8,6 +8,7 @@ import {
   GetAllEmotionsResponseDto,
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
+  AllDiaryInfosDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
@@ -201,6 +202,31 @@ export class DiariesService {
     }, []);
 
     return yearMood;
+  }
+
+  async searchDiaryByKeyword(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.searchDiaryByKeyword(author.id, keyword);
+
+    const diaryInfos = Promise.all(
+      diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
+        const tags = await diary.tags;
+        const reactions = await diary.reactions;
+
+        return {
+          diaryId: diary.id,
+          title: diary.title,
+          thumbnail: diary.thumbnail,
+          summary: diary.summary,
+          tags: tags.map((t) => t.name),
+          emotion: diary.emotion,
+          reactionCount: reactions.length,
+          createdAt: diary.createdAt,
+          leavedReaction: reactions.find((reaction) => reaction.user.id === author.id)?.reaction,
+        };
+      }),
+    );
+
+    return diaryInfos;
   }
 
   private existsDiary(diary: Diary) {
