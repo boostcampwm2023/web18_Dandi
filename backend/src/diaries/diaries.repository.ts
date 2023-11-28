@@ -104,7 +104,7 @@ export class DiariesRepository extends Repository<Diary> {
       .getMany();
   }
 
-  async searchDiaryByKeyword(authorId: number, keyword: string) {
+  async findDiaryByKeyword(authorId: number, keyword: string) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoin('diary.reactions', 'reactions')

@@ -201,11 +201,11 @@ export class DiariesController {
     description: '일기 검색 성공',
     type: ReadUserDiariesResponseDto,
   })
-  async searchDiaryByKeyword(
+  async findDiaryByKeyword(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.searchDiaryByKeyword(author, keyword);
+    const diaryList = await this.diariesService.findDiaryByKeyword(author, keyword);
 
     return { nickname: author.nickname, diaryList };
   }
