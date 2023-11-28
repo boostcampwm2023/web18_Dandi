@@ -58,7 +58,7 @@ const Card = ({ data, styles, size }: CardProps) => {
         <ReactionList />
       </Modal>
       {showEmojiPicker && (
-        <aside className="absolute z-50 mt-2">
+        <aside className="absolute bottom-14 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />
         </aside>
       )}

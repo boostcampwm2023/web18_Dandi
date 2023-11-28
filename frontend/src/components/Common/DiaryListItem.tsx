@@ -38,7 +38,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   };
 
   return (
-    <div className="border-brown relative mb-3 rounded-2xl border border-solid bg-white p-3">
+    <div className="border-brown relative mb-3 rounded-2xl border border-solid bg-white px-7 py-6">
       {pageType === FEED && (
         <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
           <ProfileItem img={diaryItem.profileImage} nickName={diaryItem.nickname} />
@@ -77,7 +77,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         <ReactionList />
       </Modal>
       {showEmojiPicker && (
-        <aside className="absolute z-50 mt-2">
+        <aside className="absolute bottom-14 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />
         </aside>
       )}
