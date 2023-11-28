@@ -305,7 +305,6 @@ export class DiariesService {
   }
 
   private async sumMoodAnalysis(plainText: string): Promise<[Record<string, number>, number]> {
-    console.log(plainText);
     const numberOfChunk = Math.floor(plainText.length / SENTIMENT_CHUNK_SIZE) + 1;
     const moodStatistics = {
       [MoodType.POSITIVE]: 0,
