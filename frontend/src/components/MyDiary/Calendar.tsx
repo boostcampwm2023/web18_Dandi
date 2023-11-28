@@ -1,6 +1,6 @@
 import DayItem from '@components/MyDiary/DayItem';
 
-import { DAY_OF_WEEK } from '@util/constants';
+import { DAY_OF_WEEK, NEXT_INDEX, START_INDEX, WEEK_INDEX } from '@util/constants';
 
 interface CalendarProp {
   date: Date;
@@ -8,14 +8,14 @@ interface CalendarProp {
 
 const Calendar = ({ date }: CalendarProp) => {
   const first = new Date(date.getFullYear(), date.getMonth(), 1);
-  const last = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  const allDayCount = Math.ceil((last.getDate() - first.getDate() + first.getDay()) / 7);
-  const monthData = Array.from(Array(allDayCount), () => Array(7).fill(0));
+  const last = new Date(date.getFullYear(), date.getMonth() + NEXT_INDEX, 0);
+  const allDayCount = Math.ceil((last.getDate() - first.getDate() + first.getDay()) / WEEK_INDEX);
+  const monthData = Array.from(Array(allDayCount), () => Array(WEEK_INDEX).fill(0));
   let day = 1;
 
-  for (let weekIndex = 0; weekIndex < allDayCount; weekIndex++) {
-    for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-      if (weekIndex === 0 && dayIndex < first.getDay()) {
+  for (let weekIndex = START_INDEX; weekIndex < allDayCount; weekIndex++) {
+    for (let dayIndex = START_INDEX; dayIndex < WEEK_INDEX; dayIndex++) {
+      if (weekIndex === START_INDEX && dayIndex < first.getDay()) {
         continue;
       }
       if (day > last.getDate()) {
@@ -45,7 +45,7 @@ const Calendar = ({ date }: CalendarProp) => {
                 key={weekIndex + dayIndex}
                 className="border-brown first:text-red last:text-blue border border-solid"
               >
-                <DayItem day={day} emotion={day > 0 ? '💜' : undefined} />
+                <DayItem day={day} emotion={day ? '💜' : undefined} />
               </td>
             ))}
           </tr>

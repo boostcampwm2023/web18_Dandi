@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-import KeywordItem from '@components/Edit/KeywordItem';
+import Keyword from '../Common/Keyword';
 
 interface KeywordBoxProps {
   keywordList: string[];
@@ -38,7 +37,11 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
         onKeyPress={addKeyword}
         className="border-brown mb-3 h-10  w-[30%] rounded-xl border pl-4 outline-none"
       />
-      <KeywordItem keywordList={keywordList} />
+      <div className="flex flex-wrap gap-4">
+        {keywordList.map((keyword, index) => (
+          <Keyword key={index} text={keyword} />
+        ))}
+      </div>
     </div>
   );
 };

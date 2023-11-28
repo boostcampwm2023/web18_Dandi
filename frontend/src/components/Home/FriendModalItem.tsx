@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
+import { PROFILE_BUTTON_TYPE } from '@util/constants';
+
 interface FriendModalItemProps {
   email: string;
   profileImage: string;
@@ -16,13 +18,13 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
 
   const getButtonElement = (type: string) => {
     switch (type) {
-      case 'list':
+      case PROFILE_BUTTON_TYPE.LIST:
         return (
           <button className="bg-mint w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
             친구 삭제
           </button>
         );
-      case 'received':
+      case PROFILE_BUTTON_TYPE.RECEIVED:
         return (
           <div className="flex gap-2">
             <button className="bg-red w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
@@ -33,7 +35,7 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
             </button>
           </div>
         );
-      case 'send':
+      case PROFILE_BUTTON_TYPE.SEND:
         return (
           <button className="bg-red w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
             신청 취소

@@ -14,7 +14,7 @@ import CarouselContainer from '@components/MyDiary/CarouselContainer';
 
 import { getNowMonth, getNowWeek } from '@util/funcs';
 import { formatDate } from '@util/funcs';
-import { DUMMY_DATA } from '@util/constants';
+import { DIARY_VIEW_TYPE, DUMMY_DATA, WEEK_STANDARD_LENGTH } from '@util/constants';
 
 const calPeriod = () => {
   const startDate = new Date();
@@ -61,30 +61,30 @@ const MyDiary = () => {
           <KeywordSearch />
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>
-        <section className="flex flex-col items-center overflow-hidden">
-          {viewType === 'Day' &&
+        <section className="flex flex-col items-center">
+          {viewType === DIARY_VIEW_TYPE.DAY &&
             diaryData.map((data, index) => <DiaryListItem diaryItem={data} key={index} />)}
-          {viewType === 'Week' && (
+          {viewType === DIARY_VIEW_TYPE.WEEK && (
             <>
               <DateController
                 titles={[
-                  `Week ${nowWeek < 10 ? '0' + nowWeek : nowWeek}`,
-                  `${formatDate(period[0], 'dot')} ~ ${formatDate(period[1], 'dot')}`,
+                  `Week ${String(nowWeek).padStart(2, '0')}`,
+                  `${formatDate(period[0])} ~ ${formatDate(period[1])}`,
                 ]}
                 leftOnClick={() => setPrevOrNextWeek(-1)}
                 rightOnClick={() => setPrevOrNextWeek(1)}
               />
-              {DUMMY_DATA.length < 3 && (
+              {DUMMY_DATA.length < WEEK_STANDARD_LENGTH && (
                 <section className="flex gap-5">
                   {DUMMY_DATA.map((data) => (
                     <Card data={data} />
                   ))}
                 </section>
               )}
-              {DUMMY_DATA.length >= 3 && <CarouselContainer {...DUMMY_DATA} />}
+              {DUMMY_DATA.length >= WEEK_STANDARD_LENGTH && <CarouselContainer {...DUMMY_DATA} />}
             </>
           )}
-          {viewType === 'Month' && (
+          {viewType === DIARY_VIEW_TYPE.MONTH && (
             <>
               <DateController
                 titles={[getNowMonth(nowMonth).join(' '), String(nowMonth.getFullYear())]}
