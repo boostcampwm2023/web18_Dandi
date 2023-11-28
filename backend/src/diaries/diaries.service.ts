@@ -22,13 +22,13 @@ import {
   CLOVA_SUMMARY_URL,
   MoodDegree,
   MoodType,
-  IMG_TAG_REGEX,
   SUMMARY_MINIMUM_SENTENCE_LENGTH,
 } from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
 import { subYears } from 'date-fns';
+import { load } from 'cheerio';
 
 @Injectable()
 export class DiariesService {
@@ -44,11 +44,12 @@ export class DiariesService {
     const diary = plainToClass(Diary, createDiaryDto, {
       excludePrefixes: ['tag'],
     });
+    const plainText = load(diary.content).text();
 
     diary.author = user;
     diary.tags = tags;
-    diary.summary = await this.getSummary(diary.title, diary.content);
-    diary.mood = await this.judgeOverallMood(diary.content);
+    diary.summary = await this.getSummary(diary.title, plainText);
+    diary.mood = await this.judgeOverallMood(plainText);
 
     await this.diariesRepository.save(diary);
   }
@@ -74,8 +75,9 @@ export class DiariesService {
     });
 
     if (updateDiaryDto.content) {
-      existingDiary.summary = await this.getSummary(existingDiary.title, updateDiaryDto.content);
-      existingDiary.mood = await this.judgeOverallMood(updateDiaryDto.content);
+      const plainText = load(updateDiaryDto.content).text();
+      existingDiary.summary = await this.getSummary(existingDiary.title, plainText);
+      existingDiary.mood = await this.judgeOverallMood(plainText);
     }
 
     return await this.diariesRepository.save(existingDiary);
@@ -249,11 +251,11 @@ export class DiariesService {
     }
   }
 
-  private async getSummary(title: string, content: string) {
-    if (this.isShortContent(content)) {
-      return content;
+  private async getSummary(title: string, plainText: string) {
+    if (this.isShortContent(plainText)) {
+      return plainText;
     }
-    content = content.substring(0, SUMMARY_MAX_SENTENCE_LENGTH);
+    plainText = plainText.substring(0, SUMMARY_MAX_SENTENCE_LENGTH);
 
     const response = await fetch(CLOVA_SUMMARY_URL, {
       method: 'POST',
@@ -263,13 +265,13 @@ export class DiariesService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        document: { title, content },
+        document: { title, content: plainText },
         option: { language: 'ko' },
       }),
     });
 
     const body = await response.json();
-    return body.summary;
+    return body.summary ?? plainText;
   }
 
   private isShortContent(content: string) {
@@ -278,8 +280,8 @@ export class DiariesService {
     return sentences.length <= SUMMARY_MINIMUM_SENTENCE_LENGTH;
   }
 
-  private async judgeOverallMood(fullContent: string) {
-    const [statistics, totalNumber] = await this.sumMoodAnalysis(fullContent);
+  private async judgeOverallMood(plainText: string) {
+    const [statistics, totalNumber] = await this.sumMoodAnalysis(plainText);
 
     const [type, sum] = Object.entries(statistics).reduce((max, cur) => {
       return cur[1] > max[1] ? cur : max;
@@ -302,19 +304,17 @@ export class DiariesService {
     }
   }
 
-  private async sumMoodAnalysis(fullContent: string): Promise<[Record<string, number>, number]> {
-    const plainContent = fullContent.replace(IMG_TAG_REGEX, '');
-    const numberOfChunk = Math.floor(plainContent.length / SENTIMENT_CHUNK_SIZE) + 1;
+  private async sumMoodAnalysis(plainText: string): Promise<[Record<string, number>, number]> {
+    console.log(plainText);
+    const numberOfChunk = Math.floor(plainText.length / SENTIMENT_CHUNK_SIZE) + 1;
     const moodStatistics = {
       [MoodType.POSITIVE]: 0,
       [MoodType.NEGATIVE]: 0,
       [MoodType.NEUTRAL]: 0,
     };
 
-    for (let start = 0; start < plainContent.length; start += SENTIMENT_CHUNK_SIZE) {
-      const analysis = await this.analyzeMood(
-        plainContent.slice(start, start + SENTIMENT_CHUNK_SIZE),
-      );
+    for (let start = 0; start < plainText.length; start += SENTIMENT_CHUNK_SIZE) {
+      const analysis = await this.analyzeMood(plainText.slice(start, start + SENTIMENT_CHUNK_SIZE));
 
       Object.keys(analysis).forEach((key) => (moodStatistics[key] += analysis[key]));
     }
