@@ -16,6 +16,7 @@ interface CardProps {
   styles?: string;
   size?: 'default' | 'small';
 }
+// TODO: 이모지 피커 위치 수정
 
 const Card = ({ data, styles, size }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
@@ -24,22 +25,23 @@ const Card = ({ data, styles, size }: CardProps) => {
 
   const toggleShowModal = () => setShowModal((prev) => !prev);
   const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+
   const onClickEmoji = (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
     toggleShowEmojiPicker();
   };
 
   return (
-    <div className={`border-brown relative rounded-xl border border-solid px-7 py-6 ${styles}`}>
-      <p className={`${size === SMALL ? 'text-sm' : ''} mb-3`}>
-        {formatDateString(data.createdAt)}
-      </p>
-      <h3 className="mb-3 text-xl font-bold">{data.title}</h3>
-      <img src={data.thumbnail} className="mb-3" alt="일기의 대표 이미지" />
-      <div className="mb-3 whitespace-pre-wrap text-sm">
+    <div
+      className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
+    >
+      <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(data.createdAt)}</p>
+      <h3 className="text-xl font-bold">{data.title}</h3>
+      <img src={data.thumbnail} alt="일기의 대표 이미지" />
+      <div className="whitespace-pre-wrap text-sm">
         <p>{data.content}</p>
       </div>
-      <div className="mb-4 flex w-full flex-wrap gap-3">
+      <div className="flex w-full flex-wrap gap-3">
         {data.keywords.map((keyword, index) => (
           <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />
         ))}

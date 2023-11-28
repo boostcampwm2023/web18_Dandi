@@ -51,7 +51,11 @@ const DiaryContent = ({
             </div>
           ))}
         </div>
-        <Reaction count={reactionCount} textOnClick={toggleShowModal} />
+        <Reaction
+          count={reactionCount}
+          textOnClick={toggleShowModal}
+          iconOnClick={() => console.log('이양')}
+        />
         <Modal showModal={showModal} closeModal={toggleShowModal}>
           <ReactionList />
         </Modal>

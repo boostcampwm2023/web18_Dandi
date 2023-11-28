@@ -10,12 +10,15 @@ import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
 
-import { DAY_OF_WEEK, FEED } from '@util/constants';
+import { FEED } from '@util/constants';
+import { formatDateString } from '@util/funcs';
 
 interface DiaryListItemProps {
   pageType?: string;
   diaryItem: IDiaryContent;
 }
+
+// TODO:EmojiPicker 위치 수정
 
 const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const navigate = useNavigate();
@@ -28,16 +31,6 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
   const goDetail = () => navigate(`/detail/${diaryItem.diaryId}`);
   const goFriendHome = () => navigate(`/home/${diaryItem.authorId}`);
-
-  const formatDateString = (str: string) => {
-    const DateObject = new Date(str);
-    const year = DateObject.getFullYear();
-    const month = DateObject.getMonth() + 1;
-    const day = DateObject.getDate();
-    const date = DateObject.getDay();
-
-    return `${year}년 ${month}월 ${day}일 ${DAY_OF_WEEK[date]}`;
-  };
 
   const onClickEmoji = (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
