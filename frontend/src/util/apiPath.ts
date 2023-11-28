@@ -1,4 +1,5 @@
 const SERVER_URL = 'http://223.130.146.253:3000';
+// const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';
 const USER = '/users';
@@ -24,7 +25,7 @@ const API_PATH = {
     search: (keyword: string) => SERVER_URL + DIARY + '/search' + `/${keyword}`,
     keywordSearch: (keyword: string) => SERVER_URL + DIARY + TAG + `/${keyword}`,
     feed: (lastIndex: number) => SERVER_URL + DIARY + `/friends?lastIndex=${lastIndex}`,
-    grass: (id: number) => DIARY + '/mood' + `/${id}`,
+    grass: (id: number) => SERVER_URL + DIARY + '/mood' + `/${id}`,
     emotion: (id: number, startDate: number, lastDate: number) =>
       SERVER_URL + DIARY + '/emotion' + `/${id}` + `?startDate=${startDate}&lastDate=${lastDate}`,
     myDiary: (id: number, type: string, startDate: number, endDate: number, lastIndex: number) =>

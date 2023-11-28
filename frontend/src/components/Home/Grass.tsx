@@ -1,6 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
+import getGrass from '@/api/Grass';
 import GrassTooltip from '@components/Home/GrassTooltip';
 
-import { EMOTION_LEVELS, DUMMY_DATA } from '@util/Grass';
+import { EMOTION_LEVELS } from '@util/Grass';
 
 interface GrassDataProps {
   date: string;
@@ -9,14 +11,29 @@ interface GrassDataProps {
 
 const Grass = () => {
   const currentDate: Date = new Date();
+  currentDate.setHours(0, 0, 0, 0);
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
-  const dates = Array.from({ length: 366 }, () => 0);
-  DUMMY_DATA.forEach(({ date, mood }: GrassDataProps) => {
+  const dates = Array.from({ length: 365 }, () => 0);
+  const userId = Number(localStorage.getItem('userId'));
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['grass', userId],
+    queryFn: () => getGrass(userId),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error fetching data</p>;
+  }
+
+  data.yearMood.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate = new Date(date);
     const index = Math.floor((dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000));
-    dates[index] = mood;
+    dates[index - 1] = mood;
   });
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
 
@@ -41,7 +58,9 @@ const Grass = () => {
 
   return (
     <div className="flex h-full w-3/5 flex-col gap-2 p-5">
-      <p className="text-2xl font-bold">지난 1년간 {DUMMY_DATA.length}개의 일기를 작성하셨어요.</p>
+      <p className="text-2xl font-bold">
+        지난 1년간 {data.yearMood.length}개의 일기를 작성하셨어요.
+      </p>
       <div className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2">
         {grassElements}
       </div>
