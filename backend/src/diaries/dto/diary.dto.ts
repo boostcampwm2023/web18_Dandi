@@ -65,6 +65,9 @@ export class GetDiaryResponseDto {
 
   @ApiProperty({ description: '해당 글의 리액션 갯수' })
   reactionCount: number;
+
+  @ApiProperty({ description: '일기 작성 일자' })
+  createdAt: Date;
 }
 
 export class UpdateDiaryDto {

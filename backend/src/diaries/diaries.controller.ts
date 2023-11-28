@@ -81,6 +81,7 @@ export class DiariesController {
       mood: diary.mood,
       tags: tags.map((t) => t.name),
       reactionCount: reactions.length,
+      createdAt: diary.createdAt,
     };
   }
 
