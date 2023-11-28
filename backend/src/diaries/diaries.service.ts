@@ -16,11 +16,14 @@ import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
 import {
+  SENTIMENT_CHUNK_SIZE,
   CLOVA_SENTIMENT_URL,
-  CLOVA_SUMMARY_MAX_SENTENCE_LENGTH,
+  SUMMARY_MAX_SENTENCE_LENGTH,
   CLOVA_SUMMARY_URL,
   MoodDegree,
   MoodType,
+  IMG_TAG_REGEX,
+  SUMMARY_MINIMUM_SENTENCE_LENGTH,
 } from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
@@ -250,7 +253,7 @@ export class DiariesService {
     if (this.isShortContent(content)) {
       return content;
     }
-    content = content.substring(0, CLOVA_SUMMARY_MAX_SENTENCE_LENGTH);
+    content = content.substring(0, SUMMARY_MAX_SENTENCE_LENGTH);
 
     const response = await fetch(CLOVA_SUMMARY_URL, {
       method: 'POST',
@@ -272,7 +275,7 @@ export class DiariesService {
   private isShortContent(content: string) {
     const sentences = content.split(/[.!?]/).filter((sentence) => sentence.trim() !== '');
 
-    return sentences.length <= 3;
+    return sentences.length <= SUMMARY_MINIMUM_SENTENCE_LENGTH;
   }
 
   private async judgeOverallMood(fullContent: string) {
@@ -283,7 +286,6 @@ export class DiariesService {
     });
 
     const figure = sum / totalNumber;
-
     switch (type) {
       case MoodType.POSITIVE:
         if (figure > 50) {
@@ -301,16 +303,18 @@ export class DiariesService {
   }
 
   private async sumMoodAnalysis(fullContent: string): Promise<[Record<string, number>, number]> {
-    const plainContent = fullContent.replace(/<img[^>]*>/g, '');
-    const numberOfChunk = Math.floor(plainContent.length / 1000) + 1;
+    const plainContent = fullContent.replace(IMG_TAG_REGEX, '');
+    const numberOfChunk = Math.floor(plainContent.length / SENTIMENT_CHUNK_SIZE) + 1;
     const moodStatistics = {
       [MoodType.POSITIVE]: 0,
       [MoodType.NEGATIVE]: 0,
       [MoodType.NEUTRAL]: 0,
     };
 
-    for (let startIndex = 0; startIndex < plainContent.length; startIndex += 1000) {
-      const analysis = await this.analyzeMood(plainContent.slice(startIndex, startIndex + 1000));
+    for (let start = 0; start < plainContent.length; start += SENTIMENT_CHUNK_SIZE) {
+      const analysis = await this.analyzeMood(
+        plainContent.slice(start, start + SENTIMENT_CHUNK_SIZE),
+      );
 
       Object.keys(analysis).forEach((key) => (moodStatistics[key] += analysis[key]));
     }
