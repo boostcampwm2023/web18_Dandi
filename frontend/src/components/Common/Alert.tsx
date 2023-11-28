@@ -9,8 +9,8 @@ interface AlertProps {
 const Alert = ({ text, onUndoButtonClick, onAcceptButtonClick }: AlertProps) => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-5">
-      <span className="font-bold">{text}</span>
-      <div className="flex w-full flex-wrap items-center justify-center gap-5">
+      <span className="font-bold text-xl m-10">{text}</span>
+      <div className="flex w-full flex-wrap items-center justify-center gap-16">
         <Button text="취소" type="normal" size="large" onClick={onUndoButtonClick} />
         <Button text="삭제" type="delete" size="large" onClick={onAcceptButtonClick} />
       </div>

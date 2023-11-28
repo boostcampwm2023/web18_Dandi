@@ -1,6 +1,8 @@
 import NavBar from '@components/Common/NavBar';
 import DiaryList from '@components/Common/DiaryList';
 
+import { FEED } from '@util/constants';
+
 const Feed = () => {
   const dummyData = [
     {
@@ -22,7 +24,7 @@ const Feed = () => {
   return (
     <div className="mb-28 flex flex-col items-center justify-start">
       <NavBar />
-      <DiaryList pageType={'feed'} diaryData={dummyData} />
+      <DiaryList pageType={FEED} diaryData={dummyData} />
     </div>
   );
 };

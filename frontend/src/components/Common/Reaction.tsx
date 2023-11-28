@@ -2,17 +2,24 @@ import Icon from '@components/Common/Icon';
 
 interface ReactionProps {
   count: number;
-  onClick: () => void;
+  iconOnClick?: () => void;
+  textOnClick?: () => void;
   styles?: string;
+  emoji?: string;
 }
 
-const Reaction = ({ count, onClick, styles }: ReactionProps) => {
+const Reaction = ({ count, iconOnClick, textOnClick, styles, emoji }: ReactionProps) => {
   return (
     <div>
-      <div className="flex items-center justify-start gap-1" onClick={onClick}>
-        <Icon id="reactionEmoji" />
-        <p className={`text-default font-bold ${styles ? styles : 'text-base'}`}>
-          친구들의 반응 {count}개
+      <div className="flex items-center justify-start gap-2">
+        <button onClick={iconOnClick}>
+          {emoji ? <p className="text-2xl leading-6">{emoji}</p> : <Icon id="reactionEmoji" />}
+        </button>
+        <p
+          className={`text-default cursor-pointer font-bold ${styles ? styles : 'text-base'}`}
+          onClick={textOnClick}
+        >
+          공감 {new Intl.NumberFormat().format(count)}개
         </p>
       </div>
     </div>

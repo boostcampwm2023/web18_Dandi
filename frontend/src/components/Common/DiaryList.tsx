@@ -2,6 +2,8 @@ import { IDiaryContent } from '@type/components/Common/DiaryList';
 
 import DiaryListItem from '@components/Common/DiaryListItem';
 
+import { HOME, PAGE_TITLE_HOME, PAGE_TITLE_FEED } from '@util/constants';
+
 interface DiaryList {
   pageType: string;
   diaryData: IDiaryContent[];
@@ -9,8 +11,7 @@ interface DiaryList {
 
 const DiaryList = ({ pageType, diaryData }: DiaryList) => {
   const { nickname } = diaryData[0];
-  const pageTitle = pageType === 'home' ? `${nickname}님의 일기 목록` : '친구들의 일기';
-
+  const pageTitle = pageType === HOME ? `${nickname} ${PAGE_TITLE_HOME}` : PAGE_TITLE_FEED;
   const content = diaryData.map((data: IDiaryContent, index) => (
     <DiaryListItem key={index} pageType={pageType} diaryItem={data} />
   ));

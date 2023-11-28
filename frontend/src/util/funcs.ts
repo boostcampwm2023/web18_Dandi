@@ -16,13 +16,16 @@ export const getNowWeek = (date: Date) => {
   return nowWeek;
 };
 
-export const formatDate = (date: Date, type: 'dot' | 'kor') => {
-  switch (type) {
-    case 'dot':
-      return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
-    case 'kor':
-      return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${
-        DAY_OF_WEEK[date.getDay()]
-      }`;
-  }
+export const formatDate = (date: Date) => {
+  return date.toLocaleDateString().slice(0, -1);
+};
+
+export const formatDateString = (str: string) => {
+  const DateObject = new Date(str);
+  const year = DateObject.getFullYear();
+  const month = DateObject.getMonth() + 1;
+  const day = DateObject.getDate();
+  const date = DateObject.getDay();
+
+  return `${year}년 ${month}월 ${day}일 ${DAY_OF_WEEK[date]}`;
 };
