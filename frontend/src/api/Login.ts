@@ -6,7 +6,7 @@ export const NAVER_LOGIN_FORM_URL = `https://nid.naver.com/oauth2.0/authorize?re
 
 export const naverLogin = async (code: string, state: string) => {
   try {
-    const response = await fetch('http://223.130.146.253/auth/login', {
+    const response = await fetch('http://223.130.146.253:3000/auth/login', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
