@@ -303,28 +303,17 @@ export class DiariesService {
   private async sumMoodAnalysis(fullContent: string): Promise<[Record<string, number>, number]> {
     const plainContent = fullContent.replace(/<img[^>]*>/g, '');
     const numberOfChunk = Math.floor(plainContent.length / 1000) + 1;
-
     const moodStatistics = {
       [MoodType.POSITIVE]: 0,
       [MoodType.NEGATIVE]: 0,
       [MoodType.NEUTRAL]: 0,
     };
 
-    for (let i = 0; i < numberOfChunk; i++) {
-      const start = i * 1000;
-      const end = i < numberOfChunk - 1 ? start + 1000 : start + (plainContent.length % 1000);
+    for (let startIndex = 0; startIndex < plainContent.length; startIndex += 1000) {
+      const analysis = await this.analyzeMood(plainContent.slice(startIndex, startIndex + 1000));
 
-      if (start === end) {
-        break;
-      }
-
-      const analysis = await this.analyzeMood(plainContent.slice(start, end));
-
-      Object.keys(analysis).forEach((key) => {
-        moodStatistics[key] += analysis[key];
-      });
+      Object.keys(analysis).forEach((key) => (moodStatistics[key] += analysis[key]));
     }
-
     return [moodStatistics, numberOfChunk];
   }
 
