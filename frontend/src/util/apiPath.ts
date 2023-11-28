@@ -1,0 +1,50 @@
+const SERVER_URL = 'http://223.130.146.253:3000';
+
+const AUTH = '/auth';
+const USER = '/users';
+const DIARY = '/diaries';
+const REACTION = '/reaction';
+const FRIEND = '/friends';
+const TAG = '/tags';
+
+const API_PATH = {
+  AUTH: {
+    login: () => SERVER_URL + AUTH + '/login',
+    logout: () => SERVER_URL + AUTH + '/logout',
+    updateToken: () => SERVER_URL + AUTH + '/refresh_token',
+  },
+  USER: {
+    currentUserProfile: () => SERVER_URL + USER,
+    targetUserProfile: (id: number) => SERVER_URL + `/${id}`,
+    searchUser: (nickname: string) => SERVER_URL + '/search' + `/${nickname}`,
+    updateUserProfile: () => SERVER_URL + USER + '/profile',
+  },
+  DIARY: {
+    rud: (id: number) => SERVER_URL + DIARY + `/${id}`,
+    search: (keyword: string) => SERVER_URL + DIARY + '/search' + `/${keyword}`,
+    keywordSearch: (keyword: string) => SERVER_URL + DIARY + TAG + `/${keyword}`,
+    feed: (lastIndex: number) => SERVER_URL + DIARY + `/friends?lastIndex=${lastIndex}`,
+    grass: (id: number) => DIARY + '/mood' + `/${id}`,
+    emotion: (id: number, startDate: number, lastDate: number) =>
+      SERVER_URL + DIARY + '/emotion' + `/${id}` + `?startDate=${startDate}&lastDate=${lastDate}`,
+    myDiary: (id: number, type: string, startDate: number, endDate: number, lastIndex: number) =>
+      SERVER_URL +
+      DIARY +
+      USER +
+      `${id}?type=${type}&startDate=${startDate}&endDate=${endDate}&lastIndex=${lastIndex}`,
+  },
+  REACTION: {
+    crud: (id: number) => SERVER_URL + REACTION + `/${id}`,
+  },
+  FRIEND: {
+    search: (nickname: string) => SERVER_URL + FRIEND + '/search' + `/${nickname}`,
+    list: (userId: number) => SERVER_URL + FRIEND + `/${userId}`,
+    request: (receiverId: number) => SERVER_URL + FRIEND + `/${receiverId}`,
+    send: (senderId: number) => SERVER_URL + '/allow' + `/${senderId}`,
+  },
+  TAG: {
+    recommend: (keyword: string) => SERVER_URL + TAG + '/search' + `/${keyword}`,
+  },
+};
+
+export default API_PATH;
