@@ -102,5 +102,3 @@ export const NAVER_LOGIN_FORM_URL = `https://nid.naver.com/oauth2.0/authorize?re
 }&state=${import.meta.env.VITE_NAVER_CLIENT_SECRET}&redirect_uri=${
   import.meta.env.VITE_NAVER_CALLBACK_URL
 }&scope=name,email,profile_imagse,nickname`;
-
-export const SERVER_URL = 'http://223.130.146.253:3000/';

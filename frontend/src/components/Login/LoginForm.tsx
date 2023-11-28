@@ -1,4 +1,4 @@
-import { NAVER_LOGIN_FORM_URL } from '@api/Login';
+import { NAVER_LOGIN_FORM_URL } from '@util/constants';
 import logo from '@assets/image/logo.svg';
 import naverLogin from '@assets/image/naverLogin.svg';
 import { Link } from 'react-router-dom';

@@ -1,13 +1,13 @@
-import { NAVER_LOGIN_FORM_URL, SERVER_URL } from '@util/constants';
+import API_PATH from '@util/apiPath';
 
 export const naverLogin = async (code: string, state: string) => {
   try {
-    const response = await fetch(`${SERVER_URL}auth/login`, {
+    const response = await fetch(API_PATH.AUTH.login(), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
       },
-      credentials: "include",
+      credentials: 'include',
       body: JSON.stringify({
         code,
         state,
