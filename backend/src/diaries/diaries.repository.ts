@@ -103,4 +103,16 @@ export class DiariesRepository extends Repository<Diary> {
       .andWhere('diary.createdAt > :date', { date })
       .getMany();
   }
+
+  async searchDiaryByKeyword(authorId: number, keyword: string) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .where('diary.author.id = :authorId', { authorId })
+      .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
+        keyword: `%${keyword}%`,
+      });
+
+    return queryBuilder.getMany();
+  }
 }
