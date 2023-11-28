@@ -1,5 +1,8 @@
 export const CLOVA_SENTIMENT_URL =
   'https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze';
+export const CLOVA_SUMMARY_URL = 'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize';
+
+export const CLOVA_SUMMARY_MAX_SENTENCE_LENGTH = 2000;
 
 export const ITEM_PER_PAGE = 5;
 

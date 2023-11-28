@@ -15,7 +15,13 @@ import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
-import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
+import {
+  CLOVA_SENTIMENT_URL,
+  CLOVA_SUMMARY_MAX_SENTENCE_LENGTH,
+  CLOVA_SUMMARY_URL,
+  MoodDegree,
+  MoodType,
+} from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
@@ -244,23 +250,20 @@ export class DiariesService {
     if (this.isShortContent(content)) {
       return content;
     }
-    content = content.substring(0, 2000);
+    content = content.substring(0, CLOVA_SUMMARY_MAX_SENTENCE_LENGTH);
 
-    const response = await fetch(
-      'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
-      {
-        method: 'POST',
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          document: { title, content },
-          option: { language: 'ko' },
-        }),
+    const response = await fetch(CLOVA_SUMMARY_URL, {
+      method: 'POST',
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
+        'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        document: { title, content },
+        option: { language: 'ko' },
+      }),
+    });
 
     const body = await response.json();
     return body.summary;
