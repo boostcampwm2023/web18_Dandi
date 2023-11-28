@@ -33,13 +33,12 @@ const Grass = () => {
   data.yearMood.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate = new Date(date);
     const index = Math.floor((dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000));
-    dates[index - 1] = mood;
+    dates[index] = mood;
   });
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
-
   const getTooltipContent = (index: number) => {
     const tmpDate = new Date(lastYear);
-    tmpDate.setDate(tmpDate.getDate() + index);
+    tmpDate.setDate(tmpDate.getDate() - lastYear.getDay() + index);
     const moodContent = EMOTION_LEVELS[grassData[index]];
     return `${moodContent} mood on ${tmpDate.toLocaleDateString()}`;
   };
