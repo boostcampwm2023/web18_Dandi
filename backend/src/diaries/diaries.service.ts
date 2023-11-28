@@ -19,6 +19,7 @@ import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.const
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
+import { subYears } from 'date-fns';
 
 @Injectable()
 export class DiariesService {
@@ -72,7 +73,7 @@ export class DiariesService {
   }
 
   async deleteDiary(user: User, id: number) {
-    await this.findDiary(user, id, false);
+    await this.findDiary(user, id);
 
     await this.diariesRepository.softDelete(id);
   }
@@ -191,9 +192,7 @@ export class DiariesService {
   }
 
   async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
-    const today = new Date();
-    const oneYearAgo = new Date(today);
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    const oneYearAgo = subYears(new Date(), 1);
 
     const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
 
