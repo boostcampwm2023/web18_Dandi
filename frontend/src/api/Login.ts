@@ -1,14 +1,5 @@
 import { NAVER_LOGIN_FORM_URL, SERVER_URL } from '@util/constants';
 
-export const goNaverLoginForm = async () => {
-  try {
-    const response = await fetch(NAVER_LOGIN_FORM_URL);
-    window.location.href = response.url;
-  } catch (error) {
-    console.error('네이버 로그인폼으로 이동하는데 실패했습니다.', error);
-  }
-};
-
 export const naverLogin = async (code: string, state: string) => {
   try {
     const response = await fetch(`${SERVER_URL}auth/login`, {
@@ -16,6 +7,7 @@ export const naverLogin = async (code: string, state: string) => {
       headers: {
         'content-type': 'application/json',
       },
+      credentials: "include",
       body: JSON.stringify({
         code,
         state,
