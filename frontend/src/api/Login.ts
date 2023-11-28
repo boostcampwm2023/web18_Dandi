@@ -2,7 +2,7 @@ import { NAVER_LOGIN_FORM_URL, SERVER_URL } from '@util/constants';
 
 export const naverLogin = async (code: string, state: string) => {
   try {
-    const response = await fetch(`http://localhost:3000/auth/login`, {
+    const response = await fetch(`${SERVER_URL}auth/login`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
