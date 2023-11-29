@@ -16,13 +16,24 @@ export class FriendsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '특정 사용자의 친구 목록 조회' })
   @ApiOkResponse({ description: '친구 목록 조회 성공' })
-  async getFriendsManageList(
+  async getFriendsList(
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<Record<string, SearchUserResponseDto[] | StrangerResponseDto[]>> {
+  ): Promise<Record<string, SearchUserResponseDto[]>> {
     const friends = await this.friendsService.getFriendsList(userId);
+
+    return { friends };
+  }
+
+  @Get('request/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '특정 사용자의 진행 중인 친구신청 목록 조회' })
+  @ApiOkResponse({ description: '진행 중인 친구 신청 조회 성공' })
+  async getFriendRequestList(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Record<string, StrangerResponseDto[]>> {
     const strangers = await this.friendsService.getStrangerList(userId);
 
-    return { friends, strangers };
+    return { strangers };
   }
 
   @Post('/:receiverId')
