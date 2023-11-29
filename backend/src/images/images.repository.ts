@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { objectStorageConfig } from 'src/configs/objectStorage.config';
-import { OBJECT_STORAGE_BUCKET } from '../diaries/utils/diaries.constant';
+import { OBJECT_STORAGE_BUCKET } from './utils/images.constant';
 
 @Injectable()
 export class ImagesRepository {

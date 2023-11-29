@@ -18,5 +18,3 @@ export enum MoodDegree {
 }
 
 export const PAGINATION_SIZE = 5;
-
-export const OBJECT_STORAGE_BUCKET = 'dandi-object-storage';
