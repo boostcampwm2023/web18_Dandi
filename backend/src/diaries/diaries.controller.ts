@@ -75,6 +75,7 @@ export class DiariesController {
     return {
       userId: author.id,
       authorName: author.nickname,
+      profileImage: author.profileImage,
       title: diary.title,
       content: diary.content,
       thumbnail: diary.thumbnail,
