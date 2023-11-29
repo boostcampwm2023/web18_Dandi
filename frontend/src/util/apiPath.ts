@@ -15,8 +15,7 @@ const API_PATH = {
     updateToken: () => SERVER_URL + AUTH + '/refresh_token',
   },
   USER: {
-    currentUserProfile: () => SERVER_URL + USER,
-    targetUserProfile: (id: number) => SERVER_URL + `/${id}`,
+    userProfile: (id: number) => SERVER_URL + USER + `/${id}`,
     searchUser: (nickname: string) => SERVER_URL + '/search' + `/${nickname}`,
     updateUserProfile: () => SERVER_URL + USER + '/profile',
   },
