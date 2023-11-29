@@ -57,7 +57,7 @@ const MyDiary = () => {
     <>
       <NavBar />
       <main className="mx-auto mb-28 flex max-w-6xl flex-col items-center justify-start">
-        <header className="my-10 flex w-full justify-between">
+        <header className="my-10 flex w-full items-start justify-between">
           <KeywordSearch />
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>

@@ -33,6 +33,7 @@ const API_PATH = {
       DIARY +
       USER +
       `${id}?type=${type}&startDate=${startDate}&endDate=${endDate}&lastIndex=${lastIndex}`,
+    create: () => SERVER_URL + DIARY,
   },
   REACTION: {
     crud: (id: number) => SERVER_URL + REACTION + `/${id}`,

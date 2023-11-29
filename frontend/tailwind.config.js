@@ -31,6 +31,12 @@ export default {
       gridTemplateRows: {
         7: 'repeat(7, minmax(0, 1fr))',
       },
+      boxShadow: {
+        custom: '0 0 10px 0 rgba(0,0,0,0.25)',
+      },
+      width: {
+        34: '8.5rem',
+      },
     },
   },
   plugins: [],
