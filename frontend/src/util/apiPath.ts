@@ -1,5 +1,6 @@
-const SERVER_URL = 'http://223.130.146.253:3000';
-// const SERVER_URL = 'http://localhost:3000';
+// TODO: PR 올릴 때 SERVER URL 배포 URL로 되어 있는지 확인
+// const SERVER_URL = 'http://223.130.146.253:3000';
+const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';
 const USER = '/users';
@@ -29,11 +30,26 @@ const API_PATH = {
     grass: (id: number) => SERVER_URL + DIARY + '/mood' + `/${id}`,
     emotion: (id: number, startDate: number, lastDate: number) =>
       SERVER_URL + DIARY + '/emotion' + `/${id}` + `?startDate=${startDate}&lastDate=${lastDate}`,
-    myDiary: (id: number, type: string, startDate: number, endDate: number, lastIndex: number) =>
-      SERVER_URL +
-      DIARY +
-      USER +
-      `${id}?type=${type}&startDate=${startDate}&endDate=${endDate}&lastIndex=${lastIndex}`,
+    myDiary: (
+      id: number,
+      type: string,
+      lastIndex?: number,
+      startDate?: string,
+      endDate?: string,
+    ) => {
+      switch (type) {
+        case 'Day':
+          return SERVER_URL + DIARY + USER + `${id}?type=${type}&lastIndex=${lastIndex}`;
+        default:
+          return (
+            SERVER_URL +
+            DIARY +
+            USER +
+            `${id}?type=${type}&startDate=${startDate}&endDate=${endDate}`
+          );
+      }
+    },
+
     create: () => SERVER_URL + DIARY,
   },
   REACTION: {

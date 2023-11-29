@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { viewTypes } from '@type/pages/MyDiary';
 import { IDiaryContent } from '@type/components/Common/DiaryList';
@@ -26,7 +26,7 @@ const calPeriod = () => {
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
-  const [diaryData, setDiaryData] = useState<IDiaryContent[]>(DUMMY_DATA);
+  const [diaryData, _] = useState<IDiaryContent[]>(DUMMY_DATA);
   const [nowMonth, setNowMonth] = useState(new Date());
   const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
   const [period, setPeriod] = useState(calPeriod());
@@ -49,9 +49,7 @@ const MyDiary = () => {
     return [startDate, endDate];
   };
 
-  useEffect(() => {
-    setDiaryData(DUMMY_DATA);
-  }, []);
+  console.log('diaryData', diaryData);
 
   return (
     <>
@@ -74,14 +72,14 @@ const MyDiary = () => {
                 leftOnClick={() => setPrevOrNextWeek(-1)}
                 rightOnClick={() => setPrevOrNextWeek(1)}
               />
-              {DUMMY_DATA.length < WEEK_STANDARD_LENGTH && (
+              {diaryData.length < WEEK_STANDARD_LENGTH && (
                 <section className="flex gap-5">
-                  {DUMMY_DATA.map((data) => (
-                    <Card data={data} />
+                  {diaryData.map((data, index) => (
+                    <Card data={data} key={index} />
                   ))}
                 </section>
               )}
-              {DUMMY_DATA.length >= WEEK_STANDARD_LENGTH && <CarouselContainer {...DUMMY_DATA} />}
+              {diaryData.length >= WEEK_STANDARD_LENGTH && <CarouselContainer data={diaryData} />}
             </>
           )}
           {viewType === DIARY_VIEW_TYPE.MONTH && (

@@ -7,11 +7,17 @@ import Card from '@components/MyDiary/Card';
 
 import { PREV_INDEX, LARGE, NEXT_INDEX, SMALL } from '@util/constants';
 
-const CarouselContainer = (data: IDiaryContent[]) => {
+interface CarouselContainerProps {
+  data: IDiaryContent[];
+}
+
+const CarouselContainer = ({ data }: CarouselContainerProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const dataLength = data.length;
   const prevIndex =
     activeIndex === 0 ? activeIndex + PREV_INDEX + dataLength : activeIndex + PREV_INDEX;
+  console.log('data 전부', data);
+  console.log('dataLength', dataLength, 'prevIndex!!', prevIndex);
 
   return (
     <section className="flex w-fit items-center justify-center">

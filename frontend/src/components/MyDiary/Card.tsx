@@ -10,6 +10,7 @@ import Modal from '@components/Common/Modal';
 
 import { formatDateString } from '@util/funcs';
 import { SMALL } from '@util/constants';
+import { useNavigate } from 'react-router-dom';
 
 interface CardProps {
   data: IDiaryContent;
@@ -18,6 +19,8 @@ interface CardProps {
 }
 
 const Card = ({ data, styles, size }: CardProps) => {
+  const navigate = useNavigate();
+
   const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
@@ -25,6 +28,7 @@ const Card = ({ data, styles, size }: CardProps) => {
   const toggleShowModal = () => setShowModal((prev) => !prev);
   const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
 
+  const goDetail = () => navigate(`/detail/${data.diaryId}`);
   const onClickEmoji = (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
     toggleShowEmojiPicker();
@@ -34,18 +38,19 @@ const Card = ({ data, styles, size }: CardProps) => {
     <div
       className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
     >
-      <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(data.createdAt)}</p>
-      <h3 className="text-xl font-bold">{data.title}</h3>
-      <img src={data.thumbnail} alt="일기의 대표 이미지" />
-      <div className="whitespace-pre-wrap text-sm">
-        <p>{data.content}</p>
+      <div onClick={goDetail} className="flex cursor-pointer flex-col gap-3">
+        <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(data.createdAt)}</p>
+        <h3 className="text-xl font-bold">{data.title}</h3>
+        <img src={data.thumbnail} alt="일기의 대표 이미지" />
+        <div className="whitespace-pre-wrap text-sm">
+          <p>{data.content}</p>
+        </div>
       </div>
       <div className="flex w-full flex-wrap gap-3">
         {data.keywords.map((keyword, index) => (
           <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />
         ))}
       </div>
-
       <Reaction
         count={data.reactionCount}
         textOnClick={toggleShowModal}
