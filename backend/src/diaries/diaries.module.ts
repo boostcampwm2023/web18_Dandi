@@ -5,11 +5,10 @@ import { DiariesRepository } from './diaries.repository';
 import { TagsModule } from 'src/tags/tags.module';
 import { FriendsModule } from 'src/friends/friends.module';
 import { UsersModule } from 'src/users/users.module';
-import { DiariesImageService } from './diariesImage.service';
 
 @Module({
   controllers: [DiariesController],
-  providers: [DiariesService, DiariesRepository, DiariesImageService],
+  providers: [DiariesService, DiariesRepository],
   imports: [TagsModule, UsersModule, FriendsModule],
   exports: [DiariesService],
 })

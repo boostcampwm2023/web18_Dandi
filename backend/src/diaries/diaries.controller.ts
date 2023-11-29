@@ -8,9 +8,7 @@ import {
   Patch,
   Post,
   Query,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -39,16 +37,11 @@ import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
-import { DiariesImageService } from './diariesImage.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Diary API')
 @Controller('diaries')
 export class DiariesController {
-  constructor(
-    private readonly diariesService: DiariesService,
-    private readonly diariesImageService: DiariesImageService,
-  ) {}
+  constructor(private readonly diariesService: DiariesService) {}
 
   @Get('/friends')
   @UseGuards(JwtAuthGuard)
@@ -198,17 +191,5 @@ export class DiariesController {
     const yearMood = await this.diariesService.getMoodForYear(userId);
 
     return { yearMood };
-  }
-
-  @Post('/image')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadImage(
-    @User() user: UserEntity,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<Record<string, string>> {
-    const uploadedFile = await this.diariesImageService.uploadImage(user.id, file);
-
-    return { imageURL: uploadedFile.Location };
   }
 }
