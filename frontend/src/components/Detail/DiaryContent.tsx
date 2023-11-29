@@ -14,7 +14,7 @@ interface DiaryContentProps {
   authorName: string;
   title: string;
   content: string;
-  keywords: string[];
+  tags: string[];
   reactionCount: number;
 }
 
@@ -24,7 +24,7 @@ const DiaryContent = ({
   authorName,
   title,
   content,
-  keywords,
+  tags,
   reactionCount,
 }: DiaryContentProps) => {
   const [showModal, setShowModal] = useState(false);
@@ -54,9 +54,9 @@ const DiaryContent = ({
           </div>
         </div>
         <div className="mb-3 flex flex-wrap gap-3 text-base">
-          {keywords.map((keyword, index) => (
+          {tags.map((tag, index) => (
             <div key={index} className="bg-mint rounded-lg px-3 py-1">
-              <p>#{keyword}</p>
+              <p>#{tag}</p>
             </div>
           ))}
         </div>
