@@ -63,6 +63,9 @@ export class GetDiaryResponseDto {
   @ApiProperty({ description: '사용자의 기분(1 ~ 5 사이의 정수 값)' })
   mood: number;
 
+  @ApiProperty({ description: '공개/비공개 여부' })
+  status: DiaryStatus;
+
   @ApiProperty({ description: '일기 태그 배열' })
   tags: string[];
 
