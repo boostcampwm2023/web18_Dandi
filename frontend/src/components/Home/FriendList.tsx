@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getFriendList, recommendFriend } from '@/api/FriendModal';
@@ -23,7 +23,6 @@ const FriendList = ({ userId }: FriendListProps) => {
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    recommendData.refetch();
   };
 
   const friendListData = useQuery({
@@ -34,7 +33,12 @@ const FriendList = ({ userId }: FriendListProps) => {
   const recommendData = useQuery({
     queryKey: ['recommendFriend', nickname],
     queryFn: () => recommendFriend(nickname),
+    enabled: !!nickname,
   });
+
+  useEffect(() => {
+    recommendData.refetch();
+  }, [nickname]);
 
   if (friendListData.isLoading) {
     return <p>친구목록 가져오는 중...</p>;
@@ -77,9 +81,10 @@ const FriendList = ({ userId }: FriendListProps) => {
         <div>
           <p className="mb-6 text-2xl font-bold">검색 결과</p>
           <div className="flex flex-wrap justify-between">
-            {recommendData.data.friends.map((data: FriendListResponse) => {
-              <FriendModalItem {...data} type={PROFILE_BUTTON_TYPE.LIST} />;
-            })}
+            {/* {recommendData &&
+              recommendData.data.map((data: FriendListResponse) => {
+                <FriendModalItem {...data} type={PROFILE_BUTTON_TYPE.LIST} />;
+              })} */}
           </div>
         </div>
       )}
