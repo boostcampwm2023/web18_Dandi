@@ -11,15 +11,16 @@ export class DiariesImageService {
     this.s3 = new AWS.S3(objectStorageConfig);
   }
 
-  async uploadImage(file) {
+  async uploadImage(userId: number, file: Express.Multer.File) {
+    const today = new Date();
+
     return await this.s3
-      .putObject({
+      .upload({
         Bucket: OBJECT_STORAGE_BUCKET,
-        Key: 'test',
+        Key: `${userId}/${today.getFullYear()}/${today.getMonth() + 1}/${file.originalname}`,
         ACL: 'public-read',
-        // ACL을 지우면 전체 공개되지 않습니다.
         Body: file.buffer,
-        // ContentType: file.mimetype,
+        ContentType: file.mimetype,
       })
       .promise();
   }
