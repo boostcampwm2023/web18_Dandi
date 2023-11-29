@@ -16,7 +16,6 @@ interface CardProps {
   styles?: string;
   size?: 'default' | 'small';
 }
-// TODO: 이모지 피커 위치 수정
 
 const Card = ({ data, styles, size }: CardProps) => {
   const [showModal, setShowModal] = useState(false);

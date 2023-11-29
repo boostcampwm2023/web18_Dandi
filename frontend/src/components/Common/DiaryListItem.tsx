@@ -18,8 +18,6 @@ interface DiaryListItemProps {
   diaryItem: IDiaryContent;
 }
 
-// TODO:EmojiPicker 위치 수정
-
 const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const navigate = useNavigate();
 

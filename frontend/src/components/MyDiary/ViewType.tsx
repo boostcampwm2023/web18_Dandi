@@ -16,7 +16,7 @@ const ViewType = ({ viewType, setViewType }: ViewTypeProp) => {
           onClick={() => setViewType(type)}
           className={`${
             viewType === type ? 'bg-mint text-white' : 'text-default '
-          } border-mint rounded-xl border px-4 text-lg font-bold`}
+          } border-mint rounded-xl border px-4 py-2.5 text-lg font-bold`}
         >
           {type}
         </button>
