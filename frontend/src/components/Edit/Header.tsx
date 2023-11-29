@@ -1,19 +1,16 @@
 import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 
-const Header = () => {
-  const [title, setTitle] = useState('');
-  const [emoji, setEmoji] = useState('😁');
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [status, setStatus] = useState('나만 보기');
+interface HeaderProps {
+  title: string;
+  emoji: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setStatus: React.Dispatch<React.SetStateAction<string>>;
+  setEmoji: React.Dispatch<React.SetStateAction<string>>;
+}
 
-  const emotionList = [
-    ['아주 좋음', 5],
-    ['좋음', 4],
-    ['그저그럼', 3],
-    ['나쁨', 2],
-    ['아주 나쁨', 1],
-  ];
+const Header = ({ emoji, title, setTitle, setStatus, setEmoji }: HeaderProps) => {
+  const [showEmoji, setShowEmoji] = useState(false);
 
   const toggleEmoji = () => setShowEmoji((prev) => !prev);
 
@@ -43,16 +40,6 @@ const Header = () => {
             onClick={toggleEmoji}
             readOnly
           />
-          <select className="border-brown h-10 rounded-xl border px-2 outline-none" name="emotion">
-            {emotionList.map((item, index) => {
-              const [emotion, value] = item;
-              return (
-                <option key={index} value={value}>
-                  {emotion}
-                </option>
-              );
-            })}
-          </select>
         </div>
         {showEmoji && <EmojiPicker onEmojiClick={onClickEmoji} />}
       </div>

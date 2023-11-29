@@ -45,6 +45,9 @@ export class GetDiaryResponseDto {
   @ApiProperty({ description: '작성자 닉네임' })
   authorName: string;
 
+  @ApiProperty({ description: '작성자 프로필 사진 url' })
+  profileImage: string;
+
   @ApiProperty({ description: '일기 제목' })
   title: string;
 
@@ -65,6 +68,9 @@ export class GetDiaryResponseDto {
 
   @ApiProperty({ description: '해당 글의 리액션 갯수' })
   reactionCount: number;
+
+  @ApiProperty({ description: '일기 작성 일자' })
+  createdAt: Date;
 }
 
 export class UpdateDiaryDto {
@@ -223,6 +229,7 @@ export class ReadUserDiariesResponseDto {
         emotion: '😮‍💨',
         reactionCount: 1,
         createdAt: '2023-11-13T13:50:17.106Z',
+        leavedReaction: '🙃',
       },
     ],
   })
@@ -238,6 +245,7 @@ export class AllDiaryInfosDto {
   emotion: string;
   reactionCount: number;
   createdAt: Date;
+  leavedReaction?: string;
 }
 
 export class getYearMoodResponseDto {

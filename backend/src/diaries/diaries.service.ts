@@ -8,16 +8,27 @@ import {
   GetAllEmotionsResponseDto,
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
+  AllDiaryInfosDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
-import { CLOVA_SENTIMENT_URL, MoodDegree, MoodType } from './utils/diaries.constant';
+import {
+  SENTIMENT_CHUNK_SIZE,
+  CLOVA_SENTIMENT_URL,
+  SUMMARY_MAX_SENTENCE_LENGTH,
+  CLOVA_SUMMARY_URL,
+  MoodDegree,
+  MoodType,
+  SUMMARY_MINIMUM_SENTENCE_LENGTH,
+} from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
+import { subYears } from 'date-fns';
+import { load } from 'cheerio';
 
 @Injectable()
 export class DiariesService {
@@ -33,27 +44,28 @@ export class DiariesService {
     const diary = plainToClass(Diary, createDiaryDto, {
       excludePrefixes: ['tag'],
     });
+    const plainText = load(diary.content).text();
 
     diary.author = user;
     diary.tags = tags;
-    diary.summary = await this.getSummary(diary.title, diary.content);
-    diary.mood = await this.judgeOverallMood(diary.content);
+    diary.summary = await this.getSummary(diary.title, plainText);
+    diary.mood = await this.judgeOverallMood(plainText);
 
     await this.diariesRepository.save(diary);
   }
 
-  async findDiary(user: User, id: number, readMode: boolean) {
+  async findDiary(user: User, id: number) {
     const diary = await this.diariesRepository.findById(id);
     this.existsDiary(diary);
 
     const author = await diary.author;
-    this.checkAuthorization(author, user, diary.status, readMode);
+    this.checkAuthorization(author, user, diary.status);
 
     return diary;
   }
 
   async updateDiary(id: number, user: User, updateDiaryDto: UpdateDiaryDto) {
-    const existingDiary = await this.findDiary(user, id, false);
+    const existingDiary = await this.findDiary(user, id);
 
     existingDiary.tags = await this.tagsService.mapTagNameToTagType(updateDiaryDto.tagNames);
     Object.keys(updateDiaryDto).forEach((key) => {
@@ -63,15 +75,16 @@ export class DiariesService {
     });
 
     if (updateDiaryDto.content) {
-      existingDiary.summary = await this.getSummary(existingDiary.title, updateDiaryDto.content);
-      existingDiary.mood = await this.judgeOverallMood(updateDiaryDto.content);
+      const plainText = load(updateDiaryDto.content).text();
+      existingDiary.summary = await this.getSummary(existingDiary.title, plainText);
+      existingDiary.mood = await this.judgeOverallMood(plainText);
     }
 
     return await this.diariesRepository.save(existingDiary);
   }
 
   async deleteDiary(user: User, id: number) {
-    await this.findDiary(user, id, false);
+    await this.findDiary(user, id);
 
     await this.diariesRepository.softDelete(id);
   }
@@ -190,9 +203,7 @@ export class DiariesService {
   }
 
   async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
-    const today = new Date();
-    const oneYearAgo = new Date(today);
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    const oneYearAgo = subYears(new Date(), 1);
 
     const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
 
@@ -203,59 +214,80 @@ export class DiariesService {
     return yearMood;
   }
 
+  async findDiaryByKeyword(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeyword(author.id, keyword);
+
+    const diaryInfos = Promise.all(
+      diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
+        const tags = await diary.tags;
+        const reactions = await diary.reactions;
+
+        return {
+          diaryId: diary.id,
+          title: diary.title,
+          thumbnail: diary.thumbnail,
+          summary: diary.summary,
+          tags: tags.map((t) => t.name),
+          emotion: diary.emotion,
+          reactionCount: reactions.length,
+          createdAt: diary.createdAt,
+          leavedReaction: reactions.find((reaction) => reaction.user.id === author.id)?.reaction,
+        };
+      }),
+    );
+
+    return diaryInfos;
+  }
+
   private existsDiary(diary: Diary) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
     }
   }
 
-  private checkAuthorization(author: User, user: User, status: DiaryStatus, readMode: boolean) {
-    if ((!readMode || status === DiaryStatus.PRIVATE) && author.id !== user.id) {
+  private checkAuthorization(author: User, user: User, status: DiaryStatus) {
+    if (status === DiaryStatus.PRIVATE && author.id !== user.id) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }
 
-  private async getSummary(title: string, content: string) {
-    if (this.isShortContent(content)) {
-      return content;
+  private async getSummary(title: string, plainText: string) {
+    if (this.isShortContent(plainText)) {
+      return plainText;
     }
-    content = content.substring(0, 2000);
+    plainText = plainText.substring(0, SUMMARY_MAX_SENTENCE_LENGTH);
 
-    const response = await fetch(
-      'https://naveropenapi.apigw.ntruss.com/text-summary/v1/summarize',
-      {
-        method: 'POST',
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          document: { title, content },
-          option: { language: 'ko' },
-        }),
+    const response = await fetch(CLOVA_SUMMARY_URL, {
+      method: 'POST',
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
+        'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        document: { title, content: plainText },
+        option: { language: 'ko' },
+      }),
+    });
 
     const body = await response.json();
-    return body.summary;
+    return body.summary ?? plainText;
   }
 
   private isShortContent(content: string) {
     const sentences = content.split(/[.!?]/).filter((sentence) => sentence.trim() !== '');
 
-    return sentences.length <= 3;
+    return sentences.length <= SUMMARY_MINIMUM_SENTENCE_LENGTH;
   }
 
-  private async judgeOverallMood(fullContent: string) {
-    const [statistics, totalNumber] = await this.sumMoodAnalysis(fullContent);
+  private async judgeOverallMood(plainText: string) {
+    const [statistics, totalNumber] = await this.sumMoodAnalysis(plainText);
 
     const [type, sum] = Object.entries(statistics).reduce((max, cur) => {
       return cur[1] > max[1] ? cur : max;
     });
 
     const figure = sum / totalNumber;
-
     switch (type) {
       case MoodType.POSITIVE:
         if (figure > 50) {
@@ -272,31 +304,19 @@ export class DiariesService {
     }
   }
 
-  private async sumMoodAnalysis(fullContent: string): Promise<[Record<string, number>, number]> {
-    const plainContent = fullContent.replace(/<img[^>]*>/g, '');
-    const numberOfChunk = Math.floor(plainContent.length / 1000) + 1;
-
+  private async sumMoodAnalysis(plainText: string): Promise<[Record<string, number>, number]> {
+    const numberOfChunk = Math.floor(plainText.length / SENTIMENT_CHUNK_SIZE) + 1;
     const moodStatistics = {
       [MoodType.POSITIVE]: 0,
       [MoodType.NEGATIVE]: 0,
       [MoodType.NEUTRAL]: 0,
     };
 
-    for (let i = 0; i < numberOfChunk; i++) {
-      const start = i * 1000;
-      const end = i < numberOfChunk - 1 ? start + 1000 : start + (plainContent.length % 1000);
+    for (let start = 0; start < plainText.length; start += SENTIMENT_CHUNK_SIZE) {
+      const analysis = await this.analyzeMood(plainText.slice(start, start + SENTIMENT_CHUNK_SIZE));
 
-      if (start === end) {
-        break;
-      }
-
-      const analysis = await this.analyzeMood(plainContent.slice(start, end));
-
-      Object.keys(analysis).forEach((key) => {
-        moodStatistics[key] += analysis[key];
-      });
+      Object.keys(analysis).forEach((key) => (moodStatistics[key] += analysis[key]));
     }
-
     return [moodStatistics, numberOfChunk];
   }
 

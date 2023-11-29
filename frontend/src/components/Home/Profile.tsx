@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import { getCurrentUser } from '@api/Profile';
 
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
@@ -14,15 +17,33 @@ import {
 } from '@util/constants';
 
 interface ProfileProps {
+  userId: number;
+}
+
+interface ProfileData {
   nickname: string;
   profileImage: string;
   totalFriends: number;
   isExistedTodayDiary: boolean;
 }
 
-const Profile = ({ nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileProps) => {
+const Profile = ({ userId }: ProfileProps) => {
   const [showModalType, setShowModalType] = useState('list');
   const [showModal, setShowModal] = useState(false);
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['profileData', userId],
+    queryFn: () => getCurrentUser(userId),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error Occurrence!</p>;
+  }
+
+  const { nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileData = data;
 
   const closeModal = () => {
     setShowModal(false);

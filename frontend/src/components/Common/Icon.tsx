@@ -11,7 +11,7 @@ import {
 interface ReactionProps {
   id: string;
   styles?: string;
-  size?: 'default' | 'large';
+  size?: 'default' | 'large' | 'small';
 }
 
 const Icon = ({ id, styles, size = DEFAULT }: ReactionProps) => {
@@ -23,6 +23,10 @@ const Icon = ({ id, styles, size = DEFAULT }: ReactionProps) => {
     default: {
       width: DEFAULT_VIEWBOX_WIDTH,
       height: DEFAULT_VIEWBOX_HEIGHT,
+    },
+    small: {
+      width: 17,
+      height: 17,
     },
   };
   return (

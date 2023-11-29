@@ -10,7 +10,8 @@ import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
 
-import { DAY_OF_WEEK, FEED } from '@util/constants';
+import { FEED } from '@util/constants';
+import { formatDateString } from '@util/funcs';
 
 interface DiaryListItemProps {
   pageType?: string;
@@ -29,23 +30,13 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const goDetail = () => navigate(`/detail/${diaryItem.diaryId}`);
   const goFriendHome = () => navigate(`/home/${diaryItem.authorId}`);
 
-  const formatDateString = (str: string) => {
-    const DateObject = new Date(str);
-    const year = DateObject.getFullYear();
-    const month = DateObject.getMonth() + 1;
-    const day = DateObject.getDate();
-    const date = DateObject.getDay();
-
-    return `${year}년 ${month}월 ${day}일 ${DAY_OF_WEEK[date]}`;
-  };
-
   const onClickEmoji = (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
     toggleShowEmojiPicker();
   };
 
   return (
-    <div className="border-brown relative mb-3 rounded-2xl border border-solid bg-white p-3">
+    <div className="border-brown relative mb-3 rounded-2xl border border-solid bg-white px-7 py-6">
       {pageType === FEED && (
         <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
           <ProfileItem img={diaryItem.profileImage} nickName={diaryItem.nickname} />
@@ -84,7 +75,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         <ReactionList />
       </Modal>
       {showEmojiPicker && (
-        <aside className="absolute z-50 mt-2">
+        <aside className="absolute bottom-14 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />
         </aside>
       )}

@@ -4,9 +4,10 @@ import Keyword from '../Common/Keyword';
 interface KeywordBoxProps {
   keywordList: string[];
   setKeywordList: React.Dispatch<React.SetStateAction<string[]>>;
+  onSubmit: () => void;
 }
 
-const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
+const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) => {
   const [keyword, setKeyword] = useState<string>('');
 
   const changeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,13 +21,20 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
     }
   };
 
+  const deleteKeyword = (keyword: string) => {
+    const newKeywordList = keywordList.filter((value) => value !== keyword);
+    setKeywordList(newKeywordList);
+  };
+
   return (
     <div className="flex w-4/5 flex-col ">
       <div className="flex w-full justify-between">
         <label className="mb-3 text-xl font-bold" htmlFor="keyword">
           키워드 입력
         </label>
-        <button className="bg-brown rounded-lg px-3 text-lg font-bold">저장하기</button>
+        <button onClick={onSubmit} className="bg-brown rounded-lg px-3 text-lg font-bold">
+          저장하기
+        </button>
       </div>
 
       <input
@@ -39,7 +47,9 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
       />
       <div className="flex flex-wrap gap-4">
         {keywordList.map((keyword, index) => (
-          <Keyword key={index} text={keyword} />
+          <div className="cursor-pointer" key={index} onClick={() => deleteKeyword(keyword)}>
+            <Keyword text={keyword} />
+          </div>
         ))}
       </div>
     </div>

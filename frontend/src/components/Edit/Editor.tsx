@@ -1,11 +1,15 @@
 import { useRef } from 'react';
 import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
-const Editor = () => {
+interface EditorProps {
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Editor = ({ setContent }: EditorProps) => {
   const editorRef = useRef<DiaryEditor>(null);
 
   const onChangeContent = () => {
-    console.log(editorRef.current?.getInstance().getHTML());
+    setContent(editorRef.current?.getInstance().getHTML());
   };
 
   const onUploadImage = () => {

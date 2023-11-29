@@ -67,13 +67,15 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserEntity,
   ): Promise<GetDiaryResponseDto> {
-    const diary = await this.diariesService.findDiary(user, id, true);
+    const diary = await this.diariesService.findDiary(user, id);
     const tags = await diary.tags;
+    const author = await diary.author;
     const reactions = await diary.reactions;
 
     return {
-      userId: diary.author.id,
-      authorName: diary.author.nickname,
+      userId: author.id,
+      authorName: author.nickname,
+      profileImage: author.profileImage,
       title: diary.title,
       content: diary.content,
       thumbnail: diary.thumbnail,
@@ -81,6 +83,7 @@ export class DiariesController {
       mood: diary.mood,
       tags: tags.map((t) => t.name),
       reactionCount: reactions.length,
+      createdAt: diary.createdAt,
     };
   }
 
@@ -150,6 +153,7 @@ export class DiariesController {
         emotion: diary.emotion,
         reactionCount: reactions.length,
         createdAt: diary.createdAt,
+        leavedReaction: reactions.find((reaction) => reaction.user.id === id)?.reaction,
       };
     });
 
@@ -191,5 +195,21 @@ export class DiariesController {
     const yearMood = await this.diariesService.getMoodForYear(userId);
 
     return { yearMood };
+  }
+
+  @Get('/search/:keyword')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '키워드로 일기 검색' })
+  @ApiCreatedResponse({
+    description: '일기 검색 성공',
+    type: ReadUserDiariesResponseDto,
+  })
+  async findDiaryByKeyword(
+    @User() author: UserEntity,
+    @Param('keyword') keyword: string,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaryList = await this.diariesService.findDiaryByKeyword(author, keyword);
+
+    return { nickname: author.nickname, diaryList };
   }
 }

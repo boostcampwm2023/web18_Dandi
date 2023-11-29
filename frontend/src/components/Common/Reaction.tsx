@@ -2,12 +2,11 @@ import Icon from '@components/Common/Icon';
 
 interface ReactionProps {
   count: number;
-  iconOnClick?: () => void;
-  textOnClick?: () => void;
+  iconOnClick: () => void;
+  textOnClick: () => void;
   styles?: string;
   emoji?: string;
 }
-
 const Reaction = ({ count, iconOnClick, textOnClick, styles, emoji }: ReactionProps) => {
   return (
     <div>
