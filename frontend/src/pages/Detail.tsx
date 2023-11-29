@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import referDiary from '@api/ReferDiary';
 
 import NavBar from '@components/Common/NavBar';
 import Button from '@components/Common/Button';
@@ -10,6 +13,21 @@ const Detail = () => {
   const [showModal, setShowModal] = useState(false);
   const toggleShowModal = () => setShowModal((prev) => !prev);
 
+  const diaryId = 1;
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['diary', diaryId],
+    queryFn: () => referDiary(diaryId),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error fetching data</p>;
+  }
+  console.log(data);
+
   const diaryData = {
     createdAt: '2023-11-13T13:50:17.106Z',
     profileImage: '',
@@ -20,6 +38,7 @@ const Detail = () => {
     keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
     reactionCount: 10,
   };
+  
   const content = <DiaryContent {...diaryData} />;
 
   return (
