@@ -21,6 +21,11 @@ const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) 
     }
   };
 
+  const deleteKeyword = (keyword: string) => {
+    const newKeywordList = keywordList.filter((value) => value !== keyword);
+    setKeywordList(newKeywordList);
+  };
+
   return (
     <div className="flex w-4/5 flex-col ">
       <div className="flex w-full justify-between">
@@ -42,7 +47,9 @@ const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) 
       />
       <div className="flex flex-wrap gap-4">
         {keywordList.map((keyword, index) => (
-          <Keyword key={index} text={keyword} />
+          <div className="cursor-pointer" key={index} onClick={() => deleteKeyword(keyword)}>
+            <Keyword text={keyword} />
+          </div>
         ))}
       </div>
     </div>
