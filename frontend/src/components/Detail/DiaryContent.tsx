@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
@@ -27,13 +28,21 @@ const DiaryContent = ({
   reactionCount,
 }: DiaryContentProps) => {
   const [showModal, setShowModal] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState('');
   const toggleShowModal = () => {
     setShowModal((prev) => !prev);
+  };
+  const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+
+  const onClickEmoji = (emojiData: any) => {
+    setSelectedEmoji(emojiData.emoji);
+    toggleShowEmojiPicker();
   };
 
   return (
     <>
-      <div className="border-brown mb-3 rounded-2xl border-2 border-solid bg-white p-3">
+      <div className="border-brown relative mb-3 rounded-2xl border-2 border-solid bg-white p-3">
         <ProfileItem img={profileImage} nickName={authorName} />
         <div className="mb-3 flex items-center justify-between">
           <p className="text-lg font-bold">{title}</p>
@@ -54,11 +63,17 @@ const DiaryContent = ({
         <Reaction
           count={reactionCount}
           textOnClick={toggleShowModal}
-          iconOnClick={() => console.log('이양')}
+          iconOnClick={toggleShowEmojiPicker}
+          emoji={selectedEmoji}
         />
         <Modal showModal={showModal} closeModal={toggleShowModal}>
           <ReactionList />
         </Modal>
+        {showEmojiPicker && (
+          <aside className="absolute bottom-14 z-50">
+            <EmojiPicker onEmojiClick={onClickEmoji} />
+          </aside>
+        )}
       </div>
     </>
   );

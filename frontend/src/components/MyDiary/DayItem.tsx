@@ -4,7 +4,6 @@ interface DayItemProps {
 }
 
 const DayItem = ({ day, emotion }: DayItemProps) => {
-  console.log(day, day > 0);
   return (
     <div className="flex flex-col p-3">
       {day > 0 && (

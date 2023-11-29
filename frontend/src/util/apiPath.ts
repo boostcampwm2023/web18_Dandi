@@ -1,5 +1,5 @@
-// const SERVER_URL = 'http://223.130.146.253:3000';
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'http://223.130.146.253:3000';
+// const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';
 const USER = '/users';
@@ -33,6 +33,7 @@ const API_PATH = {
       DIARY +
       USER +
       `${id}?type=${type}&startDate=${startDate}&endDate=${endDate}&lastIndex=${lastIndex}`,
+    create: () => SERVER_URL + DIARY,
   },
   REACTION: {
     crud: (id: number) => SERVER_URL + REACTION + `/${id}`,

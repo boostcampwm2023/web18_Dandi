@@ -6,9 +6,9 @@ import { naverLogin } from '@api/Login';
 const AuthLogin = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const code = new URL(window.location.href).searchParams.get('code') ?? '';
-    const state = new URL(window.location.href).searchParams.get('state') ?? '';
     const getUserId = async () => {
+      const code = new URL(window.location.href).searchParams.get('code') ?? '';
+      const state = new URL(window.location.href).searchParams.get('state') ?? '';
       const userId = await naverLogin(code, state);
       localStorage.setItem('userId', userId);
       navigate('/');
