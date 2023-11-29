@@ -11,7 +11,7 @@ export class ImagesRepository {
     this.s3 = new AWS.S3(objectStorageConfig);
   }
 
-  uploadDiaryImage(userId: number, file: Express.Multer.File, middlePath: string) {
+  uploadImage(userId: number, file: Express.Multer.File, middlePath: string) {
     return this.s3
       .upload({
         Bucket: OBJECT_STORAGE_BUCKET,

@@ -14,11 +14,23 @@ export class ImagesController {
   @Post('/diaries')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
-  async uploadImage(
+  async uploadDiaryImage(
     @User() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<Record<string, string>> {
     const uploadedFile = await this.imagesService.uploadDiaryImage(user.id, file);
+
+    return { imageURL: uploadedFile.Location };
+  }
+
+  @Post('/profile')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadProfileImage(
+    @User() user: UserEntity,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Record<string, string>> {
+    const uploadedFile = await this.imagesService.uploadProfileImage(user.id, file);
 
     return { imageURL: uploadedFile.Location };
   }
