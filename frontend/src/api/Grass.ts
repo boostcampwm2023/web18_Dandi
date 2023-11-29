@@ -1,4 +1,4 @@
-import API_PATH from '@/util/apiPath';
+import API_PATH from '@util/apiPath';
 
 const getGrass = async (userId: number) => {
   try {
