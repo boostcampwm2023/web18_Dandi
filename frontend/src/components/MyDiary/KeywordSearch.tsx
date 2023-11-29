@@ -20,8 +20,6 @@ const KeywordSearch = () => {
     setSelected(option);
     setShowSelect(false);
   };
-
-  const offShowKeyword = () => setShowKeyword(false);
   const onClickKeywordOption = (option: string) => {
     setKeyword(option);
     setShowKeyword(false);
