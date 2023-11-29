@@ -1,12 +1,8 @@
-import API_PATH from '@/util/apiPath';
+import API_PATH from '@util/apiPath';
 
 export const getCurrentUser = async (userId: number) => {
   try {
     const response = await fetch(API_PATH.USER.userProfile(userId), {
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json',
-      },
       credentials: 'include',
     });
 

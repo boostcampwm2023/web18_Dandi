@@ -31,7 +31,7 @@ const Profile = ({ userId }: ProfileProps) => {
   const [showModalType, setShowModalType] = useState('list');
   const [showModal, setShowModal] = useState(false);
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['userData'],
+    queryKey: ['profileData', userId],
     queryFn: () => getCurrentUser(userId),
   });
 
