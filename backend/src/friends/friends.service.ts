@@ -41,7 +41,7 @@ export class FriendsService {
     const friendRequest = await this.checkFriendData(friendRelationDto);
     this.friendsRepository.removeRelation(friendRequest);
   }
-  
+
   async allowFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
     const friendRequest = await this.checkFriendData(friendRelationDto);
     this.friendsRepository.updateStatus(friendRequest);
@@ -53,16 +53,15 @@ export class FriendsService {
       FriendStatus.COMPLETE,
     );
 
-    const friends: SearchUserResponseDto[] = [];
-    friendRelations.forEach((relation) => {
+    const friends: SearchUserResponseDto[] = friendRelations.map((relation) => {
       const friend = relation.sender.id === userId ? relation.receiver : relation.sender;
 
-      friends.push({
+      return {
         id: friend.id,
         email: friend.email,
         nickname: friend.nickname,
         profileImage: friend.profileImage,
-      });
+      };
     });
 
     return this.sortByNickname(friends);
@@ -74,17 +73,16 @@ export class FriendsService {
       FriendStatus.WAITING,
     );
 
-    const strangers: StrangerResponseDto[] = [];
-    strangerRelations.forEach((relation) => {
+    const strangers: StrangerResponseDto[] = strangerRelations.map((relation) => {
       const stranger = relation.sender.id === userId ? relation.receiver : relation.sender;
 
-      strangers.push({
+      return {
         senderId: relation.sender.id,
         receiverId: relation.receiver.id,
         email: stranger.email,
         nickname: stranger.nickname,
         profileImage: stranger.profileImage,
-      });
+      };
     });
 
     return this.sortByNickname(strangers);

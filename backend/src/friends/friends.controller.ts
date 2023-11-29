@@ -74,7 +74,7 @@ export class FriendsController {
     await this.friendsService.cancelFriendRequest({ senderId, receiverId: user.id });
     return '친구 신청을 거절했습니다.';
   }
-  
+
   @Get('search/:nickname')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '나의 친구 목록에서 친구 검색' })
