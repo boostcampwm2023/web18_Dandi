@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import referDiary from '@api/ReferDiary';
@@ -10,7 +10,10 @@ import Modal from '@components/Common/Modal';
 import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
 
+import { PAGE_URL } from '@util/constants';
+
 const Detail = () => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const toggleShowModal = () => setShowModal((prev) => !prev);
 
@@ -28,7 +31,7 @@ const Detail = () => {
   if (isError) {
     return <p>Error fetching data</p>;
   }
-  
+
   const content = <DiaryContent {...data} />;
 
   return (
@@ -36,7 +39,21 @@ const Detail = () => {
       <NavBar />
       <div className="flex w-2/3 flex-col gap-2">
         <div className="flex justify-end gap-2">
-          <Button text="수정" type="normal" onClick={() => console.log('수정하러 가기')} />
+          <Button
+            text="수정"
+            type="normal"
+            onClick={() =>
+              navigate(PAGE_URL.EDIT, {
+                state: {
+                  diaryId: diaryId,
+                  title: data.title,
+                  content: data.content,
+                  emotion: data.emotion,
+                  tags: data.tags,
+                },
+              })
+            }
+          />
           <Button text="삭제" type="delete" onClick={toggleShowModal} />
           <Modal showModal={showModal} closeModal={toggleShowModal}>
             <Alert

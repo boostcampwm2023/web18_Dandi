@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { createDiary } from '@api/Edit';
+import { createDiary, updateDiary } from '@api/Edit';
 
 import NavBar from '@components/Common/NavBar';
 import Header from '@components/Edit/Header';
@@ -20,12 +20,12 @@ interface CreateDiaryParams {
 
 const Edit = () => {
   const navigate = useNavigate();
-
-  const [keywordList, setKeywordList] = useState<string[]>([]);
-  const [title, setTitle] = useState('');
-  const [emoji, setEmoji] = useState('😁');
+  const { state } = useLocation();
+  const [keywordList, setKeywordList] = useState<string[]>(state ? state.tags : []);
+  const [title, setTitle] = useState(state ? state.title : '');
+  const [emoji, setEmoji] = useState(state ? state.emotion : '😁');
   const [status, setStatus] = useState('나만 보기');
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(state ? state.content : '');
 
   const params: CreateDiaryParams = {
     title,
@@ -42,7 +42,8 @@ const Edit = () => {
     isSuccess,
   } = useMutation({
     mutationFn: (params: CreateDiaryParams) => {
-      return createDiary(params);
+      if (state.diaryId) return updateDiary(params, state.diaryId);
+      else return createDiary(params);
     },
   });
 
@@ -75,7 +76,7 @@ const Edit = () => {
         setEmoji={setEmoji}
         setStatus={setStatus}
       />
-      <Editor setContent={setContent} />
+      <Editor content={content} setContent={setContent} />
       <KeywordBox keywordList={keywordList} setKeywordList={setKeywordList} onSubmit={onSubmit} />
     </div>
   );
