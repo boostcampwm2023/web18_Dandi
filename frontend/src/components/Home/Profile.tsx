@@ -18,6 +18,9 @@ import {
 
 interface ProfileProps {
   userId: number;
+}
+
+interface ProfileData {
   nickname: string;
   profileImage: string;
   totalFriends: number;
@@ -40,7 +43,7 @@ const Profile = ({ userId }: ProfileProps) => {
     return <p>Error Occurrence!</p>;
   }
 
-  const { nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileProps = data;
+  const { nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileData = data;
 
   const closeModal = () => {
     setShowModal(false);
