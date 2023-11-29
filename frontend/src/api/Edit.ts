@@ -20,8 +20,6 @@ export const createDiary = async (params: CreateDiaryParams) => {
       body: JSON.stringify({ ...params }),
     });
 
-    console.log(response);
-
     if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
   } catch (error) {
     console.error('일기 저장에 실패했습니다.', error);
