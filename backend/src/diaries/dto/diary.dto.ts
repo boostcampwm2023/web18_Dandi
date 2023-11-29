@@ -45,6 +45,9 @@ export class GetDiaryResponseDto {
   @ApiProperty({ description: '작성자 닉네임' })
   authorName: string;
 
+  @ApiProperty({ description: '작성자 프로필 사진 url' })
+  profileImage: string;
+
   @ApiProperty({ description: '일기 제목' })
   title: string;
 

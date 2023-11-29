@@ -69,11 +69,13 @@ export class DiariesController {
   ): Promise<GetDiaryResponseDto> {
     const diary = await this.diariesService.findDiary(user, id);
     const tags = await diary.tags;
+    const author = await diary.author;
     const reactions = await diary.reactions;
 
     return {
-      userId: diary.author.id,
-      authorName: diary.author.nickname,
+      userId: author.id,
+      authorName: author.nickname,
+      profileImage: author.profileImage,
       title: diary.title,
       content: diary.content,
       thumbnail: diary.thumbnail,
