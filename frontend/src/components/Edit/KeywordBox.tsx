@@ -4,9 +4,10 @@ import Keyword from '../Common/Keyword';
 interface KeywordBoxProps {
   keywordList: string[];
   setKeywordList: React.Dispatch<React.SetStateAction<string[]>>;
+  onSubmit: () => void;
 }
 
-const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
+const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) => {
   const [keyword, setKeyword] = useState<string>('');
 
   const changeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +27,9 @@ const KeywordBox = ({ keywordList, setKeywordList }: KeywordBoxProps) => {
         <label className="mb-3 text-xl font-bold" htmlFor="keyword">
           키워드 입력
         </label>
-        <button className="bg-brown rounded-lg px-3 text-lg font-bold">저장하기</button>
+        <button onClick={onSubmit} className="bg-brown rounded-lg px-3 text-lg font-bold">
+          저장하기
+        </button>
       </div>
 
       <input
