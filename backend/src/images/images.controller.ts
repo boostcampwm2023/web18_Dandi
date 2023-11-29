@@ -4,7 +4,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from 'src/users/utils/user.decorator';
 import { User as UserEntity } from 'src/users/entity/user.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Image API')
 @Controller('images')
@@ -14,6 +14,8 @@ export class ImagesController {
   @Post('/diaries')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
+  @ApiOperation({ description: '다이어리 이미지 업로드 API' })
+  @ApiCreatedResponse({ description: '이미지 업로드 성공' })
   async uploadDiaryImage(
     @User() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
@@ -26,6 +28,8 @@ export class ImagesController {
   @Post('/profile')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
+  @ApiOperation({ description: '프로필 이미지 업로드 API' })
+  @ApiCreatedResponse({ description: '이미지 업로드 성공' })
   async uploadProfileImage(
     @User() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
