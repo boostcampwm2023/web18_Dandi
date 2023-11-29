@@ -47,8 +47,8 @@ const Edit = () => {
   });
 
   const onSubmit = () => {
-    if (!title || title.trim()) return;
-    if (!content || content.trim()) return;
+    if (!title || title.trim() === '') return;
+    if (!content || content.trim() === '') return;
 
     createAPI(params);
   };
