@@ -1,5 +1,5 @@
-const SERVER_URL = 'http://223.130.146.253:3000';
-// const SERVER_URL = 'http://localhost:3000';
+// const SERVER_URL = 'http://223.130.146.253:3000';
+const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';
 const USER = '/users';
@@ -15,8 +15,7 @@ const API_PATH = {
     updateToken: () => SERVER_URL + AUTH + '/refresh_token',
   },
   USER: {
-    currentUserProfile: () => SERVER_URL + USER,
-    targetUserProfile: (id: number) => SERVER_URL + `/${id}`,
+    userProfile: (id: number) => SERVER_URL + `/users/${id}`,
     searchUser: (nickname: string) => SERVER_URL + '/search' + `/${nickname}`,
     updateUserProfile: () => SERVER_URL + USER + '/profile',
   },
