@@ -84,6 +84,7 @@ export class DiariesController {
       tags: tags.map((t) => t.name),
       reactionCount: reactions.length,
       createdAt: diary.createdAt,
+      status: diary.status,
     };
   }
 
