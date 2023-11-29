@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { TagsModule } from './tags/tags.module';
 import { FriendsModule } from './friends/friends.module';
 import { ReactionsModule } from './reactions/reactions.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ReactionsModule } from './reactions/reactions.module';
     TagsModule,
     FriendsModule,
     ReactionsModule,
+    ImagesModule,
   ],
   controllers: [],
   providers: [],
