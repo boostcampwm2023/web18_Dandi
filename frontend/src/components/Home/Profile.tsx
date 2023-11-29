@@ -57,7 +57,7 @@ const Profile = ({ userId }: ProfileProps) => {
   const getModalContent = (type: string) => {
     switch (type) {
       case PROFILE_MODAL_CONTENT_TYPE.LIST:
-        return <FriendList />;
+        return <FriendList userId={userId} />;
       case PROFILE_MODAL_CONTENT_TYPE.REQUEST:
         return <FriendRequest />;
       case PROFILE_MODAL_CONTENT_TYPE.EDIT:
