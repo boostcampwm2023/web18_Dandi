@@ -37,11 +37,15 @@ import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
+import { DiariesImageService } from './diariesImage.service';
 
 @ApiTags('Diary API')
 @Controller('diaries')
 export class DiariesController {
-  constructor(private readonly diariesService: DiariesService) {}
+  constructor(
+    private readonly diariesService: DiariesService,
+    private readonly diariesImageService: DiariesImageService,
+  ) {}
 
   @Get('/friends')
   @UseGuards(JwtAuthGuard)
@@ -192,4 +196,11 @@ export class DiariesController {
 
     return { yearMood };
   }
+
+  // @Post('/image')
+  // @UseGuards(JwtAuthGuard)
+  // @UseInterceptors(FileInterceptor('image'))
+  // async uploadImage() {
+  //   return await this.diariesImageService.uploadImage();
+  // }
 }
