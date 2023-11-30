@@ -217,25 +217,6 @@ export class DiariesService {
   async findDiaryByKeyword(author: User, keyword: string) {
     const diaries = await this.diariesRepository.findDiaryByKeyword(author.id, keyword);
 
-    // const diaryInfos = Promise.all(
-    //   diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
-    //     const tags = await diary.tags;
-    //     const reactions = await diary.reactions;
-
-    //     return {
-    //       diaryId: diary.id,
-    //       title: diary.title,
-    //       thumbnail: diary.thumbnail,
-    //       summary: diary.summary,
-    //       tags: tags.map((t) => t.name),
-    //       emotion: diary.emotion,
-    //       reactionCount: reactions.length,
-    //       createdAt: diary.createdAt,
-    //       leavedReaction: reactions.find((reaction) => reaction.user.id === author.id)?.reaction,
-    //     };
-    //   }),
-    // );
-
     return this.makeAllDiaryInfosDto(diaries, author.id);
   }
 
