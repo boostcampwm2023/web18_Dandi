@@ -1,51 +1,46 @@
+import { useQuery } from '@tanstack/react-query';
+
+import { getReactionList } from '@api/Reaction';
+
 import ProfileItem from '@components/Common/ProfileItem';
 
+interface ReactionListProps {
+  diaryId: number;
+}
+
 interface ReactionedFriendsProps {
-  emoji: string;
-  img: string;
-  nickName: string;
+  reaction: string;
+  profileImage: string;
+  nickname: string;
 }
 
 interface GroupedReactions {
-  [emoji: string]: ReactionedFriendsProps[];
+  [reaction: string]: ReactionedFriendsProps[];
 }
 
-const ReactionList = () => {
-  const reactionedFriends = [
-    {
-      emoji: '😀',
-      img: 'img',
-      nickName: '윤주',
-    },
-    {
-      emoji: '😀',
-      img: 'img',
-      nickName: '도훈',
-    },
-    {
-      emoji: '😀',
-      img: 'img',
-      nickName: '종현',
-    },
-    {
-      emoji: '😁',
-      img: 'img',
-      nickName: '효종',
-    },
-    {
-      emoji: '😁',
-      img: 'img',
-      nickName: '수현',
-    },
-  ];
+const ReactionList = ({ diaryId }: ReactionListProps) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['reactionList', diaryId],
+    queryFn: () => getReactionList(diaryId),
+  });
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
-  const groupedReactions: GroupedReactions = reactionedFriends.reduce((acc, friend) => {
-    if (!acc[friend.emoji]) {
-      acc[friend.emoji] = [];
-    }
-    acc[friend.emoji].push(friend);
-    return acc;
-  }, {} as GroupedReactions);
+  if (isError) {
+    return <p>Error fetching data</p>;
+  }
+
+  const groupedReactions: GroupedReactions = data.reactionList.reduce(
+    (acc: GroupedReactions, friend: ReactionedFriendsProps) => {
+      if (!acc[friend.reaction]) {
+        acc[friend.reaction] = [];
+      }
+      acc[friend.reaction].push(friend);
+      return acc;
+    },
+    {} as GroupedReactions,
+  );
 
   return (
     <div className="flex flex-col gap-2">
@@ -56,7 +51,7 @@ const ReactionList = () => {
           <ul className="flex w-full flex-wrap rounded-2xl border bg-white p-4">
             {friends.map((friend, index) => (
               <li key={index} className="">
-                <ProfileItem img={friend.img} nickName={friend.nickName} />
+                <ProfileItem img={friend.profileImage} nickName={friend.nickname} />
               </li>
             ))}
           </ul>

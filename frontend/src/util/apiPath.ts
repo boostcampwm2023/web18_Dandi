@@ -4,7 +4,7 @@ const SERVER_URL = 'http://223.130.146.253:3000';
 const AUTH = '/auth';
 const USER = '/users';
 const DIARY = '/diaries';
-const REACTION = '/reaction';
+const REACTION = '/reactions';
 const FRIEND = '/friends';
 const TAG = '/tags';
 

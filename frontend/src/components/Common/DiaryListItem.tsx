@@ -72,7 +72,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         emoji={selectedEmoji}
       />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
-        <ReactionList />
+        <ReactionList diaryId={Number(diaryItem.diaryId)} />
       </Modal>
       {showEmojiPicker && (
         <aside className="absolute bottom-14 z-50">
