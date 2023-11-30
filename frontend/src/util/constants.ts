@@ -62,6 +62,7 @@ export const PROFILE_BUTTON_TYPE = {
   LIST: 'list',
   RECEIVED: 'received',
   SEND: 'send',
+  STRANGER: 'stranger',
 };
 export const PROFILE_MODAL_CONTENT_TYPE = {
   LIST: 'list',

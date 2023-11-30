@@ -41,6 +41,12 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
             신청 취소
           </button>
         );
+      case PROFILE_BUTTON_TYPE.STRANGER:
+        return (
+          <button className="bg-mint w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+            친구 요청
+          </button>
+        );
     }
   };
 
