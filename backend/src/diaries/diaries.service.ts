@@ -239,6 +239,29 @@ export class DiariesService {
     return diaryInfos;
   }
 
+  async findDiaryByTag(userId: number, tagName: string) {
+    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName);
+
+    return Promise.all(
+      diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
+        const tags = await diary.tags;
+        const reactions = await diary.reactions;
+
+        return {
+          diaryId: diary.id,
+          title: diary.title,
+          thumbnail: diary.thumbnail,
+          summary: diary.summary,
+          tags: tags.map((t) => t.name),
+          emotion: diary.emotion,
+          reactionCount: reactions.length,
+          createdAt: diary.createdAt,
+          leavedReaction: reactions.find((reaction) => reaction.user.id === userId)?.reaction,
+        };
+      }),
+    );
+  }
+
   private existsDiary(diary: Diary) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');

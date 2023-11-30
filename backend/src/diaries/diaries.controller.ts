@@ -201,7 +201,7 @@ export class DiariesController {
   @Get('/search/:keyword')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '키워드로 일기 검색' })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: '일기 검색 성공',
     type: ReadUserDiariesResponseDto,
   })
@@ -212,5 +212,21 @@ export class DiariesController {
     const diaryList = await this.diariesService.findDiaryByKeyword(author, keyword);
 
     return { nickname: author.nickname, diaryList };
+  }
+
+  @Get('/tags/:tagName')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '특정 태그가 포함된 일기 조회' })
+  @ApiOkResponse({
+    description: '특정 태그가 포함된 일기 조회 성공',
+    type: ReadUserDiariesResponseDto,
+  })
+  async findDiaryByTag(
+    @User() user: UserEntity,
+    @Param('tagName') tagName: string,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaryList = await this.diariesService.findDiaryByTag(user.id, tagName);
+
+    return { nickname: user.nickname, diaryList };
   }
 }
