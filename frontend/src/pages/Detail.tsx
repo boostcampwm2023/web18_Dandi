@@ -50,6 +50,7 @@ const Detail = () => {
                   content: data.content,
                   emotion: data.emotion,
                   tags: data.tags,
+                  status: data.status,
                 },
               })
             }

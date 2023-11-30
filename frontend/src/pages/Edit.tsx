@@ -24,7 +24,7 @@ const Edit = () => {
   const [keywordList, setKeywordList] = useState<string[]>(state ? state.tags : []);
   const [title, setTitle] = useState(state ? state.title : '');
   const [emoji, setEmoji] = useState(state ? state.emotion : '😁');
-  const [status, setStatus] = useState('나만 보기');
+  const [status, setStatus] = useState(state && state.status === 'public' ? '공개 하기' : '나만 보기');
   const [content, setContent] = useState(state ? state.content : '');
 
   const params: CreateDiaryParams = {

@@ -4,6 +4,7 @@ import EmojiPicker from 'emoji-picker-react';
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
 import Modal from '@components/Common/Modal';
+import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
 import { formatDateString } from '@util/funcs';
@@ -55,9 +56,7 @@ const DiaryContent = ({
         </div>
         <div className="mb-3 flex flex-wrap gap-3 text-base">
           {tags.map((tag, index) => (
-            <div key={index} className="bg-mint rounded-lg px-3 py-1">
-              <p>#{tag}</p>
-            </div>
+            <Keyword key={index} text={tag} />
           ))}
         </div>
         <Reaction
