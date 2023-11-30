@@ -12,6 +12,7 @@ import { formatDateString } from '@util/funcs';
 
 interface DiaryContentProps {
   diaryId: number;
+  userId: number;
   createdAt: string;
   profileImage: string;
   authorName: string;
@@ -23,6 +24,7 @@ interface DiaryContentProps {
 
 const DiaryContent = ({
   diaryId,
+  userId,
   createdAt,
   profileImage,
   authorName,
@@ -47,14 +49,14 @@ const DiaryContent = ({
   return (
     <>
       <div className="border-brown relative mb-3 rounded-2xl border-2 border-solid bg-white p-3">
-        <ProfileItem img={profileImage} nickName={authorName} />
+        <ProfileItem id={userId} img={profileImage} nickName={authorName} />
         <div className="mb-3 flex items-center justify-between">
           <p className="text-lg font-bold">{title}</p>
           <p className="text-sm font-medium">{formatDateString(createdAt)}</p>
         </div>
         <div className="flex flex-col justify-center">
           <div className="mb-3  whitespace-pre-wrap text-sm font-medium">
-            <p>{Parser(content)}</p>
+            <div>{Parser(content)}</div>
           </div>
         </div>
         <div className="mb-3 flex flex-wrap gap-3 text-base">
