@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import { getFriendList, recommendFriend } from '@/api/FriendModal';
+import { getFriendList } from '@api/FriendModal';
 
 import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
-import { PROFILE_BUTTON_TYPE } from '@/util/constants';
+import FriendSearchContent from '@/components/Home/FriendSearchContent';
+
+import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface FriendListProps {
   userId: number;
@@ -29,16 +31,6 @@ const FriendList = ({ userId }: FriendListProps) => {
     queryKey: ['friendList', userId],
     queryFn: () => getFriendList(userId),
   });
-
-  const recommendData = useQuery({
-    queryKey: ['recommendFriend', nickname],
-    queryFn: () => recommendFriend(nickname),
-    enabled: !!nickname,
-  });
-
-  useEffect(() => {
-    recommendData.refetch();
-  }, [nickname]);
 
   if (friendListData.isLoading) {
     return <p>친구목록 가져오는 중...</p>;
@@ -70,9 +62,9 @@ const FriendList = ({ userId }: FriendListProps) => {
         <div>
           <p className="mb-6 text-2xl font-bold">친구 목록</p>
           <div className="flex flex-wrap justify-between">
-            {friendListData.data.friends.map((data: FriendListResponse) => {
-              <FriendModalItem {...data} type={PROFILE_BUTTON_TYPE.LIST} />;
-            })}
+            {friendListData.data.friends.map((data: FriendListResponse, index: number) => (
+              <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.LIST} />
+            ))}
           </div>
         </div>
       )}
@@ -81,10 +73,7 @@ const FriendList = ({ userId }: FriendListProps) => {
         <div>
           <p className="mb-6 text-2xl font-bold">검색 결과</p>
           <div className="flex flex-wrap justify-between">
-            {/* {recommendData &&
-              recommendData.data.map((data: FriendListResponse) => {
-                <FriendModalItem {...data} type={PROFILE_BUTTON_TYPE.LIST} />;
-              })} */}
+            <FriendSearchContent nickname={nickname} />
           </div>
         </div>
       )}
