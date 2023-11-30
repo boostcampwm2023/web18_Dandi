@@ -9,6 +9,7 @@ import {
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
   AllDiaryInfosDto,
+  SearchDiaryDataForm,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
@@ -239,26 +240,22 @@ export class DiariesService {
     return diaryInfos;
   }
 
-  async findDiaryByKeywordV2(author: User, keyword: string): Promise<any> {
-    const documents = (await this.diariesRepository.findDiaryByKeywordV2(author.id, keyword)).hits
-      .hits;
+  async findDiaryByKeywordV2(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV2(author.id, keyword);
 
-    console.log(documents);
+    return diaries.map<AllDiaryInfosDto>((diary) => {
+      const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === author.id);
 
-    //TODO: 리액션 저장 시 리액션 누른 사용자 id 목록 함께 저장
-    //TODO: 타입 빨간줄 없애기
-    return documents.map((document) => {
-      const diary = document._source;
       return {
         diaryId: diary.diaryid,
-        thumbnail: diary.thumnail,
+        thumbnail: diary.thumbnail,
         title: diary.title,
         summary: diary.summary,
         tags: diary.tagnames ?? [],
         emotion: diary.emotion,
         reactionCount: diary.reactions.length,
         createdAt: diary.createdat,
-        leavedReaction: diary.reactionUsers.find((userId) => userId === author.id),
+        leavedReaction: reactionIndex !== -1 ? diary.reactions[reactionIndex] : null,
       };
     });
   }
