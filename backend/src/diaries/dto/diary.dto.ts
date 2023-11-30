@@ -213,7 +213,8 @@ export class ReadUserDiariesRequestDto {
   @ValidateIf((o) => o.type === TimeUnit.Day)
   @Type(() => Number)
   @IsNumber()
-  lastIndex: number;
+  @IsOptional()
+  lastIndex: number | null;
 }
 
 export class ReadUserDiariesResponseDto {

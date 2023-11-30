@@ -25,10 +25,12 @@ export class DiariesRepository extends Repository<Diary> {
       .where('diary.author.id = :authorId', {
         authorId,
       })
-      .andWhere('diary.id < :lastIndex', { lastIndex })
       .orderBy('diary.id', 'DESC')
       .limit(ITEM_PER_PAGE);
 
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
+    }
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
