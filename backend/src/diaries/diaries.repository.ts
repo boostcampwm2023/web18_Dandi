@@ -76,11 +76,7 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
-  async findPaginatedDiaryByDateAndIdList(
-    date: Date,
-    idList: number[],
-    lastIndex: number | undefined,
-  ) {
+  async findPaginatedDiaryByDateAndIdList(date: Date, idList: number[], lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'user')
       .leftJoinAndSelect('diary.tags', 'tags')
@@ -92,8 +88,8 @@ export class DiariesRepository extends Repository<Diary> {
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
-    if (lastIndex !== undefined) {
-      queryBuilder.where('diary.id < :lastIndex', { lastIndex });
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
     return await queryBuilder.getMany();
