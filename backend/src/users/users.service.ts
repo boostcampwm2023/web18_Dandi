@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { SearchUserResponseDto } from './dto/user.dto';
+import { SearchUserResponseDto, UpdateUserProfileRequestDto } from './dto/user.dto';
 import { isToday } from 'date-fns';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,16 @@ export class UsersService {
       throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
     }
     return user;
+  }
+
+  async updateUserProfile(user: User, requestDto: UpdateUserProfileRequestDto) {
+    Object.keys(requestDto).forEach((key) => {
+      if (requestDto[key]) {
+        user[key] = requestDto[key];
+      }
+    });
+
+    await this.usersRepository.save(user);
   }
 
   async searchUsers(nickname: string): Promise<SearchUserResponseDto[]> {

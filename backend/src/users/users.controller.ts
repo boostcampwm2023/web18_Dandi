@@ -1,8 +1,14 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SearchUserResponseDto, GetUserResponseDto } from './dto/user.dto';
+import {
+  SearchUserResponseDto,
+  GetUserResponseDto,
+  UpdateUserProfileRequestDto,
+} from './dto/user.dto';
+import { User } from './utils/user.decorator';
+import { User as UserEntity } from './entity/user.entity';
 
 @ApiTags('Users API')
 @Controller('users')
@@ -23,6 +29,16 @@ export class UsersController {
       totalFriends,
       isExistedTodayDiary,
     };
+  }
+
+  @Patch('/profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '사용자 정보 수정 API' })
+  @ApiOkResponse({ description: '사용자 정보 수정 성공', type: UpdateUserProfileRequestDto })
+  async updateUserInfo(@User() user: UserEntity, @Body() requestDto: UpdateUserProfileRequestDto) {
+    await this.usersService.updateUserProfile(user, requestDto);
+
+    return '사용자 정보 수정에 성공했습니다.';
   }
 
   @Get('/search/:nickname')

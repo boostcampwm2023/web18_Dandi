@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, ValidateIf } from 'class-validator';
 
 export class GetUserResponseDto {
   @ApiProperty({ description: '사용자 닉네임' })
@@ -25,5 +26,17 @@ export class SearchUserResponseDto {
   nickname: string;
 
   @ApiProperty({ description: '사용자 프로필 이미지' })
+  profileImage: string;
+}
+
+export class UpdateUserProfileRequestDto {
+  @ApiProperty({ description: '사용자 닉네임' })
+  @ValidateIf((o) => !o.profileImage)
+  @IsNotEmpty()
+  nickname: string;
+
+  @ApiProperty({ description: '사용자 프로필 이미지' })
+  @ValidateIf((o) => !o.nickname)
+  @IsNotEmpty()
   profileImage: string;
 }
