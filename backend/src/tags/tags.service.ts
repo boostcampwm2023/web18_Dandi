@@ -36,4 +36,11 @@ export class TagsService {
       }
     });
   }
+
+  async recommendKeywords(userId: number, keyword: string) {
+    const tags = await this.redis.zrange(`${userId}`, 0, -1);
+    const keywords = tags.filter((tag) => tag.includes(keyword));
+
+    return keywords.reverse();
+  }
 }
