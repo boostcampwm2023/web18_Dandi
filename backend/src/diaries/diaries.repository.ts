@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { SearchDiaryDataForm } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -120,8 +121,8 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
-  findDiaryByKeywordV2(id: number, keyword: string): any {
-    return this.elasticsearchService.search({
+  async findDiaryByKeywordV2(id: number, keyword: string): Promise<SearchDiaryDataForm[]> {
+    const documents = await this.elasticsearchService.search({
       index: process.env.ELASTICSEARCH_INDEX,
       body: {
         _source: [
@@ -144,5 +145,7 @@ export class DiariesRepository extends Repository<Diary> {
         },
       },
     });
+
+    return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 }
