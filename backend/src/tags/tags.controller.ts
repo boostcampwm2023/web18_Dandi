@@ -13,7 +13,7 @@ export class TagsController {
   @Get('search/:keyword')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '추천 키워드 조회 API' })
-  @ApiOkResponse({ description: '추천 키워드 조회 성공' })
+  @ApiOkResponse({ description: '추천 키워드 조회 성공', type: RecommendedTagsResponseDto })
   async recommendKeywords(
     @User() user: UserEntity,
     @Param('keyword') keyword: string,

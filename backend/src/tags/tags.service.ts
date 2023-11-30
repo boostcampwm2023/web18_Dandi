@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { TagsRepository } from '../tags/tag.repository';
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Redis } from 'ioredis';
+// import { InjectRedis } from '@liaoliaots/nestjs-redis';
+// import { Redis } from 'ioredis';
 
 @Injectable()
 export class TagsService {
   constructor(
     private readonly tagsRepository: TagsRepository,
-    @InjectRedis() private readonly redis: Redis,
+    // @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async mapTagNameToTagType(tagNames: string[]) {
@@ -27,18 +27,18 @@ export class TagsService {
 
   updateDataSetScore(userId: number, tagNames: string[]) {
     tagNames.forEach(async (tag) => {
-      const tagScore = await this.redis.zscore(`${userId}`, tag);
+      const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
 
       if (!tagScore) {
-        this.redis.zadd(`${userId}`, 1, tag); // 데이터셋에 추가
+        this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
       } else {
-        this.redis.zincrby(`${userId}`, 1, tag); // 점수 +1
+        this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
       }
     });
   }
 
   async recommendKeywords(userId: number, keyword: string) {
-    const tags = await this.redis.zrange(`${userId}`, 0, -1);
+    const tags = await this.tagsRepository.zrange(`${userId}`, 0, -1);
     const keywords = tags.filter((tag) => tag.includes(keyword));
 
     return keywords.reverse();
