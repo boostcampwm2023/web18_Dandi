@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { AllDiaryInfosDto } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {

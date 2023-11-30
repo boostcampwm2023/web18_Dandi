@@ -12,7 +12,7 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
   providers: [DiariesService, DiariesRepository],
   imports: [
     ElasticsearchModule.register({
-      node: 'http://223.130.147.147:9200/',
+      node: process.env.ELASTICSEARCH_NODE,
     }),
     TagsModule,
     UsersModule,
