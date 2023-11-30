@@ -55,3 +55,20 @@ export const getSearchUserList = async (nickname: string) => {
     console.log('새로운 유저검색에 실패했습니다.', error);
   }
 };
+
+export const requestFriend = async (receiverId: number) => {
+  try {
+    const response = await fetch(API_PATH.FRIEND.send(receiverId), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ receiverId }),
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('친구요청에 실패했습니다.', error);
+  }
+};

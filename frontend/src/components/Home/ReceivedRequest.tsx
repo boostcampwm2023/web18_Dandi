@@ -22,7 +22,7 @@ interface ReceivedList {
   email: string;
   profileImage: string;
   nickname: string;
-  userId: string;
+  id: string;
 }
 
 const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
@@ -40,7 +40,7 @@ const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
   }
 
   const ReceivedList = ReceivedData.data.strangers.filter((v: ReceivedListResponse) => {
-    if (v.receiverId === userId) {
+    if (v.senderId === userId) {
       const newObj = {
         email: v.email,
         nickname: v.nickname,
@@ -52,7 +52,7 @@ const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
   });
 
   return ReceivedList.map((data: ReceivedList, index: number) => (
-    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.RECEIVED} />
+    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.SEND} />
   ));
 };
 

@@ -12,7 +12,7 @@ interface UserSearchContentProps {
 }
 
 interface UserListResponse {
-  userId: string;
+  id: string;
   email: string;
   nickname: string;
   profileImage: string;

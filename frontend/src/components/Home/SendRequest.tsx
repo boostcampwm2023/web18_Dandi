@@ -21,7 +21,7 @@ interface SendList {
   email: string;
   profileImage: string;
   nickname: string;
-  userId: string;
+  id: string;
 }
 
 const SendRequest = ({ userId }: SendRequestProps) => {
@@ -39,7 +39,7 @@ const SendRequest = ({ userId }: SendRequestProps) => {
   }
 
   const ReceivedList = sendData.data.strangers.filter((v: SendListResponse) => {
-    if (v.senderId === userId) {
+    if (v.receiverId === userId) {
       const newObj = {
         email: v.email,
         nickname: v.nickname,
@@ -51,7 +51,7 @@ const SendRequest = ({ userId }: SendRequestProps) => {
   });
 
   return ReceivedList.map((data: SendList, index: number) => (
-    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.SEND} />
+    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.RECEIVED} />
   ));
 };
 
