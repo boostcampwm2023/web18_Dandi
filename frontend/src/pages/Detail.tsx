@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
-import referDiary from '@api/ReferDiary';
+import { referDiary, deleteDiary } from '@api/Detail';
 
 import NavBar from '@components/Common/NavBar';
 import Button from '@components/Common/Button';
@@ -23,6 +23,21 @@ const Detail = () => {
     queryKey: ['diary', diaryId],
     queryFn: () => referDiary(diaryId),
   });
+
+  const deleteDiaryMutation = useMutation({
+    mutationFn: () => deleteDiary(diaryId),
+    onSuccess: () => {
+      navigate(PAGE_URL.MY_DIARY);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const handleDelete = () => {
+    deleteDiaryMutation.mutate();
+    toggleShowModal();
+  };
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -60,7 +75,7 @@ const Detail = () => {
             <Alert
               text="이 일기를 정말 삭제하시겠습니까?"
               onUndoButtonClick={toggleShowModal}
-              onAcceptButtonClick={() => console.log('삭제하러 가기')}
+              onAcceptButtonClick={handleDelete}
             />
           </Modal>
         </div>
