@@ -1,21 +1,44 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import { getFriendList } from '@api/FriendModal';
+
 import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
+import FriendSearchContent from '@/components/Home/FriendSearchContent';
+
+import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface FriendListProps {
-  email: string;
-  profileImage: string;
-  nickname: string;
-  userId: string;
+  userId: number;
 }
 
-const FriendList = () => {
-  const dummyData: FriendListProps = {
-    profileImage:
-      'https://mblogthumb-phinf.pstatic.net/MjAyMzA1MDZfMjg2/MDAxNjgzMzY5MzE1MTky.eVMofWydN_T-5Cn227nrfcdyPVzpHRN2jaJXGLeVyUUg.S_l9nnV4ANRX4t9isjrt5rbUd8iWyM8D8w6yJMcPktEg.PNG.withwithpet/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2023-05-06_%EC%98%A4%ED%9B%84_7.25.06.png?type=w800',
-    nickname: '단디',
-    userId: '1',
-    email: 'dandi@naver.com',
+interface FriendListResponse {
+  userId: string;
+  email: string;
+  nickname: string;
+  profileImage: string;
+}
+
+const FriendList = ({ userId }: FriendListProps) => {
+  const [nickname, setNickname] = useState('');
+
+  const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
   };
+
+  const friendListData = useQuery({
+    queryKey: ['friendList', userId],
+    queryFn: () => getFriendList(userId),
+  });
+
+  if (friendListData.isLoading) {
+    return <p>친구목록 가져오는 중...</p>;
+  }
+
+  if (friendListData.isError) {
+    return <p>친구목록을 불러오지 못했습니다!</p>;
+  }
 
   return (
     <div className="px-5">
@@ -28,20 +51,32 @@ const FriendList = () => {
           type="text"
           name="friendSearch"
           id="friendSearch"
-          placeholder="닉네임이나 이메일을 입력해주세요."
+          placeholder="닉네임"
+          value={nickname}
+          onChange={onChangeNickname}
         />
         <Icon id={'search'} styles="absolute top-2/3 right-[1%]" />
       </div>
 
-      <div>
-        <p className="mb-6 text-2xl font-bold">친구 목록</p>
-        <div className="flex flex-wrap justify-between">
-          <FriendModalItem {...dummyData} type="list" />
-          <FriendModalItem {...dummyData} type="list" />
-          <FriendModalItem {...dummyData} type="list" />
-          <FriendModalItem {...dummyData} type="list" />
+      {!nickname && (
+        <div>
+          <p className="mb-6 text-2xl font-bold">친구 목록</p>
+          <div className="flex flex-wrap justify-between">
+            {friendListData.data.friends.map((data: FriendListResponse, index: number) => (
+              <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.LIST} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {nickname && (
+        <div>
+          <p className="mb-6 text-2xl font-bold">검색 결과</p>
+          <div className="flex flex-wrap justify-between">
+            <FriendSearchContent nickname={nickname} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
