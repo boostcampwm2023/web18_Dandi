@@ -10,6 +10,7 @@ import ReactionList from '@components/Diary/ReactionList';
 import { formatDateString } from '@util/funcs';
 
 interface DiaryContentProps {
+  diaryId: number;
   createdAt: string;
   profileImage: string;
   authorName: string;
@@ -20,6 +21,7 @@ interface DiaryContentProps {
 }
 
 const DiaryContent = ({
+  diaryId,
   createdAt,
   profileImage,
   authorName,
@@ -66,7 +68,7 @@ const DiaryContent = ({
           emoji={selectedEmoji}
         />
         <Modal showModal={showModal} closeModal={toggleShowModal}>
-          <ReactionList />
+          <ReactionList diaryId={diaryId}/>
         </Modal>
         {showEmojiPicker && (
           <aside className="absolute bottom-14 z-50">

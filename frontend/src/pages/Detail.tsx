@@ -47,7 +47,7 @@ const Detail = () => {
     return <p>Error fetching data</p>;
   }
 
-  const content = <DiaryContent {...data} />;
+  const content = <DiaryContent diaryId={diaryId} {...data} />;
 
   return (
     <div className="flex flex-col items-center">
