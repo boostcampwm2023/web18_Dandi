@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -33,6 +43,7 @@ export class UsersController {
 
   @Patch('/profile')
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @ApiOperation({ description: '사용자 정보 수정 API' })
   @ApiOkResponse({ description: '사용자 정보 수정 성공', type: UpdateUserProfileRequestDto })
   async updateUserInfo(@User() user: UserEntity, @Body() requestDto: UpdateUserProfileRequestDto) {
