@@ -63,7 +63,6 @@ export class ReactionsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '리액션 변경 API' })
   @ApiOkResponse({ description: '리액션 변경 성공' })
-  @ApiBody({ type: ReactionRequestDto })
   async updateReaction(
     @User() user: UserEntity,
     @Param('diaryId', ParseIntPipe) diaryId: number,
