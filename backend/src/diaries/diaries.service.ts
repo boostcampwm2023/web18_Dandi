@@ -245,18 +245,20 @@ export class DiariesService {
 
     console.log(documents);
 
-    return documents.map<AllDiaryInfosDto>((document) => {
+    //TODO: 리액션 저장 시 리액션 누른 사용자 id 목록 함께 저장
+    //TODO: 타입 빨간줄 없애기
+    return documents.map((document) => {
       const diary = document._source;
       return {
         diaryId: diary.diaryid,
         thumbnail: diary.thumnail,
         title: diary.title,
         summary: diary.summary,
-        tags: diary.tagnames,
+        tags: diary.tagnames ?? [],
         emotion: diary.emotion,
-        reactionCount: diary.reactions ? diary.reactions.length : 0,
+        reactionCount: diary.reactions.length,
         createdAt: diary.createdat,
-        leavedReaction: true,
+        leavedReaction: diary.reactionUsers.find((userId) => userId === author.id),
       };
     });
   }

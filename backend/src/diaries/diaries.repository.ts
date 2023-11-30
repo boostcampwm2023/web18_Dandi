@@ -120,9 +120,9 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
-  findDiaryByKeywordV2(id: number, keyword: string) {
+  findDiaryByKeywordV2(id: number, keyword: string): any {
     return this.elasticsearchService.search({
-      index: 'test8',
+      index: process.env.ELASTICSEARCH_INDEX,
       body: {
         _source: [
           'authorname',
@@ -133,6 +133,7 @@ export class DiariesRepository extends Repository<Diary> {
           'tagnames',
           'emotion',
           'reactions',
+          'reactionUsers',
           'authorid',
           'createdat',
         ],
