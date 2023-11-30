@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import referDiary from '@api/ReferDiary';
+import { referDiary } from '@api/Detail';
 
 import NavBar from '@components/Common/NavBar';
 import Button from '@components/Common/Button';
