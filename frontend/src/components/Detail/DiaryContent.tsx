@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
+import Parser from 'html-react-parser';
 
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
@@ -53,7 +54,7 @@ const DiaryContent = ({
         </div>
         <div className="flex flex-col justify-center">
           <div className="mb-3  whitespace-pre-wrap text-sm font-medium">
-            <p>{content}</p>
+            <p>{Parser(content)}</p>
           </div>
         </div>
         <div className="mb-3 flex flex-wrap gap-3 text-base">
