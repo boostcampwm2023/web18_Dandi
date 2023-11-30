@@ -16,7 +16,7 @@ const API_PATH = {
   },
   USER: {
     userProfile: (id: number) => SERVER_URL + USER + `/${id}`,
-    searchUser: (nickname: string) => SERVER_URL + '/search' + `/${nickname}`,
+    searchUser: (nickname: string) => SERVER_URL + USER + '/search' + `/${nickname}`,
     updateUserProfile: () => SERVER_URL + USER + '/profile',
   },
   DIARY: {
