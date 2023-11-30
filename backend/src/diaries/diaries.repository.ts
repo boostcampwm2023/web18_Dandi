@@ -140,7 +140,14 @@ export class DiariesRepository extends Repository<Diary> {
         ],
         query: {
           bool: {
-            should: [{ match: { content: keyword } }, { match: { title: keyword } }],
+            must: [
+              { term: { authorid: id } },
+              {
+                bool: {
+                  should: [{ match: { content: keyword } }, { match: { title: keyword } }],
+                },
+              },
+            ],
           },
         },
       },
