@@ -40,8 +40,9 @@ const API_PATH = {
   FRIEND: {
     search: (nickname: string) => SERVER_URL + FRIEND + '/search' + `/${nickname}`,
     list: (userId: number) => SERVER_URL + FRIEND + `/${userId}`,
-    request: (receiverId: number) => SERVER_URL + FRIEND + `/${receiverId}`,
-    send: (senderId: number) => SERVER_URL + '/allow' + `/${senderId}`,
+    request: (userId: number) => SERVER_URL + FRIEND + '/request' + `/${userId}`,
+    send: (receiverId: number) => SERVER_URL + FRIEND + `/${receiverId}`,
+    received: (senderId: number) => SERVER_URL + '/allow' + `/${senderId}`,
   },
   TAG: {
     recommend: (keyword: string) => SERVER_URL + TAG + '/search' + `/${keyword}`,
