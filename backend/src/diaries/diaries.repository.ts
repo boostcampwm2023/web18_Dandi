@@ -3,10 +3,15 @@ import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { AllDiaryInfosDto } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private readonly elasticsearchService: ElasticsearchService,
+  ) {
     super(Diary, dataSource.createEntityManager());
   }
 
@@ -114,5 +119,30 @@ export class DiariesRepository extends Repository<Diary> {
       });
 
     return queryBuilder.getMany();
+  }
+
+  findDiaryByKeywordV2(id: number, keyword: string) {
+    return this.elasticsearchService.search({
+      index: 'test8',
+      body: {
+        _source: [
+          'authorname',
+          'diaryid',
+          'thumbnail',
+          'title',
+          'summary',
+          'tagnames',
+          'emotion',
+          'reactions',
+          'authorid',
+          'createdat',
+        ],
+        query: {
+          bool: {
+            should: [{ match: { content: keyword } }, { match: { title: keyword } }],
+          },
+        },
+      },
+    });
   }
 }

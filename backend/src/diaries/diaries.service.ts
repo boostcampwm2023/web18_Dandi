@@ -239,6 +239,28 @@ export class DiariesService {
     return diaryInfos;
   }
 
+  async findDiaryByKeywordV2(author: User, keyword: string): Promise<any> {
+    const documents = (await this.diariesRepository.findDiaryByKeywordV2(author.id, keyword)).hits
+      .hits;
+
+    console.log(documents);
+
+    return documents.map<AllDiaryInfosDto>((document) => {
+      const diary = document._source;
+      return {
+        diaryId: diary.diaryid,
+        thumbnail: diary.thumnail,
+        title: diary.title,
+        summary: diary.summary,
+        tags: diary.tagnames,
+        emotion: diary.emotion,
+        reactionCount: diary.reactions ? diary.reactions.length : 0,
+        createdAt: diary.createdat,
+        leavedReaction: true,
+      };
+    });
+  }
+
   private existsDiary(diary: Diary) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
