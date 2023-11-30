@@ -52,7 +52,11 @@ const ReactionList = ({ diaryId }: ReactionListProps) => {
           <ul className="flex w-full flex-wrap rounded-2xl border bg-white p-4">
             {friends.map((friend, index) => (
               <li key={index} className="">
-                <ProfileItem id={friend.userId} img={friend.profileImage} nickName={friend.nickname} />
+                <ProfileItem
+                  id={friend.userId}
+                  img={friend.profileImage}
+                  nickName={friend.nickname}
+                />
               </li>
             ))}
           </ul>

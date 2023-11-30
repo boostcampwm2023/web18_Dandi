@@ -16,9 +16,7 @@ export const getNowWeek = (date: Date) => {
   return nowWeek;
 };
 
-export const formatDate = (date: Date) => {
-  return date.toLocaleDateString().slice(0, -1);
-};
+export const formatDate = (date: Date) => date.toLocaleDateString().slice(0, -1);
 
 export const formatDateString = (str: string) => {
   const DateObject = new Date(str);

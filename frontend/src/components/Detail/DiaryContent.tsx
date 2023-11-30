@@ -71,7 +71,7 @@ const DiaryContent = ({
           emoji={selectedEmoji}
         />
         <Modal showModal={showModal} closeModal={toggleShowModal}>
-          <ReactionList diaryId={diaryId}/>
+          <ReactionList diaryId={diaryId} />
         </Modal>
         {showEmojiPicker && (
           <aside className="absolute bottom-14 z-50">
