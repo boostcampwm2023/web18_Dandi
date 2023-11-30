@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getRequestList } from '@/api/FriendModal';
+import { getRequestList } from '@api/FriendModal';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 
-import { PROFILE_BUTTON_TYPE } from '@/util/constants';
+import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface SendRequestProps {
   userId: number;
@@ -38,7 +38,7 @@ const SendRequest = ({ userId }: SendRequestProps) => {
     return <p>보낸 친구 신청목록을 불러오지 못했습니다!</p>;
   }
 
-  const ReceivedList = sendData.data.strangers.filter((v: SendListResponse) => {
+  const ReceivedList = sendData.data.strangers.map((v: SendListResponse) => {
     if (v.receiverId === userId) {
       const newObj = {
         email: v.email,

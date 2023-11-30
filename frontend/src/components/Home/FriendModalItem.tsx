@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
-import { requestFriend } from '@/api/FriendModal';
+import { requestFriend } from '@api/FriendModal';
 
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
 interface FriendModalItemProps {
   email: string;
@@ -16,13 +16,11 @@ interface FriendModalItemProps {
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const goFriendHome = () => {
-    navigate(`/home/${id}`);
+    navigate(`${PAGE_URL}/${id}`);
   };
 
   const requestMutation = useMutation({
-    mutationFn: (receiverId: number) => {
-      return requestFriend(receiverId);
-    },
+    mutationFn: (receiverId: number) => requestFriend(receiverId),
   });
 
   const getButtonElement = (type: string) => {
