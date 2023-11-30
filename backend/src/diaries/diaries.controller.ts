@@ -198,9 +198,9 @@ export class DiariesController {
     return { yearMood };
   }
 
-  @Get('/search/:keyword')
+  @Get('/search/v1/:keyword')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '키워드로 일기 검색' })
+  @ApiOperation({ description: '키워드로 일기 검색(MySQL Like)' })
   @ApiCreatedResponse({
     description: '일기 검색 성공',
     type: ReadUserDiariesResponseDto,
