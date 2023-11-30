@@ -39,7 +39,6 @@ const UserSearchContent = ({ nickname }: UserSearchContentProps) => {
     return <p>유저검색에 실패했습니다.</p>;
   }
 
-  console.log(userSearchData.data);
   return userSearchData.data.map((data: UserListResponse, index: number) => (
     <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.STRANGER} />
   ));
