@@ -18,7 +18,7 @@ const calPrevOneWeek = () => {
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const [period, _] = useState([calPrevOneWeek(), new Date()]);
 
-  const { data, isError, isLoading } = useQuery({
+  const { isError, isLoading } = useQuery({
     queryKey: ['emotionStat', localStorage.getItem('userId')],
     queryFn: () =>
       getEmotionStat(

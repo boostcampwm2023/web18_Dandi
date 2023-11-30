@@ -18,7 +18,7 @@ const Calendar = ({ date }: CalendarProp) => {
   const monthData = Array.from(Array(allDayCount), () => Array(WEEK_INDEX).fill(0));
   let day = 1;
 
-  const { data, isError, isLoading } = useQuery({
+  const { isError, isLoading } = useQuery({
     queryKey: ['monthDiaryData', localStorage.getItem('userId')],
     queryFn: () =>
       getDiaryWeekAndMonthList({

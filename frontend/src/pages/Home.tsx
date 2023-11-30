@@ -15,13 +15,9 @@ const Home = () => {
   const params = useParams();
   const userId = params.userId ? params.userId : localStorage.getItem('userId');
 
-  if (!userId) {
-    return alert('로그인하세요');
-  }
-
   const { data, isError, isLoading } = useQuery({
     queryKey: ['profileData', userId],
-    queryFn: () => getCurrentUser(+userId),
+    queryFn: () => getCurrentUser(userId ? +userId : 0),
   });
 
   if (isLoading) {
@@ -37,7 +33,7 @@ const Home = () => {
   return (
     <main className="mb-28 flex flex-col items-center justify-start">
       <NavBar />
-      <Profile userId={+userId} userData={data} />
+      <Profile userId={userId ? +userId : 0} userData={data} />
       <Grass />
       <EmotionStat nickname={data.nickname} />
       <DiaryList pageType={HOME} diaryData={DUMMY_DATA} />
