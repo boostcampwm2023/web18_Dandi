@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import { getDiaryWeekAndMonthList } from '@api/DiaryList';
 
 import { viewTypes } from '@type/pages/MyDiary';
 import { IDiaryContent } from '@type/components/Common/DiaryList';
@@ -12,7 +15,7 @@ import Calendar from '@components/MyDiary/Calendar';
 import Card from '@components/MyDiary/Card';
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 
-import { getNowMonth, getNowWeek } from '@util/funcs';
+import { formatDateDash, getNowMonth, getNowWeek } from '@util/funcs';
 import { formatDate } from '@util/funcs';
 import { DIARY_VIEW_TYPE, DUMMY_DATA, WEEK_STANDARD_LENGTH } from '@util/constants';
 
@@ -31,6 +34,25 @@ const MyDiary = () => {
   const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
   const [period, setPeriod] = useState(calPeriod());
 
+  const { data, isError, isLoading } = useQuery<{ nickname: string; diaryList: IDiaryContent[] }>({
+    queryKey: ['myWeekDiary', localStorage.getItem('userId')],
+    queryFn: () =>
+      getDiaryWeekAndMonthList({
+        userId: localStorage.getItem('userId') as string,
+        type: 'Week',
+        startDate: formatDateDash(period[0]),
+        endDate: formatDateDash(period[1]),
+      }),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error Occurrence!</p>;
+  }
+
   const setPrevOrNextMonth = (plus: number) => {
     const month = new Date(nowMonth);
     month.setMonth(month.getMonth() + plus);
@@ -48,8 +70,6 @@ const MyDiary = () => {
     endDate.setDate(endDate.getDate() + plus * 7);
     return [startDate, endDate];
   };
-
-  console.log('diaryData', diaryData);
 
   return (
     <>
@@ -72,14 +92,16 @@ const MyDiary = () => {
                 leftOnClick={() => setPrevOrNextWeek(-1)}
                 rightOnClick={() => setPrevOrNextWeek(1)}
               />
-              {diaryData.length < WEEK_STANDARD_LENGTH && (
+              {data && data.diaryList.length < WEEK_STANDARD_LENGTH && (
                 <section className="flex gap-5">
-                  {diaryData.map((data, index) => (
-                    <Card data={data} key={index} />
+                  {data.diaryList.map((diaryItem, index) => (
+                    <Card data={diaryItem} key={index} />
                   ))}
                 </section>
               )}
-              {diaryData.length >= WEEK_STANDARD_LENGTH && <CarouselContainer data={diaryData} />}
+              {data && data.diaryList.length >= WEEK_STANDARD_LENGTH && (
+                <CarouselContainer data={data.diaryList} />
+              )}
             </>
           )}
           {viewType === DIARY_VIEW_TYPE.MONTH && (

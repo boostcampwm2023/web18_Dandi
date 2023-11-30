@@ -1,6 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
+
+import { getDiaryWeekAndMonthList } from '@api/DiaryList';
+
 import DayItem from '@components/MyDiary/DayItem';
 
 import { DAY_OF_WEEK, NEXT_INDEX, START_INDEX, WEEK_INDEX } from '@util/constants';
+import { formatDateDash } from '@util/funcs';
 
 interface CalendarProp {
   date: Date;
@@ -12,6 +17,25 @@ const Calendar = ({ date }: CalendarProp) => {
   const allDayCount = Math.ceil((last.getDate() - first.getDate() + first.getDay()) / WEEK_INDEX);
   const monthData = Array.from(Array(allDayCount), () => Array(WEEK_INDEX).fill(0));
   let day = 1;
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['monthDiaryData', localStorage.getItem('userId')],
+    queryFn: () =>
+      getDiaryWeekAndMonthList({
+        userId: localStorage.getItem('userId') as string,
+        type: 'Month',
+        startDate: formatDateDash(first),
+        endDate: formatDateDash(last),
+      }),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error Occurrence!</p>;
+  }
 
   for (let weekIndex = START_INDEX; weekIndex < allDayCount; weekIndex++) {
     for (let dayIndex = START_INDEX; dayIndex < WEEK_INDEX; dayIndex++) {

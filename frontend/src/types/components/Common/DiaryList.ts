@@ -4,8 +4,9 @@ export interface IDiaryContent {
   nickname: string;
   thumbnail?: string;
   title: string;
-  content: string;
-  keywords: string[];
+  content?: string;
+  summary?: string;
+  tags: string[];
   reactionCount: number;
   authorId: string | number;
   diaryId: string | number;

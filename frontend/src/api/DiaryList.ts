@@ -1,15 +1,53 @@
-// import API_PATH from '@util/apiPath';
+import { viewTypes } from '@type/pages/MyDiary';
 
-// export const getDiaryListDay = async (userId: number, type: string, lastIndex = 0) => {
-//   try {
-//     const response = await fetch(API_PATH.USER.userProfile(userId), {
-//       credentials: 'include',
-//     });
+import API_PATH from '@util/apiPath';
 
-//     if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     console.log('현재 로그인 중인 유저 정보 조회에 실패했습니다.', error);
-//   }
-// };
+interface getDiaryListProps {
+  userId: string;
+  type: viewTypes;
+}
+
+interface getDiaryDayListProps extends getDiaryListProps {
+  lastIndex?: number;
+}
+
+interface getDiaryWeekAndMonthListProps extends getDiaryListProps {
+  startDate: string;
+  endDate: string;
+}
+
+export const getDiaryDayList = async (pageParam: getDiaryDayListProps) => {
+  const { userId, type, lastIndex } = pageParam;
+  try {
+    const fetchUrl = lastIndex
+      ? API_PATH.DIARY.myDiaryDay(userId, type, lastIndex)
+      : API_PATH.DIARY.myDiaryDay(userId, type);
+    const response = await fetch(fetchUrl, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('현재 로그인 중인 유저 정보 조회에 실패했습니다.', error);
+  }
+};
+
+export const getDiaryWeekAndMonthList = async (pageParam: getDiaryWeekAndMonthListProps) => {
+  const { userId, type, startDate, endDate } = pageParam;
+  try {
+    const response = await fetch(
+      API_PATH.DIARY.myDiaryWeekAndMonth(userId, type, startDate, endDate),
+      {
+        credentials: 'include',
+      },
+    );
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('현재 로그인 중인 유저 정보 조회에 실패했습니다.', error);
+  }
+};

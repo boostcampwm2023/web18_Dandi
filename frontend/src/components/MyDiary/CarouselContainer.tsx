@@ -16,8 +16,6 @@ const CarouselContainer = ({ data }: CarouselContainerProps) => {
   const dataLength = data.length;
   const prevIndex =
     activeIndex === 0 ? activeIndex + PREV_INDEX + dataLength : activeIndex + PREV_INDEX;
-  console.log('data 전부', data);
-  console.log('dataLength', dataLength, 'prevIndex!!', prevIndex);
 
   return (
     <section className="flex w-fit items-center justify-center">

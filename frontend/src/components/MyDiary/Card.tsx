@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
@@ -10,7 +11,6 @@ import Modal from '@components/Common/Modal';
 
 import { formatDateString } from '@util/funcs';
 import { SMALL } from '@util/constants';
-import { useNavigate } from 'react-router-dom';
 
 interface CardProps {
   data: IDiaryContent;
@@ -43,12 +43,12 @@ const Card = ({ data, styles, size }: CardProps) => {
         <h3 className="text-xl font-bold">{data.title}</h3>
         <img src={data.thumbnail} alt="일기의 대표 이미지" />
         <div className="whitespace-pre-wrap text-sm">
-          <p>{data.content}</p>
+          <p>{data.summary}</p>
         </div>
       </div>
       <div className="flex w-full flex-wrap gap-3">
-        {data.keywords.map((keyword, index) => (
-          <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />
+        {data.tags.map((tag, index) => (
+          <Keyword key={index} text={tag} styles={`${size === SMALL ? 'text-xs' : ''}`} />
         ))}
       </div>
       <Reaction

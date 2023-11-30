@@ -11,7 +11,7 @@ export const DUMMY_DATA = [
       'https://cdn.inflearn.com/public/files/pages/38c3fb10-72a4-4ea5-8361-4ee6b682e188/SVG.jpg',
     title: '첫번째',
     content: `일기내용입니다.\n일기내용입니다.\n세 번째 줄까지만 보입니다다다다다다다다다다다다다다다다다다다다`,
-    keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
+    tags: ['키워드1', '키워드2', '키워드3', '키워드4'],
     reactionCount: 1000,
     authorId: 1,
     diaryId: 1,
@@ -25,7 +25,7 @@ export const DUMMY_DATA = [
     title: '두번째',
     content:
       '일기내용입니다.\n일기내용입니다.\n세 번째 줄까지만 보입니다다다다다다다다다다다다다다다다다다다다',
-    keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
+    tags: ['키워드1', '키워드2', '키워드3', '키워드4'],
     reactionCount: 10,
     authorId: 1,
     diaryId: 1,
@@ -39,7 +39,7 @@ export const DUMMY_DATA = [
     title: '마지막',
     content:
       '일기내용입니다.\n일기내용입니다.\n세 번째 줄까지만 보입니다다다다다다다다다다다다다다다다다다다다',
-    keywords: ['키워드1', '키워드2', '키워드3', '키워드4'],
+    tags: ['키워드1', '키워드2', '키워드3', '키워드4'],
     reactionCount: 10,
     authorId: 1,
     diaryId: 1,

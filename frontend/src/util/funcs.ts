@@ -27,3 +27,11 @@ export const formatDateString = (str: string) => {
 
   return `${year}년 ${month}월 ${day}일 ${DAY_OF_WEEK[date]}`;
 };
+
+export const formatDateDash = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
