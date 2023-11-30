@@ -214,8 +214,8 @@ export class DiariesService {
     return yearMood;
   }
 
-  async findDiaryByKeyword(author: User, keyword: string) {
-    const diaries = await this.diariesRepository.findDiaryByKeyword(author.id, keyword);
+  async findDiaryByKeywordV1(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV1(author.id, keyword);
 
     const diaryInfos = Promise.all(
       diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
