@@ -2,12 +2,12 @@ import { useRef } from 'react';
 import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
 interface EditorProps {
+  content: string;
   setContent: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Editor = ({ setContent }: EditorProps) => {
+const Editor = ({ content, setContent }: EditorProps) => {
   const editorRef = useRef<DiaryEditor>(null);
-
   const onChangeContent = () => {
     setContent(editorRef.current?.getInstance().getHTML());
   };
@@ -25,7 +25,7 @@ const Editor = ({ setContent }: EditorProps) => {
           initialEditType="wysiwyg"
           placeholder="일기를 입력하세요!"
           hideModeSwitch={true}
-          initialValue=" "
+          initialValue={content}
           onChange={onChangeContent}
           hooks={{
             addImageBlobHook: onUploadImage,

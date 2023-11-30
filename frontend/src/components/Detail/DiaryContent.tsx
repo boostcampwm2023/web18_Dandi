@@ -4,6 +4,7 @@ import EmojiPicker from 'emoji-picker-react';
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
 import Modal from '@components/Common/Modal';
+import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
 import { formatDateString } from '@util/funcs';
@@ -14,7 +15,7 @@ interface DiaryContentProps {
   authorName: string;
   title: string;
   content: string;
-  keywords: string[];
+  tags: string[];
   reactionCount: number;
 }
 
@@ -24,7 +25,7 @@ const DiaryContent = ({
   authorName,
   title,
   content,
-  keywords,
+  tags,
   reactionCount,
 }: DiaryContentProps) => {
   const [showModal, setShowModal] = useState(false);
@@ -54,10 +55,8 @@ const DiaryContent = ({
           </div>
         </div>
         <div className="mb-3 flex flex-wrap gap-3 text-base">
-          {keywords.map((keyword, index) => (
-            <div key={index} className="bg-mint rounded-lg px-3 py-1">
-              <p>#{keyword}</p>
-            </div>
+          {tags.map((tag, index) => (
+            <Keyword key={index} text={tag} />
           ))}
         </div>
         <Reaction

@@ -15,7 +15,7 @@ const Grass = () => {
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
-  const dates = Array.from({ length: 365 }, () => 0);
+  const dates = Array.from({ length: 366 }, () => 0);
   const userId = Number(localStorage.getItem('userId'));
   const { data, isLoading, isError } = useQuery({
     queryKey: ['grass', userId],
