@@ -21,6 +21,16 @@ export class FriendsRepository extends Repository<Friend> {
     });
   }
 
+  findRelation(userId: number, friendId: number) {
+    return this.createQueryBuilder('relation')
+      .where('relation.status = :status', { status: FriendStatus.COMPLETE })
+      .andWhere(
+        '(relation.receiverId = :userId AND relation.senderId = :friendId) OR (relation.receiverId = :friendId AND relation.senderId = :userId)',
+        { userId, friendId },
+      )
+      .getOne();
+  }
+
   async findUserRelationsByStatus(userId: number, status: FriendStatus): Promise<Friend[]> {
     return this.createQueryBuilder('friend')
       .leftJoinAndSelect('friend.sender', 'sender')

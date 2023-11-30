@@ -62,6 +62,19 @@ export class FriendsController {
     return '친구 신청이 취소되었습니다.';
   }
 
+  @Delete('/tmp/:friendId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '내가 보낸 친구 신청 취소 API' })
+  @ApiOkResponse({ description: '친구 신청 취소 성공' })
+  async deleteFriendRelation(
+    @User() user: UserEntity,
+    @Param('friendId', ParseIntPipe) friendId: number,
+  ) {
+    await this.friendsService.deleteFriendRelation(user.id, friendId);
+
+    return '친구 신청이 취소되었습니다.';
+  }
+
   @Post('allow/:senderId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '친구 신청 수락 API' })
