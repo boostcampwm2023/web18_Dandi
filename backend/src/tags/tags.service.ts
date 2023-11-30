@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { TagsRepository } from '../tags/tag.repository';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Redis } from 'ioredis';
 
 @Injectable()
 export class TagsService {
-  constructor(private readonly tagsRepository: TagsRepository) {}
+  constructor(
+    private readonly tagsRepository: TagsRepository,
+    @InjectRedis() private readonly redis: Redis,
+  ) {}
 
   async mapTagNameToTagType(tagNames: string[]) {
     if (!tagNames) return null;
@@ -18,5 +23,17 @@ export class TagsService {
         return tag;
       }),
     );
+  }
+
+  updateDataSetScore(userId: number, tagNames: string[]) {
+    tagNames.forEach(async (tag) => {
+      const tagScore = await this.redis.zscore(`${userId}`, tag);
+
+      if (!tagScore) {
+        this.redis.zadd(`${userId}`, 1, tag); // 데이터셋에 추가
+      } else {
+        this.redis.zincrby(`${userId}`, 1, tag); // 점수 +1
+      }
+    });
   }
 }
