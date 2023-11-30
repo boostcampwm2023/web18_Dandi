@@ -30,7 +30,7 @@ export const getDiaryDayList = async (pageParam: getDiaryDayListProps) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log('현재 로그인 중인 유저 정보 조회에 실패했습니다.', error);
+    console.log('일기 목록 조회에 실패했습니다.', error);
   }
 };
 
@@ -48,6 +48,6 @@ export const getDiaryWeekAndMonthList = async (pageParam: getDiaryWeekAndMonthLi
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log('현재 로그인 중인 유저 정보 조회에 실패했습니다.', error);
+    console.log('일기 목록 조회에 실패했습니다.', error);
   }
 };

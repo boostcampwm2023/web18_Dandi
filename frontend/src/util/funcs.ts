@@ -1,4 +1,4 @@
-import { DAY_OF_WEEK } from './constants';
+import { DAY_OF_WEEK } from '@util/constants';
 
 export const getNowMonth = (date: Date) => {
   const month = date.getMonth() + 1;

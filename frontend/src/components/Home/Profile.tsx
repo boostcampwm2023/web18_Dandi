@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
-import { getCurrentUser } from '@api/Profile';
 
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
 import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
+
 import {
   DEFAULT,
   GREET_MESSAGES,
@@ -18,6 +16,7 @@ import {
 
 interface ProfileProps {
   userId: number;
+  userData: ProfileData;
 }
 
 interface ProfileData {
@@ -27,23 +26,11 @@ interface ProfileData {
   isExistedTodayDiary: boolean;
 }
 
-const Profile = ({ userId }: ProfileProps) => {
+const Profile = ({ userId, userData }: ProfileProps) => {
   const [showModalType, setShowModalType] = useState('list');
   const [showModal, setShowModal] = useState(false);
-  const { data, isError, isLoading } = useQuery({
-    queryKey: ['profileData', userId],
-    queryFn: () => getCurrentUser(userId),
-  });
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error Occurrence!</p>;
-  }
-
-  const { nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileData = data;
+  const { nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileData = userData;
 
   const closeModal = () => {
     setShowModal(false);

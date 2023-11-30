@@ -15,8 +15,7 @@ import Calendar from '@components/MyDiary/Calendar';
 import Card from '@components/MyDiary/Card';
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 
-import { formatDateDash, getNowMonth, getNowWeek } from '@util/funcs';
-import { formatDate } from '@util/funcs';
+import { formatDate, formatDateDash, getNowMonth, getNowWeek } from '@util/funcs';
 import { DIARY_VIEW_TYPE, DUMMY_DATA, WEEK_STANDARD_LENGTH } from '@util/constants';
 
 const calPeriod = () => {
