@@ -6,11 +6,12 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
@@ -56,6 +57,21 @@ export class ReactionsController {
     await this.reactionsService.saveReaction(user, diaryId, createReactionDto);
 
     return '일기에 반응을 남겼습니다.';
+  }
+
+  @Put('/:diaryId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '리액션 변경 API' })
+  @ApiOkResponse({ description: '리액션 변경 성공' })
+  @ApiBody({ type: ReactionRequestDto })
+  async updateReaction(
+    @User() user: UserEntity,
+    @Param('diaryId', ParseIntPipe) diaryId: number,
+    @Body() reactionRequestDto: ReactionRequestDto,
+  ) {
+    await this.reactionsService.updateReaction(user, diaryId, reactionRequestDto);
+
+    return '일기에 반응을 수정했습니다.';
   }
 
   @Delete('/:diaryId')

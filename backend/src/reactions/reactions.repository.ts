@@ -20,6 +20,15 @@ export class ReactionsRepository extends Repository<Reaction> {
     });
   }
 
+  findReactionByDiaryAndUser(user: User, diary: Diary) {
+    return this.findOne({
+      where: {
+        diary: { id: diary.id },
+        user: { id: user.id },
+      },
+    });
+  }
+
   async findByDiary(diary: Diary) {
     return this.find({
       where: {

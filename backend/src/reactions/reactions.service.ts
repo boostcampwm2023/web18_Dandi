@@ -32,6 +32,18 @@ export class ReactionsService {
     this.reactionsRepository.save({ user, diary, reaction: reactionRequestDto.reaction });
   }
 
+  async updateReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
+    const diary = await this.diariesService.findDiary(user, diaryId);
+    const reaction = await this.reactionsRepository.findReactionByDiaryAndUser(user, diary);
+
+    if (!reaction) {
+      throw new BadRequestException('리액션 기록이 존재하지 않습니다.');
+    }
+
+    reaction.reaction = reactionRequestDto.reaction;
+    await this.reactionsRepository.save(reaction);
+  }
+
   async deleteReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
     const diary = await this.diariesService.findDiary(user, diaryId);
     const reaction = await this.reactionsRepository.findReactionByDiaryAndUserAndReaction(
