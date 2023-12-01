@@ -59,7 +59,7 @@ const Profile = ({ userId }: ProfileProps) => {
       case PROFILE_MODAL_CONTENT_TYPE.LIST:
         return <FriendList userId={userId} />;
       case PROFILE_MODAL_CONTENT_TYPE.REQUEST:
-        return <FriendRequest />;
+        return <FriendRequest userId={userId} />;
       case PROFILE_MODAL_CONTENT_TYPE.EDIT:
         return <ProfileEdit />;
     }

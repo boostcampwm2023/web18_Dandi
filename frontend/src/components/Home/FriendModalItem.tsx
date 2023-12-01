@@ -1,20 +1,27 @@
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import { requestFriend } from '@api/FriendModal';
+
+import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
 interface FriendModalItemProps {
   email: string;
   profileImage: string;
   nickname: string;
-  userId: string;
+  id: string;
   type: string;
 }
 
-const FriendModalItem = ({ email, profileImage, nickname, userId, type }: FriendModalItemProps) => {
+const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const goFriendHome = () => {
-    navigate(`/home/${userId}`);
+    navigate(`${PAGE_URL}/${id}`);
   };
+
+  const requestMutation = useMutation({
+    mutationFn: (receiverId: number) => requestFriend(receiverId),
+  });
 
   const getButtonElement = (type: string) => {
     switch (type) {
@@ -39,6 +46,17 @@ const FriendModalItem = ({ email, profileImage, nickname, userId, type }: Friend
         return (
           <button className="bg-red w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
             신청 취소
+          </button>
+        );
+      case PROFILE_BUTTON_TYPE.STRANGER:
+        return (
+          <button
+            onClick={() => {
+              requestMutation.mutate(+id);
+            }}
+            className="bg-mint w-4/5 cursor-pointer rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
+          >
+            친구 요청
           </button>
         );
     }

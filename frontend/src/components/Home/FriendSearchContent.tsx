@@ -12,7 +12,7 @@ interface FriendSearchContentProps {
 }
 
 interface FriendListResponse {
-  userId: string;
+  id: string;
   email: string;
   nickname: string;
   profileImage: string;

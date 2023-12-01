@@ -54,7 +54,7 @@ const Card = ({ data, styles, size }: CardProps) => {
         styles={`${size === SMALL ? 'text-sm' : ''}`}
       />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
-        <ReactionList />
+        <ReactionList diaryId={Number(data.diaryId)} />
       </Modal>
       {showEmojiPicker && (
         <aside className="absolute bottom-14 z-50">

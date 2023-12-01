@@ -9,6 +9,8 @@ import Header from '@components/Edit/Header';
 import Editor from '@components/Edit/Editor';
 import KeywordBox from '@components/Edit/KeywordBox';
 
+import { PAGE_URL } from '@util/constants';
+
 interface CreateDiaryParams {
   title: string;
   content: string;
@@ -21,11 +23,13 @@ interface CreateDiaryParams {
 const Edit = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [keywordList, setKeywordList] = useState<string[]>(state ? state.tags : []);
-  const [title, setTitle] = useState(state ? state.title : '');
-  const [emoji, setEmoji] = useState(state ? state.emotion : '😁');
-  const [status, setStatus] = useState(state && state.status === 'public' ? '공개 하기' : '나만 보기');
-  const [content, setContent] = useState(state ? state.content : '');
+  const [keywordList, setKeywordList] = useState<string[]>(state?.tags || []);
+  const [title, setTitle] = useState(state?.title || '');
+  const [emoji, setEmoji] = useState(state?.emotion || '😁');
+  const [status, setStatus] = useState(
+    state && state.status === 'public' ? '공개 하기' : '나만 보기',
+  );
+  const [content, setContent] = useState(state?.content || ' ');
 
   const params: CreateDiaryParams = {
     title,
@@ -35,35 +39,35 @@ const Edit = () => {
     status: status === '나만 보기' ? 'private' : 'public',
   };
 
-  const {
-    mutate: createAPI,
-    isError,
-    isPending,
-    isSuccess,
-  } = useMutation({
-    mutationFn: (params: CreateDiaryParams) => {
-      if (state.diaryId) return updateDiary(params, state.diaryId);
-      else return createDiary(params);
-    },
+  const createDiaryMutation = useMutation({
+    mutationFn: (params: CreateDiaryParams) => createDiary(params),
+  });
+
+  const updateDiaryMutation = useMutation({
+    mutationFn: (params: CreateDiaryParams) => updateDiary(params, state.diaryId),
   });
 
   const onSubmit = () => {
     if (!title || title.trim() === '') return;
     if (!content || content.trim() === '') return;
 
-    createAPI(params);
+    if (state) {
+      updateDiaryMutation.mutate(params, state.diaryId);
+    } else {
+      createDiaryMutation.mutate(params);
+    }
   };
 
-  if (isError) {
+  if (createDiaryMutation.isError || updateDiaryMutation.isError) {
     return <div>에러!!</div>;
   }
 
-  if (isPending) {
+  if (createDiaryMutation.isPending || updateDiaryMutation.isPending) {
     return <div>일기 저장중...</div>;
   }
 
-  if (isSuccess) {
-    navigate('/my-diary');
+  if (createDiaryMutation.isSuccess || updateDiaryMutation.isSuccess) {
+    navigate(PAGE_URL.MY_DIARY);
   }
 
   return (
