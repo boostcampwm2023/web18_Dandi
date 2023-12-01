@@ -41,7 +41,7 @@ export class DiariesRepository extends Repository<Diary> {
     authorId: number,
     isOwner: boolean,
     startDate: string,
-    lastDate: string,
+    lastDate: Date,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
