@@ -38,14 +38,14 @@ const FriendRequest = ({ userId }: FriendRequestProps) => {
           <div>
             <p className="mb-6 text-2xl font-bold">받은 신청</p>
             <div className="flex flex-wrap justify-between">
-              <SendRequest userId={userId} />
+              <ReceivedRequest userId={userId} />
             </div>
           </div>
 
           <div>
             <p className="mb-6 text-2xl font-bold">보낸 신청</p>
             <div className="flex flex-wrap justify-between">
-              <ReceivedRequest userId={userId} />
+              <SendRequest userId={userId} />
             </div>
           </div>
         </div>

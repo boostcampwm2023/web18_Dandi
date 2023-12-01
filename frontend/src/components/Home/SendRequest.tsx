@@ -38,8 +38,9 @@ const SendRequest = ({ userId }: SendRequestProps) => {
     return <p>보낸 친구 신청목록을 불러오지 못했습니다!</p>;
   }
 
-  const ReceivedList = sendData.data.strangers.map((v: SendListResponse) => {
-    if (v.receiverId === userId) {
+  const sendList = sendData.data.strangers
+    .filter((v: SendListResponse) => v.senderId === userId)
+    .map((v: SendListResponse) => {
       const newObj = {
         email: v.email,
         nickname: v.nickname,
@@ -47,10 +48,9 @@ const SendRequest = ({ userId }: SendRequestProps) => {
         profileImage: v.profileImage,
       };
       return newObj;
-    }
-  });
+    });
 
-  return ReceivedList.map((data: SendList, index: number) => (
+  return sendList.map((data: SendList, index: number) => (
     <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.RECEIVED} />
   ));
 };
