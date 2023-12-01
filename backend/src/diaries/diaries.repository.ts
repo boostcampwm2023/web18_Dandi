@@ -21,7 +21,8 @@ export class DiariesRepository extends Repository<Diary> {
   async findDiariesByAuthorIdWithPagination(authorId: number, isOwner: boolean, lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.diary', 'user')
       .where('diary.author.id = :authorId', {
         authorId,
       })
