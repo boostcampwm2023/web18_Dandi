@@ -22,7 +22,7 @@ export class DiariesRepository extends Repository<Diary> {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.diary', 'user')
+      .leftJoinAndSelect('reactions.user', 'user')
       .where('diary.author.id = :authorId', {
         authorId,
       })
@@ -46,7 +46,8 @@ export class DiariesRepository extends Repository<Diary> {
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'user')
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
       .orderBy('diary.id', 'DESC');
