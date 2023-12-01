@@ -217,7 +217,7 @@ export class DiariesController {
   @Get('/search/v2/:keyword')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '키워드로 일기 검색(Elasticsearch)' })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: '일기 검색 성공',
     type: ReadUserDiariesResponseDto,
   })
