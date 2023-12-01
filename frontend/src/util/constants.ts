@@ -1,6 +1,7 @@
 import { viewTypes } from '@type/pages/MyDiary';
 
 export const DAY_OF_WEEK = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+export const EMOTION_LEVELS = ['no', 'terrible', 'bad', 'soso', 'good', 'excellent'];
 export const DUMMY_DATA = [
   {
     createdAt: '2023-11-13T13:50:17.106Z',

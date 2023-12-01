@@ -6,8 +6,8 @@ const getGrass = async (userId: number) => {
       credentials: 'include',
     });
 
-    if(!response.ok){
-      throw new Error(`HTTP 에러 상태: ${response.status}`)
+    if (!response.ok) {
+      throw new Error(`HTTP 에러 상태: ${response.status}`);
     }
     const data = await response.json();
     return data;
