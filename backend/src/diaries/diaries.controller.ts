@@ -198,18 +198,34 @@ export class DiariesController {
     return { yearMood };
   }
 
-  @Get('/search/:keyword')
+  @Get('/search/v1/:keyword')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '키워드로 일기 검색' })
+  @ApiOperation({ description: '키워드로 일기 검색(MySQL Like)' })
   @ApiCreatedResponse({
     description: '일기 검색 성공',
     type: ReadUserDiariesResponseDto,
   })
-  async findDiaryByKeyword(
+  async findDiaryByKeywordV1(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeyword(author, keyword);
+    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword);
+
+    return { nickname: author.nickname, diaryList };
+  }
+
+  @Get('/search/v2/:keyword')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '키워드로 일기 검색(Elasticsearch)' })
+  @ApiOkResponse({
+    description: '일기 검색 성공',
+    type: ReadUserDiariesResponseDto,
+  })
+  async findDiaryByKeywordV2(
+    @User() author: UserEntity,
+    @Param('keyword') keyword: string,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaryList = await this.diariesService.findDiaryByKeywordV2(author, keyword);
 
     return { nickname: author.nickname, diaryList };
   }

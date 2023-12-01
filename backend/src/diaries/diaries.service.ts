@@ -218,8 +218,8 @@ export class DiariesService {
     return yearMood;
   }
 
-  async findDiaryByKeyword(author: User, keyword: string) {
-    const diaries = await this.diariesRepository.findDiaryByKeyword(author.id, keyword);
+  async findDiaryByKeywordV1(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV1(author.id, keyword);
 
     const diaryInfos = Promise.all(
       diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
@@ -241,6 +241,26 @@ export class DiariesService {
     );
 
     return diaryInfos;
+  }
+
+  async findDiaryByKeywordV2(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV2(author.id, keyword);
+
+    return diaries.map<AllDiaryInfosDto>((diary) => {
+      const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === author.id);
+
+      return {
+        diaryId: diary.diaryid,
+        thumbnail: diary.thumbnail,
+        title: diary.title,
+        summary: diary.summary,
+        tags: diary.tagnames ?? [],
+        emotion: diary.emotion,
+        reactionCount: diary.reactions.length,
+        createdAt: diary.createdat,
+        leavedReaction: reactionIndex !== -1 ? diary.reactions[reactionIndex] : null,
+      };
+    });
   }
 
   private existsDiary(diary: Diary) {
