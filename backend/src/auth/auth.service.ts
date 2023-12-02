@@ -23,7 +23,7 @@ export class AuthService {
   ) {}
 
   async login(oAuthLoginDto: OAuthLoginDto): Promise<LoginResultDto> {
-    const { accessToken, refreshToken } = await this.getToken(oAuthLoginDto);
+    const { accessToken } = await this.getToken(oAuthLoginDto);
     const profile = await this.getUserProfile(accessToken);
 
     let user = await this.usersRepository.findBySocialIdAndSocialType(
@@ -34,15 +34,17 @@ export class AuthService {
     if (!user) {
       user = await this.signUp(profile, oAuthLoginDto.socialType);
     }
-    this.authRepository.setRefreshToken(user.id, oAuthLoginDto.socialType, refreshToken);
+
+    const newAccessToken = this.jwtService.sign({
+      id: user.id,
+      nickname: user.nickname,
+    });
+
+    this.authRepository.setRefreshToken(newAccessToken);
 
     return {
       userId: user.id,
-      token: this.jwtService.sign({
-        id: user.id,
-        nickname: user.nickname,
-        accessToken,
-      }),
+      token: newAccessToken,
     };
   }
 
