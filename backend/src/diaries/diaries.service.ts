@@ -221,7 +221,17 @@ export class DiariesService {
   async findDiaryByKeywordV1(author: User, keyword: string) {
     const diaries = await this.diariesRepository.findDiaryByKeywordV1(author.id, keyword);
 
-    const diaryInfos = Promise.all(
+    return this.makeAllDiaryInfosDto(diaries, author.id);
+  }
+
+  async findDiaryByTag(userId: number, tagName: string) {
+    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName);
+
+    return this.makeAllDiaryInfosDto(diaries, userId);
+  }
+
+  private makeAllDiaryInfosDto(diaries: Diary[], userId: number) {
+    return Promise.all(
       diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
         const tags = await diary.tags;
         const reactions = await diary.reactions;
@@ -235,12 +245,10 @@ export class DiariesService {
           emotion: diary.emotion,
           reactionCount: reactions.length,
           createdAt: diary.createdAt,
-          leavedReaction: reactions.find((reaction) => reaction.user.id === author.id)?.reaction,
+          leavedReaction: reactions.find((reaction) => reaction.user.id === userId)?.reaction,
         };
       }),
     );
-
-    return diaryInfos;
   }
 
   async findDiaryByKeywordV2(author: User, keyword: string) {

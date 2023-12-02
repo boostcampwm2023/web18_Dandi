@@ -112,7 +112,8 @@ export class DiariesRepository extends Repository<Diary> {
   async findDiaryByKeywordV1(authorId: number, keyword: string) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'reactionUser')
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
         keyword: `%${keyword}%`,
@@ -154,5 +155,16 @@ export class DiariesRepository extends Repository<Diary> {
     });
 
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
+  }
+  
+  findDiaryByTag(userId: number, tagName: string) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .innerJoin('diary.tags', 'tags')
+      .where('tags.name = :tagName', { tagName })
+      .andWhere('diary.author.id = :userId', { userId });
+
+    return queryBuilder.getMany();
   }
 }

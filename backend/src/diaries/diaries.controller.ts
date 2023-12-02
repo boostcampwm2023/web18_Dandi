@@ -229,4 +229,20 @@ export class DiariesController {
 
     return { nickname: author.nickname, diaryList };
   }
+
+  @Get('/tags/:tagName')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '특정 태그가 포함된 일기 조회' })
+  @ApiOkResponse({
+    description: '특정 태그가 포함된 일기 조회 성공',
+    type: ReadUserDiariesResponseDto,
+  })
+  async findDiaryByTag(
+    @User() user: UserEntity,
+    @Param('tagName') tagName: string,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaryList = await this.diariesService.findDiaryByTag(user.id, tagName);
+
+    return { nickname: user.nickname, diaryList };
+  }
 }
