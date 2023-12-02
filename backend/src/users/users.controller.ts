@@ -1,13 +1,15 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Patch,
+  UploadedFile,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
@@ -19,6 +21,8 @@ import {
 } from './dto/user.dto';
 import { User } from './utils/user.decorator';
 import { User as UserEntity } from './entity/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { IMAGE_TYPE_REGEX } from 'src/images/utils/images.constant';
 
 @ApiTags('Users API')
 @Controller('users')
@@ -27,11 +31,20 @@ export class UsersController {
 
   @Patch()
   @UseGuards(JwtAuthGuard)
-  @UsePipes(ValidationPipe)
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ description: '사용자 정보 수정 API' })
   @ApiOkResponse({ description: '사용자 정보 수정 성공', type: UpdateUserProfileRequestDto })
-  async updateUserInfo(@User() user: UserEntity, @Body() requestDto: UpdateUserProfileRequestDto) {
-    await this.usersService.updateUserProfile(user, requestDto);
+  async updateUserInfo(
+    @User() user: UserEntity,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: IMAGE_TYPE_REGEX })],
+      }),
+    )
+    image: Express.Multer.File,
+    @Body() requestDto: UpdateUserProfileRequestDto,
+  ): Promise<string> {
+    await this.usersService.updateUserProfile(user, requestDto, image);
 
     return '사용자 정보 수정에 성공했습니다.';
   }

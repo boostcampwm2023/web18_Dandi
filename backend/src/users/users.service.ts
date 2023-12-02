@@ -3,10 +3,14 @@ import { UsersRepository } from './users.repository';
 import { SearchUserResponseDto, UpdateUserProfileRequestDto } from './dto/user.dto';
 import { isToday } from 'date-fns';
 import { User } from './entity/user.entity';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private imagesService: ImagesService,
+  ) {}
 
   async findUserInfo(userId: number) {
     const user = await this.usersRepository.findUserInfoById(userId);
@@ -32,12 +36,15 @@ export class UsersService {
     return user;
   }
 
-  async updateUserProfile(user: User, requestDto: UpdateUserProfileRequestDto) {
-    Object.keys(requestDto).forEach((key) => {
-      if (requestDto[key]) {
-        user[key] = requestDto[key];
-      }
-    });
+  async updateUserProfile(
+    user: User,
+    requestDto: UpdateUserProfileRequestDto,
+    file: Express.Multer.File,
+  ) {
+    if (file) {
+      user.profileImage = (await this.imagesService.uploadProfileImage(user.id, file)).Location;
+    }
+    user.nickname = requestDto.nickname ? requestDto.nickname : user.nickname;
 
     await this.usersRepository.save(user);
   }
