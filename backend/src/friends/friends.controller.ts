@@ -24,6 +24,19 @@ export class FriendsController {
     return { friends };
   }
 
+  @Delete('/:friendId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '친구 삭제 API' })
+  @ApiOkResponse({ description: '친구 삭제 성공' })
+  async deleteFriendRelation(
+    @User() user: UserEntity,
+    @Param('friendId', ParseIntPipe) friendId: number,
+  ) {
+    await this.friendsService.deleteFriendRelation(user.id, friendId);
+
+    return '친구가 삭제되었습니다.';
+  }
+
   @Get('request/:userId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '특정 사용자의 진행 중인 친구신청 목록 조회' })
@@ -36,7 +49,7 @@ export class FriendsController {
     return { strangers };
   }
 
-  @Post('/:receiverId')
+  @Post('request/:receiverId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '친구 신청 API' })
   @ApiCreatedResponse({ description: '친구 신청 성공' })
@@ -49,7 +62,7 @@ export class FriendsController {
     return '친구 신청이 완료되었습니다.';
   }
 
-  @Delete('/:receiverId')
+  @Delete('request/:receiverId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '내가 보낸 친구 신청 취소 API' })
   @ApiOkResponse({ description: '친구 신청 취소 성공' })
@@ -58,19 +71,6 @@ export class FriendsController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ): Promise<string> {
     await this.friendsService.cancelFriendRequest({ senderId: user.id, receiverId });
-
-    return '친구 신청이 취소되었습니다.';
-  }
-
-  @Delete('/tmp/:friendId')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '내가 보낸 친구 신청 취소 API' })
-  @ApiOkResponse({ description: '친구 신청 취소 성공' })
-  async deleteFriendRelation(
-    @User() user: UserEntity,
-    @Param('friendId', ParseIntPipe) friendId: number,
-  ) {
-    await this.friendsService.deleteFriendRelation(user.id, friendId);
 
     return '친구 신청이 취소되었습니다.';
   }
