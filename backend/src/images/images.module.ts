@@ -6,5 +6,6 @@ import { ImagesRepository } from './images.repository';
 @Module({
   controllers: [ImagesController],
   providers: [ImagesService, ImagesRepository],
+  exports: [ImagesService],
 })
 export class ImagesModule {}

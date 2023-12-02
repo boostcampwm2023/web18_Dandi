@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 export class GetUserResponseDto {
   @ApiProperty({ description: '사용자 닉네임' })
@@ -26,4 +27,10 @@ export class SearchUserResponseDto {
 
   @ApiProperty({ description: '사용자 프로필 이미지' })
   profileImage: string;
+}
+
+export class UpdateUserProfileRequestDto {
+  @ApiProperty({ description: '사용자 닉네임' })
+  @IsOptional()
+  nickname: string;
 }
