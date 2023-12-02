@@ -128,3 +128,20 @@ export const rejectFriend = async (senderId: number) => {
     console.error('친구요청 거절에 실패했습니다.', error);
   }
 };
+
+export const updateProfile = async (formData: FormData) => {
+  try {
+    const response = await fetch(API_PATH.USER.profile(), {
+      method: 'PATCH',
+      headers: {
+        'content-Type': 'multipart/form-data',
+      },
+      credentials: 'include',
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('프로필 변경에 실패했습니다.', error);
+  }
+};

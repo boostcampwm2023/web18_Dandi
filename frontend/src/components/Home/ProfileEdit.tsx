@@ -1,4 +1,7 @@
 import { useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+
+import { updateProfile } from '@/api/FriendModal';
 
 interface ProfileEditProps {
   profileImage: string;
@@ -10,6 +13,10 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
   const [imageSrc, setImageSrc] = useState(profileImage);
   const [newProfileImage, setNewProfileImage] = useState<File>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const updateMutation = useMutation({
+    mutationFn: (formData: FormData) => updateProfile(formData),
+  });
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewNickname(e.target.value);
@@ -28,6 +35,20 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
       const imageUrl = URL.createObjectURL(file);
       setImageSrc(imageUrl);
     }
+  };
+
+  const onSubmit = () => {
+    if (!newNickname && !newProfileImage) return;
+
+    const formData = new FormData();
+
+    if (newNickname) {
+      formData.append('nickname', JSON.stringify(newNickname));
+    }
+    if (newProfileImage) {
+      formData.append('profileImage', newProfileImage);
+    }
+    updateMutation.mutate(formData);
   };
 
   return (
@@ -56,7 +77,9 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
           value={newNickname}
           onChange={onChangeNickname}
         />
-        <button className="bg-mint w-1/2 rounded-xl py-2 font-bold">수정하기</button>
+        <button className="bg-mint w-1/2 rounded-xl py-2 font-bold" onClick={onSubmit}>
+          수정하기
+        </button>
       </div>
     </div>
   );
