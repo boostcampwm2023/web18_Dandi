@@ -26,14 +26,17 @@ export class DiariesRepository extends Repository<Diary> {
   async findDiariesByAuthorIdWithPagination(authorId: number, isOwner: boolean, lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'user')
       .where('diary.author.id = :authorId', {
         authorId,
       })
-      .andWhere('diary.id < :lastIndex', { lastIndex })
       .orderBy('diary.id', 'DESC')
       .limit(ITEM_PER_PAGE);
 
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
+    }
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
@@ -44,11 +47,12 @@ export class DiariesRepository extends Repository<Diary> {
     authorId: number,
     isOwner: boolean,
     startDate: string,
-    lastDate: string,
+    lastDate: Date,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'user')
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
       .orderBy('diary.id', 'DESC');
@@ -79,11 +83,7 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
-  async findPaginatedDiaryByDateAndIdList(
-    date: Date,
-    idList: number[],
-    lastIndex: number | undefined,
-  ) {
+  async findPaginatedDiaryByDateAndIdList(date: Date, idList: number[], lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'user')
       .leftJoinAndSelect('diary.tags', 'tags')
@@ -95,8 +95,8 @@ export class DiariesRepository extends Repository<Diary> {
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
-    if (lastIndex !== undefined) {
-      queryBuilder.where('diary.id < :lastIndex', { lastIndex });
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
     return await queryBuilder.getMany();

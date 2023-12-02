@@ -27,7 +27,7 @@ import {
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
-import { subYears } from 'date-fns';
+import { addDays, parseISO, subYears } from 'date-fns';
 import { load } from 'cheerio';
 
 @Injectable()
@@ -195,11 +195,12 @@ export class DiariesService {
         requestDto.lastIndex,
       );
     } else {
+      const endDate = addDays(parseISO(requestDto.endDate), 1);
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
         id,
         user.id === id,
         requestDto.startDate,
-        requestDto.endDate,
+        endDate,
       );
     }
 
