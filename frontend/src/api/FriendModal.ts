@@ -85,3 +85,16 @@ export const cancelRequestFriend = async (receiverId: number) => {
     console.error('친구요청 취소에 실패했습니다.', error);
   }
 };
+
+export const deleteFriend = async (friendId: number) => {
+  try {
+    const response = await fetch(API_PATH.FRIEND.list(friendId), {
+      method: 'delete',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('친구 삭제에 실패했습니다.', error);
+  }
+};

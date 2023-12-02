@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
-import { requestFriend, cancelRequestFriend } from '@api/FriendModal';
+import { requestFriend, cancelRequestFriend, deleteFriend } from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
@@ -27,11 +27,20 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
   });
 
+  const deleteFriendMutation = useMutation({
+    mutationFn: (friendId: number) => deleteFriend(friendId),
+  });
+
   const getButtonElement = (type: string) => {
     switch (type) {
       case PROFILE_BUTTON_TYPE.LIST:
         return (
-          <button className="bg-mint w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+          <button
+            onClick={() => {
+              deleteFriendMutation.mutate(+id);
+            }}
+            className="bg-mint w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold"
+          >
             친구 삭제
           </button>
         );
