@@ -3,10 +3,15 @@ import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { SearchDiaryDataForm } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private readonly elasticsearchService: ElasticsearchService,
+  ) {
     super(Diary, dataSource.createEntityManager());
   }
 
@@ -104,7 +109,7 @@ export class DiariesRepository extends Repository<Diary> {
       .getMany();
   }
 
-  async findDiaryByKeyword(authorId: number, keyword: string) {
+  async findDiaryByKeywordV1(authorId: number, keyword: string) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoinAndSelect('diary.reactions', 'reactions')
@@ -117,6 +122,41 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
+  async findDiaryByKeywordV2(id: number, keyword: string): Promise<SearchDiaryDataForm[]> {
+    const documents = await this.elasticsearchService.search({
+      index: process.env.ELASTICSEARCH_INDEX,
+      body: {
+        _source: [
+          'authorname',
+          'diaryid',
+          'thumbnail',
+          'title',
+          'summary',
+          'tagnames',
+          'emotion',
+          'reactions',
+          'reactionUsers',
+          'authorid',
+          'createdat',
+        ],
+        query: {
+          bool: {
+            must: [
+              { term: { authorid: id } },
+              {
+                bool: {
+                  should: [{ match: { content: keyword } }, { match: { title: keyword } }],
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
+  }
+  
   findDiaryByTag(userId: number, tagName: string) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoinAndSelect('diary.reactions', 'reactions')

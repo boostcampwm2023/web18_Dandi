@@ -39,17 +39,17 @@ const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
     return <p>받은 친구 신청목록을 불러오지 못했습니다!</p>;
   }
 
-  const ReceivedList = ReceivedData.data.strangers.map((v: ReceivedListResponse) => {
-    if (v.senderId === userId) {
+  const ReceivedList = ReceivedData.data.strangers
+    .filter((v: ReceivedListResponse) => v.receiverId === userId)
+    .map((v: ReceivedListResponse) => {
       const newObj = {
         email: v.email,
         nickname: v.nickname,
-        userId: v.senderId,
+        userId: v.receiverId,
         profileImage: v.profileImage,
       };
       return newObj;
-    }
-  });
+    });
 
   return ReceivedList.map((data: ReceivedList, index: number) => (
     <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.SEND} />

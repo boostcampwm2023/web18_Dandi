@@ -41,6 +41,8 @@ export class DiariesService {
 
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto) {
     const tags = await this.tagsService.mapTagNameToTagType(createDiaryDto.tagNames);
+    this.tagsService.updateDataSetScore(user.id, createDiaryDto.tagNames);
+
     const diary = plainToClass(Diary, createDiaryDto, {
       excludePrefixes: ['tag'],
     });
@@ -68,6 +70,8 @@ export class DiariesService {
     const existingDiary = await this.findDiary(user, id);
 
     existingDiary.tags = await this.tagsService.mapTagNameToTagType(updateDiaryDto.tagNames);
+    this.tagsService.updateDataSetScore(user.id, updateDiaryDto.tagNames);
+
     Object.keys(updateDiaryDto).forEach((key) => {
       if (updateDiaryDto[key]) {
         existingDiary[key] = updateDiaryDto[key];
@@ -214,8 +218,8 @@ export class DiariesService {
     return yearMood;
   }
 
-  async findDiaryByKeyword(author: User, keyword: string) {
-    const diaries = await this.diariesRepository.findDiaryByKeyword(author.id, keyword);
+  async findDiaryByKeywordV1(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV1(author.id, keyword);
 
     return this.makeAllDiaryInfosDto(diaries, author.id);
   }
@@ -245,6 +249,26 @@ export class DiariesService {
         };
       }),
     );
+  }
+
+  async findDiaryByKeywordV2(author: User, keyword: string) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV2(author.id, keyword);
+
+    return diaries.map<AllDiaryInfosDto>((diary) => {
+      const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === author.id);
+
+      return {
+        diaryId: diary.diaryid,
+        thumbnail: diary.thumbnail,
+        title: diary.title,
+        summary: diary.summary,
+        tags: diary.tagnames ?? [],
+        emotion: diary.emotion,
+        reactionCount: diary.reactions.length,
+        createdAt: diary.createdat,
+        leavedReaction: reactionIndex !== -1 ? diary.reactions[reactionIndex] : null,
+      };
+    });
   }
 
   private existsDiary(diary: Diary) {

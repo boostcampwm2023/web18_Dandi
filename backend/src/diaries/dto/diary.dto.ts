@@ -258,3 +258,17 @@ export class getYearMoodResponseDto {
   @ApiProperty({ description: '그날 일기의 기분' })
   mood: MoodDegree;
 }
+
+export class SearchDiaryDataForm {
+  authorname: string;
+  diaryid: number;
+  thumbnail: string;
+  title: string;
+  summary: string;
+  tagnames: string[];
+  emotion: string;
+  reactions: string[];
+  reactionUsers: number[];
+  authorid: number;
+  createdat: Date;
+}
