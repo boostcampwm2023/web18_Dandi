@@ -61,7 +61,7 @@ const Profile = ({ userId }: ProfileProps) => {
       case PROFILE_MODAL_CONTENT_TYPE.REQUEST:
         return <FriendRequest userId={userId} />;
       case PROFILE_MODAL_CONTENT_TYPE.EDIT:
-        return <ProfileEdit />;
+        return <ProfileEdit profileImage={profileImage} nickname={nickname} />;
     }
   };
 
