@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { OAuthLoginDto, OAuthLoginResponseDto } from './dto/auth.dto';
+import { SERVICE_URL } from './utils/auth.constant';
 
 @ApiTags('Authentication API')
 @Controller('auth')
@@ -25,11 +26,11 @@ export class AuthController {
   @ApiOperation({
     description: 'access token 갱신 API',
   })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiOkResponse({ description: 'access token 갱신 성공' })
   async refreshAccessToken(@Req() req: Request, @Res() res: Response): Promise<void> {
     const newJwt = await this.authService.refreshAccessToken(req);
 
     res.cookie('utk', newJwt, { httpOnly: true });
-    res.redirect('http://223.130.146.253/');
+    res.redirect(SERVICE_URL);
   }
 }

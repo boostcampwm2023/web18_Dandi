@@ -11,7 +11,7 @@ export class AuthRepository {
     this.redis.set(accessToken, refreshToken, 'EX', REFRESH_TOKEN_EXPIRE_DATE);
   }
 
-  async getRefreshToken(userId: string): Promise<string> {
-    return await this.redis.get(userId);
+  getRefreshToken(accessToken: string) {
+    return this.redis.get(accessToken);
   }
 }
