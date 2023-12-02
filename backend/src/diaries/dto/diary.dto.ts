@@ -131,7 +131,7 @@ class DiaryInfos {
   createdAt: Date;
 }
 
-export class getFeedDiaryRequestDto {
+export class LastIndexDto {
   @ApiProperty({ description: '커서 방식 페이지네이션을 위한 diary Index' })
   @IsOptional()
   @IsInt()
@@ -174,7 +174,7 @@ export class FeedDiaryDto {
   leavedReaction: string | null;
 }
 
-export class getFeedDiaryResponseDto {
+export class GetFeedDiaryResponseDto {
   @ApiProperty({ description: '마지막으로 조회한 일기 id' })
   lastIndex: number;
 
@@ -252,7 +252,7 @@ export class AllDiaryInfosDto {
   leavedReaction?: string;
 }
 
-export class getYearMoodResponseDto {
+export class GetYearMoodResponseDto {
   @ApiProperty({ description: '날짜' })
   date: Date;
 

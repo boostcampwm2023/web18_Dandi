@@ -29,9 +29,9 @@ import {
   ReadUserDiariesRequestDto,
   ReadUserDiariesResponseDto,
   UpdateDiaryDto,
-  getFeedDiaryRequestDto,
-  getFeedDiaryResponseDto,
-  getYearMoodResponseDto,
+  LastIndexDto,
+  GetFeedDiaryResponseDto,
+  GetYearMoodResponseDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -46,11 +46,11 @@ export class DiariesController {
   @Get('/friends')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '피드 일기 조회 API' })
-  @ApiOkResponse({ description: '피드 일기 조회 성공', type: getFeedDiaryResponseDto })
+  @ApiOkResponse({ description: '피드 일기 조회 성공', type: GetFeedDiaryResponseDto })
   async getFeedDiary(
     @User() user: UserEntity,
-    @Query(ValidationPipe) queryString: getFeedDiaryRequestDto,
-  ): Promise<getFeedDiaryResponseDto> {
+    @Query(ValidationPipe) queryString: LastIndexDto,
+  ): Promise<GetFeedDiaryResponseDto> {
     const [diaryList, lastIndex] = await this.diariesService.getFeedDiary(
       user.id,
       queryString.lastIndex,
@@ -188,11 +188,11 @@ export class DiariesController {
   @ApiOperation({ description: '1년의 일기 mood조회' })
   @ApiCreatedResponse({
     description: '일기 mood 조회 성공',
-    type: [getYearMoodResponseDto],
+    type: [GetYearMoodResponseDto],
   })
   async getMoodForYear(
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<Record<string, getYearMoodResponseDto[]>> {
+  ): Promise<Record<string, GetYearMoodResponseDto[]>> {
     const yearMood = await this.diariesService.getMoodForYear(userId);
 
     return { yearMood };

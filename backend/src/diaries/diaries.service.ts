@@ -4,7 +4,7 @@ import {
   CreateDiaryDto,
   FeedDiaryDto,
   GetAllEmotionsRequestDto,
-  getYearMoodResponseDto,
+  GetYearMoodResponseDto,
   GetAllEmotionsResponseDto,
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
@@ -207,12 +207,12 @@ export class DiariesService {
     return { author, diaries };
   }
 
-  async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
+  async getMoodForYear(userId: number): Promise<GetYearMoodResponseDto[]> {
     const oneYearAgo = subYears(new Date(), 1);
 
     const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
 
-    const yearMood: getYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
+    const yearMood: GetYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
       return [...acc, { date: cur.createdAt, mood: cur.mood }];
     }, []);
 
