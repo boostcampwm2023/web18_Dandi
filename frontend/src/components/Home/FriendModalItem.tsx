@@ -1,7 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
-import { requestFriend, cancelRequestFriend, deleteFriend } from '@api/FriendModal';
+import {
+  requestFriend,
+  cancelRequestFriend,
+  deleteFriend,
+  allowFriend,
+  rejectFriend,
+} from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
@@ -31,6 +37,14 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     mutationFn: (friendId: number) => deleteFriend(friendId),
   });
 
+  const allowFriendMutation = useMutation({
+    mutationFn: (senderId: number) => allowFriend(senderId),
+  });
+
+  const rejectFriendMutation = useMutation({
+    mutationFn: (senderId: number) => rejectFriend(senderId),
+  });
+
   const getButtonElement = (type: string) => {
     switch (type) {
       case PROFILE_BUTTON_TYPE.LIST:
@@ -47,10 +61,20 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
       case PROFILE_BUTTON_TYPE.RECEIVED:
         return (
           <div className="flex gap-2">
-            <button className="bg-red w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+            <button
+              onClick={() => {
+                rejectFriendMutation.mutate(+id);
+              }}
+              className="bg-red w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
+            >
               거절
             </button>
-            <button className="bg-mint w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+            <button
+              onClick={() => {
+                allowFriendMutation.mutate(+id);
+              }}
+              className="bg-mint w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold"
+            >
               수락
             </button>
           </div>
