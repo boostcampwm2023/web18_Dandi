@@ -44,14 +44,14 @@ const SendRequest = ({ userId }: SendRequestProps) => {
       const newObj = {
         email: v.email,
         nickname: v.nickname,
-        userId: v.receiverId,
+        id: v.receiverId,
         profileImage: v.profileImage,
       };
       return newObj;
     });
 
   return sendList.map((data: SendList, index: number) => (
-    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.RECEIVED} />
+    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.SEND} />
   ));
 };
 

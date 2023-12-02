@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
-import { requestFriend } from '@api/FriendModal';
+import { requestFriend, cancelRequestFriend } from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
@@ -16,11 +16,15 @@ interface FriendModalItemProps {
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const goFriendHome = () => {
-    navigate(`${PAGE_URL}/${id}`);
+    navigate(`${PAGE_URL.HOME}${id}`);
   };
 
   const requestMutation = useMutation({
     mutationFn: (receiverId: number) => requestFriend(receiverId),
+  });
+
+  const cancelRequestMutation = useMutation({
+    mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
   });
 
   const getButtonElement = (type: string) => {
@@ -44,7 +48,12 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
         );
       case PROFILE_BUTTON_TYPE.SEND:
         return (
-          <button className="bg-red w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+          <button
+            onClick={() => {
+              cancelRequestMutation.mutate(+id);
+            }}
+            className="bg-red w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
+          >
             신청 취소
           </button>
         );
