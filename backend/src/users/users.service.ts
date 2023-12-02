@@ -41,6 +41,9 @@ export class UsersService {
     requestDto: UpdateUserProfileRequestDto,
     file: Express.Multer.File,
   ) {
+    if (!file && !requestDto.nickname) {
+      throw new BadRequestException('수정될 정보가 존재하지 않습니다.');
+    }
     if (file) {
       user.profileImage = (await this.imagesService.uploadProfileImage(user.id, file)).Location;
     }

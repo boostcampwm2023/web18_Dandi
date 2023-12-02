@@ -38,6 +38,7 @@ export class UsersController {
     @User() user: UserEntity,
     @UploadedFile(
       new ParseFilePipe({
+        fileIsRequired: false,
         validators: [new FileTypeValidator({ fileType: IMAGE_TYPE_REGEX })],
       }),
     )

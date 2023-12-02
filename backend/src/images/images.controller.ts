@@ -28,9 +28,7 @@ export class ImagesController {
   async uploadDiaryImage(
     @User() user: UserEntity,
     @UploadedFile(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: IMAGE_TYPE_REGEX })],
-      }),
+      new ParseFilePipe({ validators: [new FileTypeValidator({ fileType: IMAGE_TYPE_REGEX })] }),
     )
     file: Express.Multer.File,
   ): Promise<Record<string, string>> {
