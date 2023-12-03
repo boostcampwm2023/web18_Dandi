@@ -1,10 +1,20 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+
+import { logout } from '@api/Login';
+
 import logo from '@assets/image/logo.svg';
 
 const NavBar = () => {
   const navigate = useNavigate();
 
-  const logout = () => navigate('/login');
+  const onClickLogout = async () => {
+    const isLogout = await logout();
+
+    if (isLogout) {
+      localStorage.setItem('userId', '');
+      navigate('/login');
+    }
+  };
 
   return (
     <div className="border-brown mb-6 flex h-[121px] w-full min-w-[590px] items-center justify-between border-b-[1px] border-solid">
@@ -24,7 +34,7 @@ const NavBar = () => {
         <NavLink to="/my-diary" className={({ isActive }) => (isActive ? 'font-bold' : '')}>
           <p>내 일기</p>
         </NavLink>
-        <p className="cursor-pointer" onClick={logout}>
+        <p className="cursor-pointer" onClick={onClickLogout}>
           로그아웃
         </p>
       </div>
