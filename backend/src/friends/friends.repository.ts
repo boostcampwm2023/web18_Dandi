@@ -14,10 +14,12 @@ export class FriendsRepository extends Repository<Friend> {
     this.save({ sender, receiver });
   }
 
-  async findFriendRequest(senderId: number, receiverId: number): Promise<Friend[]> {
-    return await this.findBy({
-      sender: Equal(senderId),
-      receiver: Equal(receiverId),
+  async findFriendRequest(senderId: number, receiverId: number): Promise<Friend> {
+    return await this.findOne({
+      where: {
+        sender: Equal(senderId),
+        receiver: Equal(receiverId),
+      },
     });
   }
 

@@ -22,13 +22,13 @@ export class FriendsService {
       throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
     }
 
-    const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
-    if (relations.length > 0) {
+    const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
+    if (relation) {
       throw new BadRequestException('이미 친구신청을 하셨습니다.');
     }
 
-    const reverseRelations = await this.friendsRepository.findFriendRequest(receiverId, senderId);
-    if (reverseRelations.length > 0) {
+    const reverseRelation = await this.friendsRepository.findFriendRequest(receiverId, senderId);
+    if (reverseRelation) {
       throw new BadRequestException('상대의 친구신청을 확인해주세요.');
     }
 
