@@ -153,7 +153,7 @@ export class DiariesRepository extends Repository<Diary> {
         query: {
           bool: {
             must: [
-              { term: { authorid: 2 } },
+              { term: { authorid: id } },
               {
                 bool: {
                   should: [{ match: { content: keyword } }, { match: { title: keyword } }],
@@ -166,7 +166,6 @@ export class DiariesRepository extends Repository<Diary> {
       },
     });
 
-    console.log(documents.hits.hits);
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 
