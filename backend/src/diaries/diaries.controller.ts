@@ -227,7 +227,7 @@ export class DiariesController {
     @Param('keyword') keyword: string,
     @Query('lastIndex') lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
+    const diaryList = await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
 
     return { nickname: author.nickname, diaryList };
   }

@@ -229,6 +229,16 @@ export class DiariesService {
     return this.makeAllDiaryInfosDto(diaries, author.id);
   }
 
+  async findDiaryByKeywordV2(author: User, keyword: string, lastIndex: number) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV2(
+      author.id,
+      keyword,
+      lastIndex,
+    );
+
+    return this.makeAllDiaryInfosDto(diaries, author.id);
+  }
+
   async findDiaryByTag(userId: number, tagName: string) {
     const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName);
 
