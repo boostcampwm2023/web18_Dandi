@@ -131,7 +131,7 @@ class DiaryInfos {
   createdAt: Date;
 }
 
-export class getFeedDiaryRequestDto {
+export class LastIndexDto {
   @ApiProperty({ description: '커서 방식 페이지네이션을 위한 diary Index' })
   @IsOptional()
   @IsInt()
@@ -172,30 +172,6 @@ export class FeedDiaryDto {
 
   @ApiProperty({ description: '사용자 본인이 남긴 리액션(없으면 null)' })
   leavedReaction: string | null;
-}
-
-export class getFeedDiaryResponseDto {
-  @ApiProperty({ description: '마지막으로 조회한 일기 id' })
-  lastIndex: number;
-
-  @ApiProperty({
-    description: '친구 일기 배열',
-    example: [
-      {
-        diaryId: 1,
-        createdAt: '2023-11-25T13:56:02.027Z',
-        profileImage: 'aldskf',
-        nickname: 'cuhyun',
-        thumbnail: null,
-        title: '카페에서 공부한 날',
-        summary: '카공은 즐거워',
-        tags: ['카페'],
-        reactionCount: 2,
-        leavedReaction: '🥤',
-      },
-    ],
-  })
-  diaryList: FeedDiaryDto[];
 }
 
 export class ReadUserDiariesRequestDto {
@@ -252,7 +228,7 @@ export class AllDiaryInfosDto {
   leavedReaction?: string;
 }
 
-export class getYearMoodResponseDto {
+export class GetYearMoodResponseDto {
   @ApiProperty({ description: '날짜' })
   date: Date;
 
