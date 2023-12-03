@@ -28,12 +28,11 @@ export class JwtAuthGuard extends AuthGuard(JWT) {
       } catch (err) {
         if (err.name === JWT_EXPIRED_ERROR) {
           // refresh token 확인
-          const payload = jwtService.decode(userJwt);
           const redis = new Redis(redisConfig);
-          const refreshTokenData = await redis.get(payload.id);
+          const refreshTokenData = await redis.get(userJwt);
 
-          if (refreshTokenData !== null) {
-            // 해당 에러 반환 시 client에서 '/refresh_token'으로 요청 보내기로 함
+          if (refreshTokenData) {
+            // 해당 에러 반환 시 client에서 '/auth/refresh_token'으로 요청 보내기로 함
             throw new ExpiredTokenException();
           }
         }
