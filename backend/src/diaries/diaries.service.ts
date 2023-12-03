@@ -136,10 +136,7 @@ export class DiariesService {
     }, []);
   }
 
-  async getFeedDiary(
-    userId: number,
-    lastIndex: number | undefined,
-  ): Promise<[FeedDiaryDto[], number]> {
+  async getFeedDiary(userId: number, lastIndex: number | undefined): Promise<FeedDiaryDto[]> {
     const today = new Date();
     const oneWeekAgo = new Date(today);
     oneWeekAgo.setDate(today.getDate() - 7);
@@ -177,11 +174,7 @@ export class DiariesService {
       }),
     );
 
-    if (diaries.length > 0) {
-      lastIndex = diaries[0].id;
-    }
-
-    return [feedDiaryList, lastIndex];
+    return feedDiaryList;
   }
 
   async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
@@ -225,8 +218,8 @@ export class DiariesService {
     return this.makeAllDiaryInfosDto(diaries, author.id);
   }
 
-  async findDiaryByTag(userId: number, tagName: string) {
-    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName);
+  async findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
+    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName, lastIndex);
 
     return this.makeAllDiaryInfosDto(diaries, userId);
   }

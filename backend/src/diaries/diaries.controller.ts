@@ -30,8 +30,8 @@ import {
   ReadUserDiariesResponseDto,
   UpdateDiaryDto,
   LastIndexDto,
-  GetFeedDiaryResponseDto,
   GetYearMoodResponseDto,
+  FeedDiaryDto,
 } from './dto/diary.dto';
 import { DiariesService } from './diaries.service';
 import { User as UserEntity } from 'src/users/entity/user.entity';
@@ -46,17 +46,14 @@ export class DiariesController {
   @Get('/friends')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '피드 일기 조회 API' })
-  @ApiOkResponse({ description: '피드 일기 조회 성공', type: GetFeedDiaryResponseDto })
+  @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
   async getFeedDiary(
     @User() user: UserEntity,
     @Query(ValidationPipe) queryString: LastIndexDto,
-  ): Promise<GetFeedDiaryResponseDto> {
-    const [diaryList, lastIndex] = await this.diariesService.getFeedDiary(
-      user.id,
-      queryString.lastIndex,
-    );
+  ): Promise<Record<string, FeedDiaryDto[]>> {
+    const diaryList = await this.diariesService.getFeedDiary(user.id, queryString.lastIndex);
 
-    return { lastIndex, diaryList };
+    return { diaryList };
   }
 
   @Get('/:id')
@@ -240,8 +237,13 @@ export class DiariesController {
   async findDiaryByTag(
     @User() user: UserEntity,
     @Param('tagName') tagName: string,
+    @Query(ValidationPipe) queryString: LastIndexDto,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByTag(user.id, tagName);
+    const diaryList = await this.diariesService.findDiaryByTag(
+      user.id,
+      tagName,
+      queryString.lastIndex,
+    );
 
     return { nickname: user.nickname, diaryList };
   }
