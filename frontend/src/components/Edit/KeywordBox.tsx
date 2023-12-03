@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Keyword from '@components/Common/Keyword'
+import Keyword from '@components/Common/Keyword';
 
 interface KeywordBoxProps {
   keywordList: string[];
@@ -15,10 +15,12 @@ const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) 
   };
 
   const addKeyword = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key !== 'Enter') return;
+    if (!keywordList.includes(keyword)) {
       setKeywordList((pre) => [...pre, keyword]);
-      setKeyword('');
     }
+
+    setKeyword('');
   };
 
   const deleteKeyword = (keyword: string) => {
