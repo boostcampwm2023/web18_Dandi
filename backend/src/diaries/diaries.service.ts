@@ -219,8 +219,12 @@ export class DiariesService {
     return yearMood;
   }
 
-  async findDiaryByKeywordV1(author: User, keyword: string) {
-    const diaries = await this.diariesRepository.findDiaryByKeywordV1(author.id, keyword);
+  async findDiaryByKeywordV1(author: User, keyword: string, lastIndex: number) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV1(
+      author.id,
+      keyword,
+      lastIndex,
+    );
 
     return this.makeAllDiaryInfosDto(diaries, author.id);
   }
@@ -252,8 +256,12 @@ export class DiariesService {
     );
   }
 
-  async findDiaryByKeywordV2(author: User, keyword: string) {
-    const diaries = await this.diariesRepository.findDiaryByKeywordV2(author.id, keyword);
+  async findDiaryByKeywordV3(author: User, keyword: string, lastIndex: number) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV3(
+      author.id,
+      keyword,
+      lastIndex,
+    );
 
     return diaries.map<AllDiaryInfosDto>((diary) => {
       const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === author.id);

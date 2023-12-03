@@ -109,7 +109,7 @@ export class DiariesRepository extends Repository<Diary> {
       .getMany();
   }
 
-  async findDiaryByKeywordV1(authorId: number, keyword: string) {
+  async findDiaryByKeywordV1(authorId: number, keyword: string, lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoinAndSelect('diary.reactions', 'reactions')
@@ -117,12 +117,21 @@ export class DiariesRepository extends Repository<Diary> {
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
         keyword: `%${keyword}%`,
-      });
+      })
+      .limit(PAGINATION_SIZE);
+
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
+    }
 
     return queryBuilder.getMany();
   }
 
-  async findDiaryByKeywordV2(id: number, keyword: string): Promise<SearchDiaryDataForm[]> {
+  async findDiaryByKeywordV3(
+    id: number,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<SearchDiaryDataForm[]> {
     const documents = await this.elasticsearchService.search({
       index: process.env.ELASTICSEARCH_INDEX,
       body: {
@@ -139,10 +148,12 @@ export class DiariesRepository extends Repository<Diary> {
           'authorid',
           'createdat',
         ],
+        search_after: lastIndex ? [lastIndex] : undefined,
+        size: PAGINATION_SIZE,
         query: {
           bool: {
             must: [
-              { term: { authorid: id } },
+              { term: { authorid: 2 } },
               {
                 bool: {
                   should: [{ match: { content: keyword } }, { match: { title: keyword } }],
@@ -151,12 +162,14 @@ export class DiariesRepository extends Repository<Diary> {
             ],
           },
         },
+        sort: [{ diaryid: 'desc' }],
       },
     });
 
+    console.log(documents.hits.hits);
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
-  
+
   findDiaryByTag(userId: number, tagName: string) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoinAndSelect('diary.reactions', 'reactions')
