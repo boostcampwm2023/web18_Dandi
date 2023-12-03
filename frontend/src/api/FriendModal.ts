@@ -58,7 +58,7 @@ export const getSearchUserList = async (nickname: string) => {
 
 export const requestFriend = async (receiverId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.send(receiverId), {
+    const response = await fetch(API_PATH.FRIEND.request(receiverId), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -70,5 +70,78 @@ export const requestFriend = async (receiverId: number) => {
     if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
   } catch (error) {
     console.error('친구요청에 실패했습니다.', error);
+  }
+};
+
+export const cancelRequestFriend = async (receiverId: number) => {
+  try {
+    const response = await fetch(API_PATH.FRIEND.request(receiverId), {
+      method: 'delete',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('친구요청 취소에 실패했습니다.', error);
+  }
+};
+
+export const deleteFriend = async (friendId: number) => {
+  try {
+    const response = await fetch(API_PATH.FRIEND.list(friendId), {
+      method: 'delete',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('친구 삭제에 실패했습니다.', error);
+  }
+};
+
+export const allowFriend = async (senderId: number) => {
+  try {
+    const response = await fetch(API_PATH.FRIEND.allow(senderId), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ senderId }),
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('친구요청 수락에 실패했습니다.', error);
+  }
+};
+
+export const rejectFriend = async (senderId: number) => {
+  try {
+    const response = await fetch(API_PATH.FRIEND.allow(senderId), {
+      method: 'delete',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('친구요청 거절에 실패했습니다.', error);
+  }
+};
+
+export const updateProfile = async (formData: FormData) => {
+  try {
+    const response = await fetch(API_PATH.USER.profile(), {
+      method: 'PATCH',
+      headers: {
+        'content-Type': 'multipart/form-data',
+      },
+      credentials: 'include',
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+  } catch (error) {
+    console.error('프로필 변경에 실패했습니다.', error);
   }
 };
