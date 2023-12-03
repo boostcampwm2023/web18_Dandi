@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
-import { updateProfile } from '@/api/FriendModal';
+import { updateProfile } from '@api/FriendModal';
 
 interface ProfileEditProps {
   profileImage: string;
