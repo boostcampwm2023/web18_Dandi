@@ -208,24 +208,43 @@ export class DiariesController {
   async findDiaryByKeywordV1(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
+    @Query('lastIndex') lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword);
+    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
 
     return { nickname: author.nickname, diaryList };
   }
 
   @Get('/search/v2/:keyword')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '키워드로 일기 검색(Elasticsearch)' })
-  @ApiOkResponse({
+  @ApiOperation({ description: '키워드로 일기 검색(MySQL Full Text Index)' })
+  @ApiCreatedResponse({
     description: '일기 검색 성공',
     type: ReadUserDiariesResponseDto,
   })
   async findDiaryByKeywordV2(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
+    @Query('lastIndex') lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeywordV2(author, keyword);
+    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
+
+    return { nickname: author.nickname, diaryList };
+  }
+
+  @Get('/search/v3/:keyword')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '키워드로 일기 검색(Elasticsearch)' })
+  @ApiOkResponse({
+    description: '일기 검색 성공',
+    type: ReadUserDiariesResponseDto,
+  })
+  async findDiaryByKeywordV3(
+    @User() author: UserEntity,
+    @Param('keyword') keyword: string,
+    @Query('lastIndex') lastIndex: number,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaryList = await this.diariesService.findDiaryByKeywordV3(author, keyword, lastIndex);
 
     return { nickname: author.nickname, diaryList };
   }
