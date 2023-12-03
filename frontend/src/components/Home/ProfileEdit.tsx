@@ -57,7 +57,7 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
       <div className="relative mb-5 flex flex-col items-center">
         <div className="group relative cursor-pointer text-center" onClick={openFileInput}>
           <img
-            className="mb-10 h-52 w-52 rounded-full group-hover:brightness-75"
+            className="mb-10 h-52 w-52 rounded-full object-cover group-hover:brightness-75"
             src={imageSrc}
             alt={`${nickname} 프로필 이미지`}
           />
