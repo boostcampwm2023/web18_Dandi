@@ -7,6 +7,7 @@ const DIARY = '/diaries';
 const REACTION = '/reactions';
 const FRIEND = '/friends';
 const TAG = '/tags';
+const IMAGE = '/images';
 
 const API_PATH = {
   AUTH: {
@@ -46,6 +47,9 @@ const API_PATH = {
   },
   TAG: {
     recommend: (keyword: string) => SERVER_URL + TAG + '/search' + `/${keyword}`,
+  },
+  IMAGE: {
+    diary: () => SERVER_URL + IMAGE + DIARY,
   },
 };
 
