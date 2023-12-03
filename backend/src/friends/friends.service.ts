@@ -129,12 +129,12 @@ export class FriendsService {
       throw new BadRequestException('나와는 친구신청 관리를 할 수 없습니다.');
     }
 
-    const relations = await this.friendsRepository.findFriendRequest(senderId, receiverId);
-    if (relations.length < 1) {
-      const reverseRelations = await this.friendsRepository.findFriendRequest(receiverId, senderId);
+    const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
+    if (relation) {
+      const reverseRelation = await this.friendsRepository.findFriendRequest(receiverId, senderId);
 
-      if (reverseRelations.length > 0) {
-        this.checkAlreadyFriend(reverseRelations);
+      if (reverseRelation) {
+        this.checkAlreadyFriend(reverseRelation);
 
         throw new BadRequestException('상대의 친구신청을 확인하세요.');
       } else {
@@ -142,13 +142,13 @@ export class FriendsService {
       }
     }
 
-    this.checkAlreadyFriend(relations);
+    this.checkAlreadyFriend(relation);
 
-    return relations[0];
+    return relation;
   }
 
-  private checkAlreadyFriend(relations: Friend[]) {
-    if (relations[0].status === FriendStatus.COMPLETE) {
+  private checkAlreadyFriend(relation: Friend) {
+    if (relation.status === FriendStatus.COMPLETE) {
       throw new BadRequestException('이미 친구입니다.');
     }
   }
