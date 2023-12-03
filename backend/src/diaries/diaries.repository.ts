@@ -23,7 +23,11 @@ export class DiariesRepository extends Repository<Diary> {
     });
   }
 
-  async findDiariesByAuthorIdWithPagination(authorId: number, isOwner: boolean, lastIndex: number) {
+  async findDiariesByAuthorIdWithPagination(
+    authorId: number,
+    isOwner: boolean,
+    lastIndex: number | undefined,
+  ) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoinAndSelect('diary.reactions', 'reactions')
@@ -83,7 +87,11 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
-  async findPaginatedDiaryByDateAndIdList(date: Date, idList: number[], lastIndex: number) {
+  async findPaginatedDiaryByDateAndIdList(
+    date: Date,
+    idList: number[],
+    lastIndex: number | undefined,
+  ) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'user')
       .leftJoinAndSelect('diary.tags', 'tags')
@@ -157,7 +165,7 @@ export class DiariesRepository extends Repository<Diary> {
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 
-  findDiaryByTag(userId: number, tagName: string, lastIndex: number) {
+  findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoinAndSelect('diary.reactions', 'reactions')
       .leftJoinAndSelect('reactions.user', 'reactionUser')
