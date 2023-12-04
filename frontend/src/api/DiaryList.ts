@@ -15,7 +15,6 @@ interface getDiaryWeekAndMonthListProps extends getDiaryListProps {
 export const getDiaryDayList = async ({ pageParam }: any) => {
   try {
     const { userId, type, lastIndex } = pageParam;
-    console.log('어라', userId, type, lastIndex);
     const fetchUrl = lastIndex
       ? API_PATH.DIARY.myDiaryDay(userId, type, lastIndex)
       : API_PATH.DIARY.myDiaryDay(userId, type);
