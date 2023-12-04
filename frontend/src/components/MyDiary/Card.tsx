@@ -80,11 +80,11 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
     <div
       className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
     >
-      <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(data.createdAt)}</p>
-      <h3 className="text-xl font-bold">{data.title}</h3>
-      <img src={data.thumbnail} alt="일기의 대표 이미지" />
+      <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(diaryItem.createdAt)}</p>
+      <h3 className="text-xl font-bold">{diaryItem.title}</h3>
+      <img src={diaryItem.thumbnail} alt="일기의 대표 이미지" />
       <div className="whitespace-pre-wrap text-sm">
-        <p>{data.content}</p>
+        <p>{diaryItem.content}</p>
       </div>
       <div className="flex w-full flex-wrap gap-3">
         {diaryItem.keywords.map((keyword, index) => (
@@ -100,7 +100,7 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
         styles={`${size === SMALL ? 'text-sm' : ''}`}
       />
       <Modal showModal={showModal} closeModal={toggleShowModal}>
-        <ReactionList diaryId={Number(data.diaryId)} />
+        <ReactionList diaryId={Number(diaryItem.diaryId)} />
       </Modal>
       {showEmojiPicker && (
         <aside className="absolute bottom-14 z-50">
