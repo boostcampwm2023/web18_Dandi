@@ -1,7 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
-import { requestFriend } from '@api/FriendModal';
+import {
+  requestFriend,
+  cancelRequestFriend,
+  deleteFriend,
+  allowFriend,
+  rejectFriend,
+} from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
@@ -16,35 +22,71 @@ interface FriendModalItemProps {
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const goFriendHome = () => {
-    navigate(`${PAGE_URL}/${id}`);
+    navigate(`${PAGE_URL.HOME}${id}`);
   };
 
   const requestMutation = useMutation({
     mutationFn: (receiverId: number) => requestFriend(receiverId),
   });
 
+  const cancelRequestMutation = useMutation({
+    mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
+  });
+
+  const deleteFriendMutation = useMutation({
+    mutationFn: (friendId: number) => deleteFriend(friendId),
+  });
+
+  const allowFriendMutation = useMutation({
+    mutationFn: (senderId: number) => allowFriend(senderId),
+  });
+
+  const rejectFriendMutation = useMutation({
+    mutationFn: (senderId: number) => rejectFriend(senderId),
+  });
+
   const getButtonElement = (type: string) => {
     switch (type) {
       case PROFILE_BUTTON_TYPE.LIST:
         return (
-          <button className="bg-mint w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+          <button
+            onClick={() => {
+              deleteFriendMutation.mutate(+id);
+            }}
+            className="bg-mint w-3/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold"
+          >
             친구 삭제
           </button>
         );
       case PROFILE_BUTTON_TYPE.RECEIVED:
         return (
           <div className="flex gap-2">
-            <button className="bg-red w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+            <button
+              onClick={() => {
+                rejectFriendMutation.mutate(+id);
+              }}
+              className="bg-red w-2/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
+            >
               거절
             </button>
-            <button className="bg-mint w-full rounded-md border-none px-2 py-1 text-[0.7rem] font-bold">
+            <button
+              onClick={() => {
+                allowFriendMutation.mutate(+id);
+              }}
+              className="bg-mint w-2/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold"
+            >
               수락
             </button>
           </div>
         );
       case PROFILE_BUTTON_TYPE.SEND:
         return (
-          <button className="bg-red w-4/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white">
+          <button
+            onClick={() => {
+              cancelRequestMutation.mutate(+id);
+            }}
+            className="bg-red w-3/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
+          >
             신청 취소
           </button>
         );
@@ -54,7 +96,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
             onClick={() => {
               requestMutation.mutate(+id);
             }}
-            className="bg-mint w-4/5 cursor-pointer rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
+            className="bg-mint w-3/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
           >
             친구 요청
           </button>
@@ -65,14 +107,14 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const buttonContent = getButtonElement(type);
 
   return (
-    <div className="mb-5 mr-3 flex">
+    <div className="mb-5 mr-3 flex w-full">
       <img
         className="mr-3 h-16 w-16 cursor-pointer rounded-full"
         onClick={goFriendHome}
         src={profileImage}
         alt={`${nickname} 프로필 이미지`}
       />
-      <div className="flex flex-col">
+      <div className="flex w-full flex-col">
         <p className="text-sm font-bold">{nickname}</p>
         <p className="text-gray text-xs">{email}</p>
         {buttonContent}

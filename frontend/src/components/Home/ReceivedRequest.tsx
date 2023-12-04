@@ -45,14 +45,14 @@ const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
       const newObj = {
         email: v.email,
         nickname: v.nickname,
-        userId: v.receiverId,
+        id: v.senderId,
         profileImage: v.profileImage,
       };
       return newObj;
     });
 
   return ReceivedList.map((data: ReceivedList, index: number) => (
-    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.SEND} />
+    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.RECEIVED} />
   ));
 };
 

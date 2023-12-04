@@ -44,3 +44,19 @@ export const updateDiary = async (params: CreateDiaryParams, diaryId: number) =>
     console.error('일기 저장에 실패했습니다.', error);
   }
 };
+
+export const uploadImage = async (formData: FormData) => {
+  try {
+    const response = await fetch(API_PATH.IMAGE.diary(), {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+
+    return response.json();
+  } catch (error) {
+    console.error('이미지 업로드에 실패했습니다.', error);
+  }
+};

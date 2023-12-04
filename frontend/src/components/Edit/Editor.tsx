@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
+import { uploadImage } from '@api/Edit';
+
 interface EditorProps {
   content: string;
   setContent: React.Dispatch<React.SetStateAction<string>>;
@@ -12,8 +14,12 @@ const Editor = ({ content, setContent }: EditorProps) => {
     setContent(editorRef.current?.getInstance().getHTML());
   };
 
-  const onUploadImage = () => {
-    console.log('이미지 업로드');
+  const onUploadImage = async (file: File, addImage: (url: string, name: string) => void) => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const url = await uploadImage(formData);
+    addImage(url.imageURL, file.name);
   };
 
   return (

@@ -4,7 +4,7 @@ import {
   CreateDiaryDto,
   FeedDiaryDto,
   GetAllEmotionsRequestDto,
-  getYearMoodResponseDto,
+  GetYearMoodResponseDto,
   GetAllEmotionsResponseDto,
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
@@ -136,10 +136,7 @@ export class DiariesService {
     }, []);
   }
 
-  async getFeedDiary(
-    userId: number,
-    lastIndex: number | undefined,
-  ): Promise<[FeedDiaryDto[], number]> {
+  async getFeedDiary(userId: number, lastIndex: number | undefined): Promise<FeedDiaryDto[]> {
     const today = new Date();
     const oneWeekAgo = new Date(today);
     oneWeekAgo.setDate(today.getDate() - 7);
@@ -177,11 +174,7 @@ export class DiariesService {
       }),
     );
 
-    if (diaries.length > 0) {
-      lastIndex = diaries[0].id;
-    }
-
-    return [feedDiaryList, lastIndex];
+    return feedDiaryList;
   }
 
   async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
@@ -207,12 +200,12 @@ export class DiariesService {
     return { author, diaries };
   }
 
-  async getMoodForYear(userId: number): Promise<getYearMoodResponseDto[]> {
+  async getMoodForYear(userId: number): Promise<GetYearMoodResponseDto[]> {
     const oneYearAgo = subYears(new Date(), 1);
 
     const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
 
-    const yearMood: getYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
+    const yearMood: GetYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
       return [...acc, { date: cur.createdAt, mood: cur.mood }];
     }, []);
 
@@ -239,8 +232,8 @@ export class DiariesService {
     return this.makeAllDiaryInfosDto(diaries, author.id);
   }
 
-  async findDiaryByTag(userId: number, tagName: string) {
-    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName);
+  async findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
+    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName, lastIndex);
 
     return this.makeAllDiaryInfosDto(diaries, userId);
   }

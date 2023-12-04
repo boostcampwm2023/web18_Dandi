@@ -39,9 +39,9 @@ const FriendSearchContent = ({ nickname }: FriendSearchContentProps) => {
     return <p>친구검색을 불러오지 못했습니다!</p>;
   }
 
-  return recommendData.data.map((data: FriendListResponse, index: number) => {
-    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.LIST} />;
-  });
+  return recommendData.data.map((data: FriendListResponse, index: number) => (
+    <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.LIST} />
+  ));
 };
 
 export default FriendSearchContent;
