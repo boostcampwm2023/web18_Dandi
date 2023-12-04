@@ -208,7 +208,7 @@ export class DiariesController {
   async findDiaryByKeywordV1(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
-    @Query('lastIndex') lastIndex: number,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
     const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
 
@@ -225,8 +225,9 @@ export class DiariesController {
   async findDiaryByKeywordV2(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
-    @Query('lastIndex') lastIndex: number,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
+    console.log(typeof lastIndex);
     const diaryList = await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
 
     return { nickname: author.nickname, diaryList };
@@ -242,7 +243,7 @@ export class DiariesController {
   async findDiaryByKeywordV3(
     @User() author: UserEntity,
     @Param('keyword') keyword: string,
-    @Query('lastIndex') lastIndex: number,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
     const diaryList = await this.diariesService.findDiaryByKeywordV3(author, keyword, lastIndex);
 
