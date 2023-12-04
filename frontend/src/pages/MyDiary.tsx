@@ -1,57 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+import { getDiaryDayList } from '@api/DiaryList';
 
 import { viewTypes } from '@type/pages/MyDiary';
-import { IDiaryContent } from '@type/components/Common/DiaryList';
+import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
 import NavBar from '@components/Common/NavBar';
-import KeywordSearch from '@components/MyDiary/KeywordSearch';
-import ViewType from '@components/MyDiary/ViewType';
 import DiaryListItem from '@components/Common/DiaryListItem';
-import DateController from '@components/MyDiary/DateController';
-import Calendar from '@components/MyDiary/Calendar';
-import Card from '@components/MyDiary/Card';
-import CarouselContainer from '@components/MyDiary/CarouselContainer';
+import KeywordSearch from '@components/MyDiary/KeywordSearch';
+import WeekContainer from '@components/MyDiary/WeekContainer';
+import ViewType from '@components/MyDiary/ViewType';
+import MonthContainer from '@components/MyDiary/MonthContainer';
 
-import { getNowMonth, getNowWeek } from '@util/funcs';
-import { formatDate } from '@util/funcs';
-import { DIARY_VIEW_TYPE, DUMMY_DATA, WEEK_STANDARD_LENGTH } from '@util/constants';
-
-const calPeriod = () => {
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - startDate.getDay());
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
-  return [startDate, endDate];
-};
+import { DIARY_VIEW_TYPE } from '@util/constants';
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
-  const [diaryData, setDiaryData] = useState<IDiaryContent[]>(DUMMY_DATA);
-  const [nowMonth, setNowMonth] = useState(new Date());
-  const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
-  const [period, setPeriod] = useState(calPeriod());
 
-  const setPrevOrNextMonth = (plus: number) => {
-    const month = new Date(nowMonth);
-    month.setMonth(month.getMonth() + plus);
-    setNowMonth(month);
-  };
-
-  const setPrevOrNextWeek = (plus: number) => {
-    setPeriod(changePeriod(plus));
-    setNowWeek(getNowWeek(period[1]));
-  };
-
-  const changePeriod = (plus: number) => {
-    const [startDate, endDate] = period;
-    startDate.setDate(startDate.getDate() + plus * 7);
-    endDate.setDate(endDate.getDate() + plus * 7);
-    return [startDate, endDate];
-  };
-
-  useEffect(() => {
-    setDiaryData(DUMMY_DATA);
-  }, []);
+  const { data } = useInfiniteQuery<any, Error, InfiniteDiaryListProps, [string, string | null]>({
+    queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+    queryFn: getDiaryDayList,
+    initialPageParam: {
+      userId: localStorage.getItem('userId') as string,
+      type: 'Day',
+      lastIndex: 2e9,
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage && lastPage.diaryList.length >= 5
+        ? {
+            userId: localStorage.getItem('userId') as string,
+            type: 'Day',
+            lastIndex: lastPage?.diaryList.at(-1).diaryId,
+          }
+        : undefined;
+    },
+  });
 
   return (
     <>

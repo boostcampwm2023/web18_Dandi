@@ -1,4 +1,4 @@
-import { DAY_OF_WEEK } from './constants';
+import { DAY_OF_WEEK } from '@util/constants';
 
 export const getNowMonth = (date: Date) => {
   const month = date.getMonth() + 1;
@@ -26,4 +26,12 @@ export const formatDateString = (str: string) => {
   const date = DateObject.getDay();
 
   return `${year}년 ${month}월 ${day}일 ${DAY_OF_WEEK[date]}`;
+};
+
+export const formatDateDash = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 };

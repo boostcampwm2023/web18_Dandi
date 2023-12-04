@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+
 import { PAGE_URL } from '@util/constants';
 
 interface ProfileItemProps {
   id: number;
-  img: string;
-  nickName: string;
+  img?: string;
+  nickName?: string;
 }
 
 const ProfileItem = ({ id, img, nickName }: ProfileItemProps) => {

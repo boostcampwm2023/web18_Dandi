@@ -27,13 +27,12 @@ const API_PATH = {
     keywordSearch: (keyword: string) => SERVER_URL + DIARY + TAG + `/${keyword}`,
     feed: (lastIndex: number) => SERVER_URL + DIARY + `/friends?lastIndex=${lastIndex}`,
     grass: (id: number) => SERVER_URL + DIARY + '/mood' + `/${id}`,
-    emotion: (id: number, startDate: number, lastDate: number) =>
-      SERVER_URL + DIARY + '/emotion' + `/${id}` + `?startDate=${startDate}&lastDate=${lastDate}`,
-    myDiary: (id: number, type: string, startDate: number, endDate: number, lastIndex: number) =>
-      SERVER_URL +
-      DIARY +
-      USER +
-      `${id}?type=${type}&startDate=${startDate}&endDate=${endDate}&lastIndex=${lastIndex}`,
+    emotion: (id: number, startDate: string, lastDate: string) =>
+      SERVER_URL + DIARY + '/emotions' + `/${id}` + `?startDate=${startDate}&lastDate=${lastDate}`,
+    myDiaryDay: (id: string, type: string, lastIndex?: number) =>
+      SERVER_URL + DIARY + USER + `/${id}?type=${type}&lastIndex=${lastIndex}`,
+    myDiaryWeekAndMonth: (id: string, type: string, startDate: string, endDate: string) =>
+      SERVER_URL + DIARY + USER + `/${id}?type=${type}&startDate=${startDate}&endDate=${endDate}`,
     create: () => SERVER_URL + DIARY,
   },
   REACTION: {

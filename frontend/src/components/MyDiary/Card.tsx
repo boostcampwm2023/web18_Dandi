@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -91,7 +93,6 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
           <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />
         ))}
       </div>
-
       <Reaction
         count={totalReaction}
         textOnClick={toggleShowModal}
