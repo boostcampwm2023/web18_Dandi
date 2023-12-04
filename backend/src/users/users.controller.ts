@@ -31,7 +31,7 @@ export class UsersController {
 
   @Patch()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('profileImage'))
   @ApiOperation({ description: '사용자 정보 수정 API' })
   @ApiOkResponse({ description: '사용자 정보 수정 성공', type: UpdateUserProfileRequestDto })
   async updateUserInfo(
@@ -42,10 +42,10 @@ export class UsersController {
         validators: [new FileTypeValidator({ fileType: IMAGE_TYPE_REGEX })],
       }),
     )
-    image: Express.Multer.File,
+    profileImage: Express.Multer.File,
     @Body() requestDto: UpdateUserProfileRequestDto,
   ): Promise<string> {
-    await this.usersService.updateUserProfile(user, requestDto, image);
+    await this.usersService.updateUserProfile(user, requestDto, profileImage);
 
     return '사용자 정보 수정에 성공했습니다.';
   }
