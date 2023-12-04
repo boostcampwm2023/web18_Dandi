@@ -12,7 +12,9 @@ import {
   PROFILE_MODAL_CONTENT_TYPE,
   TEXT_ABOUT_EXISTED_TODAY,
   LARGE,
+  PAGE_URL,
 } from '@util/constants';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileProps {
   userId: number;
@@ -27,10 +29,13 @@ interface ProfileData {
 }
 
 const Profile = ({ userId, userData }: ProfileProps) => {
+  const navigate = useNavigate();
+
   const [showModalType, setShowModalType] = useState('list');
   const [showModal, setShowModal] = useState(false);
 
   const { nickname, profileImage, totalFriends, isExistedTodayDiary }: ProfileData = userData;
+  const targetPage = isExistedTodayDiary ? PAGE_URL.MY_DIARY : PAGE_URL.EDIT;
 
   const closeModal = () => {
     setShowModal(false);
@@ -101,7 +106,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
         text={TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['buttonText']}
         type={DEFAULT}
         size={LARGE}
-        onClick={() => console.log('일기 쓰기')}
+        onClick={() => navigate(targetPage)}
       />
       {showModal && (
         <Modal showModal={showModal} closeModal={closeModal}>
