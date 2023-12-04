@@ -2,9 +2,9 @@ import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
-import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
+import { PAGINATION_SIZE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { GetDiaryResponseDto, SearchDiaryDataForm } from './dto/diary.dto';
+import { AllDiaryInfosDto, GetDiaryResponseDto, SearchDiaryDataForm } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -61,16 +61,26 @@ export class DiariesRepository extends Repository<Diary> {
     authorId: number,
     isOwner: boolean,
     lastIndex: number | undefined,
-  ) {
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
+      .where('diary.author.id = :authorId', { authorId })
       .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'user')
-      .where('diary.author.id = :authorId', {
-        authorId,
-      })
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
       .orderBy('diary.id', 'DESC')
-      .limit(ITEM_PER_PAGE);
+      .limit(PAGINATION_SIZE);
 
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
@@ -78,28 +88,56 @@ export class DiariesRepository extends Repository<Diary> {
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
-    return await queryBuilder.getMany();
+
+    const diaryInfos = await queryBuilder.getRawMany();
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo);
+    });
+
+    return diaryInfos;
   }
 
-  findDiariesByAuthorIdWithDates(
+  async findDiariesByAuthorIdWithDates(
     authorId: number,
     isOwner: boolean,
     startDate: string,
     lastDate: Date,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'user')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
-      .orderBy('diary.id', 'DESC');
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
+      .orderBy('diary.id', 'DESC')
+      .limit(PAGINATION_SIZE);
 
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
 
-    return queryBuilder.getMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo);
+    });
+
+    return diaryInfos;
   }
 
   findAllDiaryBetweenDates(
@@ -160,16 +198,8 @@ export class DiariesRepository extends Repository<Diary> {
 
     diaryInfos.forEach((diaryInfo) => {
       diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
-      if (diaryInfo.leavedReaction) {
-        diaryInfo.leavedReaction.split(',').forEach((reaction) => {
-          const match = reaction.match(/\d+:/);
-
-          if (match) {
-            diaryInfo.leavedReaction = reaction.replace(match[0], '');
-            return;
-          }
-        });
-      }
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo);
     });
     return diaryInfos;
   }
@@ -275,5 +305,18 @@ export class DiariesRepository extends Repository<Diary> {
     }
 
     return queryBuilder.getMany();
+  }
+
+  private mapToLeaveReaction(diaryInfo: any) {
+    if (diaryInfo.leavedReaction) {
+      diaryInfo.leavedReaction.split(',').forEach((reaction) => {
+        const match = reaction.match(/\d+:/);
+
+        if (match) {
+          diaryInfo.leavedReaction = reaction.replace(match[0], '');
+          return;
+        }
+      });
+    }
   }
 }

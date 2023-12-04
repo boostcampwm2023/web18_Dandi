@@ -10,6 +10,7 @@ import {
   UpdateDiaryDto,
   AllDiaryInfosDto,
   GetDiaryResponseDto,
+  ReadUserDiariesResponseDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
@@ -160,10 +161,14 @@ export class DiariesService {
     );
   }
 
-  async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
+  async findDiaryByAuthorId(
+    user: User,
+    id: number,
+    requestDto: ReadUserDiariesRequestDto,
+  ): Promise<ReadUserDiariesResponseDto> {
     const author = await this.usersService.findUserById(id);
 
-    let diaries: Diary[];
+    let diaries: AllDiaryInfosDto[];
     if (requestDto.type === TimeUnit.Day) {
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
         id,
@@ -180,7 +185,7 @@ export class DiariesService {
       );
     }
 
-    return { author, diaries };
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
   async getMoodForYear(userId: number): Promise<GetYearMoodResponseDto[]> {

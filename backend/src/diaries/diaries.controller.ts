@@ -117,26 +117,9 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @Query(ValidationPipe) requestDto: ReadUserDiariesRequestDto,
   ): Promise<ReadUserDiariesResponseDto> {
-    const { author, diaries } = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
+    const responseDto = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
 
-    const diaryInfos = diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
-      const tags = await diary.tags;
-      const reactions = await diary.reactions;
-
-      return {
-        diaryId: diary.id,
-        title: diary.title,
-        thumbnail: diary.thumbnail,
-        summary: diary.summary,
-        tags: tags.map((t) => t.name),
-        emotion: diary.emotion,
-        reactionCount: reactions.length,
-        createdAt: diary.createdAt,
-        leavedReaction: reactions.find((reaction) => reaction.user.id === id)?.reaction,
-      };
-    });
-
-    return { nickname: author.nickname, diaryList: await Promise.all(diaryInfos) };
+    return responseDto;
   }
 
   @Get('/emotions/:userId')
