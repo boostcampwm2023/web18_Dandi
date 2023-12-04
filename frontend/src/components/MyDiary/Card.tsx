@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -82,14 +80,16 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
     <div
       className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
     >
-      <p className={`${size === SMALL ? 'text-sm' : ''}`}>{formatDateString(diaryItem.createdAt)}</p>
+      <p className={`${size === SMALL ? 'text-sm' : ''}`}>
+        {formatDateString(diaryItem.createdAt)}
+      </p>
       <h3 className="text-xl font-bold">{diaryItem.title}</h3>
       <img src={diaryItem.thumbnail} alt="일기의 대표 이미지" />
       <div className="whitespace-pre-wrap text-sm">
-        <p>{diaryItem.content}</p>
+        <p>{diaryItem.summary}</p>
       </div>
       <div className="flex w-full flex-wrap gap-3">
-        {diaryItem.keywords.map((keyword, index) => (
+        {diaryItem.tags.map((keyword, index) => (
           <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />
         ))}
       </div>
