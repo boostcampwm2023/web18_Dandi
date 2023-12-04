@@ -15,7 +15,7 @@ export class DiariesRepository extends Repository<Diary> {
     super(Diary, dataSource.createEntityManager());
   }
 
-  async findById(id: number) {
+  findById(id: number) {
     return this.findOne({
       where: {
         id,
@@ -47,7 +47,7 @@ export class DiariesRepository extends Repository<Diary> {
     return await queryBuilder.getMany();
   }
 
-  async findDiariesByAuthorIdWithDates(
+  findDiariesByAuthorIdWithDates(
     authorId: number,
     isOwner: boolean,
     startDate: string,
@@ -68,7 +68,7 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getMany();
   }
 
-  async findAllDiaryBetweenDates(
+  findAllDiaryBetweenDates(
     userId: number,
     isOwner: boolean,
     startDate: string,
@@ -110,14 +110,14 @@ export class DiariesRepository extends Repository<Diary> {
     return await queryBuilder.getMany();
   }
 
-  async findLatestDiaryByDate(userId: number, date: Date) {
-    return await this.createQueryBuilder('diary')
+  findLatestDiaryByDate(userId: number, date: Date) {
+    return this.createQueryBuilder('diary')
       .where('diary.author = :userId', { userId })
       .andWhere('diary.createdAt > :date', { date })
       .getMany();
   }
 
-  async findDiaryByKeywordV1(authorId: number, keyword: string) {
+  findDiaryByKeywordV1(authorId: number, keyword: string, lastIndex: number) {
     const queryBuilder = this.createQueryBuilder('diary')
       .leftJoin('diary.tags', 'tags')
       .leftJoinAndSelect('diary.reactions', 'reactions')
@@ -125,12 +125,40 @@ export class DiariesRepository extends Repository<Diary> {
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
         keyword: `%${keyword}%`,
-      });
+      })
+      .limit(PAGINATION_SIZE);
+
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
+    }
 
     return queryBuilder.getMany();
   }
 
-  async findDiaryByKeywordV2(id: number, keyword: string): Promise<SearchDiaryDataForm[]> {
+  async findDiaryByKeywordV2(authorId: number, keyword: string, lastIndex: number) {
+    const queryBuilder = this.createQueryBuilder('diary')
+      .leftJoin('diary.tags', 'tags')
+      .leftJoinAndSelect('diary.reactions', 'reactions')
+      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .where('diary.author.id = :authorId', { authorId })
+      .andWhere(
+        '(MATCH(diary.content) AGAINST(:keyword IN BOOLEAN MODE) OR MATCH(diary.title) AGAINST(:keyword IN BOOLEAN MODE))',
+        { keyword: `*${keyword}*` },
+      )
+      .limit(PAGINATION_SIZE);
+
+    if (lastIndex) {
+      queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
+    }
+
+    return queryBuilder.getMany();
+  }
+
+  async findDiaryByKeywordV3(
+    id: number,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<SearchDiaryDataForm[]> {
     const documents = await this.elasticsearchService.search({
       index: process.env.ELASTICSEARCH_INDEX,
       body: {
@@ -147,6 +175,8 @@ export class DiariesRepository extends Repository<Diary> {
           'authorid',
           'createdat',
         ],
+        search_after: lastIndex ? [lastIndex] : undefined,
+        size: PAGINATION_SIZE,
         query: {
           bool: {
             must: [
@@ -159,6 +189,7 @@ export class DiariesRepository extends Repository<Diary> {
             ],
           },
         },
+        sort: [{ diaryid: 'desc' }],
       },
     });
 

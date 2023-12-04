@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -23,9 +24,11 @@ export class Diary extends BaseEntity {
   id: number;
 
   @Column()
+  @Index('idx_diary_title', { fulltext: true })
   title: string;
 
   @Column({ length: 10000 })
+  @Index('idx_diary_content', { fulltext: true })
   content: string;
 
   @Column()
