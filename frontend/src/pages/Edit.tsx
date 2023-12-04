@@ -41,10 +41,16 @@ const Edit = () => {
 
   const createDiaryMutation = useMutation({
     mutationFn: (params: CreateDiaryParams) => createDiary(params),
+    onSuccess: () => {
+      navigate(PAGE_URL.MY_DIARY);
+    },
   });
 
   const updateDiaryMutation = useMutation({
     mutationFn: (params: CreateDiaryParams) => updateDiary(params, state.diaryId),
+    onSuccess: () => {
+      navigate(`${PAGE_URL.DETAIL}/${state.diaryId}`);
+    },
   });
 
   const onSubmit = () => {
@@ -64,10 +70,6 @@ const Edit = () => {
 
   if (createDiaryMutation.isPending || updateDiaryMutation.isPending) {
     return <div>일기 저장중...</div>;
-  }
-
-  if (createDiaryMutation.isSuccess || updateDiaryMutation.isSuccess) {
-    navigate(PAGE_URL.MY_DIARY);
   }
 
   return (
