@@ -33,7 +33,9 @@ export class AuthController {
   @Post('logout')
   @ApiOperation({ description: '로그아웃 API' })
   @ApiOkResponse({ description: '로그아웃 성공' })
-  logout(@Res() res: Response): void {
+  logout(@Req() req: Request, @Res() res: Response): void {
+    this.authService.removeRefreshToken(req);
+
     res.cookie('utk', '', { maxAge: 0 });
     res.json({ message: '정상적으로 로그아웃되었습니다.' });
   }

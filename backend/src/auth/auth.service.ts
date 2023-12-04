@@ -72,6 +72,26 @@ export class AuthService {
     };
   }
 
+  async refreshAccessToken(req: Request) {
+    const userJwt = cookieExtractor(req);
+    const payload = this.jwtService.decode(userJwt);
+    const refreshToken = await this.authRepository.getRefreshToken(userJwt);
+
+    if (refreshToken) {
+      return this.jwtService.sign({
+        id: payload.id,
+        nickname: payload.nickname,
+      });
+    } else {
+      throw new UnauthorizedException('로그인이 필요합니다.');
+    }
+  }
+
+  removeRefreshToken(req: Request) {
+    const userJwt = cookieExtractor(req);
+    this.authRepository.removeRefreshToken(userJwt);
+  }
+
   private async getUserProfile(accessToken: string) {
     const response = await fetch(GET_NAVER_PROFILE_URL, {
       method: 'GET',
@@ -90,21 +110,6 @@ export class AuthService {
 
     const data = await response.json();
     return data.response as AuthUserDto;
-  }
-
-  async refreshAccessToken(req: Request) {
-    const userJwt = cookieExtractor(req);
-    const payload = this.jwtService.decode(userJwt);
-    const refreshToken = await this.authRepository.getRefreshToken(userJwt);
-
-    if (refreshToken) {
-      return this.jwtService.sign({
-        id: payload.id,
-        nickname: payload.nickname,
-      });
-    } else {
-      throw new UnauthorizedException('로그인이 필요합니다.');
-    }
   }
 
   private makeNaverOauthParam(refreshToken: string, dto: OAuthLoginDto = null): URLSearchParams {
