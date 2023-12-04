@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
 import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
+
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 import { IReactionedFriends } from '@type/components/Common/ReactionList';
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getDiaryDayList } from '@api/DiaryList';
@@ -70,7 +70,7 @@ const MyDiary = () => {
           }
         : undefined;
     },
-    enabled: searchFlag,
+    enabled: searchFlag && !!keyword,
   });
 
   return (

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { getTagRecommend } from '@api/KeywordSearch';
 
-import Icon from '@components/Common/Icon';
+import { searchOptionsType } from '@type/pages/MyDiary';
 
-import { searchOptionsType } from '@/types/pages/MyDiary';
+import Icon from '@components/Common/Icon';
 
 interface KeywordSearchProps {
   keyword: string;

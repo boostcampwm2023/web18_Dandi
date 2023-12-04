@@ -1,4 +1,5 @@
-import { searchOptionsType } from '@/types/pages/MyDiary';
+import { searchOptionsType } from '@type/pages/MyDiary';
+
 import API_PATH from '@util/apiPath';
 
 export const getTagRecommend = async (keyword: string) => {

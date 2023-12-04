@@ -1,11 +1,13 @@
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+import { getFeed } from '@api/Feed';
+
+import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
+
 import NavBar from '@components/Common/NavBar';
 import DiaryList from '@components/Common/DiaryList';
 
-import { DUMMY_DATA, FEED } from '@util/constants';
-
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { InfiniteDiaryListProps } from '@/types/components/Common/DiaryList';
-import { getFeed } from '@/api/Feed';
+import { FEED } from '@util/constants';
 
 const Feed = () => {
   const { data: feedData } = useInfiniteQuery<
@@ -31,7 +33,14 @@ const Feed = () => {
   return (
     <div className="mb-28 flex flex-col items-center justify-start">
       <NavBar />
-      <DiaryList pageType={FEED} diaryData={DUMMY_DATA} />
+      {feedData?.pages.map((page, index) => (
+        <DiaryList
+          key={index}
+          pageType={FEED}
+          diaryData={page.diaryList}
+          username={page.nickname}
+        />
+      ))}
     </div>
   );
 };
