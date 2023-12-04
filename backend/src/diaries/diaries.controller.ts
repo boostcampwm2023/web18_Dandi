@@ -171,9 +171,7 @@ export class DiariesController {
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
-
-    return { nickname: author.nickname, diaryList };
+    return await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
   }
 
   @Get('/search/v2/:keyword')
@@ -188,10 +186,7 @@ export class DiariesController {
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    console.log(typeof lastIndex);
-    const diaryList = await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
-
-    return { nickname: author.nickname, diaryList };
+    return await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
   }
 
   @Get('/search/v3/:keyword')
@@ -223,8 +218,6 @@ export class DiariesController {
     @Param('tagName') tagName: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByTag(user.id, tagName, lastIndex);
-
-    return { nickname: user.nickname, diaryList };
+    return await this.diariesService.findDiaryByTag(user, tagName, lastIndex);
   }
 }

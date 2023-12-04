@@ -194,14 +194,18 @@ export class DiariesService {
     return await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo, nextDay);
   }
 
-  async findDiaryByKeywordV1(author: User, keyword: string, lastIndex: number) {
+  async findDiaryByKeywordV1(
+    author: User,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<ReadUserDiariesResponseDto> {
     const diaries = await this.diariesRepository.findDiaryByKeywordV1(
       author.id,
       keyword,
       lastIndex,
     );
 
-    return this.makeAllDiaryInfosDto(diaries, author.id);
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
   async findDiaryByKeywordV2(author: User, keyword: string, lastIndex: number) {
@@ -211,34 +215,17 @@ export class DiariesService {
       lastIndex,
     );
 
-    return this.makeAllDiaryInfosDto(diaries, author.id);
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
-  async findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
-    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName, lastIndex);
+  async findDiaryByTag(
+    author: User,
+    tagName: string,
+    lastIndex: number | undefined,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaries = await this.diariesRepository.findDiaryByTag(author.id, tagName, lastIndex);
 
-    return this.makeAllDiaryInfosDto(diaries, userId);
-  }
-
-  private makeAllDiaryInfosDto(diaries: Diary[], userId: number) {
-    return Promise.all(
-      diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
-        const tags = await diary.tags;
-        const reactions = await diary.reactions;
-
-        return {
-          diaryId: diary.id,
-          title: diary.title,
-          thumbnail: diary.thumbnail,
-          summary: diary.summary,
-          tags: tags.map((t) => t.name),
-          emotion: diary.emotion,
-          reactionCount: reactions.length,
-          createdAt: diary.createdAt,
-          leavedReaction: reactions.find((reaction) => reaction.user.id === userId)?.reaction,
-        };
-      }),
-    );
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
   async findDiaryByKeywordV3(author: User, keyword: string, lastIndex: number) {

@@ -232,41 +232,75 @@ export class DiariesRepository extends Repository<Diary> {
     }));
   }
 
-  findDiaryByKeywordV1(authorId: number, keyword: string, lastIndex: number) {
+  findDiaryByKeywordV1(
+    authorId: number,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
         keyword: `%${keyword}%`,
       })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
+      .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getMany();
+    return queryBuilder.getRawMany();
   }
 
-  async findDiaryByKeywordV2(authorId: number, keyword: string, lastIndex: number) {
+  async findDiaryByKeywordV2(
+    authorId: number,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author.id = :authorId', { authorId })
       .andWhere(
         '(MATCH(diary.content) AGAINST(:keyword IN BOOLEAN MODE) OR MATCH(diary.title) AGAINST(:keyword IN BOOLEAN MODE))',
         { keyword: `*${keyword}*` },
       )
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
+      .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getMany();
+    return queryBuilder.getRawMany();
   }
 
   async findDiaryByKeywordV3(
@@ -311,13 +345,29 @@ export class DiariesRepository extends Repository<Diary> {
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 
-  findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
+  findDiaryByTag(
+    authorId: number,
+    tagName: string,
+    lastIndex: number | undefined,
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
-      .innerJoin('diary.tags', 'tags')
-      .where('tags.name = :tagName', { tagName })
-      .andWhere('diary.author.id = :userId', { userId })
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
+      .where('diary.author.id = :authorId', { authorId })
+      .andWhere('tags.name = :tagName', { tagName })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
@@ -325,7 +375,7 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getMany();
+    return queryBuilder.getRawMany();
   }
 
   private mapToLeaveReaction(diaryInfo: any) {
