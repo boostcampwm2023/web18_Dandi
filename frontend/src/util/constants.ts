@@ -15,6 +15,7 @@ export const DUMMY_DATA = [
     reactionCount: 1000,
     authorId: 1,
     diaryId: 1,
+    emotion: '😀',
   },
   {
     createdAt: '2023-11-13T13:50:17.106Z',
@@ -29,6 +30,7 @@ export const DUMMY_DATA = [
     reactionCount: 10,
     authorId: 1,
     diaryId: 1,
+    emotion: '😀',
   },
   {
     createdAt: '2023-11-13T13:50:17.106Z',
@@ -43,6 +45,7 @@ export const DUMMY_DATA = [
     reactionCount: 10,
     authorId: 1,
     diaryId: 1,
+    emotion: '😀',
   },
 ];
 

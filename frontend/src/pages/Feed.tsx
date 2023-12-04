@@ -18,6 +18,7 @@ const Feed = () => {
       reactionCount: 10,
       diaryId: 1,
       authorId: 1,
+      emotion: '😀',
     },
   ];
 

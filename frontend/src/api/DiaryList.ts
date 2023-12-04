@@ -7,18 +7,15 @@ interface getDiaryListProps {
   type: viewTypes;
 }
 
-interface getDiaryDayListProps extends getDiaryListProps {
-  lastIndex?: number;
-}
-
 interface getDiaryWeekAndMonthListProps extends getDiaryListProps {
   startDate: string;
   endDate: string;
 }
 
-export const getDiaryDayList = async (pageParam: getDiaryDayListProps) => {
-  const { userId, type, lastIndex } = pageParam;
+export const getDiaryDayList = async ({ pageParam }: any) => {
   try {
+    const { userId, type, lastIndex } = pageParam;
+    console.log('어라', userId, type, lastIndex);
     const fetchUrl = lastIndex
       ? API_PATH.DIARY.myDiaryDay(userId, type, lastIndex)
       : API_PATH.DIARY.myDiaryDay(userId, type);
