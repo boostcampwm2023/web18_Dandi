@@ -77,7 +77,7 @@ const MyDiary = () => {
               {DUMMY_DATA.length < WEEK_STANDARD_LENGTH && (
                 <section className="flex gap-5">
                   {DUMMY_DATA.map((data) => (
-                    <Card data={data} />
+                    <Card diaryItem={data} />
                   ))}
                 </section>
               )}
