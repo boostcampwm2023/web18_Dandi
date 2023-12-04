@@ -64,6 +64,7 @@ const Detail = () => {
                   title: data.title,
                   content: data.content,
                   emotion: data.emotion,
+                  thumbnail: data.thumbnail,
                   tags: data.tags,
                   status: data.status,
                 },

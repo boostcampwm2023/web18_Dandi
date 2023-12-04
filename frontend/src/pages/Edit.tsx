@@ -29,6 +29,7 @@ const Edit = () => {
   const [status, setStatus] = useState(
     state && state.status === 'public' ? '공개 하기' : '나만 보기',
   );
+  const [thumbnail, setThumbnail] = useState(state?.thumbnail || '');
   const [content, setContent] = useState(state?.content || ' ');
 
   const params: CreateDiaryParams = {
@@ -37,6 +38,7 @@ const Edit = () => {
     emotion: emoji,
     tagNames: keywordList,
     status: status === '나만 보기' ? 'private' : 'public',
+    thumbnail,
   };
 
   const createDiaryMutation = useMutation({
@@ -82,7 +84,12 @@ const Edit = () => {
         setEmoji={setEmoji}
         setStatus={setStatus}
       />
-      <Editor content={content} setContent={setContent} />
+      <Editor
+        content={content}
+        setContent={setContent}
+        thumbnail={thumbnail}
+        setThumbnail={setThumbnail}
+      />
       <KeywordBox keywordList={keywordList} setKeywordList={setKeywordList} onSubmit={onSubmit} />
     </div>
   );

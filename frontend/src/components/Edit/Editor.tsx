@@ -5,10 +5,12 @@ import { uploadImage } from '@api/Edit';
 
 interface EditorProps {
   content: string;
+  thumbnail: string;
+  setThumbnail: React.Dispatch<React.SetStateAction<string>>;
   setContent: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Editor = ({ content, setContent }: EditorProps) => {
+const Editor = ({ content, setContent, thumbnail, setThumbnail }: EditorProps) => {
   const editorRef = useRef<DiaryEditor>(null);
   const onChangeContent = () => {
     setContent(editorRef.current?.getInstance().getHTML());
@@ -20,6 +22,9 @@ const Editor = ({ content, setContent }: EditorProps) => {
 
     const url = await uploadImage(formData);
     addImage(url.imageURL, file.name);
+
+    if (thumbnail) return;
+    setThumbnail(url.imageURL);
   };
 
   return (
