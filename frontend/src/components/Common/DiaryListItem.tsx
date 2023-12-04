@@ -25,7 +25,13 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const toggleShowModal = () => setShowModal((prev) => !prev);
-  const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+  const toggleShowEmojiPicker = () => {
+    if (selectedEmoji === '') {
+      setShowEmojiPicker((prev) => !prev);
+    } else {
+      setSelectedEmoji('');
+    }
+  };
 
   const goDetail = () => navigate(`/detail/${diaryItem.diaryId}`);
   const goFriendHome = () => navigate(`/home/${diaryItem.authorId}`);

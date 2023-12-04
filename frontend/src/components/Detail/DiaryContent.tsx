@@ -39,7 +39,13 @@ const DiaryContent = ({
   const toggleShowModal = () => {
     setShowModal((prev) => !prev);
   };
-  const toggleShowEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+  const toggleShowEmojiPicker = () => {
+    if (selectedEmoji === '') {
+      setShowEmojiPicker((prev) => !prev);
+    } else {
+      setSelectedEmoji('');
+    }
+  };
 
   const onClickEmoji = (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
