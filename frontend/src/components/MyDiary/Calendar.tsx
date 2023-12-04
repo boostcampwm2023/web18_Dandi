@@ -1,11 +1,12 @@
 import DayItem from '@components/MyDiary/DayItem';
 
 import { DAY_OF_WEEK, START_INDEX, WEEK_INDEX } from '@util/constants';
+import { EmotionData } from './MonthContainer';
 
 interface CalendarProp {
   first: Date;
   last: Date;
-  emotionData: { [day: number]: string } | undefined;
+  emotionData?: EmotionData;
 }
 
 const Calendar = ({ first, last, emotionData }: CalendarProp) => {
@@ -47,7 +48,8 @@ const Calendar = ({ first, last, emotionData }: CalendarProp) => {
               >
                 <DayItem
                   day={day}
-                  emotion={emotionData && emotionData[day] ? emotionData[day] : undefined}
+                  diaryId={emotionData && emotionData[day] ? emotionData[day].diaryId : undefined}
+                  emotion={emotionData && emotionData[day] ? emotionData[day].emotion : undefined}
                 />
               </td>
             ))}

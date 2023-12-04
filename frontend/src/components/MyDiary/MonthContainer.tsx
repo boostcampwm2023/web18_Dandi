@@ -11,6 +11,13 @@ import Calendar from '@components/MyDiary/Calendar';
 import { NEXT_INDEX } from '@util/constants';
 import { formatDateDash, getNowMonth } from '@util/funcs';
 
+export interface EmotionData {
+  [day: number]: {
+    diaryId: number;
+    emotion: string;
+  };
+}
+
 const MonthContainer = () => {
   const [nowMonth, setNowMonth] = useState(new Date());
   const first = new Date(nowMonth.getFullYear(), nowMonth.getMonth(), 1);
@@ -26,11 +33,11 @@ const MonthContainer = () => {
         endDate: formatDateDash(last),
       }),
     select: (data) => {
-      const emotionObject: { [day: number]: string } = {};
+      const emotionObject: EmotionData = {};
       data.diaryList.forEach((diary: IDiaryContent) => {
-        const { emotion, createdAt } = diary;
+        const { diaryId, emotion, createdAt } = diary;
         const day = new Date(createdAt).getDate();
-        emotionObject[day] = emotion;
+        emotionObject[day] = { diaryId: +diaryId, emotion: emotion };
       });
       return emotionObject;
     },

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
 import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
@@ -12,7 +12,7 @@ import ReactionList from '@components/Diary/ReactionList';
 import Modal from '@components/Common/Modal';
 
 import { formatDateString } from '@util/funcs';
-import { SMALL } from '@util/constants';
+import { PAGE_URL, SMALL } from '@util/constants';
 
 interface CardProps {
   diaryItem: IDiaryContent;
@@ -22,6 +22,7 @@ interface CardProps {
 
 const Card = ({ diaryItem, styles, size }: CardProps) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const params = useParams();
   const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
@@ -89,18 +90,23 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
     toggleShowEmojiPicker();
   };
 
+  const goDetail = () => navigate(`${PAGE_URL.DETAIL}/${diaryItem.diaryId}`);
+
   return (
     <div
       className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
     >
-      <p className={`${size === SMALL ? 'text-sm' : ''}`}>
-        {formatDateString(diaryItem.createdAt)}
-      </p>
-      <h3 className="text-xl font-bold">{diaryItem.title}</h3>
-      <img src={diaryItem.thumbnail} alt="일기의 대표 이미지" />
-      <div className="whitespace-pre-wrap text-sm">
-        <p>{diaryItem.summary}</p>
+      <div onClick={goDetail} className="cursor-pointer">
+        <p className={`${size === SMALL ? 'text-sm' : ''}`}>
+          {formatDateString(diaryItem.createdAt)}
+        </p>
+        <h3 className="text-xl font-bold">{diaryItem.title}</h3>
+        {diaryItem.thumbnail && <img src={diaryItem.thumbnail} alt="일기의 대표 이미지" />}
+        <div className="whitespace-pre-wrap text-sm">
+          <p>{diaryItem.summary}</p>
+        </div>
       </div>
+
       <div className="flex w-full flex-wrap gap-3">
         {diaryItem.tags.map((keyword, index) => (
           <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />

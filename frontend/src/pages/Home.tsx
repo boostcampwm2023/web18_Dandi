@@ -33,10 +33,10 @@ const Home = () => {
     InfiniteDiaryListProps,
     [string, string | null]
   >({
-    queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+    queryKey: ['dayDiaryList', userId],
     queryFn: getDiaryDayList,
     initialPageParam: {
-      userId: localStorage.getItem('userId') as string,
+      userId: userId,
       type: 'Day',
       lastIndex: 2e9,
     },
@@ -58,8 +58,6 @@ const Home = () => {
   if (isError) {
     return <p>Error Occurrence!</p>;
   }
-
-  // TODO: 무한스크롤 => 데이터 빈 객체로 오는 것 백엔드와 함께 해결
 
   return (
     <main className="mb-28 flex flex-col items-center justify-start">

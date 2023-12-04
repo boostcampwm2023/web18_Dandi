@@ -47,8 +47,10 @@ const MyDiary = () => {
         </header>
         <section className="flex flex-col items-center">
           {viewType === DIARY_VIEW_TYPE.DAY &&
-            data?.pages.map((page, index) =>
-              page.diaryList.map((item) => <DiaryListItem diaryItem={item} key={index} />),
+            data?.pages.map((page, pageIndex) =>
+              page.diaryList.map((item, itemIndex) => (
+                <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
+              )),
             )}
           {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}
           {viewType === DIARY_VIEW_TYPE.MONTH && <MonthContainer />}
