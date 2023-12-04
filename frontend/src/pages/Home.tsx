@@ -5,6 +5,7 @@ import { getCurrentUser } from '@api/Profile';
 import { getDiaryDayList } from '@api/DiaryList';
 
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
+import { viewTypes } from '@type/pages/MyDiary';
 
 import NavBar from '@components/Common/NavBar';
 import DiaryList from '@components/Common/DiaryList';
@@ -31,12 +32,13 @@ const Home = () => {
     any,
     Error,
     InfiniteDiaryListProps,
-    [string, string | null]
+    [string, string | null],
+    { userId: string; type: viewTypes; lastIndex: number }
   >({
-    queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+    queryKey: ['dayDiaryList', userId],
     queryFn: getDiaryDayList,
     initialPageParam: {
-      userId: localStorage.getItem('userId') as string,
+      userId: userId as string,
       type: 'Day',
       lastIndex: 2e9,
     },
@@ -58,8 +60,6 @@ const Home = () => {
   if (isError) {
     return <p>Error Occurrence!</p>;
   }
-
-  // TODO: 무한스크롤 => 데이터 빈 객체로 오는 것 백엔드와 함께 해결
 
   return (
     <main className="mb-28 flex flex-col items-center justify-start">

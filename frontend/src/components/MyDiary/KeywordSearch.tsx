@@ -1,15 +1,39 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { getTagRecommend } from '@api/KeywordSearch';
+
+import { searchOptionsType } from '@type/pages/MyDiary';
 
 import Icon from '@components/Common/Icon';
 
-type searchOptionsType = '키워드' | '제목 + 내용';
+interface KeywordSearchProps {
+  keyword: string;
+  selected: searchOptionsType;
+  setKeyword: React.Dispatch<React.SetStateAction<string>>;
+  setSelected: React.Dispatch<React.SetStateAction<searchOptionsType>>;
+  setSearchFlag: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const KeywordSearch = () => {
-  const [keyword, setKeyword] = useState<string>('');
-  const [selected, setSelected] = useState<searchOptionsType>('키워드');
+const KeywordSearch = ({
+  keyword,
+  selected,
+  setKeyword,
+  setSelected,
+  setSearchFlag,
+}: KeywordSearchProps) => {
   const [showSelect, setShowSelect] = useState(false);
   const [showKeyword, setShowKeyword] = useState(false);
-  const [autoKeywordList, _] = useState<string[]>(['안녕', '안녕녕', '안녕하세요']);
+  const [recommendKeyword, setRecommendKeyword] = useState<string[]>();
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (keyword) {
+        const data = await getTagRecommend(keyword);
+        setRecommendKeyword(data.keywords);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [keyword]);
 
   const searchOptions: searchOptionsType[] = ['키워드', '제목 + 내용'];
 
@@ -18,6 +42,7 @@ const KeywordSearch = () => {
 
   const onChangeSearchOption = (option: searchOptionsType) => {
     setSelected(option);
+    setSearchFlag(true);
     setShowSelect(false);
   };
   const onClickKeywordOption = (option: string) => {
@@ -25,6 +50,7 @@ const KeywordSearch = () => {
     setShowKeyword(false);
   };
   const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFlag(false);
     setKeyword(e.target.value);
     setShowKeyword(true);
   };
@@ -62,21 +88,27 @@ const KeywordSearch = () => {
             onChange={onChangeKeyword}
             onClick={toggleShowKeyword}
           />
-          <Icon id="search" />
+          <button onClick={() => setSearchFlag(true)}>
+            <Icon id="search" />
+          </button>
         </div>
         {showKeyword && (
           <>
             <hr className="text-gray" />
             <div className="rounded-xl bg-white text-sm">
-              {autoKeywordList.map((keyword) => (
-                <p
-                  className="hover:bg-brown cursor-pointer px-3 py-2.5 last:rounded-b-lg hover:font-bold hover:text-white"
-                  key={keyword}
-                  onClick={() => onClickKeywordOption(keyword)}
-                >
-                  {keyword}
-                </p>
-              ))}
+              {!recommendKeyword?.length && (
+                <p className="px-3 py-2.5">추천 검색어가 존재하지 않습니다.</p>
+              )}
+              {recommendKeyword &&
+                recommendKeyword.map((keyword: string) => (
+                  <p
+                    className="hover:bg-brown cursor-pointer px-3 py-2.5 last:rounded-b-lg hover:font-bold hover:text-white"
+                    key={keyword}
+                    onClick={() => onClickKeywordOption(keyword)}
+                  >
+                    {keyword}
+                  </p>
+                ))}
             </div>
           </>
         )}

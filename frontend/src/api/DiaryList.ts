@@ -12,7 +12,11 @@ interface getDiaryWeekAndMonthListProps extends getDiaryListProps {
   endDate: string;
 }
 
-export const getDiaryDayList = async ({ pageParam }: any) => {
+export const getDiaryDayList = async ({
+  pageParam,
+}: {
+  pageParam: { userId: string; type: viewTypes; lastIndex: number };
+}) => {
   try {
     const { userId, type, lastIndex } = pageParam;
     const fetchUrl = lastIndex
