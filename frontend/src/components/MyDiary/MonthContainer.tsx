@@ -4,19 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { getDiaryWeekAndMonthList } from '@api/DiaryList';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
+import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 
 import DateController from '@components/MyDiary/DateController';
 import Calendar from '@components/MyDiary/Calendar';
 
 import { NEXT_INDEX } from '@util/constants';
 import { formatDateDash, getNowMonth } from '@util/funcs';
-
-export interface EmotionData {
-  [day: number]: {
-    diaryId: number;
-    emotion: string;
-  };
-}
 
 const MonthContainer = () => {
   const [nowMonth, setNowMonth] = useState(new Date());

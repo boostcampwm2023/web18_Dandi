@@ -11,10 +11,7 @@ interface DiaryList {
 }
 
 const DiaryList = ({ pageType, diaryData, username }: DiaryList) => {
-  // const { nickname } = diaryData[0];
-  const nickname = undefined;
-  const pageTitle =
-    pageType === HOME ? `${username ? username : nickname} ${PAGE_TITLE_HOME}` : PAGE_TITLE_FEED;
+  const pageTitle = pageType === HOME ? `${username} ${PAGE_TITLE_HOME}` : PAGE_TITLE_FEED;
   const content = diaryData.map((data: IDiaryContent, index) => (
     <DiaryListItem key={index} pageType={pageType} diaryItem={data} />
   ));
