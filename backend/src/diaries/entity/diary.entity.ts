@@ -46,13 +46,13 @@ export class Diary extends BaseEntity {
   @Column()
   status: DiaryStatus;
 
-  @ManyToOne(() => User, { nullable: false, lazy: true })
+  @ManyToOne(() => User, { nullable: false })
   author: User;
 
-  @OneToMany(() => Reaction, (reaction) => reaction.diary, { lazy: true })
+  @OneToMany(() => Reaction, (reaction) => reaction.diary)
   reactions: Reaction[];
 
-  @ManyToMany(() => Tag, { cascade: true, lazy: true })
+  @ManyToMany(() => Tag, { cascade: true })
   @JoinTable({
     name: 'diary_tag',
     joinColumn: { name: 'diary_id', referencedColumnName: 'id' },
