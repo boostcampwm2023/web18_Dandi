@@ -2,12 +2,13 @@ import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
-import { PAGINATION_SIZE } from './utils/diaries.constant';
+import { MoodDegree, PAGINATION_SIZE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import {
   AllDiaryInfosDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
+  GetYearMoodResponseDto,
   SearchDiaryDataForm,
 } from './dto/diary.dto';
 
@@ -215,11 +216,20 @@ export class DiariesRepository extends Repository<Diary> {
     return diaryInfos;
   }
 
-  findLatestDiaryByDate(userId: number, date: Date) {
-    return this.createQueryBuilder('diary')
-      .where('diary.author = :userId', { userId })
-      .andWhere('diary.createdAt > :date', { date })
-      .getMany();
+  async findLatestDiaryByDate(
+    userId: number,
+    startDate: Date,
+    lastDate: Date,
+  ): Promise<GetYearMoodResponseDto[]> {
+    const diaries = await this.createQueryBuilder('diary')
+      .select(['diary.createdAt as date', 'diary.mood as mood'])
+      .where('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
+      .getRawMany();
+
+    return diaries.map((diary) => ({
+      date: new Date(diary.date),
+      mood: diary.mood as MoodDegree,
+    }));
   }
 
   findDiaryByKeywordV1(authorId: number, keyword: string, lastIndex: number) {
