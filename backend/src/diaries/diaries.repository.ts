@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { SearchDiaryDataForm } from './dto/diary.dto';
+import { GetDiaryResponseDto, SearchDiaryDataForm } from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -21,6 +21,39 @@ export class DiariesRepository extends Repository<Diary> {
         id,
       },
     });
+  }
+
+  async findDiaryDetailById(id: number): Promise<GetDiaryResponseDto> {
+    const diaryInfo = await this.createQueryBuilder('diary')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.content as content',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.emotion as emotion',
+        'diary.mood as mood',
+        'diary.status as status',
+        'diary.createdAt as createdAt',
+
+        'user.id as userId',
+        'user.nickname as authorName',
+        'user.profileImage as profileImage',
+
+        'GROUP_CONCAT(tags.name) as tagNames',
+        'COUNT(reactions.reaction) as reactionCount',
+      ])
+      .where('diary.id = :id', { id })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .leftJoin('diary.author', 'user')
+      .groupBy('diary.id')
+      .getRawOne();
+
+    diaryInfo.tagNames = diaryInfo.tagNames ? diaryInfo.tagNames.split(',') : [];
+    diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+
+    return diaryInfo;
   }
 
   async findDiariesByAuthorIdWithPagination(

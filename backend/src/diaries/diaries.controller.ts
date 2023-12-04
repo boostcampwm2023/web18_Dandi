@@ -43,48 +43,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
 
-  @Get('/friends')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '피드 일기 조회 API' })
-  @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
-  async getFeedDiary(
-    @User() user: UserEntity,
-    @Query(ValidationPipe) queryString: LastIndexDto,
-  ): Promise<Record<string, FeedDiaryDto[]>> {
-    const diaryList = await this.diariesService.getFeedDiary(user.id, queryString.lastIndex);
-
-    return { diaryList };
-  }
-
-  @Get('/:id')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '일기 조회 API' })
-  @ApiOkResponse({ description: '일기 조회 성공', type: GetDiaryResponseDto })
-  async findDiary(
-    @Param('id', ParseIntPipe) id: number,
-    @User() user: UserEntity,
-  ): Promise<GetDiaryResponseDto> {
-    const diary = await this.diariesService.findDiary(user, id);
-    const tags = await diary.tags;
-    const author = await diary.author;
-    const reactions = await diary.reactions;
-
-    return {
-      userId: author.id,
-      authorName: author.nickname,
-      profileImage: author.profileImage,
-      title: diary.title,
-      content: diary.content,
-      thumbnail: diary.thumbnail,
-      emotion: diary.emotion,
-      mood: diary.mood,
-      tags: tags.map((t) => t.name),
-      reactionCount: reactions.length,
-      createdAt: diary.createdAt,
-      status: diary.status,
-    };
-  }
-
   @Post()
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
@@ -95,6 +53,17 @@ export class DiariesController {
     await this.diariesService.saveDiary(user, createDiaryDto);
 
     return '일기가 저장되었습니다.';
+  }
+
+  @Get('/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '일기 조회 API' })
+  @ApiOkResponse({ description: '일기 조회 성공', type: GetDiaryResponseDto })
+  async findDiary(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: UserEntity,
+  ): Promise<GetDiaryResponseDto> {
+    return await this.diariesService.findDiaryDetail(user, id);
   }
 
   @Patch('/:id')
@@ -121,6 +90,19 @@ export class DiariesController {
     await this.diariesService.deleteDiary(user, id);
 
     return '일기가 삭제되었습니다.';
+  }
+
+  @Get('/friends')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '피드 일기 조회 API' })
+  @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
+  async getFeedDiary(
+    @User() user: UserEntity,
+    @Query(ValidationPipe) queryString: LastIndexDto,
+  ): Promise<Record<string, FeedDiaryDto[]>> {
+    const diaryList = await this.diariesService.getFeedDiary(user.id, queryString.lastIndex);
+
+    return { diaryList };
   }
 
   @Get('/users/:id')

@@ -9,6 +9,7 @@ import {
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
   AllDiaryInfosDto,
+  GetDiaryResponseDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
@@ -56,12 +57,20 @@ export class DiariesService {
     await this.diariesRepository.save(diary);
   }
 
+  async findDiaryDetail(user: User, id: number) {
+    const diary = await this.diariesRepository.findDiaryDetailById(id);
+
+    this.existsDiary(diary);
+    this.checkAuthorization(diary.userId, user.id, diary.status);
+
+    return diary;
+  }
+
   async findDiary(user: User, id: number) {
     const diary = await this.diariesRepository.findById(id);
-    this.existsDiary(diary);
 
-    const author = await diary.author;
-    this.checkAuthorization(author, user, diary.status);
+    this.existsDiary(diary);
+    this.checkAuthorization(diary.author.id, user.id, diary.status);
 
     return diary;
   }
@@ -283,14 +292,14 @@ export class DiariesService {
     });
   }
 
-  private existsDiary(diary: Diary) {
+  private existsDiary(diary: Diary | GetDiaryResponseDto) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
     }
   }
 
-  private checkAuthorization(author: User, user: User, status: DiaryStatus) {
-    if (status === DiaryStatus.PRIVATE && author.id !== user.id) {
+  private checkAuthorization(authorId: number, userId: number, status: DiaryStatus) {
+    if (status === DiaryStatus.PRIVATE && authorId !== userId) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }
