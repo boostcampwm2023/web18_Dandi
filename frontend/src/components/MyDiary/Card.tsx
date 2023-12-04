@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -21,6 +21,7 @@ interface CardProps {
 }
 
 const Card = ({ diaryItem, styles, size }: CardProps) => {
+  const queryClient = useQueryClient();
   const params = useParams();
   const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
@@ -49,10 +50,22 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
 
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(Number(diaryItem.diaryId), selectedEmoji),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['reactionList', diaryItem.diaryId],
+        refetchType: 'active',
+      });
+    },
   });
 
   const deleteReactionMutation = useMutation({
     mutationFn: () => deleteReaction(Number(diaryItem.diaryId), selectedEmoji),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['reactionList', diaryItem.diaryId],
+        refetchType: 'active',
+      });
+    },
   });
 
   const handleDeleteReaction = async () => {

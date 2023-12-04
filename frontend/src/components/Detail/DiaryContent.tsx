@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import EmojiPicker from 'emoji-picker-react';
 import Parser from 'html-react-parser';
 import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
@@ -35,6 +35,7 @@ const DiaryContent = ({
   tags,
   reactionCount,
 }: DiaryContentProps) => {
+  const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
@@ -51,9 +52,7 @@ const DiaryContent = ({
 
   useEffect(() => {
     if (isSuccess) {
-      const myData = data.reactionList.find(
-        (item: IReactionedFriends) => item.userId === userId,
-      );
+      const myData = data.reactionList.find((item: IReactionedFriends) => item.userId === userId);
       myData && setSelectedEmoji(myData?.reaction);
       setTotalReaction(data.reactionList.length);
     }
@@ -61,10 +60,22 @@ const DiaryContent = ({
 
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(diaryId, selectedEmoji),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['reactionList', diaryId],
+        refetchType: 'active',
+      });
+    },
   });
 
   const deleteReactionMutation = useMutation({
     mutationFn: () => deleteReaction(diaryId, selectedEmoji),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['reactionList', diaryId],
+        refetchType: 'active',
+      });
+    },
   });
 
   const handleDeleteReaction = async () => {
