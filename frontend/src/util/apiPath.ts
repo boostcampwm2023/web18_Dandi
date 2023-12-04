@@ -1,5 +1,4 @@
-// TODO: PR 올릴 때 SERVER URL 배포 URL로 되어 있는지 확인
-const SERVER_URL = 'https://223.130.146.253:3001';
+const SERVER_URL = 'https://dandi-ary.site:3001';
 // const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';

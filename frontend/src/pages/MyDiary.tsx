@@ -47,11 +47,37 @@ const MyDiary = () => {
         </header>
         <section className="flex flex-col items-center">
           {viewType === DIARY_VIEW_TYPE.DAY &&
-            data?.pages.map((page) =>
-              page.diaryList.map((item, index) => <DiaryListItem key={index} diaryItem={item} />),
-            )}
-          {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}
-          {viewType === DIARY_VIEW_TYPE.MONTH && <MonthContainer />}
+            diaryData.map((data, index) => <DiaryListItem diaryItem={data} key={index} />)}
+          {viewType === DIARY_VIEW_TYPE.WEEK && (
+            <>
+              <DateController
+                titles={[
+                  `Week ${String(nowWeek).padStart(2, '0')}`,
+                  `${formatDate(period[0])} ~ ${formatDate(period[1])}`,
+                ]}
+                leftOnClick={() => setPrevOrNextWeek(-1)}
+                rightOnClick={() => setPrevOrNextWeek(1)}
+              />
+              {DUMMY_DATA.length < WEEK_STANDARD_LENGTH && (
+                <section className="flex gap-5">
+                  {DUMMY_DATA.map((data) => (
+                    <Card diaryItem={data} />
+                  ))}
+                </section>
+              )}
+              {DUMMY_DATA.length >= WEEK_STANDARD_LENGTH && <CarouselContainer {...DUMMY_DATA} />}
+            </>
+          )}
+          {viewType === DIARY_VIEW_TYPE.MONTH && (
+            <>
+              <DateController
+                titles={[getNowMonth(nowMonth).join(' '), String(nowMonth.getFullYear())]}
+                leftOnClick={() => setPrevOrNextMonth(-1)}
+                rightOnClick={() => setPrevOrNextMonth(1)}
+              />
+              <Calendar date={nowMonth} />
+            </>
+          )}
         </section>
       </main>
     </>

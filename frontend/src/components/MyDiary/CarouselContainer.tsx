@@ -19,15 +19,15 @@ const CarouselContainer = ({ data }: CarouselContainerProps) => {
 
   return (
     <section className="flex w-fit items-center justify-center">
-      <Card data={data[prevIndex]} styles="w-1/3" size={SMALL} />
+      <Card diaryItem={data[prevIndex]} styles="w-1/3" size={SMALL} />
       <button onClick={() => setActiveIndex(prevIndex)}>
         <Icon id="largeLeftArrow" size={LARGE} />
       </button>
-      <Card data={data[activeIndex]} styles="w-2/3" />
+      <Card diaryItem={data[activeIndex]} styles="w-2/3" />
       <button onClick={() => setActiveIndex((activeIndex + NEXT_INDEX) % dataLength)}>
         <Icon id="largeRightArrow" size={LARGE} />
       </button>
-      <Card data={data[(activeIndex + NEXT_INDEX) % dataLength]} styles="w-1/3" size={SMALL} />
+      <Card diaryItem={data[(activeIndex + NEXT_INDEX) % dataLength]} styles="w-1/3" size={SMALL} />
     </section>
   );
 };

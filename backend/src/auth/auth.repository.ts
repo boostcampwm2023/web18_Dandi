@@ -14,4 +14,8 @@ export class AuthRepository {
   getRefreshToken(accessToken: string) {
     return this.redis.get(accessToken);
   }
+
+  removeRefreshToken(accessToken: string) {
+    this.redis.del(accessToken);
+  }
 }
