@@ -35,8 +35,6 @@ const WeekContainer = () => {
       }),
   });
 
-  console.log('data', data);
-
   const setPrevOrNextWeek = (plus: number) => {
     setPeriod(changePeriod(plus));
     setNowWeek(getNowWeek(period[1]));
