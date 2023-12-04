@@ -29,7 +29,7 @@ import {
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
-import { addDays, parseISO, subYears } from 'date-fns';
+import { addDays, parseISO, subMonths, subYears } from 'date-fns';
 import { load } from 'cheerio';
 
 @Injectable()
@@ -112,17 +112,16 @@ export class DiariesService {
     if (!getAllEmotionsDto.startDate || !getAllEmotionsDto.lastDate) {
       const currentDate = new Date();
 
-      startDate = currentDate.toLocaleString();
-      lastDate = currentDate.setMonth(currentDate.getMonth() + 1).toLocaleString();
+      startDate = subMonths(currentDate, 1).toLocaleDateString();
+      lastDate = addDays(currentDate, 1).toLocaleDateString();
     }
 
-    const diaries = await this.diariesRepository.findAllDiaryBetweenDates(
+    return await this.diariesRepository.findAllDiaryBetweenDates(
       userId,
       user.id === userId,
       startDate,
       lastDate,
     );
-    return this.groupDiariesByEmotion(diaries);
   }
 
   private groupDiariesByEmotion(diaries: Diary[]) {

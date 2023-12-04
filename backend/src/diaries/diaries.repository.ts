@@ -4,7 +4,12 @@ import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
 import { PAGINATION_SIZE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { AllDiaryInfosDto, GetDiaryResponseDto, SearchDiaryDataForm } from './dto/diary.dto';
+import {
+  AllDiaryInfosDto,
+  GetAllEmotionsResponseDto,
+  GetDiaryResponseDto,
+  SearchDiaryDataForm,
+} from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -145,18 +150,24 @@ export class DiariesRepository extends Repository<Diary> {
     isOwner: boolean,
     startDate: string,
     lastDate: string,
-  ): Promise<Diary[]> {
+  ): Promise<GetAllEmotionsResponseDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .select([
+        'emotion',
+        'JSON_ARRAYAGG(JSON_OBJECT("id", diary.id, "createdAt", diary.createdAt, "title", diary.title)) AS diaryInfo',
+      ])
       .where('diary.author.id = :userId', { userId })
-      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate });
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', {
+        startDate: new Date(startDate),
+        lastDate: new Date(lastDate),
+      })
+      .groupBy('emotion');
 
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
 
-    return queryBuilder.getMany();
+    return queryBuilder.getRawMany();
   }
 
   async findPaginatedDiaryByDateAndIdList(
