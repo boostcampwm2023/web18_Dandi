@@ -131,14 +131,6 @@ class DiaryInfos {
   createdAt: Date;
 }
 
-export class LastIndexDto {
-  @ApiProperty({ description: '커서 방식 페이지네이션을 위한 diary Index' })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  lastIndex: number;
-}
-
 export class FeedDiaryDto {
   @ApiProperty({ description: '일기 ID' })
   diaryId: number;

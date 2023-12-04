@@ -20,6 +20,7 @@ export class DiariesRepository extends Repository<Diary> {
       where: {
         id,
       },
+      relations: ['author'],
     });
   }
 
@@ -126,13 +127,28 @@ export class DiariesRepository extends Repository<Diary> {
     lastIndex: number | undefined,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'user')
-      .leftJoinAndSelect('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+
+        'user.id as authorId',
+        'user.nickname as nickname',
+        'user.profileImage as profileImage',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author IN (:...idList)', { idList })
       .andWhere('diary.createdAt > :date', { date })
       .andWhere('diary.status = :status', { status: DiaryStatus.PUBLIC })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .leftJoin('diary.author', 'user')
+      .groupBy('diary.id')
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
@@ -140,7 +156,22 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return await queryBuilder.getMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      if (diaryInfo.leavedReaction) {
+        diaryInfo.leavedReaction.split(',').forEach((reaction) => {
+          const match = reaction.match(/\d+:/);
+
+          if (match) {
+            diaryInfo.leavedReaction = reaction.replace(match[0], '');
+            return;
+          }
+        });
+      }
+    });
+    return diaryInfos;
   }
 
   findLatestDiaryByDate(userId: number, date: Date) {

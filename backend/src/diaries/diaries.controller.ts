@@ -29,7 +29,6 @@ import {
   ReadUserDiariesRequestDto,
   ReadUserDiariesResponseDto,
   UpdateDiaryDto,
-  LastIndexDto,
   GetYearMoodResponseDto,
   FeedDiaryDto,
 } from './dto/diary.dto';
@@ -53,6 +52,19 @@ export class DiariesController {
     await this.diariesService.saveDiary(user, createDiaryDto);
 
     return '일기가 저장되었습니다.';
+  }
+
+  @Get('/friends')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '피드 일기 조회 API' })
+  @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
+  async getFeedDiary(
+    @User() user: UserEntity,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
+  ): Promise<Record<string, FeedDiaryDto[]>> {
+    const diaryList = await this.diariesService.getFeedDiary(user.id, lastIndex);
+
+    return { diaryList };
   }
 
   @Get('/:id')
@@ -90,19 +102,6 @@ export class DiariesController {
     await this.diariesService.deleteDiary(user, id);
 
     return '일기가 삭제되었습니다.';
-  }
-
-  @Get('/friends')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: '피드 일기 조회 API' })
-  @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
-  async getFeedDiary(
-    @User() user: UserEntity,
-    @Query(ValidationPipe) queryString: LastIndexDto,
-  ): Promise<Record<string, FeedDiaryDto[]>> {
-    const diaryList = await this.diariesService.getFeedDiary(user.id, queryString.lastIndex);
-
-    return { diaryList };
   }
 
   @Get('/users/:id')
@@ -239,13 +238,9 @@ export class DiariesController {
   async findDiaryByTag(
     @User() user: UserEntity,
     @Param('tagName') tagName: string,
-    @Query(ValidationPipe) queryString: LastIndexDto,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByTag(
-      user.id,
-      tagName,
-      queryString.lastIndex,
-    );
+    const diaryList = await this.diariesService.findDiaryByTag(user.id, tagName, lastIndex);
 
     return { nickname: user.nickname, diaryList };
   }

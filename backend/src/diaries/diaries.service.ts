@@ -153,37 +153,11 @@ export class DiariesService {
     const friends = await this.friendsService.getFriendsList(userId);
     const friendsIdList = friends.map((friend) => friend.id);
 
-    const diaries = await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
+    return await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
       oneWeekAgo,
       friendsIdList,
       lastIndex,
     );
-
-    const feedDiaryList = await Promise.all(
-      diaries.map(async (diary) => {
-        const author = await diary.author;
-        const reactions = await diary.reactions;
-        const tags = await diary.tags;
-
-        const myReaction = reactions.find((reaction) => reaction.user.id === userId);
-
-        return {
-          diaryId: diary.id,
-          authorId: diary.author.id,
-          createdAt: diary.createdAt,
-          profileImage: author.profileImage,
-          nickname: author.nickname,
-          thumbnail: diary.thumbnail,
-          title: diary.title,
-          summary: diary.summary,
-          tags: tags.map((tag) => tag.name),
-          reactionCount: reactions.length,
-          leavedReaction: myReaction === undefined ? null : myReaction.reaction,
-        };
-      }),
-    );
-
-    return feedDiaryList;
   }
 
   async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
