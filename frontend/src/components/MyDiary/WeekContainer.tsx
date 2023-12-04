@@ -60,7 +60,7 @@ const WeekContainer = () => {
       {data && data.diaryList.length < WEEK_STANDARD_LENGTH && (
         <section className="flex gap-5">
           {data.diaryList.map((diaryItem, index) => (
-            <Card data={diaryItem} key={index} />
+            <Card diaryItem={diaryItem} key={index} />
           ))}
         </section>
       )}
