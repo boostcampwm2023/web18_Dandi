@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
@@ -14,7 +15,6 @@ import {
   LARGE,
   PAGE_URL,
 } from '@util/constants';
-import { useNavigate } from 'react-router-dom';
 
 interface ProfileProps {
   userId: number;
