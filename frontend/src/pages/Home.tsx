@@ -5,6 +5,7 @@ import { getCurrentUser } from '@api/Profile';
 import { getDiaryDayList } from '@api/DiaryList';
 
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
+import { viewTypes } from '@type/pages/MyDiary';
 
 import NavBar from '@components/Common/NavBar';
 import DiaryList from '@components/Common/DiaryList';
@@ -31,12 +32,13 @@ const Home = () => {
     any,
     Error,
     InfiniteDiaryListProps,
-    [string, string | null]
+    [string, string | null],
+    { userId: string; type: viewTypes; lastIndex: number }
   >({
     queryKey: ['dayDiaryList', userId],
     queryFn: getDiaryDayList,
     initialPageParam: {
-      userId: userId,
+      userId: userId as string,
       type: 'Day',
       lastIndex: 2e9,
     },
