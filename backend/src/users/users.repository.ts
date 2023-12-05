@@ -3,7 +3,6 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
 import { SocialType } from './entity/socialType';
-import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { endOfDay, startOfDay } from 'date-fns';
 
 @Injectable()
@@ -12,10 +11,9 @@ export class UsersRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async findUserInfoById(userId: number) {
+  findUserInfoById(userId: number) {
     const today = new Date();
-
-    const user = this.createQueryBuilder('user')
+    return this.createQueryBuilder('user')
       .leftJoinAndSelect(
         'user.diaries',
         'diary',
@@ -25,17 +23,15 @@ export class UsersRepository extends Repository<User> {
           endOfDay: endOfDay(today),
         },
       )
-      .leftJoinAndSelect('user.sender', 'sender', 'sender.status = :status', {
-        status: FriendStatus.COMPLETE,
-      })
-      .leftJoinAndSelect('user.receiver', 'receiver', 'receiver.status = :status', {
-        status: FriendStatus.COMPLETE,
-      })
+      .leftJoinAndSelect('user.sender', 'sender')
+      .leftJoinAndSelect('sender.receiver', 'senderR')
+      .leftJoinAndSelect('sender.sender', 'senderS')
+      .leftJoinAndSelect('user.receiver', 'receiver')
+      .leftJoinAndSelect('receiver.receiver', 'receiverR')
+      .leftJoinAndSelect('receiver.sender', 'receiverC')
       .where('user.id = :userId', { userId })
       .orderBy('diary.createdAt', 'DESC')
       .getOne();
-
-    return user;
   }
 
   async findById(id: number): Promise<User> {

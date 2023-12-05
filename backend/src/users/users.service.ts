@@ -1,7 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { SearchUserResponseDto, UpdateUserProfileRequestDto } from './dto/user.dto';
-import { isToday } from 'date-fns';
+import {
+  GetUserResponseDto,
+  SearchUserResponseDto,
+  UpdateUserProfileRequestDto,
+} from './dto/user.dto';
 import { User } from './entity/user.entity';
 import { ImagesService } from 'src/images/images.service';
 
@@ -12,19 +15,34 @@ export class UsersService {
     private imagesService: ImagesService,
   ) {}
 
-  async findUserInfo(userId: number) {
-    const user = await this.usersRepository.findUserInfoById(userId);
+  async findUserInfo(userId: number, friendId: number): Promise<GetUserResponseDto> {
+    const user = await this.usersRepository.findUserInfoById(friendId);
 
     if (!user) {
       throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
     }
-    const sender = await user.sender;
-    const receiver = await user.receiver;
-    const diaries = await user.diaries;
 
-    const totalFriends = sender.length + receiver.length;
-    const isExistedTodayDiary = diaries.length !== 0 && isToday(diaries[0].createdAt);
-    return { user, totalFriends, isExistedTodayDiary };
+    const totalFriends = user.sender.length + user.receiver.length;
+    const relation = [...user.sender, ...user.receiver].find((relation) => {
+      return (
+        (relation.receiver.id === userId && relation.sender.id === friendId) ||
+        (relation.receiver.id === friendId && relation.sender.id === friendId)
+      );
+    });
+
+    return {
+      nickname: user.nickname,
+      profileImage: user.profileImage,
+      totalFriends: totalFriends,
+      isExistedTodayDiary: user.diaries ? true : false,
+      relation: relation
+        ? {
+            senderId: relation.sender.id,
+            receiverId: relation.receiver.id,
+            status: relation.status,
+          }
+        : null,
+    };
   }
 
   async findUserById(userId: number) {

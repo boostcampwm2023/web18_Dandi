@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+import { FriendStatus } from 'src/friends/entity/friendStatus';
+
+class RelationDto {
+  senderId: number;
+  receiverId: number;
+  status: FriendStatus;
+}
 
 export class GetUserResponseDto {
   @ApiProperty({ description: '사용자 닉네임' })
@@ -13,6 +20,9 @@ export class GetUserResponseDto {
 
   @ApiProperty({ description: '오늘 일기 작성 여부' })
   isExistedTodayDiary: boolean;
+
+  @ApiProperty({ description: '해당 사용자와 친구인지 여부' })
+  relation: RelationDto;
 }
 
 export class SearchUserResponseDto {
