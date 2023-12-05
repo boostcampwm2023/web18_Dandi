@@ -13,6 +13,8 @@ interface FriendModalItemProps {
   type: string;
 }
 
+const DB_WAITING_TIME = 100;
+
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const goFriendHome = () => {
@@ -27,7 +29,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
         queryClient.invalidateQueries({
           queryKey: ['sendList'],
         });
-      }, 100);
+      }, DB_WAITING_TIME);
     },
   });
 
@@ -56,7 +58,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
         queryClient.invalidateQueries({
           queryKey: ['receivedList'],
         });
-      }, 100);
+      }, DB_WAITING_TIME);
     },
   });
 
