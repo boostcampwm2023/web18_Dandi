@@ -2,9 +2,15 @@ import { DataSource, Repository } from 'typeorm';
 import { Diary } from './entity/diary.entity';
 import { Injectable } from '@nestjs/common';
 import { DiaryStatus } from './entity/diaryStatus';
-import { PAGINATION_SIZE, ITEM_PER_PAGE } from './utils/diaries.constant';
+import { MoodDegree, PAGINATION_SIZE } from './utils/diaries.constant';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { SearchDiaryDataForm } from './dto/diary.dto';
+import {
+  AllDiaryInfosDto,
+  GetAllEmotionsResponseDto,
+  GetDiaryResponseDto,
+  GetYearMoodResponseDto,
+  SearchDiaryDataForm,
+} from './dto/diary.dto';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -20,52 +26,124 @@ export class DiariesRepository extends Repository<Diary> {
       where: {
         id,
       },
+      relations: ['author'],
     });
+  }
+
+  async findDiaryDetailById(id: number): Promise<GetDiaryResponseDto> {
+    const diaryInfo = await this.createQueryBuilder('diary')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.content as content',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.emotion as emotion',
+        'diary.mood as mood',
+        'diary.status as status',
+        'diary.createdAt as createdAt',
+
+        'user.id as userId',
+        'user.nickname as authorName',
+        'user.profileImage as profileImage',
+
+        'GROUP_CONCAT(tags.name) as tagNames',
+        'COUNT(reactions.reaction) as reactionCount',
+      ])
+      .where('diary.id = :id', { id })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .leftJoin('diary.author', 'user')
+      .groupBy('diary.id')
+      .getRawOne();
+
+    diaryInfo.tagNames = diaryInfo.tagNames ? diaryInfo.tagNames.split(',') : [];
+    diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+
+    return diaryInfo;
   }
 
   async findDiariesByAuthorIdWithPagination(
     authorId: number,
-    isOwner: boolean,
+    userId: number,
     lastIndex: number | undefined,
-  ) {
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
+      .where('diary.author.id = :authorId', { authorId })
       .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'user')
-      .where('diary.author.id = :authorId', {
-        authorId,
-      })
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
       .orderBy('diary.id', 'DESC')
-      .limit(ITEM_PER_PAGE);
+      .limit(PAGINATION_SIZE);
 
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
-    if (!isOwner) {
+    if (authorId !== userId) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
-    return await queryBuilder.getMany();
+
+    const diaryInfos = await queryBuilder.getRawMany();
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, userId);
+    });
+
+    return diaryInfos;
   }
 
-  findDiariesByAuthorIdWithDates(
+  async findDiariesByAuthorIdWithDates(
     authorId: number,
-    isOwner: boolean,
+    userId: number,
     startDate: string,
     lastDate: Date,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'user')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
-      .orderBy('diary.id', 'DESC');
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
+      .orderBy('diary.id', 'DESC')
+      .limit(PAGINATION_SIZE);
 
-    if (!isOwner) {
+    if (authorId !== userId) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
 
-    return queryBuilder.getMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, userId);
+    });
+
+    return diaryInfos;
   }
 
   findAllDiaryBetweenDates(
@@ -73,33 +151,55 @@ export class DiariesRepository extends Repository<Diary> {
     isOwner: boolean,
     startDate: string,
     lastDate: string,
-  ): Promise<Diary[]> {
+  ): Promise<GetAllEmotionsResponseDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoin('diary.reactions', 'reactions')
+      .select([
+        'emotion',
+        'JSON_ARRAYAGG(JSON_OBJECT("id", diary.id, "createdAt", diary.createdAt, "title", diary.title)) AS diaryInfo',
+      ])
       .where('diary.author.id = :userId', { userId })
-      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate });
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', {
+        startDate: new Date(startDate),
+        lastDate: new Date(lastDate),
+      })
+      .groupBy('emotion');
 
     if (!isOwner) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
 
-    return queryBuilder.getMany();
+    return queryBuilder.getRawMany();
   }
 
   async findPaginatedDiaryByDateAndIdList(
+    userId: number,
     date: Date,
     idList: number[],
     lastIndex: number | undefined,
   ) {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'user')
-      .leftJoinAndSelect('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+
+        'user.id as authorId',
+        'user.nickname as nickname',
+        'user.profileImage as profileImage',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author IN (:...idList)', { idList })
       .andWhere('diary.createdAt > :date', { date })
       .andWhere('diary.status = :status', { status: DiaryStatus.PUBLIC })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .leftJoin('diary.author', 'user')
+      .groupBy('diary.id')
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
@@ -107,51 +207,115 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return await queryBuilder.getMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, userId);
+    });
+    return diaryInfos;
   }
 
-  findLatestDiaryByDate(userId: number, date: Date) {
-    return this.createQueryBuilder('diary')
-      .where('diary.author = :userId', { userId })
-      .andWhere('diary.createdAt > :date', { date })
-      .getMany();
+  async findLatestDiaryByDate(
+    userId: number,
+    startDate: Date,
+    lastDate: Date,
+  ): Promise<GetYearMoodResponseDto[]> {
+    const diaries = await this.createQueryBuilder('diary')
+      .select(['diary.createdAt as date', 'diary.mood as mood'])
+      .where('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
+      .getRawMany();
+
+    return diaries.map((diary) => ({
+      date: new Date(diary.date),
+      mood: diary.mood as MoodDegree,
+    }));
   }
 
-  findDiaryByKeywordV1(authorId: number, keyword: string, lastIndex: number) {
+  async findDiaryByKeywordV1(
+    authorId: number,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author.id = :authorId', { authorId })
       .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
         keyword: `%${keyword}%`,
       })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
+      .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, authorId);
+    });
+    return diaryInfos;
   }
 
-  async findDiaryByKeywordV2(authorId: number, keyword: string, lastIndex: number) {
+  async findDiaryByKeywordV2(
+    authorId: number,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoin('diary.tags', 'tags')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
       .where('diary.author.id = :authorId', { authorId })
       .andWhere(
         '(MATCH(diary.content) AGAINST(:keyword IN BOOLEAN MODE) OR MATCH(diary.title) AGAINST(:keyword IN BOOLEAN MODE))',
         { keyword: `*${keyword}*` },
       )
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
+      .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, authorId);
+    });
+    return diaryInfos;
   }
 
   async findDiaryByKeywordV3(
@@ -196,13 +360,29 @@ export class DiariesRepository extends Repository<Diary> {
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 
-  findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
+  findDiaryByTag(
+    authorId: number,
+    tagName: string,
+    lastIndex: number | undefined,
+  ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.reactions', 'reactions')
-      .leftJoinAndSelect('reactions.user', 'reactionUser')
-      .innerJoin('diary.tags', 'tags')
-      .where('tags.name = :tagName', { tagName })
-      .andWhere('diary.author.id = :userId', { userId })
+      .select([
+        'diary.id as diaryId',
+        'diary.title as title',
+        'diary.summary as summary',
+        'diary.thumbnail as thumbnail',
+        'diary.createdAt as createdAt',
+        'diary.emotion as emotion',
+
+        'GROUP_CONCAT(tags.name) as tags',
+        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
+      ])
+      .where('diary.author.id = :authorId', { authorId })
+      .andWhere('tags.name = :tagName', { tagName })
+      .leftJoin('diary.tags', 'tags')
+      .leftJoin('diary.reactions', 'reactions')
+      .groupBy('diary.id')
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
@@ -210,6 +390,24 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getMany();
+    return queryBuilder.getRawMany();
+  }
+
+  private mapToLeaveReaction(diaryInfo, userId: number) {
+    let leavedReaction = false;
+    if (diaryInfo.leavedReaction) {
+      diaryInfo.leavedReaction.split(',').forEach((reaction) => {
+        const match = reaction.match(/\d+:/);
+
+        if (match && Number(match[0].substring(0, match[0].length - 1)) === userId) {
+          diaryInfo.leavedReaction = reaction.replace(match[0], '');
+          leavedReaction = true;
+        }
+      });
+    }
+
+    if (!leavedReaction) {
+      diaryInfo.leavedReaction = null;
+    }
   }
 }

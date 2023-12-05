@@ -9,6 +9,8 @@ import {
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
   AllDiaryInfosDto,
+  GetDiaryResponseDto,
+  ReadUserDiariesResponseDto,
 } from './dto/diary.dto';
 import { User } from 'src/users/entity/user.entity';
 import { TagsService } from 'src/tags/tags.service';
@@ -27,7 +29,7 @@ import {
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
-import { addDays, parseISO, subYears } from 'date-fns';
+import { addDays, parseISO, subMonths, subYears } from 'date-fns';
 import { load } from 'cheerio';
 
 @Injectable()
@@ -56,12 +58,20 @@ export class DiariesService {
     await this.diariesRepository.save(diary);
   }
 
+  async findDiaryDetail(user: User, id: number) {
+    const diary = await this.diariesRepository.findDiaryDetailById(id);
+
+    this.existsDiary(diary);
+    this.checkAuthorization(diary.userId, user.id, diary.status);
+
+    return diary;
+  }
+
   async findDiary(user: User, id: number) {
     const diary = await this.diariesRepository.findById(id);
-    this.existsDiary(diary);
 
-    const author = await diary.author;
-    this.checkAuthorization(author, user, diary.status);
+    this.existsDiary(diary);
+    this.checkAuthorization(diary.author.id, user.id, diary.status);
 
     return diary;
   }
@@ -102,17 +112,16 @@ export class DiariesService {
     if (!getAllEmotionsDto.startDate || !getAllEmotionsDto.lastDate) {
       const currentDate = new Date();
 
-      startDate = currentDate.toLocaleString();
-      lastDate = currentDate.setMonth(currentDate.getMonth() + 1).toLocaleString();
+      startDate = subMonths(currentDate, 1).toLocaleDateString();
+      lastDate = addDays(currentDate, 1).toLocaleDateString();
     }
 
-    const diaries = await this.diariesRepository.findAllDiaryBetweenDates(
+    return await this.diariesRepository.findAllDiaryBetweenDates(
       userId,
       user.id === userId,
       startDate,
       lastDate,
     );
-    return this.groupDiariesByEmotion(diaries);
   }
 
   private groupDiariesByEmotion(diaries: Diary[]) {
@@ -144,82 +153,60 @@ export class DiariesService {
     const friends = await this.friendsService.getFriendsList(userId);
     const friendsIdList = friends.map((friend) => friend.id);
 
-    const diaries = await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
+    return await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
+      userId,
       oneWeekAgo,
       friendsIdList,
       lastIndex,
     );
-
-    const feedDiaryList = await Promise.all(
-      diaries.map(async (diary) => {
-        const author = await diary.author;
-        const reactions = await diary.reactions;
-        const tags = await diary.tags;
-
-        const myReaction = reactions.find((reaction) => reaction.user.id === userId);
-
-        return {
-          diaryId: diary.id,
-          authorId: diary.author.id,
-          createdAt: diary.createdAt,
-          profileImage: author.profileImage,
-          nickname: author.nickname,
-          thumbnail: diary.thumbnail,
-          title: diary.title,
-          summary: diary.summary,
-          tags: tags.map((tag) => tag.name),
-          reactionCount: reactions.length,
-          leavedReaction: myReaction === undefined ? null : myReaction.reaction,
-        };
-      }),
-    );
-
-    return feedDiaryList;
   }
 
-  async findDiaryByAuthorId(user: User, id: number, requestDto: ReadUserDiariesRequestDto) {
+  async findDiaryByAuthorId(
+    user: User,
+    id: number,
+    requestDto: ReadUserDiariesRequestDto,
+  ): Promise<ReadUserDiariesResponseDto> {
     const author = await this.usersService.findUserById(id);
 
-    let diaries: Diary[];
+    let diaries: AllDiaryInfosDto[];
     if (requestDto.type === TimeUnit.Day) {
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
         id,
-        user.id === id,
+        user.id,
         requestDto.lastIndex,
       );
     } else {
       const endDate = addDays(parseISO(requestDto.endDate), 1);
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
         id,
-        user.id === id,
+        user.id,
         requestDto.startDate,
         endDate,
       );
     }
 
-    return { author, diaries };
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
   async getMoodForYear(userId: number): Promise<GetYearMoodResponseDto[]> {
     const oneYearAgo = subYears(new Date(), 1);
+    const nextDay = addDays(new Date(), 1);
 
-    const diariesForYear = await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo);
-
-    const yearMood: GetYearMoodResponseDto[] = diariesForYear.reduce((acc, cur) => {
-      return [...acc, { date: cur.createdAt, mood: cur.mood }];
-    }, []);
-
-    return yearMood;
+    return await this.diariesRepository.findLatestDiaryByDate(userId, oneYearAgo, nextDay);
   }
 
-  async findDiaryByKeywordV1(author: User, keyword: string, lastIndex: number) {
+  async findDiaryByKeywordV1(
+    author: User,
+    keyword: string,
+    lastIndex: number,
+  ): Promise<ReadUserDiariesResponseDto> {
     const diaries = await this.diariesRepository.findDiaryByKeywordV1(
       author.id,
       keyword,
       lastIndex,
     );
 
-    return this.makeAllDiaryInfosDto(diaries, author.id);
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
   async findDiaryByKeywordV2(author: User, keyword: string, lastIndex: number) {
@@ -229,34 +216,17 @@ export class DiariesService {
       lastIndex,
     );
 
-    return this.makeAllDiaryInfosDto(diaries, author.id);
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
-  async findDiaryByTag(userId: number, tagName: string, lastIndex: number | undefined) {
-    const diaries = await this.diariesRepository.findDiaryByTag(userId, tagName, lastIndex);
+  async findDiaryByTag(
+    author: User,
+    tagName: string,
+    lastIndex: number | undefined,
+  ): Promise<ReadUserDiariesResponseDto> {
+    const diaries = await this.diariesRepository.findDiaryByTag(author.id, tagName, lastIndex);
 
-    return this.makeAllDiaryInfosDto(diaries, userId);
-  }
-
-  private makeAllDiaryInfosDto(diaries: Diary[], userId: number) {
-    return Promise.all(
-      diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
-        const tags = await diary.tags;
-        const reactions = await diary.reactions;
-
-        return {
-          diaryId: diary.id,
-          title: diary.title,
-          thumbnail: diary.thumbnail,
-          summary: diary.summary,
-          tags: tags.map((t) => t.name),
-          emotion: diary.emotion,
-          reactionCount: reactions.length,
-          createdAt: diary.createdAt,
-          leavedReaction: reactions.find((reaction) => reaction.user.id === userId)?.reaction,
-        };
-      }),
-    );
+    return { nickname: author.nickname, diaryList: diaries };
   }
 
   async findDiaryByKeywordV3(author: User, keyword: string, lastIndex: number) {
@@ -283,14 +253,14 @@ export class DiariesService {
     });
   }
 
-  private existsDiary(diary: Diary) {
+  private existsDiary(diary: Diary | GetDiaryResponseDto) {
     if (!diary) {
       throw new BadRequestException('존재하지 않는 일기입니다.');
     }
   }
 
-  private checkAuthorization(author: User, user: User, status: DiaryStatus) {
-    if (status === DiaryStatus.PRIVATE && author.id !== user.id) {
+  private checkAuthorization(authorId: number, userId: number, status: DiaryStatus) {
+    if (status === DiaryStatus.PRIVATE && authorId !== userId) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
   }

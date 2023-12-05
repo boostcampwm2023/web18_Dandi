@@ -29,7 +29,6 @@ import {
   ReadUserDiariesRequestDto,
   ReadUserDiariesResponseDto,
   UpdateDiaryDto,
-  LastIndexDto,
   GetYearMoodResponseDto,
   FeedDiaryDto,
 } from './dto/diary.dto';
@@ -43,15 +42,27 @@ import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
 
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  @ApiOperation({ description: '일기 저장 API' })
+  @ApiCreatedResponse({ description: '일기 저장 성공' })
+  @ApiBody({ type: CreateDiaryDto })
+  async createDiary(@User() user: UserEntity, @Body() createDiaryDto: CreateDiaryDto) {
+    await this.diariesService.saveDiary(user, createDiaryDto);
+
+    return '일기가 저장되었습니다.';
+  }
+
   @Get('/friends')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '피드 일기 조회 API' })
   @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
   async getFeedDiary(
     @User() user: UserEntity,
-    @Query(ValidationPipe) queryString: LastIndexDto,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<Record<string, FeedDiaryDto[]>> {
-    const diaryList = await this.diariesService.getFeedDiary(user.id, queryString.lastIndex);
+    const diaryList = await this.diariesService.getFeedDiary(user.id, lastIndex);
 
     return { diaryList };
   }
@@ -64,37 +75,7 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserEntity,
   ): Promise<GetDiaryResponseDto> {
-    const diary = await this.diariesService.findDiary(user, id);
-    const tags = await diary.tags;
-    const author = await diary.author;
-    const reactions = await diary.reactions;
-
-    return {
-      userId: author.id,
-      authorName: author.nickname,
-      profileImage: author.profileImage,
-      title: diary.title,
-      content: diary.content,
-      thumbnail: diary.thumbnail,
-      emotion: diary.emotion,
-      mood: diary.mood,
-      tags: tags.map((t) => t.name),
-      reactionCount: reactions.length,
-      createdAt: diary.createdAt,
-      status: diary.status,
-    };
-  }
-
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(ValidationPipe)
-  @ApiOperation({ description: '일기 저장 API' })
-  @ApiCreatedResponse({ description: '일기 저장 성공' })
-  @ApiBody({ type: CreateDiaryDto })
-  async createDiary(@User() user: UserEntity, @Body() createDiaryDto: CreateDiaryDto) {
-    await this.diariesService.saveDiary(user, createDiaryDto);
-
-    return '일기가 저장되었습니다.';
+    return await this.diariesService.findDiaryDetail(user, id);
   }
 
   @Patch('/:id')
@@ -136,26 +117,9 @@ export class DiariesController {
     @Param('id', ParseIntPipe) id: number,
     @Query(ValidationPipe) requestDto: ReadUserDiariesRequestDto,
   ): Promise<ReadUserDiariesResponseDto> {
-    const { author, diaries } = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
+    const responseDto = await this.diariesService.findDiaryByAuthorId(user, id, requestDto);
 
-    const diaryInfos = diaries.map<Promise<AllDiaryInfosDto>>(async (diary) => {
-      const tags = await diary.tags;
-      const reactions = await diary.reactions;
-
-      return {
-        diaryId: diary.id,
-        title: diary.title,
-        thumbnail: diary.thumbnail,
-        summary: diary.summary,
-        tags: tags.map((t) => t.name),
-        emotion: diary.emotion,
-        reactionCount: reactions.length,
-        createdAt: diary.createdAt,
-        leavedReaction: reactions.find((reaction) => reaction.user.id === id)?.reaction,
-      };
-    });
-
-    return { nickname: author.nickname, diaryList: await Promise.all(diaryInfos) };
+    return responseDto;
   }
 
   @Get('/emotions/:userId')
@@ -207,9 +171,7 @@ export class DiariesController {
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
-
-    return { nickname: author.nickname, diaryList };
+    return await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
   }
 
   @Get('/search/v2/:keyword')
@@ -224,10 +186,7 @@ export class DiariesController {
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    console.log(typeof lastIndex);
-    const diaryList = await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
-
-    return { nickname: author.nickname, diaryList };
+    return await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
   }
 
   @Get('/search/v3/:keyword')
@@ -257,14 +216,8 @@ export class DiariesController {
   async findDiaryByTag(
     @User() user: UserEntity,
     @Param('tagName') tagName: string,
-    @Query(ValidationPipe) queryString: LastIndexDto,
+    @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByTag(
-      user.id,
-      tagName,
-      queryString.lastIndex,
-    );
-
-    return { nickname: user.nickname, diaryList };
+    return await this.diariesService.findDiaryByTag(user, tagName, lastIndex);
   }
 }

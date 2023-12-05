@@ -1,12 +1,4 @@
-import {
-  IsIn,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  Matches,
-  ValidateIf,
-} from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, Matches, ValidateIf } from 'class-validator';
 import { DiaryStatus } from '../entity/diaryStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -129,14 +121,6 @@ class DiaryInfos {
   id: number;
   title: string;
   createdAt: Date;
-}
-
-export class LastIndexDto {
-  @ApiProperty({ description: '커서 방식 페이지네이션을 위한 diary Index' })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  lastIndex: number;
 }
 
 export class FeedDiaryDto {
