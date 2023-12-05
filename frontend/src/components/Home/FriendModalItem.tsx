@@ -1,13 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
-import {
-  requestFriend,
-  cancelRequestFriend,
-  deleteFriend,
-  allowFriend,
-  rejectFriend,
-} from '@api/FriendModal';
+import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 
@@ -24,10 +18,6 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const goFriendHome = () => {
     navigate(`${PAGE_URL.HOME}${id}`);
   };
-
-  const requestMutation = useMutation({
-    mutationFn: (receiverId: number) => requestFriend(receiverId),
-  });
 
   const cancelRequestMutation = useMutation({
     mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
@@ -91,16 +81,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
           </button>
         );
       case PROFILE_BUTTON_TYPE.STRANGER:
-        return (
-          <button
-            onClick={() => {
-              requestMutation.mutate(+id);
-            }}
-            className="bg-mint w-3/5 rounded-md border-none px-2 py-1 text-[0.7rem] font-bold text-white"
-          >
-            친구 요청
-          </button>
-        );
+        return <div></div>;
     }
   };
 
@@ -108,13 +89,15 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
 
   return (
     <div className="mb-5 mr-3 flex w-full">
-      <img
-        className="mr-3 h-16 w-16 cursor-pointer rounded-full"
-        onClick={goFriendHome}
-        src={profileImage}
-        alt={`${nickname} 프로필 이미지`}
-      />
-      <div className="flex w-full flex-col">
+      <div className="w-28">
+        <img
+          className="mr-3 h-16 w-16 cursor-pointer rounded-full"
+          onClick={goFriendHome}
+          src={profileImage}
+          alt={`${nickname} 프로필 이미지`}
+        />
+      </div>
+      <div className="flex w-full flex-col justify-center">
         <p className="text-sm font-bold">{nickname}</p>
         <p className="text-gray text-xs">{email}</p>
         {buttonContent}

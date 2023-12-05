@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getDiaryWeekAndMonthList } from '@api/DiaryList';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
+import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 
 import DateController from '@components/MyDiary/DateController';
 import Calendar from '@components/MyDiary/Calendar';
@@ -26,11 +27,11 @@ const MonthContainer = () => {
         endDate: formatDateDash(last),
       }),
     select: (data) => {
-      const emotionObject: { [day: number]: string } = {};
+      const emotionObject: EmotionData = {};
       data.diaryList.forEach((diary: IDiaryContent) => {
-        const { emotion, createdAt } = diary;
+        const { diaryId, emotion, createdAt } = diary;
         const day = new Date(createdAt).getDate();
-        emotionObject[day] = emotion;
+        emotionObject[day] = { diaryId: +diaryId, emotion: emotion };
       });
       return emotionObject;
     },

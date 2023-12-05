@@ -43,7 +43,7 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
     const formData = new FormData();
 
     if (newNickname) {
-      formData.append('nickname', JSON.stringify(newNickname));
+      formData.append('nickname', newNickname);
     }
     if (newProfileImage) {
       formData.append('profileImage', newProfileImage);

@@ -130,7 +130,7 @@ export class FriendsService {
     }
 
     const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
-    if (relation) {
+    if (!relation) {
       const reverseRelation = await this.friendsRepository.findFriendRequest(receiverId, senderId);
 
       if (reverseRelation) {

@@ -23,7 +23,7 @@ export class User extends BaseEntity {
   @Column()
   nickname: string;
 
-  @Column()
+  @Column({ unique: true })
   socialId: string;
 
   @Column()
