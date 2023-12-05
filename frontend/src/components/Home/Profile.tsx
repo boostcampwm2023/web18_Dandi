@@ -81,6 +81,9 @@ const Profile = ({ userId, userData }: ProfileProps) => {
       queryClient.invalidateQueries({
         queryKey: ['sendList'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['profileData'],
+      });
     },
   });
 
@@ -89,6 +92,9 @@ const Profile = ({ userId, userData }: ProfileProps) => {
     onSuccess() {
       queryClient.invalidateQueries({
         queryKey: ['friendList'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['profileData'],
       });
     },
   });
