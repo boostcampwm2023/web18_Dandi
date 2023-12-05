@@ -224,7 +224,8 @@ export class DiariesRepository extends Repository<Diary> {
   ): Promise<GetYearMoodResponseDto[]> {
     const diaries = await this.createQueryBuilder('diary')
       .select(['diary.createdAt as date', 'diary.mood as mood'])
-      .where('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
+      .where('diary.authorId = :userId', { userId })
+      .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', { startDate, lastDate })
       .getRawMany();
 
     return diaries.map((diary) => ({
