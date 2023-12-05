@@ -154,6 +154,7 @@ export class DiariesService {
     const friendsIdList = friends.map((friend) => friend.id);
 
     return await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
+      userId,
       oneWeekAgo,
       friendsIdList,
       lastIndex,
@@ -171,14 +172,14 @@ export class DiariesService {
     if (requestDto.type === TimeUnit.Day) {
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithPagination(
         id,
-        user.id === id,
+        user.id,
         requestDto.lastIndex,
       );
     } else {
       const endDate = addDays(parseISO(requestDto.endDate), 1);
       diaries = await this.diariesRepository.findDiariesByAuthorIdWithDates(
         id,
-        user.id === id,
+        user.id,
         requestDto.startDate,
         endDate,
       );

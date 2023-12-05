@@ -65,7 +65,7 @@ export class DiariesRepository extends Repository<Diary> {
 
   async findDiariesByAuthorIdWithPagination(
     authorId: number,
-    isOwner: boolean,
+    userId: number,
     lastIndex: number | undefined,
   ): Promise<AllDiaryInfosDto[]> {
     const queryBuilder = this.createQueryBuilder('diary')
@@ -91,7 +91,7 @@ export class DiariesRepository extends Repository<Diary> {
     if (lastIndex) {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
-    if (!isOwner) {
+    if (authorId !== userId) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
 
@@ -99,7 +99,7 @@ export class DiariesRepository extends Repository<Diary> {
     diaryInfos.forEach((diaryInfo) => {
       diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
       diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
-      this.mapToLeaveReaction(diaryInfo);
+      this.mapToLeaveReaction(diaryInfo, userId);
     });
 
     return diaryInfos;
@@ -107,7 +107,7 @@ export class DiariesRepository extends Repository<Diary> {
 
   async findDiariesByAuthorIdWithDates(
     authorId: number,
-    isOwner: boolean,
+    userId: number,
     startDate: string,
     lastDate: Date,
   ) {
@@ -132,7 +132,7 @@ export class DiariesRepository extends Repository<Diary> {
       .orderBy('diary.id', 'DESC')
       .limit(PAGINATION_SIZE);
 
-    if (!isOwner) {
+    if (authorId !== userId) {
       queryBuilder.andWhere('diary.status = :status', { status: 'public' });
     }
 
@@ -140,7 +140,7 @@ export class DiariesRepository extends Repository<Diary> {
     diaryInfos.forEach((diaryInfo) => {
       diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
       diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
-      this.mapToLeaveReaction(diaryInfo);
+      this.mapToLeaveReaction(diaryInfo, userId);
     });
 
     return diaryInfos;
@@ -172,6 +172,7 @@ export class DiariesRepository extends Repository<Diary> {
   }
 
   async findPaginatedDiaryByDateAndIdList(
+    userId: number,
     date: Date,
     idList: number[],
     lastIndex: number | undefined,
@@ -211,7 +212,7 @@ export class DiariesRepository extends Repository<Diary> {
     diaryInfos.forEach((diaryInfo) => {
       diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
       diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
-      this.mapToLeaveReaction(diaryInfo);
+      this.mapToLeaveReaction(diaryInfo, userId);
     });
     return diaryInfos;
   }
@@ -232,7 +233,7 @@ export class DiariesRepository extends Repository<Diary> {
     }));
   }
 
-  findDiaryByKeywordV1(
+  async findDiaryByKeywordV1(
     authorId: number,
     keyword: string,
     lastIndex: number,
@@ -264,7 +265,14 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getRawMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, authorId);
+    });
+    return diaryInfos;
   }
 
   async findDiaryByKeywordV2(
@@ -300,7 +308,14 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getRawMany();
+    const diaryInfos = await queryBuilder.getRawMany();
+
+    diaryInfos.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, authorId);
+    });
+    return diaryInfos;
   }
 
   async findDiaryByKeywordV3(
@@ -378,16 +393,21 @@ export class DiariesRepository extends Repository<Diary> {
     return queryBuilder.getRawMany();
   }
 
-  private mapToLeaveReaction(diaryInfo: any) {
+  private mapToLeaveReaction(diaryInfo, userId: number) {
+    let leavedReaction = false;
     if (diaryInfo.leavedReaction) {
       diaryInfo.leavedReaction.split(',').forEach((reaction) => {
         const match = reaction.match(/\d+:/);
 
-        if (match) {
+        if (match && Number(match[0].substring(0, match[0].length - 1)) === userId) {
           diaryInfo.leavedReaction = reaction.replace(match[0], '');
-          return;
+          leavedReaction = true;
         }
       });
+    }
+
+    if (!leavedReaction) {
+      diaryInfo.leavedReaction = null;
     }
   }
 }
