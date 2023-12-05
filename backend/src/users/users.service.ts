@@ -7,6 +7,7 @@ import {
 } from './dto/user.dto';
 import { User } from './entity/user.entity';
 import { ImagesService } from 'src/images/images.service';
+import { FriendStatus } from 'src/friends/entity/friendStatus';
 
 @Injectable()
 export class UsersService {
@@ -22,13 +23,19 @@ export class UsersService {
       throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
     }
 
-    const totalFriends = user.sender.length + user.receiver.length;
-    const relation = [...user.sender, ...user.receiver].find((relation) => {
-      return (
-        (relation.receiver.id === userId && relation.sender.id === friendId) ||
-        (relation.receiver.id === friendId && relation.sender.id === friendId)
-      );
-    });
+    let totalFriends = 0;
+    let relation = null;
+    for (const friend of [...user.sender, ...user.receiver]) {
+      if (friend.status === FriendStatus.COMPLETE) {
+        totalFriends++;
+      }
+      if (
+        (friend.receiver.id === userId && friend.sender.id === friendId) ||
+        (friend.receiver.id === friendId && friend.sender.id === userId)
+      ) {
+        relation = friend;
+      }
+    }
 
     return {
       nickname: user.nickname,
