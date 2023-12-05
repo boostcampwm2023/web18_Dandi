@@ -49,6 +49,79 @@ export const DUMMY_DATA = [
   },
 ];
 
+export const EMOJI_CLOUD_DUMMY_DATA = [
+  {
+    emotion: "😊",
+    diaryInfos: [
+      {
+        id: 1,
+        title: "Happy Day",
+        createdAt: new Date("2023-12-05T10:00:00Z"),
+      },
+      {
+        id: 2,
+        title: "Joyful Moments",
+        createdAt: new Date("2023-12-05T14:30:00Z"),
+      },
+      {
+        id: 3,
+        title: "Gratefulness",
+        createdAt: new Date("2023-12-06T09:15:00Z"),
+      },
+    ],
+  },
+  {
+    emotion: "😢",
+    diaryInfos: [
+      {
+        id: 4,
+        title: "Sadness",
+        createdAt: new Date("2023-12-06T14:45:00Z"),
+      },
+      {
+        id: 5,
+        title: "Reflecting on Loss",
+        createdAt: new Date("2023-12-07T11:20:00Z"),
+      },
+      {
+        id: 6,
+        title: "Comforting Memories",
+        createdAt: new Date("2023-12-07T18:00:00Z"),
+      },
+    ],
+  },
+  {
+    emotion: "😍",
+    diaryInfos: [
+      {
+        id: 7,
+        title: "Lovely Moments",
+        createdAt: new Date("2023-12-08T09:45:00Z"),
+      },
+      {
+        id: 8,
+        title: "Heartwarming Events",
+        createdAt: new Date("2023-12-08T15:30:00Z"),
+      },
+    ],
+  },
+  {
+    emotion: "😭",
+    diaryInfos: [
+      {
+        id: 9,
+        title: "Tearful Moments",
+        createdAt: new Date("2023-12-09T12:30:00Z"),
+      },
+      {
+        id: 10,
+        title: "Overcoming Challenges",
+        createdAt: new Date("2023-12-09T17:00:00Z"),
+      },
+    ],
+  },
+];
+
 export const NEXT_INDEX = 1;
 export const PREV_INDEX = -1;
 export const PREV_WEEK = -7;

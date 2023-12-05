@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import getEmotionStat from '@api/EmotionStat';
+import EmotionCloud from '@components/Home/EmotionCloud';
 
 import { formatDateDash, calPrev } from '@util/funcs';
 import { NEXT_INDEX, PREV_INDEX, PREV_WEEK } from '@util/constants';
@@ -10,10 +11,25 @@ interface EmotionStatProps {
   nickname: string;
 }
 
+interface emotionCloudProps {
+  emotion: string;
+  diaryInfos: diaryInfosProps[];
+}
+
+interface diaryInfosProps {
+  diaryInfos: diaryInfoProps[];
+}
+
+interface diaryInfoProps {
+  id: number;
+  title: string;
+  createdAt: Date;
+}
+
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const [period, setPeriod] = useState([calPrev(new Date(), PREV_WEEK), new Date()]);
 
-  const { isError, isLoading } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ['emotionStat', localStorage.getItem('userId'), period],
     queryFn: () =>
       getEmotionStat(
@@ -31,9 +47,15 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
     return <p>Error Occurrence!</p>;
   }
 
+  const eData = data.map((item : emotionCloudProps) => {
+    return {
+      text: item.emotion,
+      size: item.diaryInfos.length * 20,
+    };
+  });
   return (
-    <>
-      <div className="flex w-3/5 items-center justify-between p-5">
+    <div className="flex h-full w-3/5 flex-col gap-2 p-5">
+      <div className="flex items-center justify-between p-5">
         <h3 className="text-2xl font-bold">최근 {nickname}님의 감정은 어땠을까요?</h3>
         <div className="flex items-center gap-3">
           <input
@@ -58,7 +80,10 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           />
         </div>
       </div>
-    </>
+      <div className="border-brown h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2">
+        <EmotionCloud emotionData={eData} />
+      </div>
+    </div>
   );
 };
 
