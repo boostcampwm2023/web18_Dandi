@@ -49,8 +49,8 @@ const Calendar = ({ first, last, emotionData }: CalendarProp) => {
               >
                 <DayItem
                   day={day}
-                  diaryId={emotionData && emotionData[day] ? emotionData[day].diaryId : undefined}
-                  emotion={emotionData && emotionData[day] ? emotionData[day].emotion : undefined}
+                  diaryId={emotionData?.[day]?.diaryId}
+                  emotion={emotionData?.[day]?.emotion}
                 />
               </td>
             ))}
