@@ -54,8 +54,11 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '사용자 정보 조회 API' })
   @ApiOkResponse({ description: '사용자 정보 조회 성공', type: GetUserResponseDto })
-  async getUserInfo(@Param('userId', ParseIntPipe) userId: number): Promise<GetUserResponseDto> {
-    return await this.usersService.findUserInfo(userId);
+  async getUserInfo(
+    @User() user: UserEntity,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<GetUserResponseDto> {
+    return this.usersService.findUserInfo(user.id, userId);
   }
 
   @Get('/search/:nickname')
