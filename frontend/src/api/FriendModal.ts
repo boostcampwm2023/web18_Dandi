@@ -133,9 +133,6 @@ export const updateProfile = async (formData: FormData) => {
   try {
     const response = await fetch(API_PATH.USER.profile(), {
       method: 'PATCH',
-      headers: {
-        'content-Type': 'multipart/form-data',
-      },
       credentials: 'include',
       body: formData,
     });
