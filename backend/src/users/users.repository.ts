@@ -3,9 +3,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { AuthUserDto } from '../auth/dto/auth.dto';
 import { SocialType } from './entity/socialType';
-import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { endOfDay, startOfDay } from 'date-fns';
-import { GetUserResponseDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
