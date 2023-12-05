@@ -126,7 +126,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
       </div>
 
       <div className="mb-3 flex flex-wrap gap-3 text-base">
-        {diaryItem.tags.map((keyword, index) => (
+        {Array.from(diaryItem.tags).map((keyword, index) => (
           <Keyword key={index} text={keyword} />
         ))}
       </div>

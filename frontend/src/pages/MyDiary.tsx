@@ -71,7 +71,7 @@ const MyDiary = () => {
           }
         : undefined;
     },
-    enabled: searchFlag && !!keyword,
+    enabled: !!searchFlag && !!keyword,
   });
 
   return (
@@ -100,7 +100,7 @@ const MyDiary = () => {
             keyword &&
             searchData?.pages.map((page, pageIndex) =>
               page.diaryList.map((item, itemIndex) => (
-                <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
+                <DiaryListItem diaryItem={item} key={String(pageIndex) + String(itemIndex)} />
               )),
             )}
           {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}
