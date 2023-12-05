@@ -5,6 +5,7 @@ import { AuthUserDto } from '../auth/dto/auth.dto';
 import { SocialType } from './entity/socialType';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { endOfDay, startOfDay } from 'date-fns';
+import { GetUserResponseDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
@@ -12,29 +13,32 @@ export class UsersRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async findUserInfoById(userId: number) {
+  async findUserInfoById(userId: number): Promise<GetUserResponseDto> {
     const today = new Date();
-
-    const user = this.createQueryBuilder('user')
-      .leftJoinAndSelect(
+    const user = await this.createQueryBuilder('user')
+      .select([
+        'user.nickname as nickname',
+        'user.profileImage as profileImage',
+        'COUNT(DISTINCT sender.id) + COUNT(DISTINCT receiver.id) as totalFriends',
+        '(CASE WHEN COUNT(diary.id) > 0 THEN true ELSE false END) as isExistedTodayDiary',
+      ])
+      .leftJoin(
         'user.diaries',
         'diary',
         'diary.createdAt >= :startOfDay AND diary.createdAt <= :endOfDay',
-        {
-          startOfDay: startOfDay(today),
-          endOfDay: endOfDay(today),
-        },
+        { startOfDay: startOfDay(today), endOfDay: endOfDay(today) },
       )
-      .leftJoinAndSelect('user.sender', 'sender', 'sender.status = :status', {
+      .leftJoin('user.sender', 'sender', 'sender.status = :status', {
         status: FriendStatus.COMPLETE,
       })
-      .leftJoinAndSelect('user.receiver', 'receiver', 'receiver.status = :status', {
+      .leftJoin('user.receiver', 'receiver', 'receiver.status = :status', {
         status: FriendStatus.COMPLETE,
       })
       .where('user.id = :userId', { userId })
-      .orderBy('diary.createdAt', 'DESC')
-      .getOne();
+      .getRawOne();
 
+    user.totalFriends = Number(user.totalFriends);
+    user.isExistedTodayDiary = user.isExistedTodayDiary === '1';
     return user;
   }
 

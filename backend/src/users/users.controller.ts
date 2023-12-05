@@ -55,15 +55,7 @@ export class UsersController {
   @ApiOperation({ description: '사용자 정보 조회 API' })
   @ApiOkResponse({ description: '사용자 정보 조회 성공', type: GetUserResponseDto })
   async getUserInfo(@Param('userId', ParseIntPipe) userId: number): Promise<GetUserResponseDto> {
-    const { user, totalFriends, isExistedTodayDiary } =
-      await this.usersService.findUserInfo(userId);
-
-    return {
-      nickname: user.nickname,
-      profileImage: user.profileImage,
-      totalFriends,
-      isExistedTodayDiary,
-    };
+    return await this.usersService.findUserInfo(userId);
   }
 
   @Get('/search/:nickname')

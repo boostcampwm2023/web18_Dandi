@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { SearchUserResponseDto, UpdateUserProfileRequestDto } from './dto/user.dto';
-import { isToday } from 'date-fns';
 import { User } from './entity/user.entity';
 import { ImagesService } from 'src/images/images.service';
 
@@ -18,13 +17,7 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
     }
-    const sender = await user.sender;
-    const receiver = await user.receiver;
-    const diaries = await user.diaries;
-
-    const totalFriends = sender.length + receiver.length;
-    const isExistedTodayDiary = diaries.length !== 0 && isToday(diaries[0].createdAt);
-    return { user, totalFriends, isExistedTodayDiary };
+    return user;
   }
 
   async findUserById(userId: number) {
