@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import getEmotionStat from '@api/EmotionStat';
 
 import { formatDateDash, calPrev } from '@util/funcs';
-import { NEXT_INDEX, PREV_INDEX, PREV_WEEK } from '@/util/constants';
+import { NEXT_INDEX, PREV_INDEX, PREV_WEEK } from '@util/constants';
 
 interface EmotionStatProps {
   nickname: string;
