@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
 
@@ -18,21 +18,46 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const goFriendHome = () => {
     navigate(`${PAGE_URL.HOME}${id}`);
   };
+  const queryClient = useQueryClient();
 
   const cancelRequestMutation = useMutation({
     mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
+    onSuccess() {
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['sendList'],
+        });
+      }, 100);
+    },
   });
 
   const deleteFriendMutation = useMutation({
     mutationFn: (friendId: number) => deleteFriend(friendId),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ['friendList'],
+      });
+    },
   });
 
   const allowFriendMutation = useMutation({
     mutationFn: (senderId: number) => allowFriend(senderId),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ['receivedList'],
+      });
+    },
   });
 
   const rejectFriendMutation = useMutation({
     mutationFn: (senderId: number) => rejectFriend(senderId),
+    onSuccess() {
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['receivedList'],
+        });
+      }, 100);
+    },
   });
 
   const getButtonElement = (type: string) => {
