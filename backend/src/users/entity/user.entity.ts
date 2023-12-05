@@ -41,12 +41,12 @@ export class User extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @OneToMany(() => Diary, (diary) => diary.author, { cascade: true, lazy: true })
+  @OneToMany(() => Diary, (diary) => diary.author, { cascade: true })
   diaries: Diary[];
 
-  @OneToMany(() => Friend, (friend) => friend.sender, { cascade: true, lazy: true })
+  @OneToMany(() => Friend, (friend) => friend.sender, { cascade: true })
   sender: Friend[];
 
-  @OneToMany(() => Friend, (friend) => friend.receiver, { cascade: true, lazy: true })
+  @OneToMany(() => Friend, (friend) => friend.receiver, { cascade: true })
   receiver: Friend[];
 }
