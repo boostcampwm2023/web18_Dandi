@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { updateProfile } from '@api/FriendModal';
 
@@ -9,6 +9,9 @@ interface ProfileEditProps {
 }
 
 const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
+  const queryClient = useQueryClient();
+  const userId = localStorage.getItem('userId');
+
   const [newNickname, setNewNickname] = useState('');
   const [imageSrc, setImageSrc] = useState(profileImage);
   const [newProfileImage, setNewProfileImage] = useState<File>();
@@ -16,6 +19,11 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
 
   const updateMutation = useMutation({
     mutationFn: (formData: FormData) => updateProfile(formData),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ['profileData', userId],
+      });
+    },
   });
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {

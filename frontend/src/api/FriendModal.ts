@@ -76,7 +76,7 @@ export const requestFriend = async (receiverId: number) => {
 export const cancelRequestFriend = async (receiverId: number) => {
   try {
     const response = await fetch(API_PATH.FRIEND.request(receiverId), {
-      method: 'delete',
+      method: 'DELETE',
       credentials: 'include',
     });
 
@@ -89,7 +89,7 @@ export const cancelRequestFriend = async (receiverId: number) => {
 export const deleteFriend = async (friendId: number) => {
   try {
     const response = await fetch(API_PATH.FRIEND.list(friendId), {
-      method: 'delete',
+      method: 'DELETE',
       credentials: 'include',
     });
 
@@ -119,7 +119,7 @@ export const allowFriend = async (senderId: number) => {
 export const rejectFriend = async (senderId: number) => {
   try {
     const response = await fetch(API_PATH.FRIEND.allow(senderId), {
-      method: 'delete',
+      method: 'DELETE',
       credentials: 'include',
     });
 
