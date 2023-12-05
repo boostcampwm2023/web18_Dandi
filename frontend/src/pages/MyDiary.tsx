@@ -17,9 +17,8 @@ import { DIARY_VIEW_TYPE } from '@util/constants';
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
-
   const { data } = useInfiniteQuery<any, Error, InfiniteDiaryListProps, [string, string | null]>({
-    queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+    queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
     queryFn: getDiaryDayList,
     initialPageParam: {
       userId: localStorage.getItem('userId') as string,
