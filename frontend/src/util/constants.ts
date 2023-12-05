@@ -51,6 +51,7 @@ export const DUMMY_DATA = [
 
 export const NEXT_INDEX = 1;
 export const PREV_INDEX = -1;
+export const PREV_WEEK = -7;
 export const PAGE_TITLE_HOME = '님의 일기 목록';
 export const PAGE_TITLE_FEED = '친구들의 일기';
 export const HOME = 'home';

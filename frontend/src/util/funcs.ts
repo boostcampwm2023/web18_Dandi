@@ -35,3 +35,9 @@ export const formatDateDash = (date: Date) => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const calPrev = (date: Date, num: number) => {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + num);
+  return newDate;
+};

@@ -3,23 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 
 import getEmotionStat from '@api/EmotionStat';
 
-import { formatDateDash } from '@util/funcs';
+import { formatDateDash, calPrev } from '@util/funcs';
+import { NEXT_INDEX, PREV_INDEX, PREV_WEEK } from '@util/constants';
 
 interface EmotionStatProps {
   nickname: string;
 }
 
-const calPrevOneWeek = () => {
-  const date = new Date();
-  date.setDate(date.getDate() - 7);
-  return date;
-};
-
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
-  const [period, _] = useState([calPrevOneWeek(), new Date()]);
+  const [period, setPeriod] = useState([calPrev(new Date(), PREV_WEEK), new Date()]);
 
   const { isError, isLoading } = useQuery({
-    queryKey: ['emotionStat', localStorage.getItem('userId')],
+    queryKey: ['emotionStat', localStorage.getItem('userId'), period],
     queryFn: () =>
       getEmotionStat(
         Number(localStorage.getItem('userId')),
@@ -45,12 +40,21 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
             className="border-brown rounded-xl border border-solid p-3 outline-none"
             type="date"
             defaultValue={formatDateDash(period[0])}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPeriod([new Date(e.target.value), period[1]])
+            }
+            max={formatDateDash(calPrev(period[1], PREV_INDEX))}
           />
           <p>~</p>
           <input
             type="date"
             className="border-brown rounded-xl border border-solid p-3 outline-none"
             defaultValue={formatDateDash(period[1])}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPeriod([period[0], new Date(e.target.value)])
+            }
+            min={formatDateDash(calPrev(period[0], NEXT_INDEX))}
+            max={formatDateDash(new Date())}
           />
         </div>
       </div>
