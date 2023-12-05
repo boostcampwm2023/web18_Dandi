@@ -108,7 +108,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
     }
 
     if (relation.status === 'waiting') {
-      return <p>대기중</p>;
+      return <p>대기 중</p>;
     }
 
     return (
