@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { referDiary, deleteDiary } from '@api/Detail';
 
@@ -13,6 +13,7 @@ import Alert from '@components/Common/Alert';
 import { PAGE_URL } from '@util/constants';
 
 const Detail = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const toggleShowModal = () => setShowModal((prev) => !prev);
@@ -27,6 +28,9 @@ const Detail = () => {
   const deleteDiaryMutation = useMutation({
     mutationFn: () => deleteDiary(diaryId),
     onSuccess: () => {
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      });
       navigate(PAGE_URL.MY_DIARY);
     },
     onError: (error) => {

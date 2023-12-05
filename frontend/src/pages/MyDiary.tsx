@@ -29,7 +29,8 @@ const MyDiary = () => {
     [string, string | null],
     { userId: string; type: viewTypes; lastIndex: number }
   >({
-    queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+    queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+
     queryFn: getDiaryDayList,
     initialPageParam: {
       userId: localStorage.getItem('userId') as string,
