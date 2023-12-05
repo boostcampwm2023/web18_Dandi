@@ -1,5 +1,3 @@
-import { searchOptionsType } from '@type/pages/MyDiary';
-
 import API_PATH from '@util/apiPath';
 
 export const getTagRecommend = async (keyword: string) => {
@@ -16,19 +14,35 @@ export const getTagRecommend = async (keyword: string) => {
   }
 };
 
-export const getSearchResults = async ({
+export const getKeywordSearchResults = async ({
   pageParam,
 }: {
-  pageParam: { keyword: string; lastIndex: number; type: searchOptionsType };
+  pageParam: { keywordList: string[]; lastIndex: number };
 }) => {
   try {
-    const { keyword, lastIndex, type } = pageParam;
-    const fetchURL =
-      type === '키워드'
-        ? API_PATH.DIARY.keywordSearch(keyword, lastIndex)
-        : API_PATH.DIARY.search(keyword, lastIndex);
+    const { keywordList, lastIndex } = pageParam;
 
-    const response = await fetch(fetchURL, {
+    const response = await fetch(API_PATH.DIARY.keywordSearch(keywordList, lastIndex), {
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('올바른 네트워크 응답이 아닙니다.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('검색 결과 조회에 실패했습니다.', error);
+  }
+};
+
+export const getContentSearchResults = async ({
+  pageParam,
+}: {
+  pageParam: { contentSearchItem: string; lastIndex: number };
+}) => {
+  try {
+    const { contentSearchItem, lastIndex } = pageParam;
+
+    const response = await fetch(API_PATH.DIARY.search(contentSearchItem, lastIndex), {
       credentials: 'include',
     });
 

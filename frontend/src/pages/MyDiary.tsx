@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getDiaryDayList } from '@api/DiaryList';
-import { getSearchResults } from '@api/KeywordSearch';
+import { getContentSearchResults, getKeywordSearchResults } from '@api/KeywordSearch';
 
 import { viewTypes, searchOptionsType } from '@type/pages/MyDiary';
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
@@ -18,9 +18,16 @@ import { DIARY_VIEW_TYPE } from '@util/constants';
 
 const MyDiary = () => {
   const [viewType, setViewType] = useState<viewTypes>('Day');
-  const [keyword, setKeyword] = useState<string>('');
+  const [keywordList, setKeywordList] = useState<string[]>([]);
+  const [contentSearchItem, setContentSearchItem] = useState('');
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
+
+  useEffect(() => {
+    if (!keywordList.length) {
+      setSearchFlag(false);
+    }
+  }, [keywordList]);
 
   const { data: diaryData } = useInfiniteQuery<
     any,
@@ -48,30 +55,52 @@ const MyDiary = () => {
     },
   });
 
-  const { data: searchData } = useInfiniteQuery<
+  const { data: keywordSearchData } = useInfiniteQuery<
     any,
     Error,
     InfiniteDiaryListProps,
-    [string, string | null, searchOptionsType],
-    { keyword: string; lastIndex: number; type: searchOptionsType }
+    [string, string[] | null],
+    { keywordList: string[]; lastIndex: number }
   >({
-    queryKey: ['searchDataList', keyword, selected],
-    queryFn: getSearchResults,
+    queryKey: ['keywordSearchDataList', keywordList],
+    queryFn: getKeywordSearchResults,
     initialPageParam: {
-      keyword: keyword,
-      type: selected,
+      keywordList: keywordList,
       lastIndex: 2e9,
     },
     getNextPageParam: (lastPage) => {
       return lastPage && lastPage.diaryList.length >= 5
         ? {
-            keyword: keyword,
-            type: selected,
+            keywordList: keywordList,
             lastIndex: lastPage?.diaryList.at(-1).diaryId,
           }
         : undefined;
     },
-    enabled: !!searchFlag && !!keyword,
+    enabled: !!searchFlag && !!keywordList.length,
+  });
+
+  const { data: contentSearchData } = useInfiniteQuery<
+    any,
+    Error,
+    InfiniteDiaryListProps,
+    [string, string | null],
+    { contentSearchItem: string; lastIndex: number }
+  >({
+    queryKey: ['contentSearchDataList', contentSearchItem],
+    queryFn: getContentSearchResults,
+    initialPageParam: {
+      contentSearchItem: contentSearchItem,
+      lastIndex: 2e9,
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage && lastPage.diaryList.length >= 5
+        ? {
+            contentSearchItem: contentSearchItem,
+            lastIndex: lastPage?.diaryList.at(-1).diaryId,
+          }
+        : undefined;
+    },
+    enabled: !!searchFlag && !!contentSearchItem,
   });
 
   return (
@@ -80,27 +109,39 @@ const MyDiary = () => {
       <main className="mx-auto mb-28 flex max-w-6xl flex-col items-center justify-start">
         <header className="my-10 flex w-full items-start justify-between">
           <KeywordSearch
-            keyword={keyword}
+            keywordList={keywordList}
             selected={selected}
-            setKeyword={setKeyword}
+            setKeywordList={setKeywordList}
             setSelected={setSelected}
             setSearchFlag={setSearchFlag}
+            setContentSearchItem={setContentSearchItem}
           />
           <ViewType setViewType={setViewType} viewType={viewType} />
         </header>
-        <section className="flex flex-col items-center">
+        <section className="mt-10 flex flex-col items-center">
           {viewType === DIARY_VIEW_TYPE.DAY &&
-            !keyword &&
+            !searchFlag &&
             diaryData?.pages.map((page, pageIndex) =>
               page.diaryList.map((item, itemIndex) => (
                 <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
               )),
             )}
           {viewType === DIARY_VIEW_TYPE.DAY &&
-            keyword &&
-            searchData?.pages.map((page, pageIndex) =>
+            searchFlag &&
+            keywordList &&
+            selected === '키워드' &&
+            keywordSearchData?.pages.map((page, pageIndex) =>
               page.diaryList.map((item, itemIndex) => (
-                <DiaryListItem diaryItem={item} key={String(pageIndex) + String(itemIndex)} />
+                <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
+              )),
+            )}
+          {viewType === DIARY_VIEW_TYPE.DAY &&
+            contentSearchItem &&
+            searchFlag &&
+            selected === '제목 + 내용' &&
+            contentSearchData?.pages.map((page, pageIndex) =>
+              page.diaryList.map((item, itemIndex) => (
+                <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
               )),
             )}
           {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}

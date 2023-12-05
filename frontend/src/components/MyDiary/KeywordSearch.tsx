@@ -8,20 +8,23 @@ import Icon from '@components/Common/Icon';
 import { DEBOUNCE_TIME } from '@/util/constants';
 
 interface KeywordSearchProps {
-  keyword: string;
+  keywordList: string[];
   selected: searchOptionsType;
-  setKeyword: React.Dispatch<React.SetStateAction<string>>;
+  setKeywordList: React.Dispatch<React.SetStateAction<string[]>>;
   setSelected: React.Dispatch<React.SetStateAction<searchOptionsType>>;
   setSearchFlag: React.Dispatch<React.SetStateAction<boolean>>;
+  setContentSearchItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const KeywordSearch = ({
-  keyword,
+  keywordList,
   selected,
-  setKeyword,
+  setKeywordList,
   setSelected,
   setSearchFlag,
+  setContentSearchItem,
 }: KeywordSearchProps) => {
+  const [keyword, setKeyword] = useState('');
   const [showSelect, setShowSelect] = useState(false);
   const [showKeyword, setShowKeyword] = useState(false);
   const [recommendKeyword, setRecommendKeyword] = useState<string[]>();
@@ -31,6 +34,8 @@ const KeywordSearch = ({
       if (keyword) {
         const data = await getTagRecommend(keyword);
         setRecommendKeyword(data.keywords);
+      } else {
+        setSearchFlag(false);
       }
     }, DEBOUNCE_TIME);
     return () => clearTimeout(timer);
@@ -42,18 +47,40 @@ const KeywordSearch = ({
   const toggleShowKeyword = () => setShowKeyword((prev) => !prev);
 
   const onChangeSearchOption = (option: searchOptionsType) => {
+    if (option === '키워드' && selected === '제목 + 내용') {
+      setContentSearchItem('');
+    }
+    if (option === '제목 + 내용' && selected === '키워드') {
+      setKeywordList([]);
+    }
+    setRecommendKeyword([]);
     setSelected(option);
-    setSearchFlag(true);
     setShowSelect(false);
+    setKeyword('');
   };
+
   const onClickKeywordOption = (option: string) => {
-    setKeyword(option);
+    if (selected === '키워드') {
+      if (!keywordList.includes(option)) {
+        setKeywordList([option, ...keywordList]);
+      }
+      setKeyword('');
+    }
+    if (selected === '제목 + 내용') {
+      setContentSearchItem(option);
+      setKeyword(option);
+      setSearchFlag(true);
+    }
+    setRecommendKeyword([]);
     setShowKeyword(false);
   };
   const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFlag(false);
     setKeyword(e.target.value);
     setShowKeyword(true);
+  };
+  const onClickKeywordCancel = (keywordItem: string) => {
+    setKeywordList(keywordList.filter((item) => item !== keywordItem));
   };
 
   return (
@@ -80,7 +107,7 @@ const KeywordSearch = ({
         )}
       </div>
       <div className="border-brown absolute left-36 z-50 flex w-auto flex-col rounded-xl border border-solid">
-        <div className="relative flex justify-between py-3 pl-4 pr-3">
+        <div className="flex justify-between py-3 pl-4 pr-3">
           <input
             className="outline-none"
             placeholder="검색어를 입력하세요"
@@ -112,6 +139,18 @@ const KeywordSearch = ({
                 ))}
             </div>
           </>
+        )}
+        {selected === '키워드' && (
+          <aside className="absolute top-14 -z-20 flex gap-2">
+            {keywordList.map((item) => (
+              <div className="border-mint flex items-center gap-1 rounded-lg border border-solid py-2 pl-3 pr-2 text-sm">
+                <p key={item}>{item}</p>
+                <button onClick={() => onClickKeywordCancel(item)}>
+                  <Icon id="cancel" size="small" />
+                </button>
+              </div>
+            ))}
+          </aside>
         )}
       </div>
     </section>

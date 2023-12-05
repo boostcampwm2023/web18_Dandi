@@ -25,7 +25,7 @@ const API_PATH = {
     rud: (id: number) => SERVER_URL + DIARY + `/${id}`,
     search: (keyword: string, lastIndex: number) =>
       SERVER_URL + DIARY + '/search/v3' + `/${keyword}` + `?lastIndex=${lastIndex}`,
-    keywordSearch: (keyword: string, lastIndex: number) =>
+    keywordSearch: (keyword: string[], lastIndex: number) =>
       SERVER_URL + DIARY + TAG + `/${keyword}` + `?lastIndex=${lastIndex}`,
     feed: (lastIndex: number) => SERVER_URL + DIARY + `/friends?lastIndex=${lastIndex}`,
     grass: (id: number) => SERVER_URL + DIARY + '/mood' + `/${id}`,
