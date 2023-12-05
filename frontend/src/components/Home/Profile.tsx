@@ -131,11 +131,10 @@ const Profile = ({ userId, userData }: ProfileProps) => {
           src={profileImage}
           alt="나의 프로필 사진"
         />
-        <div className="ml-10">
-          <p className="mb-8 text-3xl font-bold">
-            {nickname}님, {GREET_MESSAGES[getRandomIndex]}
-          </p>
-          {isFriendHome && (
+
+        {isFriendHome && (
+          <div className="ml-10">
+            <p className="mb-8 text-3xl font-bold">{nickname}</p>
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
@@ -146,9 +145,14 @@ const Profile = ({ userId, userData }: ProfileProps) => {
               <div className="border-brown mx-5 border-l-2 border-solid" />
               {getRelationContent()}
             </div>
-          )}
+          </div>
+        )}
 
-          {!isFriendHome && (
+        {!isFriendHome && (
+          <div className="ml-10">
+            <p className="mb-8 text-3xl font-bold">
+              {nickname}님, {GREET_MESSAGES[getRandomIndex]}
+            </p>
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
@@ -171,8 +175,8 @@ const Profile = ({ userId, userData }: ProfileProps) => {
                 내 정보 수정
               </p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
       <div className="mb-5 text-center text-2xl font-bold leading-relaxed">
         {TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
