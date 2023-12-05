@@ -31,7 +31,7 @@ export class UsersService {
       }
       if (
         (friend.receiver.id === userId && friend.sender.id === friendId) ||
-        (friend.receiver.id === friendId && friend.sender.id === friendId)
+        (friend.receiver.id === friendId && friend.sender.id === userId)
       ) {
         relation = friend;
       }
