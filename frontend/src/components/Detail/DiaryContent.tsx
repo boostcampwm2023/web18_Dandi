@@ -20,7 +20,7 @@ interface DiaryContentProps {
   authorName: string;
   title: string;
   content: string;
-  tagNames: string[];
+  tags: string[];
   reactionCount: number;
 }
 
@@ -32,7 +32,7 @@ const DiaryContent = ({
   authorName,
   title,
   content,
-  tagNames,
+  tags,
   reactionCount,
 }: DiaryContentProps) => {
   const queryClient = useQueryClient();
@@ -116,7 +116,7 @@ const DiaryContent = ({
           </div>
         </div>
         <div className="mb-3 flex flex-wrap gap-3 text-base">
-          {tagNames.map((tag, index) => (
+          {tags.map((tag, index) => (
             <Keyword key={index} text={tag} />
           ))}
         </div>
