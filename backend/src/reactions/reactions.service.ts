@@ -11,10 +11,8 @@ export class ReactionsService {
     private readonly diariesService: DiariesService,
   ) {}
 
-  async getAllReaction(user: User, diaryId: number) {
-    const diary = await this.diariesService.findDiary(user, diaryId);
-
-    return await this.reactionsRepository.findByDiary(diary);
+  getAllReaction(diaryId: number) {
+    return this.reactionsRepository.findByDiary(diaryId);
   }
 
   async saveReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {

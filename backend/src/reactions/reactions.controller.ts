@@ -11,7 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User as UserEntity } from 'src/users/entity/user.entity';
 import { User } from 'src/users/utils/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
@@ -28,19 +28,10 @@ export class ReactionsController {
   @ApiOperation({ description: '리액션 조회 API' })
   @ApiOkResponse({ description: '리액션 조회 성공' })
   async getReactions(
-    @User() user: UserEntity,
     @Param('diaryId', ParseIntPipe) diaryId: number,
   ): Promise<Record<string, ReactionInfoResponseDto[]>> {
-    const reactions = await this.reactionsService.getAllReaction(user, diaryId);
+    const reactionList = await this.reactionsService.getAllReaction(diaryId);
 
-    const reactionList = reactions.map<ReactionInfoResponseDto>((reaction) => {
-      return {
-        userId: reaction.user.id,
-        nickname: reaction.user.nickname,
-        profileImage: reaction.user.profileImage,
-        reaction: reaction.reaction,
-      };
-    });
     return { reactionList };
   }
 

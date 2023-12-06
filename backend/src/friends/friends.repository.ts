@@ -33,16 +33,17 @@ export class FriendsRepository extends Repository<Friend> {
       .getOne();
   }
 
-  async findUserRelationsByStatus(userId: number, status: FriendStatus): Promise<Friend[]> {
+  async findUserRelationsByStatus(userId: number, status: FriendStatus) {
     return this.createQueryBuilder('friend')
-      .leftJoinAndSelect('friend.sender', 'sender')
-      .leftJoinAndSelect('friend.receiver', 'receiver')
-      .where('friend.status = :status', { status: status })
-      .andWhere('(friend.sender = :senderId OR friend.receiver = :receiverId)', {
-        senderId: userId,
-        receiverId: userId,
-      })
-      .getMany();
+      .select([
+        `JSON_OBJECT("id", sender.id, "email", sender.email, "nickname", sender.nickname, "profileImage", sender.profileImage) AS sender`,
+        `JSON_OBJECT("id", receiver.id, "email", receiver.email, "nickname", receiver.nickname, "profileImage", receiver.profileImage) AS receiver`,
+      ])
+      .innerJoin('friend.sender', 'sender')
+      .innerJoin('friend.receiver', 'receiver')
+      .where('friend.status = :status', { status })
+      .andWhere('(friend.senderId = :userId OR friend.receiverId = :userId)', { userId })
+      .getRawMany();
   }
 
   removeRelation(relation: Friend): void {

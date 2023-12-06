@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Reaction } from './entity/reaction.entity';
 import { Diary } from 'src/diaries/entity/diary.entity';
 import { User } from 'src/users/entity/user.entity';
+import { ReactionInfoResponseDto } from './dto/reaction.dto';
 
 @Injectable()
 export class ReactionsRepository extends Repository<Reaction> {
@@ -29,12 +30,16 @@ export class ReactionsRepository extends Repository<Reaction> {
     });
   }
 
-  async findByDiary(diary: Diary) {
-    return this.find({
-      where: {
-        diary: { id: diary.id },
-      },
-      relations: ['user'],
-    });
+  findByDiary(diaryId: number): Promise<ReactionInfoResponseDto[]> {
+    return this.createQueryBuilder('reaction')
+      .select([
+        'user.id as userId',
+        'user.nickname as nickname',
+        'user.profileImage as profileImage',
+        'reaction.reaction as reaction',
+      ])
+      .where('reaction.diaryId = :diaryId', { diaryId })
+      .innerJoin('reaction.user', 'user')
+      .getRawMany();
   }
 }
