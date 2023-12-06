@@ -57,11 +57,11 @@ export class DiariesController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '피드 일기 조회 API' })
   @ApiOkResponse({ description: '피드 일기 조회 성공', type: FeedDiaryDto })
-  async getFeedDiary(
+  async findFeedDiary(
     @User() user: UserEntity,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<Record<string, FeedDiaryDto[]>> {
-    const diaryList = await this.diariesService.getFeedDiary(user.id, lastIndex);
+    const diaryList = await this.diariesService.findFeedDiary(user.id, lastIndex);
 
     return { diaryList };
   }
