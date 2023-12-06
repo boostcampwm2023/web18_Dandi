@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import getGrass from '@api/Grass';
@@ -18,10 +19,11 @@ const Grass = () => {
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
   const dates = Array.from({ length: 366 }, () => 0);
-  const userId = Number(localStorage.getItem('userId'));
+  const params = useParams();
+  const userId = params.userId || localStorage.getItem('userId');
   const { data, isLoading, isError } = useQuery({
     queryKey: ['grass', userId],
-    queryFn: () => getGrass(userId),
+    queryFn: () => getGrass(Number(userId)),
   });
 
   if (isLoading) {
