@@ -31,11 +31,16 @@ const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) 
 
   return (
     <div className="flex w-4/5 flex-col ">
-      <div className="flex w-full justify-between">
-        <label className="mb-3 text-xl font-bold" htmlFor="keyword">
-          키워드 입력
-        </label>
-        <button onClick={onSubmit} className="bg-brown rounded-lg px-3 text-lg font-bold">
+      <div className=" flex w-full items-start justify-between">
+        <div>
+          <label className="mb-3 text-xl font-bold" htmlFor="keyword">
+            키워드 입력
+          </label>
+          <p className="my-3 text-xs">
+            엔터를 입력하여 키워드를 등록 할 수 있습니다. 등록된 키워드를 클릭하면 삭제됩니다.
+          </p>
+        </div>
+        <button onClick={onSubmit} className="bg-brown rounded-lg p-2 px-3 text-lg font-bold">
           저장하기
         </button>
       </div>
