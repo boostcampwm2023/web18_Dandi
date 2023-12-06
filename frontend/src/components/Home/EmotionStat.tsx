@@ -13,11 +13,11 @@ interface EmotionStatProps {
 
 interface emotionCloudProps {
   emotion: string;
-  diaryInfos: diaryInfosProps[];
+  diaryInfo: diaryInfosProps[];
 }
 
 interface diaryInfosProps {
-  diaryInfos: diaryInfoProps[];
+  diaryInfo: diaryInfoProps[];
 }
 
 interface diaryInfoProps {
@@ -47,13 +47,13 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
     return <p>Error Occurrence!</p>;
   }
 
-  const eData = (data?.emotions || []).map((item : emotionCloudProps) => {
+  const eData = (data?.emotions || []).map((item: emotionCloudProps) => {
     return {
       text: item.emotion,
-      size: item.diaryInfos.length * 30,
+      size: item.diaryInfo.length * 30,
     };
   });
-  
+
   return (
     <div className="flex h-full w-3/5 flex-col gap-2 p-5">
       <div className="flex items-center justify-between p-5">
