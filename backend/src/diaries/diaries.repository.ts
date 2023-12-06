@@ -347,8 +347,9 @@ export class DiariesRepository extends Repository<Diary> {
             must: [
               { term: { authorid: id } },
               {
-                bool: {
-                  should: [{ match: { content: keyword } }, { match: { title: keyword } }],
+                multi_match: {
+                  query: keyword,
+                  fields: ['content.nori', 'content.ngram', 'title.ngram', 'title.nori'],
                 },
               },
             ],
