@@ -130,7 +130,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   };
 
   return (
-    <section className="mb-10 flex flex-col items-center justify-center">
+    <section className="flex flex-col items-center justify-center">
       <div className="mb-10 flex flex-row items-center justify-center">
         <img
           className="h-52 w-52 rounded-full object-cover"
@@ -184,17 +184,22 @@ const Profile = ({ userId, userData }: ProfileProps) => {
           </div>
         )}
       </div>
-      <div className="mb-5 text-center text-2xl font-bold leading-relaxed">
-        {TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
-          <p key={index}>{text}</p>
-        ))}
-      </div>
-      <Button
-        text={TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['buttonText']}
-        type={DEFAULT}
-        size={LARGE}
-        onClick={() => navigate(targetPage)}
-      />
+      {!isFriendHome && (
+        <div className="mb-10 flex w-full flex-1 flex-col items-center">
+          <div className="mb-5 text-center text-2xl font-bold leading-relaxed">
+            {TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
+              <p key={index}>{text}</p>
+            ))}
+          </div>
+          <Button
+            text={TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['buttonText']}
+            type={DEFAULT}
+            size={LARGE}
+            onClick={() => navigate(targetPage)}
+          />
+        </div>
+      )}
+
       {showModal && (
         <Modal showModal={showModal} closeModal={closeModal}>
           {modalContent}
