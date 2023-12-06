@@ -40,6 +40,10 @@ const FriendList = ({ userId }: FriendListProps) => {
     return <p>친구목록을 불러오지 못했습니다!</p>;
   }
 
+  const loginUser = localStorage.getItem('userId') ?? 0;
+  const profileItemType =
+    +loginUser === userId ? PROFILE_BUTTON_TYPE.LIST : PROFILE_BUTTON_TYPE.STRANGER;
+
   return (
     <div className="px-5">
       <div className="relative mb-6 flex flex-col">
@@ -63,7 +67,7 @@ const FriendList = ({ userId }: FriendListProps) => {
           <p className="mb-6 text-2xl font-bold">친구 목록</p>
           <div className="flex flex-wrap justify-between">
             {friendListData.data.friends.map((data: FriendListResponse, index: number) => (
-              <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.LIST} />
+              <FriendModalItem key={index} {...data} type={profileItemType} />
             ))}
           </div>
         </div>
