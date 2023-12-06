@@ -3,7 +3,6 @@ import { ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { OAuthLoginDto, OAuthLoginResponseDto } from './dto/auth.dto';
-import { SERVICE_URL } from './utils/auth.constant';
 
 @ApiTags('Authentication API')
 @Controller('auth')
@@ -27,7 +26,7 @@ export class AuthController {
     const newJwt = await this.authService.refreshAccessToken(req);
 
     res.cookie('utk', newJwt, { httpOnly: true });
-    res.redirect(SERVICE_URL);
+    res.json({ message: 'access token 갱신에 성공했습니다.' });
   }
 
   @Post('logout')
