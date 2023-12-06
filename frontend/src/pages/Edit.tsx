@@ -82,6 +82,7 @@ const Edit = () => {
         emoji={emoji}
         setTitle={setTitle}
         setEmoji={setEmoji}
+        status={status}
         setStatus={setStatus}
       />
       <Editor

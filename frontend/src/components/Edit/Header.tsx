@@ -4,12 +4,13 @@ import EmojiPicker from 'emoji-picker-react';
 interface HeaderProps {
   title: string;
   emoji: string;
+  status: string;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setStatus: React.Dispatch<React.SetStateAction<string>>;
   setEmoji: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Header = ({ emoji, title, setTitle, setStatus, setEmoji }: HeaderProps) => {
+const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderProps) => {
   const [showEmoji, setShowEmoji] = useState(false);
 
   const toggleEmoji = () => setShowEmoji((prev) => !prev);
@@ -56,6 +57,7 @@ const Header = ({ emoji, title, setTitle, setStatus, setEmoji }: HeaderProps) =>
             {status}
           </label>
           <input
+            checked={status === '나만 보기' ? false : true}
             type="checkbox"
             id="status"
             className={`h-8 w-8 cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
