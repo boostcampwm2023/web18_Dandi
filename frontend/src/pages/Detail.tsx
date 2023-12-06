@@ -53,37 +53,43 @@ const Detail = () => {
 
   const content = <DiaryContent diaryId={diaryId} {...data} />;
 
+  const loginUser = localStorage.getItem('userId') ?? 0;
+  const isMyDiary = +loginUser === data.userId;
+
   return (
     <div className="flex flex-col items-center">
       <NavBar />
       <div className="flex w-2/3 flex-col gap-2">
-        <div className="flex justify-end gap-2">
-          <Button
-            text="수정"
-            type="normal"
-            onClick={() =>
-              navigate(PAGE_URL.EDIT, {
-                state: {
-                  diaryId: diaryId,
-                  title: data.title,
-                  content: data.content,
-                  emotion: data.emotion,
-                  thumbnail: data.thumbnail,
-                  tags: data.tags,
-                  status: data.status,
-                },
-              })
-            }
-          />
-          <Button text="삭제" type="delete" onClick={toggleShowModal} />
-          <Modal showModal={showModal} closeModal={toggleShowModal}>
-            <Alert
-              text="이 일기를 정말 삭제하시겠습니까?"
-              onUndoButtonClick={toggleShowModal}
-              onAcceptButtonClick={handleDelete}
+        {isMyDiary && (
+          <div className="flex justify-end gap-2">
+            <Button
+              text="수정"
+              type="normal"
+              onClick={() =>
+                navigate(PAGE_URL.EDIT, {
+                  state: {
+                    diaryId: diaryId,
+                    title: data.title,
+                    content: data.content,
+                    emotion: data.emotion,
+                    thumbnail: data.thumbnail,
+                    tags: data.tags,
+                    status: data.status,
+                  },
+                })
+              }
             />
-          </Modal>
-        </div>
+            <Button text="삭제" type="delete" onClick={toggleShowModal} />
+            <Modal showModal={showModal} closeModal={toggleShowModal}>
+              <Alert
+                text="이 일기를 정말 삭제하시겠습니까?"
+                onUndoButtonClick={toggleShowModal}
+                onAcceptButtonClick={handleDelete}
+              />
+            </Modal>
+          </div>
+        )}
+
         {content}
       </div>
     </div>
