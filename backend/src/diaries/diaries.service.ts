@@ -196,48 +196,36 @@ export class DiariesService {
   }
 
   async findDiaryByKeywordV1(
-    author: User,
+    user: User,
     keyword: string,
     lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaries = await this.diariesRepository.findDiaryByKeywordV1(
-      author.id,
-      keyword,
-      lastIndex,
-    );
+    const diaries = await this.diariesRepository.findDiaryByKeywordV1(user.id, keyword, lastIndex);
 
-    return { nickname: author.nickname, diaryList: diaries };
+    return { nickname: user.nickname, diaryList: diaries };
   }
 
-  async findDiaryByKeywordV2(author: User, keyword: string, lastIndex: number) {
-    const diaries = await this.diariesRepository.findDiaryByKeywordV2(
-      author.id,
-      keyword,
-      lastIndex,
-    );
+  async findDiaryByKeywordV2(user: User, keyword: string, lastIndex: number) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV2(user.id, keyword, lastIndex);
 
-    return { nickname: author.nickname, diaryList: diaries };
+    return { nickname: user.nickname, diaryList: diaries };
   }
 
   async findDiaryByTag(
-    author: User,
+    user: User,
     tagName: string,
     lastIndex: number | undefined,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaries = await this.diariesRepository.findDiaryByTag(author.id, tagName, lastIndex);
+    const diaries = await this.diariesRepository.findDiaryByTag(user.id, tagName, lastIndex);
 
-    return { nickname: author.nickname, diaryList: diaries };
+    return { nickname: user.nickname, diaryList: diaries };
   }
 
-  async findDiaryByKeywordV3(author: User, keyword: string, lastIndex: number) {
-    const diaries = await this.diariesRepository.findDiaryByKeywordV3(
-      author.id,
-      keyword,
-      lastIndex,
-    );
+  async findDiaryByKeywordV3(user: User, keyword: string, lastIndex: number) {
+    const diaries = await this.diariesRepository.findDiaryByKeywordV3(user.id, keyword, lastIndex);
 
     return diaries.map<AllDiaryInfosDto>((diary) => {
-      const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === author.id);
+      const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === user.id);
 
       return {
         diaryId: diary.diaryid,
