@@ -7,7 +7,7 @@ import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import NavBar from '@components/Common/NavBar';
 import DiaryList from '@components/Common/DiaryList';
 
-import { FEED } from '@util/constants';
+import { DUMMY_DATA, FEED } from '@util/constants';
 
 const Feed = () => {
   const { data: feedData } = useInfiniteQuery<
@@ -31,15 +31,10 @@ const Feed = () => {
     },
   });
   return (
-    <div className="mb-28 flex flex-col items-center justify-start">
+    <div className="mb-28 flex w-full flex-col items-center justify-start">
       <NavBar />
       {feedData?.pages.map((page, index) => (
-        <DiaryList
-          key={index}
-          pageType={FEED}
-          diaryData={page.diaryList}
-          username={page.nickname}
-        />
+        <DiaryList key={index} pageType={FEED} diaryData={DUMMY_DATA} username={'yoonju'} />
       ))}
     </div>
   );

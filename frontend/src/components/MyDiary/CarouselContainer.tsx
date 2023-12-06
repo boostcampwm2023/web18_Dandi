@@ -18,7 +18,7 @@ const CarouselContainer = ({ data }: CarouselContainerProps) => {
     activeIndex === 0 ? activeIndex + PREV_INDEX + dataLength : activeIndex + PREV_INDEX;
 
   return (
-    <section className="flex w-fit items-center justify-center">
+    <section className="flex w-full items-center justify-center">
       <Card diaryItem={data[prevIndex]} styles="w-1/3" size={SMALL} />
       <button onClick={() => setActiveIndex(prevIndex)}>
         <Icon id="largeLeftArrow" size={LARGE} />
