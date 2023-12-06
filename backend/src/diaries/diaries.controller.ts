@@ -21,7 +21,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
-  AllDiaryInfosDto,
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,
@@ -167,11 +166,11 @@ export class DiariesController {
     type: ReadUserDiariesResponseDto,
   })
   async findDiaryByKeywordV1(
-    @User() author: UserEntity,
+    @User() user: UserEntity,
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    return await this.diariesService.findDiaryByKeywordV1(author, keyword, lastIndex);
+    return await this.diariesService.findDiaryByKeywordV1(user, keyword, lastIndex);
   }
 
   @Get('/search/v2/:keyword')
@@ -182,11 +181,11 @@ export class DiariesController {
     type: ReadUserDiariesResponseDto,
   })
   async findDiaryByKeywordV2(
-    @User() author: UserEntity,
+    @User() user: UserEntity,
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    return await this.diariesService.findDiaryByKeywordV2(author, keyword, lastIndex);
+    return await this.diariesService.findDiaryByKeywordV2(user, keyword, lastIndex);
   }
 
   @Get('/search/v3/:keyword')
@@ -197,13 +196,13 @@ export class DiariesController {
     type: ReadUserDiariesResponseDto,
   })
   async findDiaryByKeywordV3(
-    @User() author: UserEntity,
+    @User() user: UserEntity,
     @Param('keyword') keyword: string,
     @Query('lastIndex', new ParseIntPipe({ optional: true })) lastIndex: number,
   ): Promise<ReadUserDiariesResponseDto> {
-    const diaryList = await this.diariesService.findDiaryByKeywordV3(author, keyword, lastIndex);
+    const diaryList = await this.diariesService.findDiaryByKeywordV3(user, keyword, lastIndex);
 
-    return { nickname: author.nickname, diaryList };
+    return { nickname: user.nickname, diaryList };
   }
 
   @Get('/tags/:tagName')

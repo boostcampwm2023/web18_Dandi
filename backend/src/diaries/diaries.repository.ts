@@ -236,7 +236,7 @@ export class DiariesRepository extends Repository<Diary> {
   }
 
   async findDiaryByKeywordV1(
-    authorId: number,
+    userId: number,
     keyword: string,
     lastIndex: number,
   ): Promise<AllDiaryInfosDto[]> {
@@ -253,7 +253,7 @@ export class DiariesRepository extends Repository<Diary> {
         'COUNT(reactions.reaction) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
-      .where('diary.author.id = :authorId', { authorId })
+      .where('diary.author.id = :userId', { userId })
       .andWhere('diary.content LIKE :keyword OR diary.title LIKE :keyword', {
         keyword: `%${keyword}%`,
       })
@@ -272,13 +272,13 @@ export class DiariesRepository extends Repository<Diary> {
     diaryInfos.forEach((diaryInfo) => {
       diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
       diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
-      this.mapToLeaveReaction(diaryInfo, authorId);
+      this.mapToLeaveReaction(diaryInfo, userId);
     });
     return diaryInfos;
   }
 
   async findDiaryByKeywordV2(
-    authorId: number,
+    userId: number,
     keyword: string,
     lastIndex: number,
   ): Promise<AllDiaryInfosDto[]> {
@@ -295,7 +295,7 @@ export class DiariesRepository extends Repository<Diary> {
         'COUNT(reactions.reaction) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
-      .where('diary.author.id = :authorId', { authorId })
+      .where('diary.author.id = :userId', { userId })
       .andWhere(
         '(MATCH(diary.content) AGAINST(:keyword IN BOOLEAN MODE) OR MATCH(diary.title) AGAINST(:keyword IN BOOLEAN MODE))',
         { keyword: `*${keyword}*` },
@@ -315,13 +315,13 @@ export class DiariesRepository extends Repository<Diary> {
     diaryInfos.forEach((diaryInfo) => {
       diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
       diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
-      this.mapToLeaveReaction(diaryInfo, authorId);
+      this.mapToLeaveReaction(diaryInfo, userId);
     });
     return diaryInfos;
   }
 
   async findDiaryByKeywordV3(
-    id: number,
+    userId: number,
     keyword: string,
     lastIndex: number,
   ): Promise<SearchDiaryDataForm[]> {
@@ -346,7 +346,7 @@ export class DiariesRepository extends Repository<Diary> {
         query: {
           bool: {
             must: [
-              { term: { authorid: id } },
+              { term: { authorid: userId } },
               {
                 bool: {
                   should: [{ match: { content: keyword } }, { match: { title: keyword } }],
@@ -362,8 +362,8 @@ export class DiariesRepository extends Repository<Diary> {
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 
-  findDiaryByTag(
-    authorId: number,
+  async findDiaryByTag(
+    userId: number,
     tagName: string,
     lastIndex: number | undefined,
   ): Promise<AllDiaryInfosDto[]> {
@@ -380,7 +380,7 @@ export class DiariesRepository extends Repository<Diary> {
         'COUNT(reactions.reaction) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
-      .where('diary.author.id = :authorId', { authorId })
+      .where('diary.author.id = :userId', { userId })
       .andWhere('tags.name = :tagName', { tagName })
       .leftJoin('diary.tags', 'tags')
       .leftJoin('diary.reactions', 'reactions')
@@ -392,7 +392,15 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getRawMany();
+    const diaries = await queryBuilder.getRawMany();
+
+    diaries.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, userId);
+    });
+
+    return diaries;
   }
 
   private mapToLeaveReaction(diaryInfo, userId: number) {
