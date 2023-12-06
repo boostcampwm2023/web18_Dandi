@@ -47,10 +47,14 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
     return <p>Error Occurrence!</p>;
   }
 
+  const totalLength = (data?.emotions || []).reduce((acc: number, cur: emotionCloudProps) => {
+    return (acc += cur.diaryInfo.length);
+  }, 0);
+
   const eData = (data?.emotions || []).map((item: emotionCloudProps) => {
     return {
       text: item.emotion,
-      size: item.diaryInfo.length * 30,
+      size: item.diaryInfo.length / totalLength * 200,
     };
   });
 

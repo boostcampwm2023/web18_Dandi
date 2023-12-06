@@ -11,6 +11,7 @@ import {
   GetYearMoodResponseDto,
   SearchDiaryDataForm,
 } from './dto/diary.dto';
+import { startOfDay, endOfDay } from 'date-fns';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
@@ -159,8 +160,8 @@ export class DiariesRepository extends Repository<Diary> {
       ])
       .where('diary.author.id = :userId', { userId })
       .andWhere('diary.createdAt BETWEEN :startDate AND :lastDate', {
-        startDate: new Date(startDate),
-        lastDate: new Date(lastDate),
+        startDate: startOfDay(new Date(startDate)),
+        lastDate: endOfDay(new Date(lastDate)),
       })
       .groupBy('emotion');
 
