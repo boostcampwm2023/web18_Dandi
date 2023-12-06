@@ -46,7 +46,8 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   if (isError) {
     return <p>Error Occurrence!</p>;
   }
-  const eData = data.emotions.map((item : emotionCloudProps) => {
+
+  const eData = (data?.emotions || []).map((item : emotionCloudProps) => {
     return {
       text: item.emotion,
       size: item.diaryInfos.length * 30,
