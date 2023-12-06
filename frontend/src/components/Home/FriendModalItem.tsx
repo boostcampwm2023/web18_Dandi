@@ -17,10 +17,14 @@ const DB_WAITING_TIME = 100;
 
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const goFriendHome = () => {
     navigate(`${PAGE_URL.HOME}${id}`);
+    queryClient.removeQueries({
+      queryKey: ['profileData'],
+    });
   };
-  const queryClient = useQueryClient();
 
   const cancelRequestMutation = useMutation({
     mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
