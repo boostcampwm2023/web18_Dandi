@@ -42,7 +42,7 @@ const EmotionCloud = ({ emotionData }: WordCloudProps) => {
     }
   }, [emotionData]);
 
-  return <svg ref={cloudRef} width={800} height={300} />;
+  return <svg ref={cloudRef} height={500} className='w-full'/>;
 };
 
 export default EmotionCloud;
