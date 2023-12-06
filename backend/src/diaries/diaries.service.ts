@@ -225,7 +225,9 @@ export class DiariesService {
     const diaries = await this.diariesRepository.findDiaryByKeywordV3(user.id, keyword, lastIndex);
 
     return diaries.map<AllDiaryInfosDto>((diary) => {
-      const reactionIndex = diary.reactionUsers.findIndex((userId) => userId === user.id);
+      const reactionIndex = diary.reactionUsers.findIndex(
+        (reactionUserId) => reactionUserId === user.id,
+      );
 
       return {
         diaryId: diary.diaryid,
