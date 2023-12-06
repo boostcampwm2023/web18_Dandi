@@ -5,7 +5,8 @@ import { getTagRecommend } from '@api/KeywordSearch';
 import { searchOptionsType } from '@type/pages/MyDiary';
 
 import Icon from '@components/Common/Icon';
-import { DEBOUNCE_TIME } from '@/util/constants';
+
+import { DEBOUNCE_TIME } from '@util/constants';
 
 interface KeywordSearchProps {
   keyword: string;

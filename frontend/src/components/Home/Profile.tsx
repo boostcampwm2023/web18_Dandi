@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { deleteFriend, requestFriend } from '@/api/FriendModal';
+import { deleteFriend, requestFriend } from '@api/FriendModal';
 
 import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';

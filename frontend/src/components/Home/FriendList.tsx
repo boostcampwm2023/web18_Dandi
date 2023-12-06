@@ -5,7 +5,7 @@ import { getFriendList } from '@api/FriendModal';
 
 import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
-import FriendSearchContent from '@/components/Home/FriendSearchContent';
+import FriendSearchContent from '@components/Home/FriendSearchContent';
 
 import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
