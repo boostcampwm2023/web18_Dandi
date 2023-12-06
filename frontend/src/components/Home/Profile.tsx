@@ -78,12 +78,14 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   const requestFriendMutation = useMutation({
     mutationFn: (receiverId: number) => requestFriend(receiverId),
     onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ['sendList'],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['profileData'],
-      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['sendList'],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ['profileData'],
+        });
+      }, 100);
     },
   });
 
