@@ -21,7 +21,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
-  AllDiaryInfosDto,
   CreateDiaryDto,
   GetAllEmotionsRequestDto,
   GetAllEmotionsResponseDto,

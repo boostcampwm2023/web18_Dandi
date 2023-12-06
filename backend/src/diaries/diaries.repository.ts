@@ -361,8 +361,8 @@ export class DiariesRepository extends Repository<Diary> {
     return documents.hits.hits.map((hit) => hit._source as SearchDiaryDataForm);
   }
 
-  findDiaryByTag(
-    authorId: number,
+  async findDiaryByTag(
+    userId: number,
     tagName: string,
     lastIndex: number | undefined,
   ): Promise<AllDiaryInfosDto[]> {
@@ -379,7 +379,7 @@ export class DiariesRepository extends Repository<Diary> {
         'COUNT(reactions.reaction) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
-      .where('diary.author.id = :authorId', { authorId })
+      .where('diary.author.id = :userId', { userId })
       .andWhere('tags.name = :tagName', { tagName })
       .leftJoin('diary.tags', 'tags')
       .leftJoin('diary.reactions', 'reactions')
@@ -391,7 +391,15 @@ export class DiariesRepository extends Repository<Diary> {
       queryBuilder.andWhere('diary.id < :lastIndex', { lastIndex });
     }
 
-    return queryBuilder.getRawMany();
+    const diaries = await queryBuilder.getRawMany();
+
+    diaries.forEach((diaryInfo) => {
+      diaryInfo.tags = diaryInfo.tags ? diaryInfo.tags.split(',') : [];
+      diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
+      this.mapToLeaveReaction(diaryInfo, userId);
+    });
+
+    return diaries;
   }
 
   private mapToLeaveReaction(diaryInfo, userId: number) {
