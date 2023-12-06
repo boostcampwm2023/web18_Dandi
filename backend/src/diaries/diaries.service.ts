@@ -145,12 +145,17 @@ export class DiariesService {
     }, []);
   }
 
-  async getFeedDiary(userId: number, lastIndex: number | undefined): Promise<FeedDiaryDto[]> {
+  async findFeedDiary(userId: number, lastIndex: number | undefined): Promise<FeedDiaryDto[]> {
     const today = new Date();
     const oneWeekAgo = new Date(today);
     oneWeekAgo.setDate(today.getDate() - 7);
 
     const friends = await this.friendsService.getFriendsList(userId);
+
+    if (friends.length === 0) {
+      return [];
+    }
+
     const friendsIdList = friends.map((friend) => friend.id);
 
     return await this.diariesRepository.findPaginatedDiaryByDateAndIdList(
