@@ -1,5 +1,7 @@
 import API_PATH from '@util/apiPath';
 
+import interceptor from '@api/fetchInterceptor';
+
 interface CreateDiaryParams {
   title: string;
   content: string;
@@ -11,7 +13,7 @@ interface CreateDiaryParams {
 
 export const createDiary = async (params: CreateDiaryParams) => {
   try {
-    const response = await fetch(API_PATH.DIARY.create(), {
+    const response = await interceptor(API_PATH.DIARY.create(), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -30,7 +32,7 @@ export const updateDiary = async (params: CreateDiaryParams, diaryId: number) =>
   try {
     if (!diaryId) throw new Error('잘못된 접근입니다.');
 
-    const response = await fetch(API_PATH.DIARY.rud(diaryId), {
+    const response = await interceptor(API_PATH.DIARY.rud(diaryId), {
       method: 'PATCH',
       headers: {
         'content-type': 'application/json',
@@ -47,7 +49,7 @@ export const updateDiary = async (params: CreateDiaryParams, diaryId: number) =>
 
 export const uploadImage = async (formData: FormData) => {
   try {
-    const response = await fetch(API_PATH.IMAGE.diary(), {
+    const response = await interceptor(API_PATH.IMAGE.diary(), {
       method: 'POST',
       credentials: 'include',
       body: formData,

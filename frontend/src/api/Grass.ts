@@ -1,8 +1,10 @@
 import API_PATH from '@util/apiPath';
 
+import interceptor from '@api/fetchInterceptor';
+
 const getGrass = async (userId: number) => {
   try {
-    const response = await fetch(API_PATH.DIARY.grass(userId), {
+    const response = await interceptor(API_PATH.DIARY.grass(userId), {
       credentials: 'include',
     });
 

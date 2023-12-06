@@ -1,8 +1,10 @@
 import API_PATH from '@util/apiPath';
 
+import interceptor from '@api/fetchInterceptor';
+
 const getEmotionStat = async (id: number, startDate: string, endDate: string) => {
   try {
-    const response = await fetch(API_PATH.DIARY.emotion(id, startDate, endDate), {
+    const response = await interceptor(API_PATH.DIARY.emotion(id, startDate, endDate), {
       credentials: 'include',
     });
 

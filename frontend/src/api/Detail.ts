@@ -1,8 +1,10 @@
 import API_PATH from '@util/apiPath';
 
+import interceptor from '@api/fetchInterceptor';
+
 export const referDiary = async (diaryId: number) => {
   try {
-    const response = await fetch(API_PATH.DIARY.rud(diaryId), {
+    const response = await interceptor(API_PATH.DIARY.rud(diaryId), {
       credentials: 'include',
     });
 
@@ -19,7 +21,7 @@ export const referDiary = async (diaryId: number) => {
 
 export const deleteDiary = async (diaryId: number) => {
   try {
-    const response = await fetch(API_PATH.DIARY.rud(diaryId), {
+    const response = await interceptor(API_PATH.DIARY.rud(diaryId), {
       method: 'DELETE',
       credentials: 'include',
     });

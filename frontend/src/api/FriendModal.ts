@@ -1,8 +1,10 @@
 import API_PATH from '@util/apiPath';
 
+import interceptor from '@api/fetchInterceptor';
+
 export const getFriendList = async (userId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.list(userId), {
+    const response = await interceptor(API_PATH.FRIEND.list(userId), {
       credentials: 'include',
     });
 
@@ -16,7 +18,7 @@ export const getFriendList = async (userId: number) => {
 
 export const recommendFriend = async (nickname: string) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.search(nickname), {
+    const response = await interceptor(API_PATH.FRIEND.search(nickname), {
       credentials: 'include',
     });
 
@@ -30,7 +32,7 @@ export const recommendFriend = async (nickname: string) => {
 
 export const getRequestList = async (userId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.request(userId), {
+    const response = await interceptor(API_PATH.FRIEND.request(userId), {
       credentials: 'include',
     });
 
@@ -44,7 +46,7 @@ export const getRequestList = async (userId: number) => {
 
 export const getSearchUserList = async (nickname: string) => {
   try {
-    const response = await fetch(API_PATH.USER.searchUser(nickname), {
+    const response = await interceptor(API_PATH.USER.searchUser(nickname), {
       credentials: 'include',
     });
 
@@ -58,7 +60,7 @@ export const getSearchUserList = async (nickname: string) => {
 
 export const requestFriend = async (receiverId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.request(receiverId), {
+    const response = await interceptor(API_PATH.FRIEND.request(receiverId), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -75,7 +77,7 @@ export const requestFriend = async (receiverId: number) => {
 
 export const cancelRequestFriend = async (receiverId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.request(receiverId), {
+    const response = await interceptor(API_PATH.FRIEND.request(receiverId), {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -88,7 +90,7 @@ export const cancelRequestFriend = async (receiverId: number) => {
 
 export const deleteFriend = async (friendId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.list(friendId), {
+    const response = await interceptor(API_PATH.FRIEND.list(friendId), {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -101,7 +103,7 @@ export const deleteFriend = async (friendId: number) => {
 
 export const allowFriend = async (senderId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.allow(senderId), {
+    const response = await interceptor(API_PATH.FRIEND.allow(senderId), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -118,7 +120,7 @@ export const allowFriend = async (senderId: number) => {
 
 export const rejectFriend = async (senderId: number) => {
   try {
-    const response = await fetch(API_PATH.FRIEND.allow(senderId), {
+    const response = await interceptor(API_PATH.FRIEND.allow(senderId), {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -131,7 +133,7 @@ export const rejectFriend = async (senderId: number) => {
 
 export const updateProfile = async (formData: FormData) => {
   try {
-    const response = await fetch(API_PATH.USER.profile(), {
+    const response = await interceptor(API_PATH.USER.profile(), {
       method: 'PATCH',
       credentials: 'include',
       body: formData,
