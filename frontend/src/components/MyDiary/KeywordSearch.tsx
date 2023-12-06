@@ -64,7 +64,7 @@ const KeywordSearch = ({
           <Icon id="down" size="small" />
         </button>
         {showSelect && (
-          <ul className="border-brown absolute left-0 top-12 w-full cursor-pointer rounded-xl border border-solid bg-white">
+          <ul className="border-brown absolute left-0 top-12 z-50 w-full cursor-pointer rounded-xl border border-solid bg-white">
             {searchOptions.map((option) => (
               <li
                 key={option}
