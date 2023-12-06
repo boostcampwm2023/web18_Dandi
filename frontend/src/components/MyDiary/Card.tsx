@@ -98,7 +98,7 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
     <div
       className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
     >
-      <div onClick={goDetail} className="cursor-pointer">
+      <div onClick={goDetail} className="flex cursor-pointer flex-col gap-2">
         <p className={`${size === SMALL ? 'text-sm' : ''}`}>
           {formatDateString(diaryItem.createdAt)}
         </p>
@@ -108,7 +108,6 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
           <p>{diaryItem.summary}</p>
         </div>
       </div>
-
       <div className="flex w-full flex-wrap gap-3">
         {diaryItem.tags.map((keyword, index) => (
           <Keyword key={index} text={keyword} styles={`${size === SMALL ? 'text-xs' : ''}`} />

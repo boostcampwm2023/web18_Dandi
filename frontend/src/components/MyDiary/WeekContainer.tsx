@@ -48,7 +48,7 @@ const WeekContainer = () => {
   };
 
   return (
-    <>
+    <section className="flex w-full max-w-6xl flex-col items-center">
       <DateController
         titles={[
           `Week ${String(nowWeek).padStart(2, '0')}`,
@@ -67,7 +67,7 @@ const WeekContainer = () => {
       {data && data.diaryList.length >= WEEK_STANDARD_LENGTH && (
         <CarouselContainer data={data.diaryList} />
       )}
-    </>
+    </section>
   );
 };
 

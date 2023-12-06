@@ -5,7 +5,8 @@ import { getTagRecommend } from '@api/KeywordSearch';
 import { searchOptionsType } from '@type/pages/MyDiary';
 
 import Icon from '@components/Common/Icon';
-import { DEBOUNCE_TIME } from '@/util/constants';
+
+import { DEBOUNCE_TIME } from '@util/constants';
 
 interface KeywordSearchProps {
   keyword: string;
@@ -64,7 +65,7 @@ const KeywordSearch = ({
           <Icon id="down" size="small" />
         </button>
         {showSelect && (
-          <ul className="border-brown absolute left-0 top-12 w-full cursor-pointer rounded-xl border border-solid bg-white">
+          <ul className="border-brown absolute left-0 top-12 z-50 w-full cursor-pointer rounded-xl border border-solid bg-white">
             {searchOptions.map((option) => (
               <li
                 key={option}

@@ -15,7 +15,7 @@ const DayItem = ({ day, emotion, diaryId }: DayItemProps) => {
       {day > 0 && (
         <>
           <p className="text-xs">{String(day).padStart(2, '0')}</p>
-          {emotion && <p className="my-2 text-center text-4xl">{emotion}</p>}
+          {emotion && <p className="my-2 cursor-pointer text-center text-4xl">{emotion}</p>}
         </>
       )}
     </div>

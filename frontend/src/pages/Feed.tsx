@@ -31,7 +31,7 @@ const Feed = () => {
     },
   });
   return (
-    <div className="mb-28 flex flex-col items-center justify-start">
+    <div className="mb-28 flex w-full flex-col items-center justify-start">
       <NavBar />
       {feedData?.pages.map((page, index) => (
         <DiaryList

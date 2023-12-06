@@ -116,7 +116,11 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         <main className="flex flex-col justify-center">
           <div className="flex justify-start">
             {diaryItem.thumbnail && (
-              <img className="mb-6 w-full" src={diaryItem.thumbnail} alt="기본 이미지" />
+              <img
+                className="mb-6 w-full object-cover"
+                src={diaryItem.thumbnail}
+                alt="기본 이미지"
+              />
             )}
           </div>
           <div className="mb-3 line-clamp-3 whitespace-pre-wrap text-sm font-medium">
