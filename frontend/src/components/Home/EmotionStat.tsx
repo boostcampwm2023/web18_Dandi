@@ -46,13 +46,13 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   if (isError) {
     return <p>Error Occurrence!</p>;
   }
-
-  const eData = data.map((item : emotionCloudProps) => {
+  const eData = data.emotions.map((item : emotionCloudProps) => {
     return {
       text: item.emotion,
-      size: item.diaryInfos.length * 20,
+      size: item.diaryInfos.length * 30,
     };
   });
+  
   return (
     <div className="flex h-full w-3/5 flex-col gap-2 p-5">
       <div className="flex items-center justify-between p-5">
