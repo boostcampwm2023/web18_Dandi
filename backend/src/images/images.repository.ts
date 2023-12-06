@@ -15,10 +15,10 @@ export class ImagesRepository {
     return this.s3
       .upload({
         Bucket: OBJECT_STORAGE_BUCKET,
-        Key: `${userId}/${middlePath}/${file.originalname}`,
+        Key: `${userId}/${middlePath}/${file.originalname}.jpeg`,
         ACL: 'public-read',
         Body: file.buffer,
-        ContentType: file.mimetype,
+        ContentType: 'image/jpeg',
       })
       .promise();
   }
