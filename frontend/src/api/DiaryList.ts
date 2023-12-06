@@ -1,5 +1,7 @@
 import { viewTypes } from '@type/pages/MyDiary';
 
+import interceptor from '@api/fetchInterceptor';
+
 import API_PATH from '@util/apiPath';
 
 interface getDiaryListProps {
@@ -22,7 +24,7 @@ export const getDiaryDayList = async ({
     const fetchUrl = lastIndex
       ? API_PATH.DIARY.myDiaryDay(userId, type, lastIndex)
       : API_PATH.DIARY.myDiaryDay(userId, type);
-    const response = await fetch(fetchUrl, {
+    const response = await interceptor(fetchUrl, {
       credentials: 'include',
     });
 
@@ -37,7 +39,7 @@ export const getDiaryDayList = async ({
 export const getDiaryWeekAndMonthList = async (pageParam: getDiaryWeekAndMonthListProps) => {
   const { userId, type, startDate, endDate } = pageParam;
   try {
-    const response = await fetch(
+    const response = await interceptor(
       API_PATH.DIARY.myDiaryWeekAndMonth(userId, type, startDate, endDate),
       {
         credentials: 'include',

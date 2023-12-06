@@ -1,9 +1,11 @@
 import API_PATH from '@util/apiPath';
 
+import interceptor from '@api/fetchInterceptor';
+
 export const getFeed = async ({ pageParam }: { pageParam: { lastIndex: number } }) => {
   try {
     const { lastIndex } = pageParam;
-    const response = await fetch(API_PATH.DIARY.feed(lastIndex), {
+    const response = await interceptor(API_PATH.DIARY.feed(lastIndex), {
       credentials: 'include',
     });
 

@@ -1,8 +1,9 @@
 import API_PATH from '@util/apiPath';
+import interceptor from '@api/fetchInterceptor';
 
 export const getReactionList = async (diaryId: number) => {
   try {
-    const response = await fetch(API_PATH.REACTION.crud(diaryId), {
+    const response = await interceptor(API_PATH.REACTION.crud(diaryId), {
       credentials: 'include',
     });
 
@@ -16,7 +17,7 @@ export const getReactionList = async (diaryId: number) => {
 
 export const postReaction = async (diaryId: number, reaction: string) => {
   try {
-    const response = await fetch(API_PATH.REACTION.crud(diaryId), {
+    const response = await interceptor(API_PATH.REACTION.crud(diaryId), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       credentials: 'include',
@@ -31,7 +32,7 @@ export const postReaction = async (diaryId: number, reaction: string) => {
 
 export const deleteReaction = async (diaryId: number, reaction: string) => {
   try {
-    const response = await fetch(API_PATH.REACTION.crud(diaryId), {
+    const response = await interceptor(API_PATH.REACTION.crud(diaryId), {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
       credentials: 'include',

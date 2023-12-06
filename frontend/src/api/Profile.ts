@@ -1,8 +1,9 @@
 import API_PATH from '@util/apiPath';
+import interceptor from '@api/fetchInterceptor';
 
 export const getCurrentUser = async (userId: number) => {
   try {
-    const response = await fetch(API_PATH.USER.userProfile(userId), {
+    const response = await interceptor(API_PATH.USER.userProfile(userId), {
       credentials: 'include',
     });
 

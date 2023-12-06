@@ -35,3 +35,14 @@ export const logout = async () => {
     console.error('로그아웃에 실패했습니다.', error);
   }
 };
+
+export const refresh = async () => {
+  try {
+    const response = await fetch(API_PATH.AUTH.updateToken(), {
+      credentials: 'include',
+    });
+    return response;
+  } catch (error) {
+    console.error('토큰 갱신에 실패했습니다.', error);
+  }
+};

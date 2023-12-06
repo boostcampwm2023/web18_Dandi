@@ -1,10 +1,12 @@
 import { searchOptionsType } from '@type/pages/MyDiary';
 
+import interceptor from '@api/fetchInterceptor';
+
 import API_PATH from '@util/apiPath';
 
 export const getTagRecommend = async (keyword: string) => {
   try {
-    const response = await fetch(API_PATH.TAG.recommend(encodeURI(keyword)), {
+    const response = await interceptor(API_PATH.TAG.recommend(encodeURI(keyword)), {
       credentials: 'include',
     });
 
@@ -28,7 +30,7 @@ export const getSearchResults = async ({
         ? API_PATH.DIARY.keywordSearch(keyword, lastIndex)
         : API_PATH.DIARY.search(keyword, lastIndex);
 
-    const response = await fetch(fetchURL, {
+    const response = await interceptor(fetchURL, {
       credentials: 'include',
     });
 
