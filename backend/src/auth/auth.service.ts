@@ -13,6 +13,7 @@ import { cookieExtractor } from './strategy/jwtAuth.strategy';
 import { AuthRepository } from './auth.repository';
 import { SocialType } from 'src/users/entity/socialType';
 import { GET_NAVER_PROFILE_URL, NAVER_OAUTH_URL } from './utils/auth.constant';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +24,8 @@ export class AuthService {
   ) {}
 
   async login(oAuthLoginDto: OAuthLoginDto): Promise<LoginResultDto> {
-    const { accessToken } = await this.getToken(oAuthLoginDto);
-    const profile = await this.getUserProfile(accessToken);
+    const naverAccessToken = await this.getToken(oAuthLoginDto);
+    const profile = await this.getUserProfile(naverAccessToken);
 
     let user = await this.usersRepository.findBySocialIdAndSocialType(
       profile.id,
@@ -35,16 +36,18 @@ export class AuthService {
       user = await this.signUp(profile, oAuthLoginDto.socialType);
     }
 
-    const newAccessToken = this.jwtService.sign({
+    const accessKey = uuidv4();
+    this.authRepository.setRefreshToken(accessKey);
+
+    const accessToken = this.jwtService.sign({
       id: user.id,
       nickname: user.nickname,
+      accessKey,
     });
-
-    this.authRepository.setRefreshToken(newAccessToken);
 
     return {
       userId: user.id,
-      token: newAccessToken,
+      token: accessToken,
     };
   }
 
@@ -66,21 +69,19 @@ export class AuthService {
     }
 
     const data = await response.json();
-    return {
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token,
-    };
+    return data.access_token;
   }
 
   async refreshAccessToken(req: Request) {
     const userJwt = cookieExtractor(req);
     const payload = this.jwtService.decode(userJwt);
-    const refreshToken = await this.authRepository.getRefreshToken(userJwt);
+    const refreshToken = await this.authRepository.getRefreshToken(payload.accessKey);
 
     if (refreshToken) {
       return this.jwtService.sign({
         id: payload.id,
         nickname: payload.nickname,
+        accessKey: payload.accessKey,
       });
     } else {
       throw new UnauthorizedException('로그인이 필요합니다.');
