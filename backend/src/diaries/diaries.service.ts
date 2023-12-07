@@ -55,7 +55,8 @@ export class DiariesService {
     diary.summary = await this.getSummary(diary.title, plainText);
     diary.mood = await this.judgeOverallMood(plainText);
 
-    await this.diariesRepository.save(diary);
+    const savedDiary = await this.diariesRepository.save(diary);
+    await this.diariesRepository.addDiaryEvent(savedDiary.id);
   }
 
   async findDiaryDetail(user: User, id: number) {
@@ -76,8 +77,8 @@ export class DiariesService {
     return diary;
   }
 
-  async updateDiary(id: number, user: User, updateDiaryDto: UpdateDiaryDto) {
-    const existingDiary = await this.findDiary(user, id);
+  async updateDiary(diaryId: number, user: User, updateDiaryDto: UpdateDiaryDto) {
+    const existingDiary = await this.findDiary(user, diaryId);
 
     existingDiary.tags = await this.tagsService.mapTagNameToTagType(updateDiaryDto.tagNames);
     this.tagsService.updateDataSetScore(user.id, updateDiaryDto.tagNames);
@@ -94,13 +95,20 @@ export class DiariesService {
       existingDiary.mood = await this.judgeOverallMood(plainText);
     }
 
-    return await this.diariesRepository.save(existingDiary);
+    await Promise.all([
+      this.diariesRepository.save(existingDiary),
+      this.diariesRepository.addDiaryEvent(diaryId),
+    ]);
   }
 
-  async deleteDiary(user: User, id: number) {
-    await this.findDiary(user, id);
+  async deleteDiary(user: User, diaryId: number) {
+    await this.findDiary(user, diaryId);
 
-    await this.diariesRepository.softDelete(id);
+    //TODO: 다이어리 저장이 실패하면, 이벤트를 발생시키지 않도록 변경 + softDelete에서 user와 diaryId를 검사하도록 변경
+    await Promise.all([
+      await this.diariesRepository.softDelete(diaryId),
+      await this.diariesRepository.addDiaryEvent(diaryId),
+    ]);
   }
 
   async findAllDiaryEmotions(
@@ -122,27 +130,6 @@ export class DiariesService {
       startDate,
       lastDate,
     );
-  }
-
-  private groupDiariesByEmotion(diaries: Diary[]) {
-    return diaries.reduce<GetAllEmotionsResponseDto[]>((acc, crr) => {
-      const diaryInfo = {
-        id: crr.id,
-        title: crr.title,
-        createdAt: crr.createdAt,
-      };
-
-      const existingEmotion = acc.find((e) => e.emotion === crr.emotion);
-      if (existingEmotion) {
-        existingEmotion.diaryInfos.push(diaryInfo);
-      } else {
-        acc.push({
-          emotion: crr.emotion,
-          diaryInfos: [diaryInfo],
-        });
-      }
-      return acc;
-    }, []);
   }
 
   async findFeedDiary(userId: number, lastIndex: number | undefined): Promise<FeedDiaryDto[]> {

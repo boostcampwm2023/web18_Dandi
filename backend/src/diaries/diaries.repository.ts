@@ -12,12 +12,15 @@ import {
   SearchDiaryDataForm,
 } from './dto/diary.dto';
 import { startOfDay, endOfDay } from 'date-fns';
+import Redis from 'ioredis';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 
 @Injectable()
 export class DiariesRepository extends Repository<Diary> {
   constructor(
     private dataSource: DataSource,
     private readonly elasticsearchService: ElasticsearchService,
+    @InjectRedis() private readonly redis: Redis,
   ) {
     super(Diary, dataSource.createEntityManager());
   }
@@ -402,6 +405,10 @@ export class DiariesRepository extends Repository<Diary> {
     });
 
     return diaries;
+  }
+
+  async addDiaryEvent(diaryId: number): Promise<void> {
+    this.redis.publish('diary.event', JSON.stringify({ diaryId }));
   }
 
   private mapToLeaveReaction(diaryInfo, userId: number) {

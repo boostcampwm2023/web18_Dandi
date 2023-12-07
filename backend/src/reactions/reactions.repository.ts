@@ -4,10 +4,15 @@ import { Reaction } from './entity/reaction.entity';
 import { Diary } from 'src/diaries/entity/diary.entity';
 import { User } from 'src/users/entity/user.entity';
 import { ReactionInfoResponseDto } from './dto/reaction.dto';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class ReactionsRepository extends Repository<Reaction> {
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    @InjectRedis() private readonly redis: Redis,
+  ) {
     super(Reaction, dataSource.createEntityManager());
   }
 
@@ -41,5 +46,9 @@ export class ReactionsRepository extends Repository<Reaction> {
       .where('reaction.diaryId = :diaryId', { diaryId })
       .innerJoin('reaction.user', 'user')
       .getRawMany();
+  }
+
+  async addDiaryEvent(diaryId: number): Promise<void> {
+    this.redis.publish('diary.event', JSON.stringify({ diaryId }));
   }
 }
