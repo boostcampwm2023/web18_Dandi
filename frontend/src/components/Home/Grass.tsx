@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
@@ -34,6 +35,14 @@ const Grass = () => {
     return <p>Error fetching data</p>;
   }
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = containerRef.current.scrollWidth;
+    }
+  }, [containerRef]);
+
   data.yearMood.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate = new Date(date);
     const index = Math.floor((dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000));
@@ -64,7 +73,10 @@ const Grass = () => {
       <p className="text-2xl font-bold">
         지난 1년간 {data.yearMood.length}개의 일기를 작성하셨어요.
       </p>
-      <div className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2">
+      <div
+        ref={containerRef}
+        className="grid-rows-7 border-brown grid h-full w-full grid-flow-col overflow-x-scroll rounded-lg border p-2"
+      >
         {grassElements}
       </div>
     </div>

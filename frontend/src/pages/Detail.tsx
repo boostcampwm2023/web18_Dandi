@@ -52,10 +52,8 @@ const Detail = () => {
   }
 
   const content = <DiaryContent diaryId={diaryId} {...data} />;
-
   const loginUser = localStorage.getItem('userId') ?? 0;
   const isMyDiary = +loginUser === data.userId;
-
   return (
     <div className="flex flex-col items-center">
       <NavBar />
@@ -73,7 +71,7 @@ const Detail = () => {
                     content: data.content,
                     emotion: data.emotion,
                     thumbnail: data.thumbnail,
-                    tags: data.tags,
+                    tagNames: data.tagNames,
                     status: data.status,
                   },
                 })
