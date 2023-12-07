@@ -52,7 +52,10 @@ const DiaryContent = ({
 
   useEffect(() => {
     if (isSuccess) {
-      const myData = data.reactionList.find((item: IReactionedFriends) => item.userId === userId);
+      const loginUserId = localStorage.getItem('userId') ?? 0;
+      const myData = data.reactionList.find(
+        (item: IReactionedFriends) => item.userId === +loginUserId,
+      );
       myData && setSelectedEmoji(myData?.reaction);
       setTotalReaction(data.reactionList.length);
     }
