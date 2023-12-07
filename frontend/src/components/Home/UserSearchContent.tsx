@@ -39,7 +39,12 @@ const UserSearchContent = ({ nickname }: UserSearchContentProps) => {
     return <p>유저검색에 실패했습니다.</p>;
   }
 
-  return userSearchData.data.map((data: UserListResponse, index: number) => (
+  const loginUserId = localStorage.getItem('userId') ?? 0;
+  const AnotherUserData = userSearchData.data.filter(
+    (data: UserListResponse) => +data.id !== +loginUserId,
+  );
+
+  return AnotherUserData.map((data: UserListResponse, index: number) => (
     <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.STRANGER} />
   ));
 };
