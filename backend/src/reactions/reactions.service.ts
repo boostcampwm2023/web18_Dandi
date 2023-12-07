@@ -43,7 +43,7 @@ export class ReactionsService {
 
   async deleteReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
     const diary = await this.diariesService.findDiary(user, diaryId);
-    const reaction = await this.reactionsRepository.findReactionByDiaryAndUser(
+    const reaction = await this.reactionsRepository.findReactionByDiaryAndUserAndReaction(
       user,
       diary,
       reactionRequestDto.reaction,
