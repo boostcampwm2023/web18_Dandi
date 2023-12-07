@@ -24,7 +24,7 @@ const Feed = () => {
     [string, string | null],
     { lastIndex: number }
   >({
-    queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+    queryKey: ['feedDiaryList', localStorage.getItem('userId')],
     queryFn: getFeed,
     initialPageParam: {
       lastIndex: 2e9,
