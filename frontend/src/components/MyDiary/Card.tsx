@@ -96,7 +96,7 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
 
   return (
     <div
-      className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid px-7 py-6 ${styles}`}
+      className={`border-brown relative flex flex-col gap-3 rounded-xl border border-solid bg-white px-7 py-6 ${styles}`}
     >
       <div onClick={goDetail} className="flex cursor-pointer flex-col gap-2">
         <p className={`${size === SMALL ? 'text-sm' : ''}`}>

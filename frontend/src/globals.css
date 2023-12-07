@@ -60,3 +60,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
 input[type='date'] {
   -webkit-text-fill-color: #4b4b4b;
 }
+
+.swiper-slide {
+  border-radius: 0.75rem;
+}
