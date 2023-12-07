@@ -18,6 +18,7 @@ export default {
       red: '#F96A6A',
       white: '#FFFFFF',
       blue: '#6AB4F9',
+      body: '#fffef9',
       emotion: {
         0: '#EDEDED',
         1: '#DE8080',
