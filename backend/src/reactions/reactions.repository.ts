@@ -20,15 +20,6 @@ export class ReactionsRepository extends Repository<Reaction> {
     });
   }
 
-  findReactionByDiaryAndUser(user: User, diary: Diary) {
-    return this.findOne({
-      where: {
-        diary: { id: diary.id },
-        user: { id: user.id },
-      },
-    });
-  }
-
   findByDiary(diaryId: number): Promise<ReactionInfoResponseDto[]> {
     return this.createQueryBuilder('reaction')
       .select([
