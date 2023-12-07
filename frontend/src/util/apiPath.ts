@@ -1,5 +1,5 @@
-// const SERVER_URL = 'https://dandi-ary.site:3001';
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'https://dandi-ary.site:3001';
+// const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';
 const USER = '/users';
