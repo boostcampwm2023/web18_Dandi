@@ -5,11 +5,9 @@ import { getDiaryWeekAndMonthList } from '@api/DiaryList';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
-import Card from '@components/MyDiary/Card';
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 import DateController from '@components/MyDiary/DateController';
 
-import { WEEK_STANDARD_LENGTH } from '@util/constants';
 import { getNowWeek, formatDate, formatDateDash } from '@util/funcs';
 
 const calPeriod = () => {
@@ -57,16 +55,10 @@ const WeekContainer = () => {
         leftOnClick={() => setPrevOrNextWeek(-1)}
         rightOnClick={() => setPrevOrNextWeek(1)}
       />
-      {data && data.diaryList.length < WEEK_STANDARD_LENGTH && (
-        <section className="flex gap-5">
-          {data.diaryList.map((diaryItem, index) => (
-            <Card diaryItem={diaryItem} key={index} />
-          ))}
-        </section>
-      )}
-      {data && data.diaryList.length >= WEEK_STANDARD_LENGTH && (
+      {data && Boolean(data.diaryList.length) == true && (
         <CarouselContainer data={data.diaryList} />
       )}
+      {data && !data.diaryList.length && <div>데이터가 없네용</div>}
     </section>
   );
 };

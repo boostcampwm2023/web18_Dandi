@@ -14,7 +14,7 @@ export default {
       default: '#4B4B4B',
       brown: '#C7C1BB',
       gray: '#D9D9D9',
-      mint: '#B5C6B0',
+      mint: '#C6D8CD',
       red: '#F96A6A',
       white: '#FFFFFF',
       blue: '#6AB4F9',

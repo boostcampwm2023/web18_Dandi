@@ -51,12 +51,13 @@ const Home = () => {
     getNextPageParam: (lastPage) => {
       return lastPage && lastPage.diaryList.length >= 5
         ? {
-            userId: localStorage.getItem('userId') as string,
+            userId: userId as string,
             type: 'Day',
             lastIndex: lastPage?.diaryList.at(-1).diaryId,
           }
         : undefined;
     },
+    enabled: !!userId,
   });
 
   useEffect(() => {
