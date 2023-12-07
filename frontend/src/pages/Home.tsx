@@ -85,7 +85,7 @@ const Home = () => {
     <main className="mb-28 flex flex-col items-center justify-start">
       <NavBar />
       <Profile userId={userId ? +userId : 0} userData={profileData} />
-      {/* <Grass /> */}
+      <Grass />
       <EmotionStat nickname={profileData.nickname} />
       <div className="w-3/5 p-5">
         <h1 className="mb-5 text-2xl font-bold">{`${profileData.nickname}${PAGE_TITLE_HOME}`}</h1>
