@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { getTagRecommend } from '@api/KeywordSearch';
 
@@ -11,6 +11,7 @@ import { DEBOUNCE_TIME } from '@util/constants';
 interface KeywordSearchProps {
   keyword: string;
   selected: searchOptionsType;
+  searchFlag: boolean;
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
   setSelected: React.Dispatch<React.SetStateAction<searchOptionsType>>;
   setSearchFlag: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,6 +20,7 @@ interface KeywordSearchProps {
 const KeywordSearch = ({
   keyword,
   selected,
+  searchFlag,
   setKeyword,
   setSelected,
   setSearchFlag,
@@ -26,10 +28,31 @@ const KeywordSearch = ({
   const [showSelect, setShowSelect] = useState(false);
   const [showKeyword, setShowKeyword] = useState(false);
   const [recommendKeyword, setRecommendKeyword] = useState<string[]>();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const optionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutSideClick = (e: any) => {
+      if (searchInputRef.current && searchInputRef.current !== e.target) {
+        setShowKeyword(false);
+      }
+      if (
+        optionRef.current &&
+        optionRef.current !== e.target &&
+        !e.target.classList.contains('searchOptionItem')
+      ) {
+        setShowSelect(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutSideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutSideClick);
+    };
+  }, [searchInputRef, optionRef]);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      if (keyword) {
+      if (keyword && selected === '키워드' && !searchFlag) {
         const data = await getTagRecommend(keyword);
         setRecommendKeyword(data.keywords);
       }
@@ -39,9 +62,6 @@ const KeywordSearch = ({
 
   const searchOptions: searchOptionsType[] = ['키워드', '제목 + 내용'];
 
-  const toggleShowSelect = () => setShowSelect((prev) => !prev);
-  const toggleShowKeyword = () => setShowKeyword((prev) => !prev);
-
   const onChangeSearchOption = (option: searchOptionsType) => {
     setSelected(option);
     setSearchFlag(true);
@@ -49,18 +69,30 @@ const KeywordSearch = ({
   };
   const onClickKeywordOption = (option: string) => {
     setKeyword(option);
+    setSearchFlag(true);
     setShowKeyword(false);
   };
   const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFlag(false);
     setKeyword(e.target.value);
-    setShowKeyword(true);
+  };
+
+  const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      setSearchFlag(true);
+    }
   };
 
   return (
     <section className="relative flex items-start gap-3">
-      <div className="border-brown relative w-32 rounded-xl border border-solid py-3 pl-4 pr-3">
-        <button className="flex w-full items-center justify-between" onClick={toggleShowSelect}>
+      <div
+        ref={optionRef}
+        className="border-brown relative w-32 rounded-xl border border-solid py-3 pl-4 pr-3"
+      >
+        <button
+          className="flex w-full items-center justify-between"
+          onFocus={() => setShowSelect(true)}
+        >
           <p>{selected}</p>
           <Icon id="down" size="small" />
         </button>
@@ -71,7 +103,7 @@ const KeywordSearch = ({
                 key={option}
                 onClick={() => onChangeSearchOption(option)}
                 className={
-                  'hover:bg-brown px-3 py-2.5 text-sm first:rounded-t-lg last:rounded-b-lg hover:text-white'
+                  'searchOptionItem hover:bg-brown px-3 py-2.5 text-sm first:rounded-t-lg last:rounded-b-lg hover:text-white'
                 }
               >
                 {option}
@@ -88,13 +120,15 @@ const KeywordSearch = ({
             value={keyword}
             type="text"
             onChange={onChangeKeyword}
-            onClick={toggleShowKeyword}
+            onFocus={() => setShowKeyword(true)}
+            onKeyDown={onKeyDownInput}
+            ref={searchInputRef}
           />
           <button onClick={() => setSearchFlag(true)}>
             <Icon id="search" />
           </button>
         </div>
-        {showKeyword && (
+        {showKeyword && selected === '키워드' && (
           <>
             <hr className="text-gray" />
             <div className="rounded-xl bg-white text-sm">

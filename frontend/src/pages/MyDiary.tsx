@@ -108,6 +108,7 @@ const MyDiary = () => {
           <KeywordSearch
             keyword={keyword}
             selected={selected}
+            searchFlag={searchFlag}
             setKeyword={setKeyword}
             setSelected={setSelected}
             setSearchFlag={setSearchFlag}
@@ -124,13 +125,15 @@ const MyDiary = () => {
               )}
             </div>
           )}
-          {viewType === DIARY_VIEW_TYPE.DAY &&
-            keyword &&
-            searchData?.pages.map((page, pageIndex) =>
-              page.diaryList.map((item, itemIndex) => (
-                <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
-              )),
-            )}
+          {viewType === DIARY_VIEW_TYPE.DAY && keyword && (
+            <div className="w-full p-5">
+              {searchData?.pages.map((page, pageIndex) =>
+                page.diaryList.map((item, itemIndex) => (
+                  <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
+                )),
+              )}
+            </div>
+          )}
           <div ref={infiniteRef} />
         </section>
         {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}
