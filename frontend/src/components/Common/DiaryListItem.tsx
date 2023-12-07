@@ -96,7 +96,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   };
 
   return (
-    <div className="border-brown relative mb-3 rounded-2xl border border-solid bg-white px-7 py-6">
+    <div className="border-brown relative mb-3 flex flex-col gap-4 rounded-2xl border border-solid bg-white px-7 py-6">
       {pageType === FEED && (
         <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
           <ProfileItem
@@ -106,30 +106,23 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
           />
         </div>
       )}
-
-      <div className="cursor-pointer" onClick={goDetail}>
-        <header className="mb-3 flex items-center justify-between">
+      <div className="flex cursor-pointer flex-col gap-4" onClick={goDetail}>
+        <header className="flex items-center justify-between">
           <p className="text-lg font-bold">{diaryItem.title}</p>
           <p className="text-sm font-medium">{formatDateString(diaryItem.createdAt)}</p>
         </header>
 
         <main className="flex flex-col justify-center">
-          <div className="flex justify-start">
-            {diaryItem.thumbnail && (
-              <img
-                className="mb-6 w-full object-cover"
-                src={diaryItem.thumbnail}
-                alt="기본 이미지"
-              />
-            )}
-          </div>
-          <div className="mb-3 line-clamp-3 whitespace-pre-wrap text-sm font-medium">
+          {diaryItem.thumbnail && (
+            <img className="mb-6 w-1/2 object-cover" src={diaryItem.thumbnail} alt="기본 이미지" />
+          )}
+          <div className="line-clamp-3 whitespace-pre-wrap text-sm font-medium">
             <p>{diaryItem.summary}</p>
           </div>
         </main>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-3 text-base">
+      <div className="flex flex-wrap gap-3 text-base">
         {diaryItem.tags.map((keyword, index) => (
           <Keyword key={index} text={keyword} />
         ))}
