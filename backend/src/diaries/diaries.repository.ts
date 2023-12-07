@@ -78,7 +78,7 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.createdAt as createdAt',
         'diary.emotion as emotion',
 
-        'GROUP_CONCAT(tags.name) as tags',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
         'COUNT(reactions.reaction) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
@@ -190,7 +190,7 @@ export class DiariesRepository extends Repository<Diary> {
         'user.nickname as nickname',
         'user.profileImage as profileImage',
 
-        'GROUP_CONCAT(tags.name) as tags',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
         'COUNT(reactions.reaction) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
