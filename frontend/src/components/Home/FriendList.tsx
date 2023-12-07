@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getFriendList } from '@api/FriendModal';
+import cryingCat from '@assets/image/cryingCat.png';
 
 import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
@@ -64,18 +65,25 @@ const FriendList = ({ userId }: FriendListProps) => {
 
       {!nickname && (
         <div>
-          <p className="mb-6 text-2xl font-bold">친구 목록</p>
+          <p className="mb-2 text-2xl font-bold">친구 목록</p>
           <div className="flex flex-wrap justify-between">
-            {friendListData.data.friends.map((data: FriendListResponse, index: number) => (
-              <FriendModalItem key={index} {...data} type={profileItemType} />
-            ))}
+            {friendListData.data.friends.length !== 0 ? (
+              friendListData.data.friends.map((data: FriendListResponse, index: number) => (
+                <FriendModalItem key={index} {...data} type={profileItemType} />
+              ))
+            ) : (
+              <div className="flex w-full flex-col items-center justify-center gap-3">
+                <img className="w-1/3" src={cryingCat} alt="우는 이모티콘" />
+                <p className="font-bold">아직 친구가 없어요.</p>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {nickname && (
         <div>
-          <p className="mb-6 text-2xl font-bold">검색 결과</p>
+          <p className="mb-2 text-2xl font-bold">검색 결과</p>
           <div className="flex flex-wrap justify-between">
             <FriendSearchContent nickname={nickname} />
           </div>

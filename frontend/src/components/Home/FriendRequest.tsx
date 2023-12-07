@@ -19,7 +19,7 @@ const FriendRequest = ({ userId }: FriendRequestProps) => {
   return (
     <div className="px-5">
       <div className="relative mb-6 flex flex-col">
-        <label className="mb-6 text-2xl font-bold" htmlFor="userSearch">
+        <label className="mb-2 text-2xl font-bold" htmlFor="userSearch">
           유저 찾기
         </label>
         <input
@@ -36,14 +36,14 @@ const FriendRequest = ({ userId }: FriendRequestProps) => {
       {!nickname && (
         <div>
           <div>
-            <p className="mb-6 text-2xl font-bold">받은 신청</p>
+            <p className="mb-2 text-2xl font-bold">받은 신청</p>
             <div className="flex flex-wrap justify-between">
               <ReceivedRequest userId={userId} />
             </div>
           </div>
 
           <div>
-            <p className="mb-6 text-2xl font-bold">보낸 신청</p>
+            <p className="mb-2 text-2xl font-bold">보낸 신청</p>
             <div className="flex flex-wrap justify-between">
               <SendRequest userId={userId} />
             </div>

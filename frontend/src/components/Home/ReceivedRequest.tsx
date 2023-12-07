@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getRequestList } from '@api/FriendModal';
+import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 
@@ -50,6 +51,15 @@ const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
       };
       return newObj;
     });
+
+  if (ReceivedList.length === 0) {
+    return (
+      <div className="flex w-full flex-col items-center justify-center gap-3">
+        <img className="w-1/3" src={faceWithPeekingEye} alt="받은 친구요청이 없는 그림" />
+        <p className="font-bold">받은 친구요청이 없어요.</p>
+      </div>
+    );
+  }
 
   return ReceivedList.map((data: ReceivedList, index: number) => (
     <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.RECEIVED} />

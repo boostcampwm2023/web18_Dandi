@@ -43,6 +43,9 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
       queryClient.invalidateQueries({
         queryKey: ['friendList'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['profileData'],
+      });
     },
   });
 
@@ -51,6 +54,9 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     onSuccess() {
       queryClient.invalidateQueries({
         queryKey: ['receivedList'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['profileData'],
       });
     },
   });

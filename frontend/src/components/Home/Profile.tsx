@@ -42,7 +42,9 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const isFriendHome = useParams().userId ?? false;
+  const loginUserId = localStorage.getItem('userId');
+  const paramsUserId = useParams().userId ?? false;
+  const isFriendHome = loginUserId !== paramsUserId && paramsUserId;
 
   const [showModalType, setShowModalType] = useState('list');
   const [showModal, setShowModal] = useState(false);
