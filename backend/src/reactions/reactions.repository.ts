@@ -11,12 +11,11 @@ export class ReactionsRepository extends Repository<Reaction> {
     super(Reaction, dataSource.createEntityManager());
   }
 
-  findReactionByDiaryAndUserAndReaction(user: User, diary: Diary, reaction: string) {
+  findReactionByDiaryAndUser(user: User, diary: Diary) {
     return this.findOne({
       where: {
         diary: { id: diary.id },
         user: { id: user.id },
-        reaction,
       },
     });
   }
