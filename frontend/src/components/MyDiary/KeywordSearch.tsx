@@ -6,7 +6,7 @@ import { searchOptionsType } from '@type/pages/MyDiary';
 
 import Icon from '@components/Common/Icon';
 
-import { DEBOUNCE_TIME } from '@util/constants';
+import { CONTENT_SEARCH_MIN_LENGTH, DEBOUNCE_TIME } from '@util/constants';
 
 interface KeywordSearchProps {
   keyword: string;
@@ -56,7 +56,7 @@ const KeywordSearch = ({
   }, [searchInputRef, optionRef]);
 
   useEffect(() => {
-    if (keyword.length === 1) {
+    if (keyword.length === CONTENT_SEARCH_MIN_LENGTH) {
       setKeywordLengthError(true);
     } else {
       setKeywordLengthError(false);
@@ -81,7 +81,8 @@ const KeywordSearch = ({
     if (option === '제목 + 내용' && keywordLengthError) {
       return;
     }
-    setSearchFlag(true);
+    setSearchFlag(false);
+    setKeyword('');
   };
   const onClickKeywordOption = (option: string) => {
     setKeyword(option);
