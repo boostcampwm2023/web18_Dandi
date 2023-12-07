@@ -122,7 +122,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     <div className="mb-5 mr-3 flex w-full">
       <div className="w-28">
         <img
-          className="mr-3 h-16 w-16 cursor-pointer rounded-full"
+          className="mr-3 h-16 w-16 cursor-pointer rounded-full object-cover"
           onClick={goFriendHome}
           src={profileImage}
           alt={`${nickname} 프로필 이미지`}
