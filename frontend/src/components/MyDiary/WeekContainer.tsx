@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getDiaryWeekAndMonthList } from '@api/DiaryList';
+import dizzyFace from '@assets/image/dizzyFace.png';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
@@ -58,7 +59,12 @@ const WeekContainer = () => {
       {data && Boolean(data.diaryList.length) == true && (
         <CarouselContainer data={data.diaryList} />
       )}
-      {data && !data.diaryList.length && <div>데이터가 없네용</div>}
+      {data && !data.diaryList.length && (
+        <div className="mt-20 flex w-full flex-col items-center justify-center gap-3">
+          <img className="w-1/6" src={dizzyFace} alt="작성한 일기가 없는 그림" />
+          <p className="text-xl font-bold">작성한 일기가 없어요.</p>
+        </div>
+      )}
     </section>
   );
 };
