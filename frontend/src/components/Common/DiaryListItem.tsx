@@ -14,7 +14,7 @@ import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
 
-import { FEED } from '@util/constants';
+import { FEED, PAGE_URL } from '@util/constants';
 import { formatDateString } from '@util/funcs';
 
 interface DiaryListItemProps {
@@ -85,8 +85,8 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
     }
   };
 
-  const goDetail = () => navigate(`/detail/${diaryItem.diaryId}`);
-  const goFriendHome = () => navigate(`/home/${diaryItem.authorId}`);
+  const goDetail = () => navigate(`${PAGE_URL.DETAIL}/${diaryItem.diaryId}`);
+  const goFriendHome = () => navigate(`${PAGE_URL.HOME}${diaryItem.authorId}`);
 
   const onClickEmoji = async (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
