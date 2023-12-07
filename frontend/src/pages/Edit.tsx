@@ -23,7 +23,7 @@ interface CreateDiaryParams {
 const Edit = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [keywordList, setKeywordList] = useState<string[]>(state?.tags || []);
+  const [keywordList, setKeywordList] = useState<string[]>(state?.tagNames || []);
   const [title, setTitle] = useState(state?.title || '');
   const [emoji, setEmoji] = useState(state?.emotion || '😁');
   const [status, setStatus] = useState(
