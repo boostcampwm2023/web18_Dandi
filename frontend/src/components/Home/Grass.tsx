@@ -14,14 +14,22 @@ interface GrassDataProps {
 }
 
 const Grass = () => {
+  const params = useParams();
+  const userId = params.userId || localStorage.getItem('userId');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = containerRef.current.scrollWidth;
+    }
+  });
+
   const currentDate: Date = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const lastYear: Date = new Date(currentDate);
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
   const dates = Array.from({ length: 366 }, () => 0);
-  const params = useParams();
-  const userId = params.userId || localStorage.getItem('userId');
   const { data, isLoading, isError } = useQuery({
     queryKey: ['grass', userId],
     queryFn: () => getGrass(Number(userId)),
@@ -34,14 +42,6 @@ const Grass = () => {
   if (isError) {
     return <p>Error fetching data</p>;
   }
-
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft = containerRef.current.scrollWidth;
-    }
-  }, [containerRef]);
 
   data.yearMood.forEach(({ date, mood }: GrassDataProps) => {
     const dataDate = new Date(date);
