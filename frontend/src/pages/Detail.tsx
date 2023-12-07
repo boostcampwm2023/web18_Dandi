@@ -31,7 +31,7 @@ const Detail = () => {
       queryClient.removeQueries({
         queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
-      navigate(PAGE_URL.MY_DIARY);
+      navigate(-1);
     },
     onError: (error) => {
       console.error(error);
