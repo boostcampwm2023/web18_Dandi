@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getDiaryDayList } from '@api/DiaryList';
@@ -21,8 +21,13 @@ const MyDiary = () => {
   const [keyword, setKeyword] = useState<string>('');
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
+  const infiniteRef = useRef<HTMLDivElement>(null);
 
-  const { data: diaryData } = useInfiniteQuery<
+  const {
+    data: diaryData,
+    isSuccess: diaryDataSuccess,
+    fetchNextPage: fetchNextDiaryPage,
+  } = useInfiniteQuery<
     any,
     Error,
     InfiniteDiaryListProps,
@@ -48,7 +53,11 @@ const MyDiary = () => {
     },
   });
 
-  const { data: searchData } = useInfiniteQuery<
+  const {
+    data: searchData,
+    isSuccess: searchDataSuccess,
+    fetchNextPage: fetchNextSearchPage,
+  } = useInfiniteQuery<
     any,
     Error,
     InfiniteDiaryListProps,
@@ -73,6 +82,23 @@ const MyDiary = () => {
     },
     enabled: searchFlag && !!keyword,
   });
+
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (searchFlag) {
+            fetchNextSearchPage();
+          } else {
+            fetchNextDiaryPage();
+          }
+        }
+      });
+    });
+    if (infiniteRef.current) {
+      io.observe(infiniteRef.current);
+    }
+  }, [diaryDataSuccess, searchDataSuccess]);
 
   return (
     <>
@@ -105,6 +131,7 @@ const MyDiary = () => {
                 <DiaryListItem diaryItem={item} key={pageIndex + itemIndex} />
               )),
             )}
+          <div ref={infiniteRef} />
         </section>
         {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}
         {viewType === DIARY_VIEW_TYPE.MONTH && <MonthContainer />}
