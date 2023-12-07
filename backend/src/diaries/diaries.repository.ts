@@ -79,7 +79,7 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.emotion as emotion',
 
         'GROUP_CONCAT(DISTINCT tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author.id = :authorId', { authorId })
