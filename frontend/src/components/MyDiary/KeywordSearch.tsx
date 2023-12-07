@@ -28,6 +28,7 @@ const KeywordSearch = ({
   const [showSelect, setShowSelect] = useState(false);
   const [showKeyword, setShowKeyword] = useState(false);
   const [recommendKeyword, setRecommendKeyword] = useState<string[]>();
+  const [keywordLengthError, setKeywordLengthError] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const optionRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +56,14 @@ const KeywordSearch = ({
   }, [searchInputRef, optionRef]);
 
   useEffect(() => {
+    if (keyword.length === 1) {
+      setKeywordLengthError(true);
+    } else {
+      setKeywordLengthError(false);
+    }
+  }, [keyword]);
+
+  useEffect(() => {
     if (keyword && selected === '키워드' && !searchFlag) {
       const timer = setTimeout(async () => {
         const data = await getTagRecommend(keyword);
@@ -68,13 +77,19 @@ const KeywordSearch = ({
 
   const onChangeSearchOption = (option: searchOptionsType) => {
     setSelected(option);
-    setSearchFlag(true);
     setShowSelect(false);
+    if (option === '제목 + 내용' && keywordLengthError) {
+      return;
+    }
+    setSearchFlag(true);
   };
   const onClickKeywordOption = (option: string) => {
     setKeyword(option);
-    setSearchFlag(true);
     setShowKeyword(false);
+    if (selected === '제목 + 내용' && keywordLengthError) {
+      return;
+    }
+    setSearchFlag(true);
   };
   const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFlag(false);
@@ -82,7 +97,12 @@ const KeywordSearch = ({
   };
 
   const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+    if (
+      e.key === 'Enter' &&
+      !e.nativeEvent.isComposing &&
+      selected === '제목 + 내용' &&
+      !keywordLengthError
+    ) {
       setSearchFlag(true);
     }
   };
@@ -128,10 +148,20 @@ const KeywordSearch = ({
             onKeyDown={onKeyDownInput}
             ref={searchInputRef}
           />
-          <button onClick={() => setSearchFlag(true)}>
+          <button
+            onClick={() => {
+              if (selected === '제목 + 내용' && keywordLengthError) {
+                return;
+              }
+              setSearchFlag(true);
+            }}
+          >
             <Icon id="search" />
           </button>
         </div>
+        {keywordLengthError && selected === '제목 + 내용' && (
+          <p className="text-red absolute mt-14 text-sm">! 검색어는 2자 이상이어야 합니다.</p>
+        )}
         {showKeyword && selected === '키워드' && (
           <>
             <hr className="text-gray" />
