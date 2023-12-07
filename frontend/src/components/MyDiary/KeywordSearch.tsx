@@ -64,8 +64,6 @@ const KeywordSearch = ({
     }
   }, [keyword]);
 
-  useEffect(() => {}, [keyword, selected]);
-
   const searchOptions: searchOptionsType[] = ['키워드', '제목 + 내용'];
 
   const onChangeSearchOption = (option: searchOptionsType) => {
