@@ -8,7 +8,7 @@ import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
 
-import { PAGE_TITLE_FEED } from '@util/constants';
+import { PAGE_TITLE_FEED, FEED } from '@util/constants';
 
 const Feed = () => {
   const infiniteRef = useRef<HTMLDivElement>(null);
@@ -58,7 +58,11 @@ const Feed = () => {
         <h1 className="mb-5 text-2xl font-bold">{PAGE_TITLE_FEED}</h1>
         {feedData?.pages.map((page, pageIndex) =>
           page.diaryList.map((item, itemIndex) => (
-            <DiaryListItem diaryItem={item} key={Number(String(pageIndex) + String(itemIndex))} />
+            <DiaryListItem
+              pageType={FEED}
+              diaryItem={item}
+              key={Number(String(pageIndex) + String(itemIndex))}
+            />
           )),
         )}
       </div>
