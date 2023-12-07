@@ -9,7 +9,7 @@ const interceptor = async (url: string, option: any) => {
 
   const refreshResponse = await refresh();
 
-  if (refreshResponse?.status === 401) {
+  if (!response.ok) {
     localStorage.clear();
     window.location.href = PAGE_URL.LOGIN;
     return refreshResponse;
