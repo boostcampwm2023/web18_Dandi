@@ -91,7 +91,7 @@ const KeywordSearch = ({
     <section className="relative flex items-start gap-3">
       <div
         ref={optionRef}
-        className="border-brown relative w-32 rounded-xl border border-solid py-3 pl-4 pr-3"
+        className="border-brown relative w-32 rounded-xl border border-solid bg-white py-3 pl-4 pr-3"
       >
         <button
           className="flex w-full items-center justify-between"
@@ -116,7 +116,7 @@ const KeywordSearch = ({
           </ul>
         )}
       </div>
-      <div className="border-brown absolute left-36 z-50 flex w-auto flex-col rounded-xl border border-solid">
+      <div className="border-brown absolute left-36 z-50 flex w-auto flex-col rounded-xl border border-solid bg-white">
         <div className="relative flex justify-between py-3 pl-4 pr-3">
           <input
             className="outline-none"

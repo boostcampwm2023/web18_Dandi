@@ -17,7 +17,7 @@ const MonthContainer = () => {
   const first = new Date(nowMonth.getFullYear(), nowMonth.getMonth(), 1);
   const last = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + NEXT_INDEX, 0);
 
-  const { data, isError, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['monthDiaryData', localStorage.getItem('userId'), nowMonth],
     queryFn: () =>
       getDiaryWeekAndMonthList({
@@ -36,14 +36,6 @@ const MonthContainer = () => {
       return emotionObject;
     },
   });
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error Occurrence!</p>;
-  }
 
   const setPrevOrNextMonth = (plus: number) => {
     const month = new Date(nowMonth);

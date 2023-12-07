@@ -6,16 +6,17 @@
   html {
     font-family: 'SUIT Variable', 'Noto Sans KR', sans-serif;
     color: #4b4b4b;
+    background-color: #fffef9;
   }
 }
 
 @layer components {
   .btn {
-    @apply min-w-[3.5rem] h-7 font-bold rounded-lg;
+    @apply min-w-[3.5rem] font-bold rounded-lg py-2 px-3;
   }
 
   .btn-large {
-    @apply w-1/3 h-14 text-xl;
+    @apply w-1/3 text-xl;
   }
 
   .btn-default {
@@ -63,8 +64,4 @@ input[type='date'] {
 
 .swiper-slide {
   border-radius: 0.75rem;
-}
-
-body {
-  background-color: #fffef9;
 }
