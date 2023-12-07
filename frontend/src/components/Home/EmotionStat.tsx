@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 import getEmotionStat from '@api/EmotionStat';
 import EmotionCloud from '@components/Home/EmotionCloud';
@@ -27,16 +28,14 @@ interface diaryInfoProps {
 }
 
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
+  const params = useParams();
+  const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const [period, setPeriod] = useState([calPrev(new Date(), PREV_WEEK), new Date()]);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['emotionStat', localStorage.getItem('userId'), period],
+    queryKey: ['emotionStat', userId, period],
     queryFn: () =>
-      getEmotionStat(
-        Number(localStorage.getItem('userId')),
-        formatDateDash(period[0]),
-        formatDateDash(period[1]),
-      ),
+      getEmotionStat(Number(userId), formatDateDash(period[0]), formatDateDash(period[1])),
   });
 
   if (isLoading) {
@@ -54,7 +53,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const eData = (data?.emotions || []).map((item: emotionCloudProps) => {
     return {
       text: item.emotion,
-      size: item.diaryInfo.length / totalLength * 200,
+      size: (item.diaryInfo.length / totalLength) * 200,
     };
   });
 
