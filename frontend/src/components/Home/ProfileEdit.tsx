@@ -61,7 +61,7 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
 
   return (
     <div className="px-5">
-      <p className="mb-6 text-2xl font-bold">내 정보 수정</p>
+      <p className="mb-20 text-2xl font-bold">내 정보 수정</p>
       <div className="relative mb-5 flex flex-col items-center">
         <div className="group relative cursor-pointer text-center" onClick={openFileInput}>
           <img
