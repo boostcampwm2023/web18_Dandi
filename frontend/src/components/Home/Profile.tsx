@@ -135,7 +135,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
 
   return (
     <section className="flex flex-col items-center justify-center">
-      <div className="mb-10 flex flex-row items-center justify-center">
+      <div className="my-10 flex flex-row items-center justify-center">
         <img
           className="h-52 w-52 rounded-full object-cover"
           src={profileImage}

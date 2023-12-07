@@ -33,7 +33,11 @@ const KeywordSearch = ({
 
   useEffect(() => {
     const handleOutSideClick = (e: any) => {
-      if (searchInputRef.current && searchInputRef.current !== e.target) {
+      if (
+        searchInputRef.current &&
+        searchInputRef.current !== e.target &&
+        !e.target.classList.contains('recommendedItem')
+      ) {
         setShowKeyword(false);
       }
       if (
@@ -51,14 +55,16 @@ const KeywordSearch = ({
   }, [searchInputRef, optionRef]);
 
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (keyword && selected === '키워드' && !searchFlag) {
+    if (keyword && selected === '키워드' && !searchFlag) {
+      const timer = setTimeout(async () => {
         const data = await getTagRecommend(keyword);
         setRecommendKeyword(data.keywords);
-      }
-    }, DEBOUNCE_TIME);
-    return () => clearTimeout(timer);
+      }, DEBOUNCE_TIME);
+      return () => clearTimeout(timer);
+    }
   }, [keyword]);
+
+  useEffect(() => {}, [keyword, selected]);
 
   const searchOptions: searchOptionsType[] = ['키워드', '제목 + 내용'];
 
@@ -138,7 +144,7 @@ const KeywordSearch = ({
               {recommendKeyword &&
                 recommendKeyword.map((keyword: string) => (
                   <p
-                    className="hover:bg-brown cursor-pointer px-3 py-2.5 last:rounded-b-lg hover:font-bold hover:text-white"
+                    className="recommendedItem hover:bg-brown cursor-pointer px-3 py-2.5 last:rounded-b-lg hover:font-bold hover:text-white"
                     key={keyword}
                     onClick={() => onClickKeywordOption(keyword)}
                   >
