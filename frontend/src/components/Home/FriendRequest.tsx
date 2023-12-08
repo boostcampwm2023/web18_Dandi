@@ -31,7 +31,7 @@ const FriendRequest = ({ userId }: FriendRequestProps) => {
           value={nickname}
           onChange={onChangeNickname}
         />
-        <Icon id={'search'} styles="absolute top-2/3 right-[1%]" />
+        <Icon id={'search'} styles="absolute top-[60%] right-[1%]" />
       </div>
       {!nickname && (
         <div>
