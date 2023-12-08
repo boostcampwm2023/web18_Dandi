@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
 import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
@@ -25,8 +25,6 @@ interface DiaryListItemProps {
 const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const params = useParams();
-  const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
@@ -42,8 +40,9 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
   useEffect(() => {
     if (isSuccess) {
+      const loginUserId = localStorage.getItem('userId') ?? 0;
       const myData = data.reactionList.find(
-        (item: IReactionedFriends) => item.userId === Number(userId),
+        (item: IReactionedFriends) => item.userId === +loginUserId,
       );
       myData && setSelectedEmoji(myData?.reaction);
       setTotalReaction(data.reactionList.length);
