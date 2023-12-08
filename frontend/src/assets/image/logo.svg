@@ -1,8 +1,8 @@
 <svg width="136" height="50" viewBox="0 0 136 50" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect width="136" height="50" fill="none"/>
+<rect width="136" height="50" fill="#F5F5F5"/>
 <rect width="1440" height="1024" transform="translate(-652 -368)" fill="#D5E0D8"/>
 <g filter="url(#filter0_d_0_1)">
-<rect x="-213" y="-66" width="562" height="336" rx="30" fill="none"/>
+<rect x="-213" y="-66" width="562" height="336" rx="30" fill="white"/>
 </g>
 <rect width="136" height="50" fill="url(#pattern0)"/>
 <defs>
