@@ -48,7 +48,7 @@ const ReactionList = ({ diaryId }: ReactionListProps) => {
 
   if (reactionData.length === 0) {
     return (
-      <div className="mt-52 flex w-full flex-col items-center justify-center gap-3">
+      <div className="flex h-auto w-full flex-col items-center justify-center gap-3">
         <img className="w-1/3" src={dashingAway} alt="반응이 없는 그림" />
         <p className="text-2xl font-bold">반응이 없어요.</p>
       </div>
