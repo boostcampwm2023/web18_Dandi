@@ -6,7 +6,7 @@ import { searchOptionsType } from '@type/pages/MyDiary';
 
 import Icon from '@components/Common/Icon';
 
-import { DEBOUNCE_TIME } from '@util/constants';
+import { CONTENT_SEARCH_MIN_LENGTH, DEBOUNCE_TIME } from '@util/constants';
 
 interface KeywordSearchProps {
   keyword: string;
@@ -28,6 +28,7 @@ const KeywordSearch = ({
   const [showSelect, setShowSelect] = useState(false);
   const [showKeyword, setShowKeyword] = useState(false);
   const [recommendKeyword, setRecommendKeyword] = useState<string[]>();
+  const [keywordLengthError, setKeywordLengthError] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const optionRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +56,14 @@ const KeywordSearch = ({
   }, [searchInputRef, optionRef]);
 
   useEffect(() => {
+    if (keyword.length === CONTENT_SEARCH_MIN_LENGTH) {
+      setKeywordLengthError(true);
+    } else {
+      setKeywordLengthError(false);
+    }
+  }, [keyword]);
+
+  useEffect(() => {
     if (keyword && selected === '키워드' && !searchFlag) {
       const timer = setTimeout(async () => {
         const data = await getTagRecommend(keyword);
@@ -68,13 +77,20 @@ const KeywordSearch = ({
 
   const onChangeSearchOption = (option: searchOptionsType) => {
     setSelected(option);
-    setSearchFlag(true);
     setShowSelect(false);
+    if (option === '제목 + 내용' && keywordLengthError) {
+      return;
+    }
+    setSearchFlag(false);
+    setKeyword('');
   };
   const onClickKeywordOption = (option: string) => {
     setKeyword(option);
-    setSearchFlag(true);
     setShowKeyword(false);
+    if (selected === '제목 + 내용' && keywordLengthError) {
+      return;
+    }
+    setSearchFlag(true);
   };
   const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFlag(false);
@@ -82,7 +98,12 @@ const KeywordSearch = ({
   };
 
   const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+    if (
+      e.key === 'Enter' &&
+      !e.nativeEvent.isComposing &&
+      selected === '제목 + 내용' &&
+      !keywordLengthError
+    ) {
       setSearchFlag(true);
     }
   };
@@ -91,7 +112,7 @@ const KeywordSearch = ({
     <section className="relative flex items-start gap-3">
       <div
         ref={optionRef}
-        className="border-brown relative w-32 rounded-xl border border-solid py-3 pl-4 pr-3"
+        className="border-brown relative w-32 rounded-xl border border-solid bg-white py-3 pl-4 pr-3"
       >
         <button
           className="flex w-full items-center justify-between"
@@ -116,7 +137,7 @@ const KeywordSearch = ({
           </ul>
         )}
       </div>
-      <div className="border-brown absolute left-36 z-50 flex w-auto flex-col rounded-xl border border-solid">
+      <div className="border-brown absolute left-36 z-50 flex w-auto flex-col rounded-xl border border-solid bg-white">
         <div className="relative flex justify-between py-3 pl-4 pr-3">
           <input
             className="outline-none"
@@ -128,10 +149,20 @@ const KeywordSearch = ({
             onKeyDown={onKeyDownInput}
             ref={searchInputRef}
           />
-          <button onClick={() => setSearchFlag(true)}>
+          <button
+            onClick={() => {
+              if (selected === '제목 + 내용' && keywordLengthError) {
+                return;
+              }
+              setSearchFlag(true);
+            }}
+          >
             <Icon id="search" />
           </button>
         </div>
+        {keywordLengthError && selected === '제목 + 내용' && (
+          <p className="text-red absolute mt-14 text-sm">! 검색어는 2자 이상이어야 합니다.</p>
+        )}
         {showKeyword && selected === '키워드' && (
           <>
             <hr className="text-gray" />

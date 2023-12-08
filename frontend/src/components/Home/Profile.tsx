@@ -137,7 +137,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
     <section className="flex flex-col items-center justify-center">
       <div className="my-10 flex flex-row items-center justify-center">
         <img
-          className="h-52 w-52 rounded-full object-cover"
+          className="border-brown h-52 w-52 rounded-full border-2 border-solid object-cover"
           src={profileImage}
           alt="나의 프로필 사진"
         />
@@ -145,7 +145,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
         {isFriendHome && (
           <div className="ml-10">
             <p className="mb-8 text-3xl font-bold">{nickname}</p>
-            <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid p-5 text-center text-lg font-bold">
+            <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
                 onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.LIST)}
@@ -163,7 +163,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
             <p className="mb-8 text-3xl font-bold">
               {nickname}님, {GREET_MESSAGES[getRandomIndex]}
             </p>
-            <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid p-5 text-center text-lg font-bold">
+            <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
                 onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.LIST)}

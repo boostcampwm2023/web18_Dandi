@@ -29,7 +29,7 @@ const Calendar = ({ first, last, emotionData }: CalendarProp) => {
   }
 
   return (
-    <table className="overflow-hidden rounded-lg border-hidden shadow-[0_0_0_1px_#C7C1BB]">
+    <table className="overflow-hidden rounded-lg border-hidden bg-white shadow-[0_0_0_1px_#C7C1BB]">
       <thead>
         <tr className="bg-brown text-base text-white">
           {DAY_OF_WEEK.map((dayName) => (

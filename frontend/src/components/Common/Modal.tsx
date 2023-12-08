@@ -23,7 +23,7 @@ const Modal = ({ showModal, closeModal, children }: ModalProps) => {
   return (
     opened && (
       <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-80">
-        <div className="border-default relative w-1/3 rounded-2xl border bg-white p-4 shadow-[0_0_20px_0_rgba(0,0,0,0.25)]">
+        <div className="relative w-1/3 rounded-2xl border bg-white px-7 pb-7 shadow-[0_0_20px_0_rgba(0,0,0,0.25)]">
           <button onClick={handleClose}>
             <Icon id="closed" styles="absolute right-4 top-3 h-6 w-6" />
           </button>

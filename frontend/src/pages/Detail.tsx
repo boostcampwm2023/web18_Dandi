@@ -57,7 +57,7 @@ const Detail = () => {
   return (
     <div className="flex flex-col items-center">
       <NavBar />
-      <div className="flex w-2/3 flex-col gap-2">
+      <div className="mt-5 flex w-2/3 flex-col gap-4">
         {isMyDiary && (
           <div className="flex justify-end gap-2">
             <Button

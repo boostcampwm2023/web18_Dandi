@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import logo from '@assets/image/logo.svg';
+import logo from '@assets/image/text_logo.png';
 
 import { logout } from '@api/Login';
 
@@ -18,7 +18,7 @@ const NavBar = () => {
   return (
     <div className="border-brown mb-6 flex h-[110px] w-full min-w-[590px] items-center justify-between border-b-[1px] border-solid bg-[#E4EEE8]">
       <NavLink to="/" className="ml-[5%]">
-        <img src={logo} alt="메인로고" className="w-[70%]" />
+        <img src={logo} alt="메인로고" className="w-24" />
       </NavLink>
       <div className="text-default mr-[10%] flex gap-10 text-lg">
         <NavLink to="/" className={({ isActive }) => (isActive ? 'font-bold' : '')}>
