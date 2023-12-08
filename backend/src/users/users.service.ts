@@ -41,7 +41,7 @@ export class UsersService {
       nickname: user.nickname,
       profileImage: user.profileImage,
       totalFriends: totalFriends,
-      isExistedTodayDiary: user.diaries ? true : false,
+      isExistedTodayDiary: user.diaries.length !== 0 ? true : false,
       relation: relation
         ? {
             senderId: relation.sender.id,
