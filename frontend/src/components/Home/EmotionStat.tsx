@@ -53,7 +53,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const eData = (data?.emotions || []).map((item: emotionCloudProps) => {
     return {
       text: item.emotion,
-      size: (item.diaryInfo.length / totalLength) * 200,
+      size: (item.diaryInfo.length / totalLength) * 100,
     };
   });
 
