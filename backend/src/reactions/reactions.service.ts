@@ -18,13 +18,12 @@ export class ReactionsService {
   async saveReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
     const diary = await this.diariesService.findDiary(user, diaryId);
 
-    const duplicateReaction = await this.reactionsRepository.findReactionByDiaryAndUserAndReaction(
+    const duplicateReaction = await this.reactionsRepository.findReactionByDiaryAndUser(
       user,
       diary,
-      reactionRequestDto.reaction,
     );
     if (duplicateReaction) {
-      throw new BadRequestException('이미 저장된 리액션 정보입니다.');
+      throw new BadRequestException('이미 해당 글에 리액션을 남겼습니다.');
     }
 
     this.reactionsRepository.save({ user, diary, reaction: reactionRequestDto.reaction });

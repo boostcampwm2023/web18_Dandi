@@ -107,18 +107,18 @@ const DiaryContent = ({
 
   return (
     <>
-      <div className="border-brown relative mb-3 rounded-2xl border-2 border-solid bg-white p-3">
+      <div className="border-brown relative mb-3 flex flex-col gap-4 rounded-2xl border border-solid bg-white px-7 py-6">
         <ProfileItem id={userId} img={profileImage} nickName={authorName} />
-        <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <p className="text-lg font-bold">{title}</p>
           <p className="text-sm font-medium">{formatDateString(createdAt)}</p>
         </div>
         <div className="flex flex-col justify-center">
-          <div className="mb-3  whitespace-pre-wrap text-sm font-medium">
+          <div className="whitespace-pre-wrap text-sm font-medium">
             <div>{Parser(content)}</div>
           </div>
         </div>
-        <div className="mb-3 flex flex-wrap gap-3 text-base">
+        <div className="flex flex-wrap gap-3 text-base">
           {tagNames.map((tag, index) => (
             <Keyword key={index} text={tag} />
           ))}

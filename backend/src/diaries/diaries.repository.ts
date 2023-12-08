@@ -48,8 +48,8 @@ export class DiariesRepository extends Repository<Diary> {
         'user.nickname as authorName',
         'user.profileImage as profileImage',
 
-        'GROUP_CONCAT(tags.name) as tagNames',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tagNames',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
       ])
       .where('diary.id = :id', { id })
       .leftJoin('diary.tags', 'tags')
@@ -78,8 +78,8 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.createdAt as createdAt',
         'diary.emotion as emotion',
 
-        'GROUP_CONCAT(tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author.id = :authorId', { authorId })
@@ -121,8 +121,8 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.createdAt as createdAt',
         'diary.emotion as emotion',
 
-        'GROUP_CONCAT(tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author.id = :authorId', { authorId })
@@ -190,8 +190,8 @@ export class DiariesRepository extends Repository<Diary> {
         'user.nickname as nickname',
         'user.profileImage as profileImage',
 
-        'GROUP_CONCAT(tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author IN (:...idList)', { idList })
@@ -249,8 +249,8 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.createdAt as createdAt',
         'diary.emotion as emotion',
 
-        'GROUP_CONCAT(tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author.id = :userId', { userId })
@@ -291,8 +291,8 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.createdAt as createdAt',
         'diary.emotion as emotion',
 
-        'GROUP_CONCAT(tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author.id = :userId', { userId })
@@ -340,6 +340,7 @@ export class DiariesRepository extends Repository<Diary> {
           'reactionUsers',
           'authorid',
           'createdat',
+          'deletedat',
         ],
         search_after: lastIndex ? [lastIndex] : undefined,
         size: PAGINATION_SIZE,
@@ -354,6 +355,7 @@ export class DiariesRepository extends Repository<Diary> {
                 },
               },
             ],
+            must_not: [{ exists: { field: 'deletedat' } }],
           },
         },
         sort: [{ diaryid: 'desc' }],
@@ -377,8 +379,8 @@ export class DiariesRepository extends Repository<Diary> {
         'diary.createdAt as createdAt',
         'diary.emotion as emotion',
 
-        'GROUP_CONCAT(tags.name) as tags',
-        'COUNT(reactions.reaction) as reactionCount',
+        'GROUP_CONCAT(DISTINCT tags.name) as tags',
+        'COUNT(DISTINCT reactions.id) as reactionCount',
         'GROUP_CONCAT(CONCAT(reactions.userId, ":", reactions.reaction)) as leavedReaction',
       ])
       .where('diary.author.id = :userId', { userId })

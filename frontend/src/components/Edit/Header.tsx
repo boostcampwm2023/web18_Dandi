@@ -32,7 +32,7 @@ const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderP
         <p className="mb-5 text-2xl font-bold">오늘 기분은 어떠세요?</p>
         <div className="relative mb-5 flex items-center">
           <input
-            className="mr-3 h-[2.8rem] w-[2.8rem] cursor-pointer text-4xl outline-none"
+            className="bg-body h-[2.8rem] w-[2.8rem] cursor-pointer bg-transparent text-4xl outline-none"
             type="text"
             name="emoji"
             id="emoji"

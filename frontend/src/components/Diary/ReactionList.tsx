@@ -57,7 +57,7 @@ const ReactionList = ({ diaryId }: ReactionListProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-2xl font-bold">친구들의 반응</p>
+      <p className="mb-3 text-2xl font-bold">친구들의 반응</p>
       {reactionData.map(([emoji, friends]) => (
         <div key={emoji} className="flex items-center gap-4">
           <div className="text-4xl">{emoji}</div>
