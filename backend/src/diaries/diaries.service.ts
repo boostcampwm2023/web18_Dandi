@@ -222,7 +222,7 @@ export class DiariesService {
       );
 
       return {
-        diaryId: diary.diaryid,
+        diaryId: diary.diaryId,
         thumbnail: diary.thumbnail,
         title: diary.title,
         summary: diary.summary,

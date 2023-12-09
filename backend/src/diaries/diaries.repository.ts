@@ -333,7 +333,7 @@ export class DiariesRepository extends Repository<Diary> {
       body: {
         _source: [
           'authorname',
-          'diaryid',
+          'diaryId',
           'thumbnail',
           'title',
           'summary',
@@ -349,7 +349,7 @@ export class DiariesRepository extends Repository<Diary> {
         query: {
           bool: {
             must: [
-              { term: { authorid: userId } },
+              { term: { authorid: 15 } },
               {
                 multi_match: {
                   query: keyword,
@@ -359,7 +359,7 @@ export class DiariesRepository extends Repository<Diary> {
             ],
           },
         },
-        sort: [{ diaryid: 'desc' }],
+        sort: [{ diaryId: 'desc' }],
       },
     });
 

@@ -222,7 +222,7 @@ export class GetYearMoodResponseDto {
 
 export class SearchDiaryDataForm {
   authorname: string;
-  diaryid: number;
+  diaryId: number;
   thumbnail: string;
   title: string;
   summary: string;
