@@ -359,7 +359,7 @@ export class DiariesRepository extends Repository<Diary> {
             ],
           },
         },
-        sort: [{ diaryId: 'desc' }],
+        sort: [{ diaryid: 'desc' }],
       },
     });
 

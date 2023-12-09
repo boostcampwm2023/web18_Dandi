@@ -217,7 +217,7 @@ export class DiariesService {
       );
 
       return {
-        diaryId: diary.diaryId,
+        diaryId: diary.diaryid,
         thumbnail: diary.thumbnail,
         title: diary.title,
         summary: diary.summary,
