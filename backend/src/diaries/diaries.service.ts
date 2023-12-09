@@ -95,20 +95,15 @@ export class DiariesService {
       existingDiary.mood = await this.judgeOverallMood(plainText);
     }
 
-    await Promise.all([
-      this.diariesRepository.save(existingDiary),
-      this.diariesRepository.addDiaryEvent(diaryId),
-    ]);
+    await this.diariesRepository.save(existingDiary);
+    await this.diariesRepository.addDiaryEvent(diaryId);
   }
 
   async deleteDiary(user: User, diaryId: number) {
     await this.findDiary(user, diaryId);
 
-    //TODO: 다이어리 저장이 실패하면, 이벤트를 발생시키지 않도록 변경 + softDelete에서 user와 diaryId를 검사하도록 변경
-    await Promise.all([
-      await this.diariesRepository.softDelete(diaryId),
-      await this.diariesRepository.addDiaryEvent(diaryId),
-    ]);
+    await this.diariesRepository.softDelete(diaryId);
+    await this.diariesRepository.addDiaryEvent(diaryId);
   }
 
   async findAllDiaryEmotions(

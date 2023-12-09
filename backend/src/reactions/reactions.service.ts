@@ -27,10 +27,8 @@ export class ReactionsService {
       throw new BadRequestException('이미 저장된 리액션 정보입니다.');
     }
 
-    await Promise.all([
-      this.reactionsRepository.save({ user, diary, reaction: reactionRequestDto.reaction }),
-      this.reactionsRepository.addDiaryEvent(diary.id),
-    ]);
+    await this.reactionsRepository.save({ user, diary, reaction: reactionRequestDto.reaction });
+    await this.reactionsRepository.addDiaryEvent(diary.id);
   }
 
   async updateReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
@@ -42,10 +40,8 @@ export class ReactionsService {
     }
 
     reaction.reaction = reactionRequestDto.reaction;
-    await Promise.all([
-      this.reactionsRepository.save(reaction),
-      this.reactionsRepository.addDiaryEvent(diary.id),
-    ]);
+    await this.reactionsRepository.save(reaction);
+    await this.reactionsRepository.addDiaryEvent(diary.id);
   }
 
   async deleteReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
@@ -60,9 +56,7 @@ export class ReactionsService {
       throw new BadRequestException('이미 삭제된 리액션 정보입니다.');
     }
 
-    await Promise.all([
-      this.reactionsRepository.remove(reaction),
-      this.reactionsRepository.addDiaryEvent(diary.id),
-    ]);
+    await this.reactionsRepository.remove(reaction);
+    await this.reactionsRepository.addDiaryEvent(diary.id);
   }
 }
