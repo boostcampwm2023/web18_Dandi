@@ -97,7 +97,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   return (
     <div className="border-brown relative mb-3 flex flex-col gap-4 rounded-2xl border border-solid bg-white px-7 py-6">
       {pageType === FEED && (
-        <div className="mb-3 cursor-pointer" onClick={goFriendHome}>
+        <div className="cursor-pointer" onClick={goFriendHome}>
           <ProfileItem
             id={Number(diaryItem.authorId)}
             img={diaryItem.profileImage}
@@ -106,9 +106,11 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         </div>
       )}
       <div className="flex cursor-pointer flex-col gap-4" onClick={goDetail}>
-        <header className="flex items-center justify-between">
+        <header className="flex flex-col justify-between sm:flex-row">
           <p className="text-lg font-bold">{diaryItem.title}</p>
-          <p className="text-sm font-medium">{formatDateString(diaryItem.createdAt)}</p>
+          <p className="hidden text-sm  font-medium sm:block">
+            {formatDateString(diaryItem.createdAt)}
+          </p>
         </header>
 
         <main className="flex flex-col justify-center">

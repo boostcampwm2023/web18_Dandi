@@ -69,8 +69,8 @@ const Grass = () => {
   });
 
   return (
-    <div className="flex h-full w-3/5 flex-col gap-2 p-5">
-      <p className="text-2xl font-bold">
+    <div className="flex h-full  w-full flex-col gap-2 p-5 sm:w-3/5">
+      <p className="text-lg font-bold sm:text-2xl">
         지난 1년간 {data.yearMood.length}개의 일기를 작성하셨어요.
       </p>
       <div

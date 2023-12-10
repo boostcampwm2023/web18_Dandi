@@ -54,7 +54,7 @@ const Feed = () => {
   return (
     <div className="mb-28 flex w-full flex-col items-center justify-start">
       <NavBar />
-      <div className="w-3/5 p-5">
+      <div className="w-full p-5 sm:w-3/5">
         <h1 className="mb-5 text-2xl font-bold">{PAGE_TITLE_FEED}</h1>
         {feedData?.pages.map((page, pageIndex) =>
           page.diaryList.map((item, itemIndex) => (

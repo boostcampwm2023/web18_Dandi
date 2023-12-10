@@ -27,10 +27,10 @@ const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderP
   };
 
   return (
-    <div className="w-[80%]">
-      <div>
-        <p className="mb-5 text-2xl font-bold">오늘 기분은 어떠세요?</p>
-        <div className="relative mb-5 flex items-center">
+    <div className="w-full p-2 sm:w-[80%] sm:p-0">
+      <div className="mb-3 flex items-center sm:mb-0 sm:block">
+        <p className="mr-10 text-xl font-bold sm:mb-5 sm:text-2xl">오늘 기분은 어떠세요?</p>
+        <div className="relative flex items-center sm:mb-5">
           <input
             className="bg-body h-[2.8rem] w-[2.8rem] cursor-pointer bg-transparent text-4xl outline-none"
             type="text"
@@ -48,19 +48,19 @@ const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderP
         <input
           type="text"
           placeholder="제목을 입력하세요"
-          className="border-brown mb-5 mr-10 h-12 w-3/5 rounded-xl border pl-4 outline-none"
+          className="border-brown mr-10 h-12 w-3/5 rounded-xl border pl-4 outline-none sm:mb-5"
           onChange={changeTitle}
           value={title}
         />
-        <div className="mb-5 flex items-center justify-center">
-          <label className="mr-3 cursor-pointer text-lg font-bold " htmlFor="status">
+        <div className="flex items-center justify-center sm:mb-5">
+          <label className="text-md mr-3 cursor-pointer font-bold sm:text-lg " htmlFor="status">
             {status}
           </label>
           <input
             checked={status === '나만 보기' ? false : true}
             type="checkbox"
             id="status"
-            className={`h-8 w-8 cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
+            className={`h-8 w-8  cursor-pointer appearance-none bg-[url("./assets/image/lock.svg")] bg-no-repeat checked:bg-[url("./assets/image/unlocked.svg")]`}
             onChange={toggleStatus}
           />
         </div>

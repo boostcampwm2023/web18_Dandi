@@ -91,8 +91,8 @@ const Home = () => {
       <Grass />
       <EmotionStat nickname={profileData.nickname} />
 
-      <div className="w-3/5 p-5">
-        <h1 className="mb-5 text-2xl font-bold">{`${profileData.nickname}${PAGE_TITLE_HOME}`}</h1>
+      <div className="w-full p-5 sm:w-3/5">
+        <h1 className="mb-5 text-lg font-bold sm:text-2xl">{`${profileData.nickname}${PAGE_TITLE_HOME}`}</h1>
         {isEmpty && (
           <div className="mt-20 flex w-full flex-col items-center justify-center gap-3">
             <img className="w-1/3" src={dizzyFace} alt="작성한 일기가 없는 그림" />
