@@ -56,24 +56,26 @@ const ReactionList = ({ diaryId }: ReactionListProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div>
       <p className="mb-3 text-2xl font-bold">친구들의 반응</p>
-      {reactionData.map(([emoji, friends]) => (
-        <div key={emoji} className="flex items-center gap-4">
-          <div className="text-4xl">{emoji}</div>
-          <ul className="flex w-full flex-wrap rounded-2xl border bg-white p-4">
-            {friends.map((friend, index) => (
-              <li key={index} className="">
-                <ProfileItem
-                  id={friend.userId}
-                  img={friend.profileImage}
-                  nickName={friend.nickname}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <div className="flex h-96 flex-col gap-2 overflow-scroll">
+        {reactionData.map(([emoji, friends]) => (
+          <div key={emoji} className="flex items-center gap-4">
+            <div className="text-4xl">{emoji}</div>
+            <ul className="flex w-full flex-wrap rounded-2xl border bg-white p-4">
+              {friends.map((friend, index) => (
+                <li key={index} className="">
+                  <ProfileItem
+                    id={friend.userId}
+                    img={friend.profileImage}
+                    nickName={friend.nickname}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
