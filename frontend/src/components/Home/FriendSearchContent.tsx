@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 import { recommendFriend } from '@api/FriendModal';
 import cryingCat from '@assets/image/cryingCat.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import { DEBOUNCE_TIME, PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface FriendSearchContentProps {
   nickname: string;
@@ -20,27 +19,18 @@ interface FriendListResponse {
 }
 
 const FriendSearchContent = ({ nickname }: FriendSearchContentProps) => {
-  const recommendData = useQuery({
-    queryKey: ['recommendFriend', nickname],
-    queryFn: () => recommendFriend(nickname),
-    enabled: !!nickname,
-  });
+  const [friendList, setFriendList] = useState([]);
 
   useEffect(() => {
-    if (nickname !== '') {
-      recommendData.refetch();
-    }
+    const timer = setTimeout(async () => {
+      if (!nickname) return;
+      const result = await recommendFriend(nickname);
+      setFriendList(result);
+    }, DEBOUNCE_TIME);
+    return () => clearTimeout(timer);
   }, [nickname]);
 
-  if (recommendData.isLoading) {
-    return <p></p>;
-  }
-
-  if (recommendData.isError) {
-    return <p>친구검색을 불러오지 못했습니다!</p>;
-  }
-
-  if (recommendData.data.length === 0) {
+  if (friendList.length === 0) {
     return (
       <div className="flex w-full flex-col items-center justify-center gap-3">
         <img className="w-1/3" src={cryingCat} alt="우는 이모티콘" />
@@ -49,7 +39,7 @@ const FriendSearchContent = ({ nickname }: FriendSearchContentProps) => {
     );
   }
 
-  return recommendData.data.map((data: FriendListResponse, index: number) => (
+  return friendList.map((data: FriendListResponse, index: number) => (
     <FriendModalItem key={index} {...data} type={PROFILE_BUTTON_TYPE.LIST} />
   ));
 };

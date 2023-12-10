@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 import { getSearchUserList } from '@api/FriendModal';
 import cryingFace from '@assets/image/cryingFace.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import { PROFILE_BUTTON_TYPE, DEBOUNCE_TIME } from '@util/constants';
 
 interface UserSearchContentProps {
   nickname: string;
@@ -20,30 +19,19 @@ interface UserListResponse {
 }
 
 const UserSearchContent = ({ nickname }: UserSearchContentProps) => {
-  const userSearchData = useQuery({
-    queryKey: ['searchUserList', nickname],
-    queryFn: () => getSearchUserList(nickname),
-    enabled: !!nickname,
-  });
+  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
-    if (nickname !== '') {
-      userSearchData.refetch();
-    }
+    const timer = setTimeout(async () => {
+      if (!nickname) return;
+      const result = await getSearchUserList(nickname);
+      setUserList(result);
+    }, DEBOUNCE_TIME);
+    return () => clearTimeout(timer);
   }, [nickname]);
 
-  if (userSearchData.isLoading) {
-    return <p></p>;
-  }
-
-  if (userSearchData.isError) {
-    return <p>유저검색에 실패했습니다.</p>;
-  }
-
   const loginUserId = localStorage.getItem('userId') ?? 0;
-  const AnotherUserData = userSearchData.data.filter(
-    (data: UserListResponse) => +data.id !== +loginUserId,
-  );
+  const AnotherUserData = userList.filter((data: UserListResponse) => +data.id !== +loginUserId);
 
   if (AnotherUserData.length === 0) {
     return (
