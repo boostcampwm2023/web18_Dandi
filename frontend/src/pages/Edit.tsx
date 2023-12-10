@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { createDiary, updateDiary } from '@api/Edit';
@@ -21,6 +21,8 @@ interface CreateDiaryParams {
 }
 
 const Edit = () => {
+  const queryClient = useQueryClient();
+
   const navigate = useNavigate();
   const { state } = useLocation();
   const [keywordList, setKeywordList] = useState<string[]>(state?.tagNames || []);
@@ -45,6 +47,12 @@ const Edit = () => {
     mutationFn: (params: CreateDiaryParams) => createDiary(params),
     onSuccess: () => {
       navigate(PAGE_URL.MY_DIARY);
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      });
     },
   });
 
@@ -52,6 +60,12 @@ const Edit = () => {
     mutationFn: (params: CreateDiaryParams) => updateDiary(params, state.diaryId),
     onSuccess: () => {
       navigate(`${PAGE_URL.DETAIL}/${state.diaryId}`);
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      });
     },
   });
 

@@ -29,6 +29,9 @@ const Detail = () => {
     mutationFn: () => deleteDiary(diaryId),
     onSuccess: () => {
       queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
         queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
       navigate(-1);
