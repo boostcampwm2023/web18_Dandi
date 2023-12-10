@@ -5,7 +5,7 @@ import { getDiaryDayList } from '@api/DiaryList';
 import { getSearchResults } from '@api/KeywordSearch';
 import dizzyFace from '@assets/image/dizzyFace.png';
 
-import { viewTypes, searchOptionsType } from '@type/pages/MyDiary';
+import { viewTypes, searchOptionsType, isViewTypes } from '@type/pages/MyDiary';
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
 import NavBar from '@components/Common/NavBar';
@@ -15,15 +15,17 @@ import WeekContainer from '@components/MyDiary/WeekContainer';
 import ViewType from '@components/MyDiary/ViewType';
 import MonthContainer from '@components/MyDiary/MonthContainer';
 
-import { DIARY_VIEW_TYPE } from '@util/constants';
+import { DIARY_VIEW_TYPE, PAGE_URL } from '@util/constants';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MyDiary = () => {
-  const [viewType, setViewType] = useState<viewTypes>('Day');
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const [viewType, setViewType] = useState<viewTypes>(state?.viewType || 'Day');
   const [keyword, setKeyword] = useState<string>('');
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
   const infiniteRef = useRef<HTMLDivElement>(null);
-
   const {
     data: diaryData,
     isSuccess: diaryDataSuccess,
@@ -53,6 +55,15 @@ const MyDiary = () => {
         : undefined;
     },
   });
+
+  const handleViewTypeChange = (type: viewTypes) => {
+    setViewType(type);
+    navigate(`${PAGE_URL.MY_DIARY}`, {
+      state: {
+        viewType: type,
+      },
+    });
+  };
 
   const {
     data: searchData,
@@ -101,6 +112,14 @@ const MyDiary = () => {
     }
   }, [diaryDataSuccess, searchDataSuccess]);
 
+  useEffect(() => {
+    if (state?.viewType && isViewTypes(state?.viewType)) {
+      setViewType(state?.viewType);
+    } else {
+      setViewType('Day');
+    }
+  }, [state?.viewType]);
+
   const isEmpty = !diaryData?.pages[0].diaryList.length;
 
   return (
@@ -116,7 +135,7 @@ const MyDiary = () => {
             setSelected={setSelected}
             setSearchFlag={setSearchFlag}
           />
-          <ViewType setViewType={setViewType} viewType={viewType} />
+          <ViewType handleViewTypeChange={handleViewTypeChange} viewType={viewType} />
         </header>
         <section className="flex w-3/5 flex-col items-center">
           {isEmpty && viewType === DIARY_VIEW_TYPE.DAY && (

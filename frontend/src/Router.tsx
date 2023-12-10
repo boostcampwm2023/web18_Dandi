@@ -7,6 +7,7 @@ import MyDiary from '@pages/MyDiary';
 import Edit from '@pages/Edit';
 import Detail from '@pages/Detail';
 import AuthLogin from '@pages/OAuthLogin';
+import NotFound from '@pages/NotFound';
 
 import PrivateRoutes from '@util/PrivateRoutes';
 import AuthRoutes from '@util/AuthRoutes';
@@ -28,6 +29,7 @@ const Router = () => {
           <Route path={`${PAGE_URL.LOGIN}`} element={<Login />} />
           <Route path={`${PAGE_URL.AUTH}`} element={<AuthLogin />} />
         </Route>
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

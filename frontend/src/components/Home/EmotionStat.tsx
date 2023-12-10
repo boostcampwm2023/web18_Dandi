@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import getEmotionStat from '@api/EmotionStat';
 import EmotionCloud from '@components/Home/EmotionCloud';
 
 import { formatDateDash, calPrev } from '@util/funcs';
-import { NEXT_INDEX, PREV_INDEX, PREV_WEEK } from '@util/constants';
+import { NEXT_INDEX, PAGE_URL, PREV_INDEX, PREV_WEEK } from '@util/constants';
 
 interface EmotionStatProps {
   nickname: string;
@@ -30,13 +30,27 @@ interface diaryInfoProps {
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const params = useParams();
   const userId = params.userId ? params.userId : localStorage.getItem('userId');
-  const [period, setPeriod] = useState([calPrev(new Date(), PREV_WEEK), new Date()]);
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const [period, setPeriod] = useState([
+    state?.startDate || calPrev(new Date(), PREV_WEEK),
+    state?.endDate || new Date(),
+  ]);
+
+  useEffect(() => {
+    if (state) {
+      setPeriod([state?.startDate || period[0], state?.endDate || period[1]]);
+    }
+  }, [state?.startDate, state?.endDate]);
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['emotionStat', userId, period],
     queryFn: () =>
       getEmotionStat(Number(userId), formatDateDash(period[0]), formatDateDash(period[1])),
   });
+
+  const navigatedURL = `${params.userId ? `/${params.userId}` : PAGE_URL.HOME}`;
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -66,9 +80,14 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
             className="border-brown rounded-xl border border-solid p-3 outline-none"
             type="date"
             defaultValue={formatDateDash(period[0])}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPeriod([new Date(e.target.value), period[1]])
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              navigate(navigatedURL, {
+                state: {
+                  startDate: new Date(e.target.value),
+                  endDate: period[1],
+                },
+              });
+            }}
             max={formatDateDash(calPrev(period[1], PREV_INDEX))}
           />
           <p>~</p>
@@ -77,7 +96,12 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
             className="border-brown rounded-xl border border-solid p-3 outline-none"
             defaultValue={formatDateDash(period[1])}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPeriod([period[0], new Date(e.target.value)])
+              navigate(navigatedURL, {
+                state: {
+                  startDate: period[0],
+                  endDate: new Date(e.target.value),
+                },
+              })
             }
             min={formatDateDash(calPrev(period[0], NEXT_INDEX))}
             max={formatDateDash(new Date())}

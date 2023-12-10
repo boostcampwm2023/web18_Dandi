@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { getCurrentUser } from '@api/Profile';
@@ -21,6 +21,7 @@ const Home = () => {
   const params = useParams();
   const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const infiniteRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const {
     data: profileData,
@@ -75,11 +76,11 @@ const Home = () => {
   }, [isSuccess]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <p>로딩 중...</p>;
   }
 
   if (isError) {
-    return <p>Error Occurrence!</p>;
+    navigate('/not/Found');
   }
 
   const isEmpty = !diaryData?.pages[0].diaryList.length;
