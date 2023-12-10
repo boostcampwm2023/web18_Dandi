@@ -60,9 +60,10 @@ const Detail = () => {
   return (
     <div className="flex flex-col items-center">
       <NavBar />
-      <div className="mt-5 flex w-2/3 flex-col gap-4">
+      <div className="mt-5 flex w-full flex-col gap-4 p-1 sm:w-2/3 sm:p-0">
+        {content}
         {isMyDiary && (
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-around">
             <Button
               text="수정"
               type="normal"
@@ -90,8 +91,6 @@ const Detail = () => {
             </Modal>
           </div>
         )}
-
-        {content}
       </div>
     </div>
   );

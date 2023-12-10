@@ -107,7 +107,7 @@ const DiaryContent = ({
 
   return (
     <>
-      <div className="border-brown relative mb-3 flex flex-col gap-4 rounded-2xl border border-solid bg-white px-7 py-6">
+      <div className="border-brown relative flex flex-col gap-4 rounded-2xl border border-solid bg-white px-7 py-6 sm:mb-3">
         <ProfileItem id={userId} img={profileImage} nickName={authorName} />
         <div className="flex items-center justify-between">
           <p className="text-lg font-bold">{title}</p>

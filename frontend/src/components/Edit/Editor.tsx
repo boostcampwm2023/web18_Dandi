@@ -28,7 +28,7 @@ const Editor = ({ content, setContent, thumbnail, setThumbnail }: EditorProps) =
   };
 
   return (
-    <div className="w-4/5">
+    <div className="w-full p-2 sm:w-4/5 sm:p-0">
       <div className="mb-6">
         <DiaryEditor
           ref={editorRef}

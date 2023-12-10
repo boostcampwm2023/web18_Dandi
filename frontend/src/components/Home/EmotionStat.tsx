@@ -58,12 +58,14 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   });
 
   return (
-    <div className="flex h-full w-3/5 flex-col gap-2 p-5">
-      <div className="flex items-center justify-between p-5">
-        <h3 className="text-2xl font-bold">최근 {nickname}님의 감정은 어땠을까요?</h3>
-        <div className="flex items-center gap-3">
+    <div className="flex h-full w-full flex-col gap-2 p-5 sm:w-3/5">
+      <div className="flex flex-col">
+        <h3 className="mb-5 text-lg  font-bold sm:text-2xl">
+          최근 {nickname}님의 감정은 어땠을까요?
+        </h3>
+        <div className="mb-3 flex items-center gap-3">
           <input
-            className="border-brown rounded-xl border border-solid p-3 outline-none"
+            className="border-brown rounded-xl border border-solid p-1 outline-none sm:p-3"
             type="date"
             defaultValue={formatDateDash(period[0])}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -74,7 +76,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           <p>~</p>
           <input
             type="date"
-            className="border-brown rounded-xl border border-solid p-3 outline-none"
+            className="border-brown rounded-xl border border-solid p-1 outline-none sm:p-3"
             defaultValue={formatDateDash(period[1])}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPeriod([period[0], new Date(e.target.value)])
@@ -84,7 +86,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           />
         </div>
       </div>
-      <div className="border-brown h-full w-full grid-flow-col overflow-x-scroll rounded-lg border bg-white p-2">
+      <div className="border-brown h-55 w-full grid-flow-col overflow-x-scroll rounded-lg border bg-white p-2">
         <EmotionCloud emotionData={eData} />
       </div>
     </div>

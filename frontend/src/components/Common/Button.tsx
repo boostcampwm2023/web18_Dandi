@@ -8,7 +8,7 @@ interface ButtonProps {
 const Button = ({ text, type, size, onClick }: ButtonProps) => {
   const buttonClass = `btn btn-${type}${size === 'large' ? ' btn-large' : ''}`;
   return (
-    <button className={buttonClass} onClick={onClick}>
+    <button className={`${buttonClass} w-[45%] text-sm sm:text-lg`} onClick={onClick}>
       {text}
     </button>
   );

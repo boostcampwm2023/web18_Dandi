@@ -134,17 +134,17 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   };
 
   return (
-    <section className="flex flex-col items-center justify-center">
-      <div className="my-10 flex flex-row items-center justify-center">
+    <section className="flex flex-col items-center justify-center p-1 sm:p-0">
+      <div className="my-10 flex flex-col items-center justify-center sm:flex-row">
         <img
-          className="border-brown h-52 w-52 rounded-full border-2 border-solid object-cover"
+          className="border-brown mb-5 h-52 w-52 rounded-full border-2 border-solid object-cover sm:mb-0"
           src={profileImage}
           alt="나의 프로필 사진"
         />
 
         {isFriendHome && (
-          <div className="ml-10">
-            <p className="mb-8 text-3xl font-bold">{nickname}</p>
+          <div className="sm:ml-10">
+            <p className="mb-8 text-2xl font-bold sm:text-3xl">{nickname}</p>
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
@@ -159,8 +159,8 @@ const Profile = ({ userId, userData }: ProfileProps) => {
         )}
 
         {!isFriendHome && (
-          <div className="ml-10">
-            <p className="mb-8 text-3xl font-bold">
+          <div className="sm:ml-10">
+            <p className="mb-8 text-2xl font-bold sm:text-3xl">
               {nickname}님, {GREET_MESSAGES[getRandomIndex]}
             </p>
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
@@ -190,7 +190,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
       </div>
       {!isFriendHome && (
         <div className="mb-10 flex w-full flex-1 flex-col items-center">
-          <div className="mb-5 text-center text-2xl font-bold leading-relaxed">
+          <div className="mb-5 text-center text-lg font-bold leading-relaxed sm:text-2xl">
             {TEXT_ABOUT_EXISTED_TODAY[`${isExistedTodayDiary}`]['noticeText'].map((text, index) => (
               <p key={index}>{text}</p>
             ))}
