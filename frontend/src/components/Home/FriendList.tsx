@@ -66,7 +66,7 @@ const FriendList = ({ userId }: FriendListProps) => {
       {!nickname && (
         <div>
           <p className="mb-2 text-2xl font-bold">친구 목록</p>
-          <div className="flex flex-wrap justify-between">
+          <div className="flex h-60 flex-wrap justify-between overflow-scroll">
             {friendListData.data.friends.length !== 0 ? (
               friendListData.data.friends.map((data: FriendListResponse, index: number) => (
                 <FriendModalItem key={index} {...data} type={profileItemType} />
