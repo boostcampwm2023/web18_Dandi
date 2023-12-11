@@ -26,7 +26,8 @@ export class ReactionsService {
       throw new BadRequestException('이미 해당 글에 리액션을 남겼습니다.');
     }
 
-    this.reactionsRepository.save({ user, diary, reaction: reactionRequestDto.reaction });
+    await this.reactionsRepository.save({ user, diary, reaction: reactionRequestDto.reaction });
+    await this.reactionsRepository.addDiaryEvent(diary.id);
   }
 
   async updateReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
@@ -39,6 +40,7 @@ export class ReactionsService {
 
     reaction.reaction = reactionRequestDto.reaction;
     await this.reactionsRepository.save(reaction);
+    await this.reactionsRepository.addDiaryEvent(diary.id);
   }
 
   async deleteReaction(user: User, diaryId: number, reactionRequestDto: ReactionRequestDto) {
@@ -53,6 +55,7 @@ export class ReactionsService {
       throw new BadRequestException('이미 삭제된 리액션 정보입니다.');
     }
 
-    this.reactionsRepository.remove(reaction);
+    await this.reactionsRepository.remove(reaction);
+    await this.reactionsRepository.addDiaryEvent(diary.id);
   }
 }
