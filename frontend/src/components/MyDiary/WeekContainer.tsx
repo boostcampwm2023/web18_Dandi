@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
+import dizzyFace from '@assets/image/dizzyFace.png';
 
 import { getDiaryWeekAndMonthList } from '@api/DiaryList';
-import dizzyFace from '@assets/image/dizzyFace.png';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
@@ -10,6 +11,7 @@ import CarouselContainer from '@components/MyDiary/CarouselContainer';
 import DateController from '@components/MyDiary/DateController';
 
 import { getNowWeek, formatDate, formatDateDash } from '@util/funcs';
+import { PAGE_URL } from '@util/constants';
 
 const calPeriod = () => {
   const startDate = new Date();
@@ -20,6 +22,8 @@ const calPeriod = () => {
 };
 
 const WeekContainer = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
   const [period, setPeriod] = useState(calPeriod());
 
@@ -35,8 +39,15 @@ const WeekContainer = () => {
   });
 
   const setPrevOrNextWeek = (plus: number) => {
-    setPeriod(changePeriod(plus));
-    setNowWeek(getNowWeek(period[1]));
+    const [newStartDate, newEndDate] = changePeriod(plus);
+    setNowWeek(getNowWeek(newEndDate));
+    navigate(`${PAGE_URL.MY_DIARY}`, {
+      state: {
+        viewType: state?.viewType,
+        startDate: newStartDate,
+        endDate: newEndDate,
+      },
+    });
   };
 
   const changePeriod = (plus: number) => {
@@ -45,6 +56,15 @@ const WeekContainer = () => {
     endDate.setDate(endDate.getDate() + plus * 7);
     return [startDate, endDate];
   };
+
+  useEffect(() => {
+    if (state?.startDate && state?.endDate) {
+      setPeriod([new Date(state?.startDate), new Date(state?.endDate)]);
+      setNowWeek(getNowWeek(state?.endDate));
+    } else {
+      setPeriod(calPeriod());
+    }
+  }, [state?.startDate, state?.endDate]);
 
   return (
     <section className="flex w-full max-w-6xl flex-col items-center">

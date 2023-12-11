@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import { getDiaryWeekAndMonthList } from '@api/DiaryList';
@@ -9,10 +10,12 @@ import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 import DateController from '@components/MyDiary/DateController';
 import Calendar from '@components/MyDiary/Calendar';
 
-import { NEXT_INDEX } from '@util/constants';
+import { NEXT_INDEX, PAGE_URL } from '@util/constants';
 import { formatDateDash, getNowMonth } from '@util/funcs';
 
 const MonthContainer = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const [nowMonth, setNowMonth] = useState(new Date());
   const first = new Date(nowMonth.getFullYear(), nowMonth.getMonth(), 1);
   const last = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + NEXT_INDEX, 0);
@@ -40,8 +43,21 @@ const MonthContainer = () => {
   const setPrevOrNextMonth = (plus: number) => {
     const month = new Date(nowMonth);
     month.setMonth(month.getMonth() + plus);
-    setNowMonth(month);
+    navigate(`${PAGE_URL.MY_DIARY}`, {
+      state: {
+        viewType: state?.viewType,
+        month: month,
+      },
+    });
   };
+
+  useEffect(() => {
+    if (state?.month) {
+      setNowMonth(new Date(state?.month));
+    } else {
+      setNowMonth(new Date());
+    }
+  }, [state?.month]);
 
   return (
     <>
