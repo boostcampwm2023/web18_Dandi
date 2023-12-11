@@ -349,7 +349,7 @@ export class DiariesRepository extends Repository<Diary> {
         query: {
           bool: {
             must: [
-              { term: { authorid: 15 } },
+              { term: { authorid: userId } },
               {
                 multi_match: {
                   query: keyword,
