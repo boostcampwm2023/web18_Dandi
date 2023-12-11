@@ -15,7 +15,8 @@ import Profile from '@components/Home/Profile';
 import Grass from '@components/Home/Grass';
 import EmotionStat from '@components/Home/EmotionStat';
 
-import { PAGE_TITLE_HOME } from '@util/constants';
+import { PAGE_TITLE_HOME, PAGE_URL } from '@util/constants';
+import Loading from '@/components/Common/Loading';
 
 const Home = () => {
   const params = useParams();
@@ -76,11 +77,11 @@ const Home = () => {
   }, [isSuccess]);
 
   if (isLoading) {
-    return <p>로딩 중...</p>;
+    return <Loading phrase="로딩 중이에요." />;
   }
 
   if (isError) {
-    navigate('/not/Found');
+    navigate(`${PAGE_URL.NOT_FOUND}`);
   }
 
   const isEmpty = !diaryData?.pages[0].diaryList.length;

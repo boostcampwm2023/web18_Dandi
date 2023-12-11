@@ -11,6 +11,7 @@ import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
 
 import { PAGE_URL } from '@util/constants';
+import Loading from '@/components/Common/Loading';
 
 const Detail = () => {
   const queryClient = useQueryClient();
@@ -47,11 +48,11 @@ const Detail = () => {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading phrase="로딩 중이에요." />;
   }
 
   if (isError) {
-    return <p>Error fetching data</p>;
+    return navigate(`${PAGE_URL.NOT_FOUND}`);
   }
 
   const content = <DiaryContent diaryId={diaryId} {...data} />;

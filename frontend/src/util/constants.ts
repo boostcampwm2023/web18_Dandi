@@ -56,6 +56,7 @@ export const PAGE_URL = {
   LOGIN: '/login',
   AUTH: '/auth',
   DETAIL: '/detail',
+  NOT_FOUND: '/not/found',
 };
 export const NAVER_LOGIN_FORM_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${
   import.meta.env.VITE_NAVER_CLIENT_ID

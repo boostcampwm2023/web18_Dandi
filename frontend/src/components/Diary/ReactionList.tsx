@@ -48,7 +48,7 @@ const ReactionList = ({ diaryId }: ReactionListProps) => {
 
   if (reactionData.length === 0) {
     return (
-      <div className="flex h-auto w-full flex-col items-center justify-center gap-3">
+      <div className="flex h-auto w-full flex-col items-center justify-center gap-3 pb-6">
         <img className="w-1/3" src={dashingAway} alt="반응이 없는 그림" />
         <p className="text-2xl font-bold">반응이 없어요.</p>
       </div>
@@ -56,9 +56,9 @@ const ReactionList = ({ diaryId }: ReactionListProps) => {
   }
 
   return (
-    <div>
-      <p className="mb-3 text-2xl font-bold">친구들의 반응</p>
-      <div className="flex h-96 flex-col gap-2 overflow-scroll">
+    <div className="px-5 pb-5">
+      <p className="mb-5 text-2xl font-bold">친구들의 반응</p>
+      <div className="flex max-h-96 flex-col gap-2 overflow-scroll">
         {reactionData.map(([emoji, friends]) => (
           <div key={emoji} className="flex items-center gap-4">
             <div className="text-4xl">{emoji}</div>
