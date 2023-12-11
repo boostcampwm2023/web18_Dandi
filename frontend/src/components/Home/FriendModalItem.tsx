@@ -134,7 +134,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
           alt={`${nickname} 프로필 이미지`}
         />
       </div>
-      <div className="flex w-full flex-col justify-center">
+      <div className="flex w-full flex-col">
         <p className="text-sm font-bold">{nickname}</p>
         <p className="text-gray text-xs">{email}</p>
         {buttonContent}
