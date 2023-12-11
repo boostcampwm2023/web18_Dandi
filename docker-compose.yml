@@ -1,0 +1,87 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:7.2
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - /etc/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - /redis/data:/data
+    ports:
+      - "6379:6379"
+  
+  was:
+    container_name: was
+    image: suhyun9252/dandi-be:GITHUB_SHA
+    restart: always
+    volumes:
+      - /dandi/logs:/dandi/logs  # log 보존
+    ports:
+      - "3000:3000"
+    env_file:
+      - /dandi/.env
+    depends_on:
+      - redis
+  
+  frontend:
+    container_name: frontend
+    image: suhyun9252/dandi-fe:GITHUB_SHA
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      # - "3001:3001"
+    volumes:
+      - /var/log/nginx:/var/log/nginx
+      # - ./data/nginx:/etc/nginx/conf.d
+      # - ./data/certbot/conf:/etc/letsencrypt 
+      # - ./data/certbot/www:/var/www/certbot
+    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - was
+  
+  # certbot:
+  #   depends_on:
+  #     - frontend
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt 
+  #     - ./data/certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # was:
+  #   container_name: was
+  #   image: suhyun9252/dandi-be:GITHUB_SHA
+  #   restart: always
+  #   volumes:
+  #     - /dandi/logs:/dandi/logs  # log 보존
+  #   expose:
+  #     - 3000
+  #   env_file:
+  #     - /dandi/.env
+  #   depends_on:
+  #     - redis
+  
+  # frontend:
+  #   container_name: frontend
+  #   image: suhyun9252/dandi-fe:GITHUB_SHA
+  #   restart: always
+  #   expose:
+  #     - 5173
+  #   env_file:
+  #     - /dandi/frontend/.env
+
+  # nginx:
+  #   container_name: nginx-reverse-proxy
+  #   image: suhyun9252/dandi-nginx
+  #   ports:
+  #     - "80:80"
+  #     - "3000:3000"
+  #   restart: always
+  #   volumes:
+  #     - /var/log/nginx:/var/log/nginx
+  #   depends_on:
+  #     - was
+  #     - frontend

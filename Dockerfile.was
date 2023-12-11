@@ -1,0 +1,42 @@
+# FROM node:20-alpine
+
+# WORKDIR /usr/src/app
+
+# COPY . .
+
+# RUN yarn install
+
+# COPY ./backend .
+# COPY .env .env
+
+# RUN yarn workspace backend build
+
+# EXPOSE 3000
+
+# CMD ["yarn", "start:prod"]
+
+# 빌드
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN yarn workspace backend build
+
+# 실행
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app/backend/dist ./backend/dist
+COPY --from=builder /app/backend/package.json ./backend/package.json
+COPY --from=builder /app/yarn.lock ./yarn.lock
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/.env ./.env
+
+RUN yarn install
+
+EXPOSE 3000
+
+CMD ["yarn", "backend", "start:prod"]
