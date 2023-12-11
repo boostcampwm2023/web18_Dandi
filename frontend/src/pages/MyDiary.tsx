@@ -125,7 +125,7 @@ const MyDiary = () => {
   return (
     <>
       <NavBar />
-      <main className="mx-auto mb-28 flex w-full flex-col items-center justify-start">
+      <main className="mx-auto mb-12 flex w-full flex-col items-center justify-start">
         <header className="my-10 flex w-full items-start justify-between sm:w-3/5">
           <KeywordSearch
             keyword={keyword}

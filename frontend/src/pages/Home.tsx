@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
@@ -87,7 +87,7 @@ const Home = () => {
   const isEmpty = !diaryData?.pages[0].diaryList.length;
 
   return (
-    <main className="mb-28 flex flex-col items-center justify-start">
+    <main className="mb-12 flex flex-col items-center justify-start">
       <NavBar />
       <Profile userId={userId ? +userId : 0} userData={profileData} />
       <Grass />
