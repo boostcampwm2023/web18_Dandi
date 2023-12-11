@@ -52,7 +52,7 @@ const Detail = () => {
   }
 
   if (isError) {
-    return navigate(`${PAGE_URL.NOT_FOUND}`);
+    navigate(`${PAGE_URL.NOT_FOUND}`);
   }
 
   const content = <DiaryContent diaryId={diaryId} {...data} />;
