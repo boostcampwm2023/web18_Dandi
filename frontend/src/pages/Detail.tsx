@@ -64,7 +64,7 @@ const Detail = () => {
       <div className="mt-5 flex w-full flex-col gap-4 p-1 sm:w-2/3 sm:p-0">
         {content}
         {isMyDiary && (
-          <div className="flex justify-around">
+          <div className="mb-20 flex justify-around">
             <Button
               text="수정"
               type="normal"
