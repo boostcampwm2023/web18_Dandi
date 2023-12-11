@@ -47,18 +47,6 @@ jobs:
         cd frontend
         echo "${{ secrets.FE_ENV }}" > .env
 
-    # - name: send FE .env
-    #   uses: appleboy/scp-action@master
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     username: ${{ secrets.SSH_USERNAME }}
-    #     password: ${{ secrets.SSH_PASSWORD }}
-    #     key: ${{ secrets.SSH_KEY }}
-    #     port: ${{ secrets.SSH_PORT }}
-    #     source: frontend/.env
-    #     target: /dandi
-    #     overwrite: true
-
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
