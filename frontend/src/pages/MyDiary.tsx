@@ -126,7 +126,7 @@ const MyDiary = () => {
     <>
       <NavBar />
       <main className="mx-auto mb-28 flex w-full flex-col items-center justify-start">
-        <header className="my-10 flex w-full max-w-6xl items-start justify-between">
+        <header className="my-10 flex w-full items-start justify-between sm:w-3/5">
           <KeywordSearch
             keyword={keyword}
             selected={selected}
@@ -137,7 +137,7 @@ const MyDiary = () => {
           />
           <ViewType handleViewTypeChange={handleViewTypeChange} viewType={viewType} />
         </header>
-        <section className="flex w-3/5 flex-col items-center">
+        <section className="flex w-full flex-col items-center sm:w-3/5">
           {isEmpty && viewType === DIARY_VIEW_TYPE.DAY && (
             <div className="mt-20 flex w-full flex-col items-center justify-center gap-3">
               <img className="w-1/3" src={dizzyFace} alt="작성한 일기가 없는 그림" />

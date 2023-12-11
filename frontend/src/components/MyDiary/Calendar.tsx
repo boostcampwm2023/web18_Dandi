@@ -2,7 +2,7 @@ import DayItem from '@components/MyDiary/DayItem';
 
 import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 
-import { DAY_OF_WEEK, START_INDEX, WEEK_INDEX } from '@util/constants';
+import { DAY_OF_WEEK, SM, START_INDEX, WEEK_INDEX } from '@util/constants';
 
 interface CalendarProp {
   first: Date;
@@ -13,6 +13,7 @@ interface CalendarProp {
 const Calendar = ({ first, last, emotionData }: CalendarProp) => {
   const allDayCount = Math.ceil((last.getDate() - first.getDate() + first.getDay()) / WEEK_INDEX);
   const monthData = Array.from(Array(allDayCount), () => Array(WEEK_INDEX).fill(0));
+  const isWidthSM = window.innerWidth >= SM;
   let day = 1;
 
   for (let weekIndex = START_INDEX; weekIndex < allDayCount; weekIndex++) {
@@ -33,8 +34,8 @@ const Calendar = ({ first, last, emotionData }: CalendarProp) => {
       <thead>
         <tr className="bg-brown text-base text-white">
           {DAY_OF_WEEK.map((dayName) => (
-            <th key={dayName} className="px-7 py-4 font-medium">
-              {dayName}
+            <th key={dayName} className="px-5 py-4 text-sm font-medium sm:px-7 sm:text-base">
+              {isWidthSM ? dayName : dayName.replace('요일', '')}
             </th>
           ))}
         </tr>

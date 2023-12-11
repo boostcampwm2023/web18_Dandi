@@ -66,3 +66,4 @@ export const NAVER_LOGIN_FORM_URL = `https://nid.naver.com/oauth2.0/authorize?re
 
 export const DEBOUNCE_TIME = 500;
 export const CONTENT_SEARCH_MIN_LENGTH = 1;
+export const SM = 640;

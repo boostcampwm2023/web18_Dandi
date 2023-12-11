@@ -26,7 +26,7 @@ const CarouselContainer = ({ data }: CarouselContainerProps) => {
   return (
     <>
       <section className="flex w-full justify-center">
-        <button onClick={() => swiperRef.current?.slidePrev()}>
+        <button onClick={() => swiperRef.current?.slidePrev()} className="hidden sm:block">
           <Icon id="largeLeftArrow" size={LARGE} />
         </button>
         <Swiper
@@ -44,7 +44,7 @@ const CarouselContainer = ({ data }: CarouselContainerProps) => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <button onClick={() => swiperRef.current?.slideNext()}>
+        <button onClick={() => swiperRef.current?.slideNext()} className="hidden sm:block">
           <Icon id="largeRightArrow" size={LARGE} />
         </button>
       </section>
