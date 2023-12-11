@@ -20,6 +20,4 @@ COPY --from=builder /app/.env ./.env
 
 RUN yarn install
 
-EXPOSE 3000
-
 CMD ["yarn", "backend", "start:prod"]

@@ -1,7 +1,8 @@
 version: "3"
 
 services:
-  redis:
+  redis-blue:
+    container_name: redis-blue
     image: redis:7.2
     restart: always
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -10,9 +11,11 @@ services:
       - /redis/data:/data
     ports:
       - "6379:6379"
+    networks:
+      - blue
   
-  was:
-    container_name: was
+  was-blue:
+    container_name: was-blue
     image: suhyun9252/dandi-be:GITHUB_SHA
     restart: always
     volumes:
@@ -23,9 +26,11 @@ services:
       - /dandi/.env
     depends_on:
       - redis
+    networks:
+      - blue
   
-  frontend:
-    container_name: frontend
+  frontend-blue:
+    container_name: frontend-blue
     image: suhyun9252/dandi-fe:GITHUB_SHA
     restart: always
     ports:
@@ -37,13 +42,21 @@ services:
       - ./data/certbot/www:/var/www/certbot
     depends_on:
       - was
+    networks:
+      - blue
   
-  certbot:
+  certbo-bluet:
     image: certbot/certbot
     restart: unless-stopped
-    container_name: certbot
+    container_name: certbot-blue
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt 
       - ./data/certbot/www:/var/www/certbot
     depends_on:
       - frontend
+    networks:
+      - blue
+
+networks:
+  blue:
+    driver: bridge

@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+  redis-green:
+    container_name: redis-green
+    image: redis:7.2
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - /etc/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - /redis/data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - green
+  
+  was-green:
+    container_name: was-green
+    image: suhyun9252/dandi-be:GITHUB_SHA
+    restart: always
+    volumes:
+      - /dandi/logs:/dandi/logs  # log 보존
+    ports:
+      - "3001:3001"
+    env_file:
+      - /dandi/.env
+    depends_on:
+      - redis
+    networks:
+      - green
+  
+  frontend-green:
+    container_name: frontend-green
+    image: suhyun9252/dandi-fe:GITHUB_SHA
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/log/nginx:/var/log/nginx
+      - ./data/certbot/conf:/etc/letsencrypt 
+      - ./data/certbot/www:/var/www/certbot
+    depends_on:
+      - was
+    networks:
+      - green
+  
+  certbot-green:
+    image: certbot/certbot
+    restart: unless-stopped
+    container_name: certbot-green
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt 
+      - ./data/certbot/www:/var/www/certbot
+    depends_on:
+      - frontend
+    networks:
+      - green
+
+networks:
+  green:
+    driver: bridge
