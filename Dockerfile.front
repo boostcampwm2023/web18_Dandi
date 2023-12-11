@@ -1,0 +1,39 @@
+# FROM nginx:alpine
+
+# WORKDIR /usr/share/nginx/html
+
+# COPY ./frontend/dist .
+# COPY ./frontend/.env .
+# COPY ./nginx.conf /etc/nginx/sites-available/dandi.conf
+
+# EXPOSE 80
+# EXPOSE 3000
+
+# CMD ["nginx", "-g", "daemon off;"]
+
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+COPY ./frontend/package.json ./frontend/package.json
+RUN yarn install && yarn global add typescript
+
+COPY ./frontend ./frontend
+COPY ./frontend/.env ./frontend/.env
+
+RUN yarn workspace frontend build
+
+FROM nginx:alpine
+
+WORKDIR /usr/share/nginx/html
+
+COPY --from=builder /app/frontend/dist .
+COPY --from=builder /app/frontend/.env ./.env
+COPY ./dandi.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+EXPOSE 443
+# EXPOSE 3001
+
+CMD ["nginx", "-g", "daemon off;"]
