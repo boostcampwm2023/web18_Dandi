@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { updateProfile } from '@api/FriendModal';
 
+import { useToast } from '@/hooks/useToast';
+
 interface ProfileEditProps {
   profileImage: string;
   nickname: string;
@@ -10,6 +12,7 @@ interface ProfileEditProps {
 
 const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
   const queryClient = useQueryClient();
+  const openToast = useToast();
   const userId = localStorage.getItem('userId');
 
   const [newNickname, setNewNickname] = useState('');
@@ -23,6 +26,10 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
       queryClient.invalidateQueries({
         queryKey: ['profileData', userId],
       });
+      openToast('프로필 정보가 수정되었습니다.');
+    },
+    onError() {
+      openToast('사진의 크기는 최대 1MB입니다.');
     },
   });
 
@@ -57,6 +64,7 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
       formData.append('profileImage', newProfileImage);
     }
     updateMutation.mutate(formData);
+    setNewNickname('');
   };
 
   return (

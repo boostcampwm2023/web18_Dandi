@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
+import { useToast } from '@/hooks/useToast';
 
 interface FriendModalItemProps {
   email: string;
@@ -18,6 +19,7 @@ const DB_WAITING_TIME = 100;
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const openToast = useToast();
 
   const goFriendHome = () => {
     navigate(`${PAGE_URL.HOME}${id}`);
@@ -29,6 +31,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const cancelRequestMutation = useMutation({
     mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
     onSuccess() {
+      openToast('친구 신청을 취소했습니다.');
       setTimeout(() => {
         queryClient.invalidateQueries({
           queryKey: ['sendList'],
@@ -40,6 +43,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const deleteFriendMutation = useMutation({
     mutationFn: (friendId: number) => deleteFriend(friendId),
     onSuccess() {
+      openToast('친구가 삭제되었습니다.');
       queryClient.invalidateQueries({
         queryKey: ['friendList'],
       });
@@ -52,6 +56,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const allowFriendMutation = useMutation({
     mutationFn: (senderId: number) => allowFriend(senderId),
     onSuccess() {
+      openToast('친구 요청을 수락하였습니다.');
       queryClient.invalidateQueries({
         queryKey: ['receivedList'],
       });
@@ -64,6 +69,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const rejectFriendMutation = useMutation({
     mutationFn: (senderId: number) => rejectFriend(senderId),
     onSuccess() {
+      openToast('친구 요청을 거절하였습니다.');
       setTimeout(() => {
         queryClient.invalidateQueries({
           queryKey: ['receivedList'],

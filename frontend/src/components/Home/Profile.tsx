@@ -19,6 +19,8 @@ import {
   PAGE_URL,
 } from '@util/constants';
 
+import { useToast } from '@/hooks/useToast';
+
 interface ProfileProps {
   userId: number;
   userData: ProfileData;
@@ -41,6 +43,7 @@ interface relationData {
 const Profile = ({ userId, userData }: ProfileProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const openToast = useToast();
 
   const loginUserId = localStorage.getItem('userId');
   const paramsUserId = useParams().userId ?? false;
@@ -80,6 +83,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   const requestFriendMutation = useMutation({
     mutationFn: (receiverId: number) => requestFriend(receiverId),
     onSuccess() {
+      openToast('친구 요청을 보냈습니다.');
       setTimeout(() => {
         queryClient.invalidateQueries({
           queryKey: ['sendList'],
@@ -94,6 +98,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   const deleteFriendMutation = useMutation({
     mutationFn: (friendId: number) => deleteFriend(friendId),
     onSuccess() {
+      openToast('친구 삭제가 완료되었습니다.');
       queryClient.invalidateQueries({
         queryKey: ['friendList'],
       });

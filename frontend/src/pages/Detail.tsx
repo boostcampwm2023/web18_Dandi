@@ -12,8 +12,11 @@ import Alert from '@components/Common/Alert';
 
 import { PAGE_URL } from '@util/constants';
 
+import { useToast } from '@/hooks/useToast';
+
 const Detail = () => {
   const queryClient = useQueryClient();
+  const openToast = useToast();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const toggleShowModal = () => setShowModal((prev) => !prev);
@@ -35,6 +38,7 @@ const Detail = () => {
         queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
       navigate(-1);
+      openToast('일기가 삭제되었습니다!');
     },
     onError: (error) => {
       console.error(error);
