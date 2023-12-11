@@ -28,7 +28,7 @@ const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderP
 
   return (
     <div className="w-full p-2 sm:w-[80%] sm:p-0">
-      <div className="mb-3 flex items-center sm:mb-0 sm:block">
+      <div className="relative mb-3 flex items-center sm:mb-0 sm:block">
         <p className="mr-10 text-xl font-bold sm:mb-5 sm:text-2xl">오늘 기분은 어떠세요?</p>
         <div className="relative flex items-center sm:mb-5">
           <input
@@ -42,7 +42,11 @@ const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderP
             readOnly
           />
         </div>
-        {showEmoji && <EmojiPicker onEmojiClick={onClickEmoji} />}
+        {showEmoji && (
+          <aside className="absolute top-24 z-50">
+            <EmojiPicker onEmojiClick={onClickEmoji} />
+          </aside>
+        )}
       </div>
       <div className="flex items-center justify-start ">
         <input
