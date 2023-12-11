@@ -9,9 +9,9 @@ import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
 import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
+import Loading from '@components/Common/Loading';
 
 import { PAGE_URL } from '@util/constants';
-import Loading from '@/components/Common/Loading';
 
 const Detail = () => {
   const queryClient = useQueryClient();

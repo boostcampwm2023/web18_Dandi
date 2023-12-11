@@ -10,13 +10,13 @@ import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import { viewTypes } from '@type/pages/MyDiary';
 
 import NavBar from '@components/Common/NavBar';
+import Loading from '@components/Common/Loading';
 import DiaryListItem from '@components/Common/DiaryListItem';
 import Profile from '@components/Home/Profile';
 import Grass from '@components/Home/Grass';
 import EmotionStat from '@components/Home/EmotionStat';
 
 import { PAGE_TITLE_HOME, PAGE_URL } from '@util/constants';
-import Loading from '@/components/Common/Loading';
 
 const Home = () => {
   const params = useParams();

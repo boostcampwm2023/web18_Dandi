@@ -5,12 +5,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { createDiary, updateDiary } from '@api/Edit';
 
 import NavBar from '@components/Common/NavBar';
+import Loading from '@components/Common/Loading';
 import Header from '@components/Edit/Header';
 import Editor from '@components/Edit/Editor';
 import KeywordBox from '@components/Edit/KeywordBox';
 
 import { PAGE_URL } from '@util/constants';
-import Loading from '@/components/Common/Loading';
 
 interface CreateDiaryParams {
   title: string;
