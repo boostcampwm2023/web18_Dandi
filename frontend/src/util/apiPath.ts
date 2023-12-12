@@ -1,4 +1,4 @@
-const SERVER_URL = 'http://dandi-ary.site/api';
+const SERVER_URL = 'https://dandi-ary.site/api';
 // const SERVER_URL = 'http://localhost:3000';
 
 const AUTH = '/auth';
