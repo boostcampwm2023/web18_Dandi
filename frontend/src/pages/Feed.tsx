@@ -52,7 +52,7 @@ const Feed = () => {
   }, [isSuccess]);
 
   return (
-    <div className="mb-28 flex w-full flex-col items-center justify-start">
+    <div className="mb-12 flex w-full flex-col items-center justify-start">
       <NavBar />
       <div className="w-full p-5 sm:w-3/5">
         <h1 className="mb-5 text-2xl font-bold">{PAGE_TITLE_FEED}</h1>

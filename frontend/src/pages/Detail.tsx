@@ -9,6 +9,7 @@ import Button from '@components/Common/Button';
 import Modal from '@components/Common/Modal';
 import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
+import Loading from '@components/Common/Loading';
 
 import { PAGE_URL } from '@util/constants';
 
@@ -47,11 +48,11 @@ const Detail = () => {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading phrase="로딩 중이에요." />;
   }
 
   if (isError) {
-    return <p>Error fetching data</p>;
+    navigate(`${PAGE_URL.NOT_FOUND}`);
   }
 
   const content = <DiaryContent diaryId={diaryId} {...data} />;
@@ -63,7 +64,7 @@ const Detail = () => {
       <div className="mt-5 flex w-full flex-col gap-4 p-1 sm:w-2/3 sm:p-0">
         {content}
         {isMyDiary && (
-          <div className="flex justify-around">
+          <div className="mb-20 flex justify-around">
             <Button
               text="수정"
               type="normal"

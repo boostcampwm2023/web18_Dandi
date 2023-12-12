@@ -1,6 +1,6 @@
 import { refresh } from '@api/Login';
 
-import { PAGE_URL } from '@/util/constants';
+import { PAGE_URL } from '@util/constants';
 
 const interceptor = async (url: string, option: any) => {
   let response = await fetch(url, option);
