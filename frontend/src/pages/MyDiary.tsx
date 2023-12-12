@@ -26,6 +26,7 @@ const MyDiary = () => {
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
   const infiniteRef = useRef<HTMLDivElement>(null);
+
   const {
     data: diaryData,
     isSuccess: diaryDataSuccess,
@@ -97,19 +98,18 @@ const MyDiary = () => {
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (searchFlag) {
-            fetchNextSearchPage();
-          } else {
-            fetchNextDiaryPage();
-          }
+      if (entries[0].isIntersecting) {
+        if (searchFlag) {
+          fetchNextSearchPage();
+        } else {
+          fetchNextDiaryPage();
         }
-      });
+      }
     });
     if (infiniteRef.current) {
       io.observe(infiniteRef.current);
     }
+    return () => io.disconnect();
   }, [diaryDataSuccess, searchDataSuccess]);
 
   useEffect(() => {

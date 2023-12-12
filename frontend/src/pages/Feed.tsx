@@ -50,6 +50,7 @@ const Feed = () => {
     if (infiniteRef.current) {
       io.observe(infiniteRef.current);
     }
+    return () => io.disconnect();
   }, [isSuccess]);
 
   const isEmpty = !feedData?.pages[0].diaryList.length;

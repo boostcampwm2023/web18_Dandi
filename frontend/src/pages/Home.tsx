@@ -74,6 +74,7 @@ const Home = () => {
     if (infiniteRef.current) {
       io.observe(infiniteRef.current);
     }
+    return () => io.disconnect();
   }, [isSuccess]);
 
   if (isLoading) {
