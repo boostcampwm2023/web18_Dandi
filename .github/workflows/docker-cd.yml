@@ -92,10 +92,10 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }}
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-fe:${{ github.sha }}
           cd /dandi
-#          chmod +x deploy.sh
-#          ./deploy.sh
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)
           docker rmi -f $(docker images -q)
           docker-compose -f docker-compose.base.yml up -d
           docker-compose -f docker-compose.blue.yml up -d
+#          chmod +x deploy.sh
+#          ./deploy.sh
