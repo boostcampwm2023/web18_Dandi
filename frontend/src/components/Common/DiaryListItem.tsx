@@ -16,6 +16,7 @@ import Keyword from '@components/Common/Keyword';
 
 import { FEED, PAGE_URL } from '@util/constants';
 import { formatDateString } from '@util/funcs';
+import useModal from '@/hooks/useModal';
 
 interface DiaryListItemProps {
   pageType?: string;
@@ -25,10 +26,10 @@ interface DiaryListItemProps {
 const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [totalReaction, setTotalReaction] = useState(diaryItem.reactionCount);
+  const { openModal } = useModal();
   const { data, isError, isSuccess } = useQuery({
     queryKey: ['reactionList', diaryItem.diaryId],
     queryFn: () => getReactionList(Number(diaryItem.diaryId)),
@@ -74,8 +75,6 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
     setTotalReaction(totalReaction - 1);
     setSelectedEmoji('');
   };
-
-  const toggleShowModal = () => setShowModal((prev) => !prev);
   const toggleShowEmojiPicker = () => {
     if (selectedEmoji === '') {
       setShowEmojiPicker((prev) => !prev);
@@ -136,12 +135,12 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
       <Reaction
         count={totalReaction}
         iconOnClick={toggleShowEmojiPicker}
-        textOnClick={toggleShowModal}
+        textOnClick={() =>
+          openModal({ children: <ReactionList diaryId={Number(diaryItem.diaryId)} /> })
+        }
         emoji={selectedEmoji}
       />
-      <Modal showModal={showModal} closeModal={toggleShowModal}>
-        <ReactionList diaryId={Number(diaryItem.diaryId)} />
-      </Modal>
+      <Modal />
       {showEmojiPicker && (
         <aside className="absolute bottom-14 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />

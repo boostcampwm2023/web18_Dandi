@@ -11,6 +11,7 @@ import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
 import { formatDateString } from '@util/funcs';
+import useModal from '@/hooks/useModal';
 
 interface DiaryContentProps {
   diaryId: number;
@@ -40,6 +41,7 @@ const DiaryContent = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [totalReaction, setTotalReaction] = useState(reactionCount);
+  const { openModal } = useModal();
 
   const { data, isError, isSuccess } = useQuery({
     queryKey: ['reactionList', diaryId],
@@ -125,13 +127,11 @@ const DiaryContent = ({
         </div>
         <Reaction
           count={totalReaction}
-          textOnClick={toggleShowModal}
+          textOnClick={() => openModal({ children: <ReactionList diaryId={diaryId} /> })}
           iconOnClick={toggleShowEmojiPicker}
           emoji={selectedEmoji}
         />
-        <Modal showModal={showModal} closeModal={toggleShowModal}>
-          <ReactionList diaryId={diaryId} />
-        </Modal>
+        <Modal />
         {showEmojiPicker && (
           <aside className="absolute bottom-14 z-50">
             <EmojiPicker onEmojiClick={onClickEmoji} />
