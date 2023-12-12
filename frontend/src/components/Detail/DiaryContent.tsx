@@ -11,7 +11,8 @@ import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
 import { formatDateString } from '@util/funcs';
-import useModal from '@/hooks/useModal';
+
+import useModal from '@hooks/useModal';
 
 interface DiaryContentProps {
   diaryId: number;

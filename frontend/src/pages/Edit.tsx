@@ -12,7 +12,7 @@ import KeywordBox from '@components/Edit/KeywordBox';
 
 import { PAGE_URL } from '@util/constants';
 
-import { useToast } from '@/hooks/useToast';
+import { useToast } from '@hooks/useToast';
 
 interface CreateDiaryParams {
   title: string;

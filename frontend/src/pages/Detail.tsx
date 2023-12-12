@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -13,8 +12,8 @@ import Loading from '@components/Common/Loading';
 
 import { PAGE_URL } from '@util/constants';
 
-import { useToast } from '@/hooks/useToast';
-import useModal from '@/hooks/useModal';
+import { useToast } from '@hooks/useToast';
+import useModal from '@hooks/useModal';
 
 const Detail = () => {
   const queryClient = useQueryClient();
