@@ -15,7 +15,7 @@ import Modal from '@components/Common/Modal';
 import { formatDateString } from '@util/funcs';
 import { PAGE_URL, SMALL } from '@util/constants';
 
-import useModal from '@/hooks/useModal';
+import useModal from '@hooks/useModal';
 
 interface CardProps {
   diaryItem: IDiaryContent;

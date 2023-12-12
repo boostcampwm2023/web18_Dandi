@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom';
 
 import Icon from '@components/Common/Icon';
 
-import useModal from '@/hooks/useModal';
+import useModal from '@hooks/useModal';
 
 const Modal = () => {
   const { isOpen, modalData, closeModal } = useModal();

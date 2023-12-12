@@ -47,6 +47,7 @@ export default defineConfig({
       '@util': resolve(__dirname, 'src/util'),
       '@api': resolve(__dirname, 'src/api'),
       '@type': resolve(__dirname, 'src/types'),
+      '@hooks': resolve(__dirname, 'src/hooks'),
     },
   },
 });

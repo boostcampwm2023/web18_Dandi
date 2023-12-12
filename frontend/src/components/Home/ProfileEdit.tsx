@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { updateProfile } from '@api/FriendModal';
 
-import { useToast } from '@/hooks/useToast';
+import { useToast } from '@hooks/useToast';
 
 interface ProfileEditProps {
   profileImage: string;

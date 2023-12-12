@@ -12,8 +12,8 @@ import Loading from '@components/Common/Loading';
 
 import { PAGE_URL } from '@util/constants';
 
-import { useToast } from '@/hooks/useToast';
-import useModal from '@/hooks/useModal';
+import { useToast } from '@hooks/useToast';
+import useModal from '@hooks/useModal';
 
 const Detail = () => {
   const queryClient = useQueryClient();

@@ -18,8 +18,8 @@ import {
   PAGE_URL,
 } from '@util/constants';
 
-import { useToast } from '@/hooks/useToast';
-import useModal from '@/hooks/useModal';
+import { useToast } from '@hooks/useToast';
+import useModal from '@hooks/useModal';
 
 interface ProfileProps {
   userId: number;
