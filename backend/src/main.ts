@@ -4,6 +4,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { HttpExceptionFilter } from './filter/logger.filter';
 import { swaggerConfig } from './configs/swagger.config';
+import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +19,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-document', app, document);
 
-  await app.listen(3000);
+  await app.listen(Number(process.env.PORT) || 3000);
 }
 
 bootstrap();

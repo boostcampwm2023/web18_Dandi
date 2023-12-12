@@ -1,25 +1,25 @@
 version: "3"
 
 services:
-  was-blue:
-    container_name: was-blue
+  was-green:
+    container_name: was-green
     image: suhyun9252/dandi-be:GITHUB_SHA
     restart: always
     volumes:
       - /dandi/logs:/dandi/logs  # log 보존
     ports:
-      - "3000:3000"
+      - "3001:3001"
     env_file:
       - /dandi/.env
-  
-  frontend-blue:
-    container_name: frontend-blue
+
+  frontend-green:
+    container_name: frontend-green
     image: suhyun9252/dandi-fe:GITHUB_SHA
     restart: always
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
-      - /dandi/nginx/dandi-blue.conf:/etc/nginx/conf.d/dandi.conf
-      - /var/log/nginx/blue:/var/log/nginx
+      - /dandi/nginx/dandi-green.conf:/etc/nginx/conf.d/dandi.conf
+      - /var/log/nginx/green:/var/log/nginx
     depends_on:
-      - was-blue
+      - was-green
