@@ -67,7 +67,7 @@ jobs:
         sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.blue.yml
         sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.green.yml
     
-    - name: send files for
+    - name: send files & deploy script
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
