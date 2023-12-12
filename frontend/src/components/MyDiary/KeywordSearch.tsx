@@ -109,7 +109,7 @@ const KeywordSearch = ({
   };
 
   return (
-    <section className="relative flex items-start gap-3 pl-5 sm:pl-0">
+    <section className="relative flex items-start gap-3">
       <div
         ref={optionRef}
         className="border-brown relative w-32 rounded-xl border border-solid bg-white py-3 pl-4 pr-3"
@@ -137,10 +137,10 @@ const KeywordSearch = ({
           </ul>
         )}
       </div>
-      <div className="border-brown absolute left-36 z-50 ml-4 flex w-auto flex-col rounded-xl border border-solid bg-white sm:ml-0">
+      <div className="border-brown absolute left-36 z-50 flex w-auto flex-col rounded-xl border border-solid bg-white">
         <div className="relative flex justify-between py-3 pl-4 pr-3">
           <input
-            className="w-40 outline-none"
+            className="outline-none"
             placeholder="검색어를 입력하세요"
             value={keyword}
             type="text"

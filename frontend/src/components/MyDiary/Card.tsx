@@ -15,8 +15,6 @@ import Modal from '@components/Common/Modal';
 import { formatDateString } from '@util/funcs';
 import { PAGE_URL, SMALL } from '@util/constants';
 
-import useModal from '@hooks/useModal';
-
 interface CardProps {
   diaryItem: IDiaryContent;
   styles?: string;
@@ -26,12 +24,10 @@ interface CardProps {
 const Card = ({ diaryItem, styles, size }: CardProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const params = useParams();
-  const userId = params.userId ? params.userId : localStorage.getItem('userId');
+  const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(diaryItem.leavedReaction);
   const [totalReaction, setTotalReaction] = useState(diaryItem.reactionCount);
-  const { openModal } = useModal();
 
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(Number(diaryItem.diaryId), selectedEmoji),
@@ -58,6 +54,7 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
     setTotalReaction(totalReaction - 1);
     setSelectedEmoji('');
   };
+  const toggleShowModal = () => setShowModal((prev) => !prev);
   const toggleShowEmojiPicker = () => {
     if (!selectedEmoji) {
       setShowEmojiPicker((prev) => !prev);
@@ -96,14 +93,14 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
       </div>
       <Reaction
         count={totalReaction}
-        textOnClick={() =>
-          openModal({ children: <ReactionList diaryId={Number(diaryItem.diaryId)} /> })
-        }
+        textOnClick={toggleShowModal}
         iconOnClick={toggleShowEmojiPicker}
         emoji={selectedEmoji}
         styles={`${size === SMALL ? 'text-sm' : ''}`}
       />
-      <Modal />
+      <Modal showModal={showModal} closeModal={toggleShowModal}>
+        <ReactionList diaryId={Number(diaryItem.diaryId)} />
+      </Modal>
       {showEmojiPicker && (
         <aside className="absolute bottom-14 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />
