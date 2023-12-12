@@ -33,13 +33,13 @@ const CarouselContainer = ({ data }: CarouselContainerProps) => {
           effect={'cards'}
           grabCursor={true}
           modules={[EffectCards]}
-          className="m-10 w-1/2"
+          className="m-10 w-1/2 overflow-visible"
           cardsEffect={swiperOptions}
           loop={true}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
         >
           {data.map((item, index) => (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={index} className="relative">
               <Card diaryItem={item} />
             </SwiperSlide>
           ))}

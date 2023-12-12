@@ -103,7 +103,7 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
       />
       <Modal />
       {showEmojiPicker && (
-        <aside className="absolute bottom-14 z-50">
+        <aside className="absolute left-14 top-1/3 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />
         </aside>
       )}

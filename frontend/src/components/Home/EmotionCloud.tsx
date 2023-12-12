@@ -7,6 +7,7 @@ interface WordCloudProps {
 }
 
 const EmotionCloud = ({ emotionData }: WordCloudProps) => {
+  if (!emotionData.length) return <></>;
   const cloudRef = useRef<SVGSVGElement>(null);
   useEffect(() => {
     const updateCloudSize = () => {

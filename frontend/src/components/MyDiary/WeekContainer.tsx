@@ -72,7 +72,7 @@ const WeekContainer = () => {
   }, [state?.startDate, state?.endDate]);
 
   return (
-    <section className="flex w-full max-w-6xl flex-col items-center">
+    <section className="relative flex w-full max-w-6xl flex-col items-center">
       <DateController
         titles={[
           `Week ${String(nowWeek).padStart(2, '0')}`,
