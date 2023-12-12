@@ -25,7 +25,7 @@ services:
     env_file:
       - /dandi/.env
     depends_on:
-      - redis-blue
+      - redis
     networks:
       - blue
   
@@ -41,7 +41,6 @@ services:
       # - ./data/certbot/conf:/etc/letsencrypt 
       # - ./data/certbot/www:/var/www/certbot
     depends_on:
-      - nginx-proxy
       - was-blue
     networks:
       - blue

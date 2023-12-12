@@ -20,5 +20,4 @@ WORKDIR /
 COPY --from=builder /app/frontend/dist ./usr/share/nginx/html
 COPY --from=builder /app/frontend/.env ./usr/share/nginx/html/.env
 
-CMD ["sh", "-c", "sleep 30 && nginx -g 'daemon off;'"]
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
