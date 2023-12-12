@@ -165,7 +165,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
 
         {!isFriendHome && (
           <div className="sm:ml-10">
-            <p className="mb-8 text-2xl font-bold sm:text-3xl">
+            <p className="w-full mb-8 text-2xl font-bold sm:text-3xl">
               {nickname}님, {GREET_MESSAGES[getRandomIndex]}
             </p>
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
