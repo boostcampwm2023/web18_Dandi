@@ -12,6 +12,8 @@ import KeywordBox from '@components/Edit/KeywordBox';
 
 import { PAGE_URL } from '@util/constants';
 
+import { useToast } from '@/hooks/useToast';
+
 interface CreateDiaryParams {
   title: string;
   content: string;
@@ -23,6 +25,7 @@ interface CreateDiaryParams {
 
 const Edit = () => {
   const queryClient = useQueryClient();
+  const openToast = useToast();
 
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -54,6 +57,7 @@ const Edit = () => {
       queryClient.removeQueries({
         queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
+      openToast('일기가 작성되었습니다!');
     },
   });
 
@@ -67,12 +71,15 @@ const Edit = () => {
       queryClient.removeQueries({
         queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
+      openToast('일기가 수정되었습니다!');
     },
   });
 
   const onSubmit = () => {
-    if (!title || title.trim() === '') return;
-    if (!content || content.trim() === '') return;
+    if (!title || title.trim() === '' || !content || content.trim() === '') {
+      openToast('제목과 본문은 필수 입력사항입니다!');
+      return;
+    }
 
     if (state) {
       updateDiaryMutation.mutate(params, state.diaryId);
