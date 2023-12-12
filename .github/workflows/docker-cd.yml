@@ -65,7 +65,6 @@ jobs:
     - name: make docker-compose files
       run: |  
         sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.blue.yml
-        sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.green.yml
     
     - name: send files & deploy script
       uses: appleboy/scp-action@master
@@ -75,7 +74,8 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        source: ./nginx/dandi-blue.conf ./nginx/dandi-green.conf ./docker/docker-compose.base.yml ./docker/docker-compose.blue.yml ./docker/docker-compose.green.yml ./docker/deploy.sh
+        source: ./nginx/dandi-blue.conf ./docker/docker-compose.base.yml ./docker/docker-compose.blue.yml ./docker/deploy.sh
+        # source: ./nginx/dandi-blue.conf ./nginx/dandi-green.conf ./docker/docker-compose.base.yml ./docker/docker-compose.blue.yml ./docker/docker-compose.green.yml ./docker/deploy.sh
         target: /dandi
         overwrite: true
 
@@ -92,8 +92,6 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }}
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-fe:${{ github.sha }}
           cd /dandi
-          # chmod +x deploy.sh
-          # ./deploy.sh
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)
           docker rmi -f $(docker images -q)
