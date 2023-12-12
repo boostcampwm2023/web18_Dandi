@@ -55,6 +55,8 @@ jobs:
 
     - name: make docker images
       run: |
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-nginx-proxy -f ./docker/Dockerfile.nginx .
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-nginx-proxy
         docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }} -f ./Dockerfile.was .
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }}
         docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-fe:${{ github.sha }} -f ./Dockerfile.front .
@@ -62,10 +64,10 @@ jobs:
     
     - name: make docker-compose files
       run: |  
-        sed -i "s/GITHUB_SHA/${{ github.sha }}/g" docker-compose.blue.yml
-        sed -i "s/GITHUB_SHA/${{ github.sha }}/g" docker-compose.green.yml
+        sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.blue.yml
+        sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.green.yml
     
-    - name: send docker-compose files
+    - name: send files for deploy
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -73,7 +75,7 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        source: docker-compose.blue.yml docker-compose.green.yml deploy.sh
+        source: ./nginx/dandi-blue.conf ./nginx/dandi-green.conf ./docker/docker-compose.base.yml ./docker/docker-compose.blue.yml ./docker/docker-compose.green.yml ./docker/deploy.sh
         target: /dandi
         overwrite: true
 
@@ -86,12 +88,14 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd /dandi
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-nginx-proxy
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }}
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-fe:${{ github.sha }}
-          chmod +x deploy.sh
-          ./deploy.sh
-#          docker stop $(docker ps -a -q)
-#          docker rm $(docker ps -a -q)
-#          docker rmi -f $(docker images -q)
-#          docker-compose up -d
+          cd /dandi
+#          chmod +x deploy.sh
+#          ./deploy.sh
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -a -q)
+          docker rmi -f $(docker images -q)
+          docker-compose -f docker-compose.base.yml up -d
+          docker-compose -f docker-compose.blue.yml up -d
