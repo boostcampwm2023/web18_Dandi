@@ -4,7 +4,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
-import { useToast } from '@/hooks/useToast';
+
+import { useToast } from '@hooks/useToast';
 
 interface FriendModalItemProps {
   email: string;
