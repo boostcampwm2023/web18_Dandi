@@ -68,24 +68,22 @@
     <a href="https://velog.io/@shunny/Web-%EC%95%8C%EA%B3%A0-%EB%B3%B4%EB%A9%B4-%EC%A2%8B%EC%9D%80-%EB%86%88...-CORS">알고보면 좋은 놈 CORS</a>
   </li>
   <li>
-    <a href="https://www.notion.so/useRef-cbd97f16f950490dbd2e0ce28003cabe?pvs=4">useRef... 왜 쓰는 건가요?</a>
+    <a href="https://velog.io/@gimewn/useRef-%EC%99%9C-%EC%93%B0%EB%8A%94-%EA%B1%B4%EA%B0%80%EC%9A%94">useRef... 왜 쓰는 건가요?</a>
   </li>
   <li>
-    <a href="https://www.notion.so/kimyoonju/2-Elasticsearch-Like-7bb08e2d93584255a95a9e075afdbfc0?pvs=4">검색 기능 개선기(2) - Elasticsearch에서 Like문 구현하기]</a>
+    <a href="https://www.notion.so/kimyoonju/2-Elasticsearch-Like-7bb08e2d93584255a95a9e075afdbfc0?pvs=4">검색 기능 개선기(2) - Elasticsearch에서 Like문 구현하기</a>
   </li>
   <li>
     <a href="https://surpise.tistory.com/6">이건 무효야! Query Invalidation</a>
   </li>
   <li>
-    <a href="">도훈</a>
+    <a href="https://velog.io/@dohun2/React-Query%EB%A1%9C-API-%EC%9A%94%EC%B2%AD-%EC%A4%84%EC%9D%B4%EA%B8%B0">TanStack Query(React Query) API 요청 줄이기
+</a>
   </li>
 </ul>
 
 <h3>⚙️ 프로젝트 구조</h3>
-<ul>
-  <li>기술 스택</li>
-  <li>인프라 구조</li>
-</ul>
+<img src="https://github.com/boostcampwm2023/web18_Dandi/assets/81965433/6b191bef-aeaa-4108-bbe5-dfc994bcd7e4" alt="테크 스택"/>
 
 
 # 팀원
