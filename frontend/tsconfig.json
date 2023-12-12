@@ -8,8 +8,7 @@
       "@util/*": ["./src/util/*"],
       "@assets/*": ["./src/assets/*"],
       "@api/*": ["./src/api/*"],
-      "@type/*": ["src/types/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@type/*": ["src/types/*"]
     },
     "target": "ES2020",
     "useDefineForClassFields": true,

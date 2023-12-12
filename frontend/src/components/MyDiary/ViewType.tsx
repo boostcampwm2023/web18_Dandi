@@ -9,7 +9,7 @@ interface ViewTypeProp {
 
 const ViewType = ({ viewType, handleViewTypeChange }: ViewTypeProp) => {
   return (
-    <section className="flex justify-end gap-2 pr-5 sm:justify-center sm:pr-0">
+    <section className="flex gap-2">
       {DIARY_VIEW_TYPE_LIST.map((type, index) => (
         <button
           key={index}

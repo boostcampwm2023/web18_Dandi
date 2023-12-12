@@ -73,7 +73,7 @@ const FriendList = ({ userId }: FriendListProps) => {
               ))
             ) : (
               <div className="flex w-full flex-col items-center justify-center gap-3">
-                <img className="w-1/3 max-w-[150px]" src={cryingCat} alt="우는 이모티콘" />
+                <img className="w-1/3" src={cryingCat} alt="우는 이모티콘" />
                 <p className="font-bold">아직 친구가 없어요.</p>
               </div>
             )}
