@@ -333,7 +333,7 @@ export class DiariesRepository extends Repository<Diary> {
       body: {
         _source: [
           'authorname',
-          'diaryId',
+          'diaryid',
           'thumbnail',
           'title',
           'summary',

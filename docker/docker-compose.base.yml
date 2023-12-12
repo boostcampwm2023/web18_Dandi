@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  redis:
+    container_name: redis
+    image: redis:7.2
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - /etc/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - /redis/data:/data
+    ports:
+      - "6379:6379"
+  
+  nginx-reverse-proxy:
+    container_name: nginx-reverse-proxy
+    image: suhyun9252/dandi-nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/log/nginx:/var/log/nginx
+      - ./data/certbot/conf:/etc/letsencrypt 
+      - ./data/certbot/www:/var/www/certbot
+    depends_on:
+      - frontend-blue
+  
+  # certbot:
+  #   image: certbot/certbot
+  #   restart: unless-stopped
+  #   container_name: certbot
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt 
+  #     - ./data/certbot/www:/var/www/certbot
+  #   depends_on:
+  #     - nginx-reverse-proxy

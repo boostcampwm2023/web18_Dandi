@@ -45,9 +45,10 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   }, [state?.startDate, state?.endDate]);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['emotionStat', userId, period],
+    queryKey: ['emotionStat', userId, formatDateDash(period[0]), formatDateDash(period[1])],
     queryFn: () =>
       getEmotionStat(Number(userId), formatDateDash(period[0]), formatDateDash(period[1])),
+    staleTime: Infinity,
   });
 
   const navigatedURL = `${params.userId ? `/${params.userId}` : PAGE_URL.HOME}`;

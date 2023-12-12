@@ -33,6 +33,7 @@ const Grass = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['grass', userId],
     queryFn: () => getGrass(Number(userId)),
+    staleTime: Infinity,
   });
 
   if (isLoading) {

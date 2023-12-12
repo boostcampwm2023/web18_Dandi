@@ -51,11 +51,11 @@ const Edit = () => {
     mutationFn: (params: CreateDiaryParams) => createDiary(params),
     onSuccess: () => {
       navigate(PAGE_URL.MY_DIARY);
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      queryClient.invalidateQueries({
+        queryKey: ['grass', localStorage.getItem('userId')],
       });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      queryClient.invalidateQueries({
+        queryKey: ['emotionStat', localStorage.getItem('userId')],
       });
       openToast('일기가 작성되었습니다!');
     },
@@ -65,11 +65,11 @@ const Edit = () => {
     mutationFn: (params: CreateDiaryParams) => updateDiary(params, state.diaryId),
     onSuccess: () => {
       navigate(`${PAGE_URL.DETAIL}/${state.diaryId}`);
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      queryClient.invalidateQueries({
+        queryKey: ['grass', localStorage.getItem('userId')],
       });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      queryClient.invalidateQueries({
+        queryKey: ['emotionStat', localStorage.getItem('userId')],
       });
       openToast('일기가 수정되었습니다!');
     },

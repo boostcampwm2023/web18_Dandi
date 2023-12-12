@@ -21,7 +21,7 @@ const MonthContainer = () => {
   const last = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + NEXT_INDEX, 0);
 
   const { data } = useQuery({
-    queryKey: ['monthDiaryData', localStorage.getItem('userId'), nowMonth],
+    queryKey: ['monthDiaryData', localStorage.getItem('userId'), formatDateDash(nowMonth)],
     queryFn: () =>
       getDiaryWeekAndMonthList({
         userId: localStorage.getItem('userId') as string,
