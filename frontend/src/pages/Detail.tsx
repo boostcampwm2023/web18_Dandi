@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -14,13 +13,14 @@ import Loading from '@components/Common/Loading';
 import { PAGE_URL } from '@util/constants';
 
 import { useToast } from '@/hooks/useToast';
+import useModal from '@/hooks/useModal';
 
 const Detail = () => {
   const queryClient = useQueryClient();
   const openToast = useToast();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const toggleShowModal = () => setShowModal((prev) => !prev);
+
+  const { openModal, closeModal } = useModal();
 
   const params = useParams();
   const diaryId = Number(params.diaryId);
@@ -48,7 +48,19 @@ const Detail = () => {
 
   const handleDelete = () => {
     deleteDiaryMutation.mutate();
-    toggleShowModal();
+    showDeleteModal();
+  };
+
+  const showDeleteModal = () => {
+    openModal({
+      children: (
+        <Alert
+          text="이 일기를 정말 삭제하시겠습니까?"
+          onUndoButtonClick={closeModal}
+          onAcceptButtonClick={handleDelete}
+        />
+      ),
+    });
   };
 
   if (isLoading) {
@@ -86,14 +98,8 @@ const Detail = () => {
                 })
               }
             />
-            <Button text="삭제" type="delete" onClick={toggleShowModal} />
-            <Modal showModal={showModal} closeModal={toggleShowModal}>
-              <Alert
-                text="이 일기를 정말 삭제하시겠습니까?"
-                onUndoButtonClick={toggleShowModal}
-                onAcceptButtonClick={handleDelete}
-              />
-            </Modal>
+            <Button text="삭제" type="delete" onClick={showDeleteModal} />
+            <Modal />
           </div>
         )}
       </div>
