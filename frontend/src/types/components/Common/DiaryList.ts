@@ -13,6 +13,7 @@ export interface IDiaryContent {
   reactionCount: number;
   authorId?: string | number;
   diaryId: string | number;
+  leavedReaction: string;
 }
 
 export interface InfiniteDiaryListProps {

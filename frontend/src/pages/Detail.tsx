@@ -32,11 +32,11 @@ const Detail = () => {
   const deleteDiaryMutation = useMutation({
     mutationFn: () => deleteDiary(diaryId),
     onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      queryClient.invalidateQueries({
+        queryKey: ['grass', localStorage.getItem('userId')],
       });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      queryClient.invalidateQueries({
+        queryKey: ['emotionStat', localStorage.getItem('userId')],
       });
       navigate(-1);
       openToast('일기가 삭제되었습니다!');
