@@ -38,7 +38,6 @@ const DiaryContent = ({
   reactionCount,
 }: DiaryContentProps) => {
   const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [totalReaction, setTotalReaction] = useState(reactionCount);
@@ -90,9 +89,6 @@ const DiaryContent = ({
     setSelectedEmoji('');
   };
 
-  const toggleShowModal = () => {
-    setShowModal((prev) => !prev);
-  };
   const toggleShowEmojiPicker = () => {
     if (selectedEmoji === '') {
       setShowEmojiPicker((prev) => !prev);

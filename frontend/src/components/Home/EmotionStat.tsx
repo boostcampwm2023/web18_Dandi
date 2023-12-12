@@ -67,7 +67,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const eData = (data?.emotions || []).map((item: emotionCloudProps) => {
     return {
       text: item.emotion,
-      size: Math.log(item.diaryInfo.length + 1) / Math.log(totalLength + 1) * 100,
+      size: (Math.log(item.diaryInfo.length + 1) / Math.log(totalLength + 1)) * 100,
     };
   });
   return (
@@ -109,7 +109,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           />
         </div>
       </div>
-      <div className="border-brown h-56 w-full grid-flow-col overflow-x-scroll rounded-lg border bg-white p-2">
+      <div className="border-brown box-content h-56 w-full grid-flow-col rounded-lg border bg-white p-2">
         <EmotionCloud emotionData={eData} />
       </div>
     </div>
