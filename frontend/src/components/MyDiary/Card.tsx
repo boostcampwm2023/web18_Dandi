@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
-import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
+import { postReaction, deleteReaction } from '@api/Reaction';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
-import { IReactionedFriends } from '@type/components/Common/ReactionList';
 
 import Keyword from '@components/Common/Keyword';
 import Reaction from '@components/Common/Reaction';
@@ -25,31 +24,10 @@ interface CardProps {
 const Card = ({ diaryItem, styles, size }: CardProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const params = useParams();
-  const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState('');
+  const [selectedEmoji, setSelectedEmoji] = useState(diaryItem.leavedReaction);
   const [totalReaction, setTotalReaction] = useState(diaryItem.reactionCount);
-
-  const { data, isError, isSuccess } = useQuery({
-    queryKey: ['reactionList', diaryItem.diaryId],
-    queryFn: () => getReactionList(Number(diaryItem.diaryId)),
-  });
-
-  if (isError) {
-    return <p>Error fetching data</p>;
-  }
-
-  useEffect(() => {
-    if (isSuccess) {
-      const myData = data.reactionList.find(
-        (item: IReactionedFriends) => item.userId === Number(userId),
-      );
-      myData && setSelectedEmoji(myData?.reaction);
-      setTotalReaction(data.reactionList.length);
-    }
-  }, [isSuccess]);
 
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(Number(diaryItem.diaryId), selectedEmoji),
@@ -78,7 +56,7 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
   };
   const toggleShowModal = () => setShowModal((prev) => !prev);
   const toggleShowEmojiPicker = () => {
-    if (selectedEmoji === '') {
+    if (!selectedEmoji) {
       setShowEmojiPicker((prev) => !prev);
     } else {
       handleDeleteReaction();

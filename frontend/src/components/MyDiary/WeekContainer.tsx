@@ -28,7 +28,12 @@ const WeekContainer = () => {
   const [period, setPeriod] = useState(calPeriod());
 
   const { data } = useQuery<{ nickname: string; diaryList: IDiaryContent[] }>({
-    queryKey: ['myWeekDiary', localStorage.getItem('userId'), period[0], period[1]],
+    queryKey: [
+      'myWeekDiary',
+      localStorage.getItem('userId'),
+      formatDateDash(period[0]),
+      formatDateDash(period[1]),
+    ],
     queryFn: () =>
       getDiaryWeekAndMonthList({
         userId: localStorage.getItem('userId') as string,
