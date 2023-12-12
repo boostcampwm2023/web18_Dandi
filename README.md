@@ -83,8 +83,8 @@
 </ul>
 
 <h3>⚙️ 프로젝트 구조</h3>
-<img src="https://github.com/boostcampwm2023/web18_Dandi/assets/81965433/6b191bef-aeaa-4108-bbe5-dfc994bcd7e4" alt="테크 스택"/>
 
+<img src="https://github.com/boostcampwm2023/web18_Dandi/assets/75190035/fad709f3-3599-4dcc-83ad-51566a65e969" alt="테크 스택"/>
 
 # 팀원
 
