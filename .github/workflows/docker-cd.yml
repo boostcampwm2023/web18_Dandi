@@ -55,7 +55,7 @@ jobs:
 
     - name: make docker images
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-nginx-proxy -f ./docker/Dockerfile.nginx .
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-nginx-proxy -f ./Dockerfile.nginx .
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-nginx-proxy
         docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }} -f ./Dockerfile.was .
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }}
