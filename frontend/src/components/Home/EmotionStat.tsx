@@ -78,8 +78,11 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           최근 {nickname}님의 감정은 어땠을까요?
         </h3>
         <div className="mb-3 flex items-center gap-3">
+          <label htmlFor="startDate">시작일</label>
           <input
             className="border-brown rounded-xl border border-solid p-1 outline-none sm:p-3"
+            id="startDate"
+            name="startDate"
             type="date"
             defaultValue={formatDateDash(period[0])}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,9 +96,12 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
             max={formatDateDash(calPrev(period[1], PREV_INDEX))}
           />
           <p>~</p>
+          <label htmlFor="endDate">종료일</label>
           <input
             type="date"
             className="border-brown rounded-xl border border-solid p-1 outline-none sm:p-3"
+            id="endDate"
+            name="endDate"
             defaultValue={formatDateDash(period[1])}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               navigate(navigatedURL, {
