@@ -9,7 +9,6 @@ import { IDiaryContent } from '@type/components/Common/DiaryList';
 
 import Reaction from '@components/Common/Reaction';
 import ProfileItem from '@components/Common/ProfileItem';
-import Modal from '@components/Common/Modal';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
 
@@ -28,7 +27,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState<string>('');
   const [totalReaction, setTotalReaction] = useState(0);
-  const { openModal } = useModal();
+  const { isOpen, openModal } = useModal();
 
   useEffect(() => {
     setSelectedEmoji(diaryItem.leavedReaction);
@@ -109,11 +108,13 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
         count={totalReaction}
         iconOnClick={toggleShowEmojiPicker}
         textOnClick={() =>
-          openModal({ children: <ReactionList diaryId={Number(diaryItem.diaryId)} /> })
+          !isOpen &&
+          openModal({
+            children: <ReactionList diaryId={Number(diaryItem.diaryId)} />,
+          })
         }
         emoji={selectedEmoji}
       />
-      <Modal />
       {showEmojiPicker && (
         <aside className="absolute bottom-14 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />

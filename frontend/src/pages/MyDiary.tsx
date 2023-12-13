@@ -10,6 +10,7 @@ import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
+import Modal from '@components/Common/Modal';
 import KeywordSearch from '@components/MyDiary/KeywordSearch';
 import WeekContainer from '@components/MyDiary/WeekContainer';
 import ViewType from '@components/MyDiary/ViewType';
@@ -168,6 +169,7 @@ const MyDiary = () => {
         {viewType === DIARY_VIEW_TYPE.WEEK && <WeekContainer />}
         {viewType === DIARY_VIEW_TYPE.MONTH && <MonthContainer />}
       </main>
+      <Modal />
     </>
   );
 };

@@ -10,7 +10,6 @@ import { IDiaryContent } from '@type/components/Common/DiaryList';
 import Keyword from '@components/Common/Keyword';
 import Reaction from '@components/Common/Reaction';
 import ReactionList from '@components/Diary/ReactionList';
-import Modal from '@components/Common/Modal';
 
 import { formatDateString } from '@util/funcs';
 import { PAGE_URL, SMALL } from '@util/constants';
@@ -101,7 +100,6 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
         emoji={selectedEmoji}
         styles={`${size === SMALL ? 'text-sm' : ''}`}
       />
-      <Modal />
       {showEmojiPicker && (
         <aside className="absolute left-14 top-1/3 z-50">
           <EmojiPicker onEmojiClick={onClickEmoji} />

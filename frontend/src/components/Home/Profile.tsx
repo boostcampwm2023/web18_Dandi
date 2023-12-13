@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteFriend, requestFriend } from '@api/FriendModal';
 
 import Button from '@components/Common/Button';
-import Modal from '@components/Common/Modal';
 import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
@@ -204,8 +203,6 @@ const Profile = ({ userId, userData }: ProfileProps) => {
           />
         </div>
       )}
-
-      <Modal />
     </section>
   );
 };

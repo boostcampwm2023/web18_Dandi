@@ -75,35 +75,37 @@ const Detail = () => {
   const loginUser = localStorage.getItem('userId') ?? 0;
   const isMyDiary = +loginUser === data.userId;
   return (
-    <div className="flex flex-col items-center">
-      <NavBar />
-      <div className="mt-5 flex w-full flex-col gap-4 p-1 sm:w-2/3 sm:p-0">
-        {content}
-        {isMyDiary && (
-          <div className="mb-20 flex justify-around">
-            <Button
-              text="수정"
-              type="normal"
-              onClick={() =>
-                navigate(PAGE_URL.EDIT, {
-                  state: {
-                    diaryId: diaryId,
-                    title: data.title,
-                    content: data.content,
-                    emotion: data.emotion,
-                    thumbnail: data.thumbnail,
-                    tagNames: data.tagNames,
-                    status: data.status,
-                  },
-                })
-              }
-            />
-            <Button text="삭제" type="delete" onClick={showDeleteModal} />
-            <Modal />
-          </div>
-        )}
+    <>
+      <div className="flex flex-col items-center">
+        <NavBar />
+        <div className="mt-5 flex w-full flex-col gap-4 p-1 sm:w-2/3 sm:p-0">
+          {content}
+          {isMyDiary && (
+            <div className="mb-20 flex justify-around">
+              <Button
+                text="수정"
+                type="normal"
+                onClick={() =>
+                  navigate(PAGE_URL.EDIT, {
+                    state: {
+                      diaryId: diaryId,
+                      title: data.title,
+                      content: data.content,
+                      emotion: data.emotion,
+                      thumbnail: data.thumbnail,
+                      tagNames: data.tagNames,
+                      status: data.status,
+                    },
+                  })
+                }
+              />
+              <Button text="삭제" type="delete" onClick={showDeleteModal} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+      <Modal />
+    </>
   );
 };
 

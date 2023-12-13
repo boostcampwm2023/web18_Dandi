@@ -6,7 +6,6 @@ import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
 import { IReactionedFriends } from '@type/components/Common/ReactionList';
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
-import Modal from '@components/Common/Modal';
 import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
@@ -115,7 +114,6 @@ const DiaryContent = ({
           iconOnClick={toggleShowEmojiPicker}
           emoji={selectedEmoji}
         />
-        <Modal />
         {showEmojiPicker && (
           <aside className="absolute bottom-14 z-50">
             <EmojiPicker onEmojiClick={onClickEmoji} />
