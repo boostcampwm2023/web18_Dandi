@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import dizzyFace from '@assets/image/dizzyFace.png';
 
 import { getCurrentUser } from '@api/Profile';
 import { getDiaryDayList } from '@api/DiaryList';
-import dizzyFace from '@assets/image/dizzyFace.png';
 
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import { viewTypes } from '@type/pages/MyDiary';
@@ -74,6 +74,7 @@ const Home = () => {
     if (infiniteRef.current) {
       io.observe(infiniteRef.current);
     }
+    return () => io.disconnect();
   }, [isSuccess]);
 
   if (isLoading) {

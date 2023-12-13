@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -19,7 +18,8 @@ import {
   PAGE_URL,
 } from '@util/constants';
 
-import { useToast } from '@/hooks/useToast';
+import { useToast } from '@hooks/useToast';
+import useModal from '@hooks/useModal';
 
 interface ProfileProps {
   userId: number;
@@ -49,21 +49,11 @@ const Profile = ({ userId, userData }: ProfileProps) => {
   const paramsUserId = useParams().userId ?? false;
   const isFriendHome = loginUserId !== paramsUserId && paramsUserId;
 
-  const [showModalType, setShowModalType] = useState('list');
-  const [showModal, setShowModal] = useState(false);
+  const { openModal } = useModal();
 
   const { nickname, profileImage, totalFriends, isExistedTodayDiary, relation }: ProfileData =
     userData;
   const targetPage = isExistedTodayDiary ? PAGE_URL.MY_DIARY : PAGE_URL.EDIT;
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  const onClickButton = (type: string) => {
-    setShowModal(true);
-    setShowModalType(type);
-  };
 
   const getModalContent = (type: string) => {
     switch (type) {
@@ -75,8 +65,6 @@ const Profile = ({ userId, userData }: ProfileProps) => {
         return <ProfileEdit profileImage={profileImage} nickname={nickname} />;
     }
   };
-
-  const modalContent = getModalContent(showModalType);
 
   const getRandomIndex = Math.floor(Math.random() * GREET_MESSAGES.length);
 
@@ -153,7 +141,9 @@ const Profile = ({ userId, userData }: ProfileProps) => {
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
-                onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.LIST)}
+                onClick={() =>
+                  openModal({ children: getModalContent(PROFILE_MODAL_CONTENT_TYPE.LIST) })
+                }
               >
                 친구 {totalFriends}명
               </p>
@@ -165,27 +155,33 @@ const Profile = ({ userId, userData }: ProfileProps) => {
 
         {!isFriendHome && (
           <div className="sm:ml-10">
-            <p className="w-full mb-8 text-2xl font-bold sm:text-3xl">
+            <p className="mb-8 text-2xl font-bold sm:text-3xl">
               {nickname}님, {GREET_MESSAGES[getRandomIndex]}
             </p>
             <div className="border-brown grid w-max grid-flow-col rounded-2xl border-2 border-solid bg-white p-5 text-center text-lg font-bold">
               <p
                 className="cursor-pointer"
-                onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.LIST)}
+                onClick={() =>
+                  openModal({ children: getModalContent(PROFILE_MODAL_CONTENT_TYPE.LIST) })
+                }
               >
                 친구 {totalFriends}명
               </p>
               <div className="border-brown mx-5 border-l-2 border-solid" />
               <p
                 className="cursor-pointer"
-                onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.REQUEST)}
+                onClick={() =>
+                  openModal({ children: getModalContent(PROFILE_MODAL_CONTENT_TYPE.REQUEST) })
+                }
               >
                 친구 관리
               </p>
               <div className="border-brown mx-5 border-l-2 border-solid" />
               <p
                 className="cursor-pointer"
-                onClick={() => onClickButton(PROFILE_MODAL_CONTENT_TYPE.EDIT)}
+                onClick={() =>
+                  openModal({ children: getModalContent(PROFILE_MODAL_CONTENT_TYPE.EDIT) })
+                }
               >
                 내 정보 수정
               </p>
@@ -209,11 +205,7 @@ const Profile = ({ userId, userData }: ProfileProps) => {
         </div>
       )}
 
-      {showModal && (
-        <Modal showModal={showModal} closeModal={closeModal}>
-          {modalContent}
-        </Modal>
-      )}
+      <Modal />
     </section>
   );
 };
