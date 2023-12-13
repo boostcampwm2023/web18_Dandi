@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+
 import dizzyFace from '@assets/image/dizzyFace.png';
 
 import { getCurrentUser } from '@api/Profile';

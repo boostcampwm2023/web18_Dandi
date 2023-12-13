@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -24,35 +24,27 @@ interface DiaryListItemProps {
 }
 
 const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState<string>(diaryItem.leavedReaction);
-  const [totalReaction, setTotalReaction] = useState(diaryItem.reactionCount);
+  const [selectedEmoji, setSelectedEmoji] = useState<string>('');
+  const [totalReaction, setTotalReaction] = useState(0);
   const { openModal } = useModal();
+
+  useEffect(() => {
+    setSelectedEmoji(diaryItem.leavedReaction);
+    setTotalReaction(diaryItem.reactionCount);
+  }, [diaryItem]);
 
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(Number(diaryItem.diaryId), selectedEmoji),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reactionList', diaryItem.diaryId],
-        refetchType: 'active',
-      });
-    },
   });
 
   const deleteReactionMutation = useMutation({
     mutationFn: () => deleteReaction(Number(diaryItem.diaryId), selectedEmoji),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reactionList', diaryItem.diaryId],
-        refetchType: 'active',
-      });
-    },
   });
 
-  const handleDeleteReaction = () => {
-    deleteReactionMutation.mutate();
+  const handleDeleteReaction = async () => {
+    await deleteReactionMutation.mutate();
     setSelectedEmoji('');
     setTotalReaction((prev) => prev - 1);
   };
@@ -67,9 +59,9 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const goDetail = () => navigate(`${PAGE_URL.DETAIL}/${diaryItem.diaryId}`);
   const goFriendHome = () => navigate(`${PAGE_URL.HOME}${diaryItem.authorId}`);
 
-  const onClickEmoji = (emojiData: any) => {
-    postReactionMutation.mutate();
+  const onClickEmoji = async (emojiData: any) => {
     setSelectedEmoji(emojiData.emoji);
+    await postReactionMutation.mutate();
     toggleShowEmojiPicker();
     setTotalReaction((prev) => prev + 1);
   };

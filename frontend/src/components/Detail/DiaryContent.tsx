@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import EmojiPicker from 'emoji-picker-react';
 import Parser from 'html-react-parser';
 import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
@@ -37,7 +37,6 @@ const DiaryContent = ({
   tagNames,
   reactionCount,
 }: DiaryContentProps) => {
-  const queryClient = useQueryClient();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [totalReaction, setTotalReaction] = useState(reactionCount);
@@ -52,35 +51,12 @@ const DiaryContent = ({
     return <p>Error fetching data</p>;
   }
 
-  useEffect(() => {
-    if (isSuccess) {
-      const loginUserId = localStorage.getItem('userId') ?? 0;
-      const myData = data.reactionList.find(
-        (item: IReactionedFriends) => item.userId === +loginUserId,
-      );
-      myData && setSelectedEmoji(myData?.reaction);
-      setTotalReaction(data.reactionList.length);
-    }
-  }, [isSuccess]);
-
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(diaryId, selectedEmoji),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reactionList', diaryId],
-        refetchType: 'active',
-      });
-    },
   });
 
   const deleteReactionMutation = useMutation({
     mutationFn: () => deleteReaction(diaryId, selectedEmoji),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reactionList', diaryId],
-        refetchType: 'active',
-      });
-    },
   });
 
   const handleDeleteReaction = async () => {
@@ -103,6 +79,17 @@ const DiaryContent = ({
     setTotalReaction(totalReaction + 1);
     toggleShowEmojiPicker();
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      const loginUserId = localStorage.getItem('userId') ?? 0;
+      const myData = data.reactionList.find(
+        (item: IReactionedFriends) => item.userId === +loginUserId,
+      );
+      myData && setSelectedEmoji(myData?.reaction);
+      setTotalReaction(data.reactionList.length);
+    }
+  }, [data]);
 
   return (
     <>
