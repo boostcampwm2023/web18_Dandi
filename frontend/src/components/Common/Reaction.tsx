@@ -11,7 +11,7 @@ const Reaction = ({ count, iconOnClick, textOnClick, styles, emoji }: ReactionPr
   return (
     <div>
       <div className="flex items-center justify-start gap-2">
-        <button onClick={iconOnClick}>
+        <button onClick={iconOnClick} aria-label="일기에 공감하기">
           {emoji ? <p className="text-2xl leading-6">{emoji}</p> : <Icon id="reactionEmoji" />}
         </button>
         <p

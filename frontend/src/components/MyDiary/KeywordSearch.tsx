@@ -117,6 +117,7 @@ const KeywordSearch = ({
         <button
           className="flex w-full items-center justify-between"
           onFocus={() => setShowSelect(true)}
+          aria-label={`${selected}으로 검색하기`}
         >
           <p>{selected}</p>
           <Icon id="down" size="small" />
@@ -156,6 +157,7 @@ const KeywordSearch = ({
               }
               setSearchFlag(true);
             }}
+            aria-label="일기 검색하기"
           >
             <Icon id="search" />
           </button>
