@@ -14,24 +14,41 @@ services:
   
   nginx-reverse-proxy:
     container_name: nginx-reverse-proxy
-    image: suhyun9252/dandi-nginx-proxy
+    image: nginx:alpine
     restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      - /dandi/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - /var/log/nginx:/var/log/nginx
-      - ./data/certbot/conf:/etc/letsencrypt 
-      - ./data/certbot/www:/var/www/certbot
+      - /dandi/data/certbot/conf:/etc/letsencrypt
+      - /dandi/data/certbot/www:/var/www/certbot
     depends_on:
       - frontend-blue
+      - was-blue
   
-  # certbot:
-  #   image: certbot/certbot
-  #   restart: unless-stopped
-  #   container_name: certbot
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt 
-  #     - ./data/certbot/www:/var/www/certbot
-  #   depends_on:
-  #     - nginx-reverse-proxy
+  was-blue:
+    container_name: was-blue
+    image: suhyun9252/dandi-be:GITHUB_SHA
+    restart: always
+    volumes:
+      - /dandi/logs:/dandi/logs  # log 보존
+    ports:
+      - "3000:3000"
+    env_file:
+      - /dandi/.env
+    depends_on:
+      - redis
+  
+  frontend-blue:
+    container_name: frontend-blue
+    image: suhyun9252/dandi-fe:GITHUB_SHA
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - /dandi/nginx/dandi-blue.conf:/etc/nginx/conf.d/dandi.conf
+      - /var/log/nginx/blue:/var/log/nginx
+    depends_on:
+      - was-blue
