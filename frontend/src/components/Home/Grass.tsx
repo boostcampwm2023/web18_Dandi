@@ -59,18 +59,18 @@ const Grass = () => {
 
   const grassElements = grassData.map((mood, index) => {
     if (mood === undefined) {
-      return <div key={index} className={`m-[0.1rem] h-4 w-4`}></div>;
+      return <div key={index} className={`m-[0.1rem] h-4 w-4 flex-grow`}></div>;
     }
 
     return (
       <GrassTooltip key={index} content={getTooltipContent(index)}>
-        <div className={`m-[0.1rem] h-4 w-4 rounded bg-emotion-${mood}`}></div>
+        <div className={`m-[0.1rem] h-4 w-4 flex-grow rounded bg-emotion-${mood}`}></div>
       </GrassTooltip>
     );
   });
 
   return (
-    <div className="flex h-full  w-full flex-col gap-2 p-5 sm:w-3/5">
+    <div className="flex h-full w-full flex-col gap-2 p-5 sm:w-3/5">
       <p className="text-lg font-bold sm:text-2xl">
         지난 1년간 {data.yearMood.length}개의 일기를 작성하셨어요.
       </p>

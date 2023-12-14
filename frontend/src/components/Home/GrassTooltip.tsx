@@ -22,7 +22,7 @@ const GrassTooltip = ({ content, children }: GrassTooltipProps) => {
   return (
     <div
       ref={grassDiv}
-      className="whitespace-pre"
+      className="flex whitespace-pre"
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
@@ -30,7 +30,7 @@ const GrassTooltip = ({ content, children }: GrassTooltipProps) => {
       {showTooltip && (
         <div
           ref={tooltipDiv}
-          className="bg-default absolute -translate-x-1/2 rounded p-2 text-white opacity-90"
+          className="bg-default absolute -translate-x-1/2 translate-y-1/2 rounded p-2 text-white opacity-90"
         >
           {content}
         </div>
