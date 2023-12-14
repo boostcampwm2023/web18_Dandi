@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -16,6 +16,7 @@ import { FEED, PAGE_URL } from '@util/constants';
 import { formatDateString } from '@util/funcs';
 
 import useModal from '@hooks/useModal';
+import { useToast } from '@/hooks/useToast';
 
 interface DiaryListItemProps {
   pageType?: string;
@@ -23,7 +24,9 @@ interface DiaryListItemProps {
 }
 
 const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const openToast = useToast();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState<string>('');
   const [totalReaction, setTotalReaction] = useState(0);
@@ -36,10 +39,28 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
 
   const postReactionMutation = useMutation({
     mutationFn: () => postReaction(Number(diaryItem.diaryId), selectedEmoji),
+    onSuccess: () => {
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      });
+      openToast('공감을 남겼습니다!');
+    },
   });
 
   const deleteReactionMutation = useMutation({
     mutationFn: () => deleteReaction(Number(diaryItem.diaryId), selectedEmoji),
+    onSuccess: () => {
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
+      });
+      openToast('공감을 취소했습니다!');
+    },
   });
 
   const handleDeleteReaction = async () => {

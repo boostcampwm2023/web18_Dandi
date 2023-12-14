@@ -53,9 +53,17 @@ const Edit = () => {
       navigate(PAGE_URL.MY_DIARY);
       queryClient.invalidateQueries({
         queryKey: ['grass', localStorage.getItem('userId')],
+        refetchType: 'all',
       });
       queryClient.invalidateQueries({
         queryKey: ['emotionStat', localStorage.getItem('userId')],
+        refetchType: 'all',
+      });
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
       openToast('일기가 작성되었습니다!');
     },
@@ -67,9 +75,17 @@ const Edit = () => {
       navigate(`${PAGE_URL.DETAIL}/${state.diaryId}`);
       queryClient.invalidateQueries({
         queryKey: ['grass', localStorage.getItem('userId')],
+        refetchType: 'all',
       });
       queryClient.invalidateQueries({
         queryKey: ['emotionStat', localStorage.getItem('userId')],
+        refetchType: 'all',
+      });
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
       openToast('일기가 수정되었습니다!');
     },
