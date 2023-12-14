@@ -24,8 +24,7 @@ export const formatDate = (date: Date) => {
 };
 
 export const formatDateString = (str: string) => {
-  const DateObject = new Date(str);
-  const koreaTime = new Date(DateObject.toUTCString());
+  const koreaTime = getKorTime(str);
   const year = koreaTime.getFullYear();
   const month = koreaTime.getMonth() + 1;
   const day = koreaTime.getDate();
@@ -35,7 +34,7 @@ export const formatDateString = (str: string) => {
 };
 
 export const formatDateDash = (date: Date) => {
-  const koreaTime = new Date(date.toUTCString());
+  const koreaTime = new Date(date);
   const year = koreaTime.getFullYear();
   const month = (koreaTime.getMonth() + 1).toString().padStart(2, '0');
   const day = koreaTime.getDate().toString().padStart(2, '0');
@@ -44,7 +43,12 @@ export const formatDateDash = (date: Date) => {
 };
 
 export const calPrev = (date: Date, num: number) => {
-  const newDate = new Date(date.toUTCString());
+  const newDate = new Date(date);
   newDate.setDate(newDate.getDate() + num);
   return newDate;
+};
+
+const getKorTime = (date: string) => {
+  const utcDate = new Date(date);
+  return new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
 };
