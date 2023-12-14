@@ -29,7 +29,7 @@ const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
       openToast('프로필 정보가 수정되었습니다.');
     },
     onError() {
-      openToast('사진의 크기는 최대 1MB입니다.');
+      openToast('사진의 크기는 최대 10MB입니다.');
     },
   });
 
