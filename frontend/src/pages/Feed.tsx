@@ -6,6 +6,7 @@ import { getFeed } from '@api/Feed';
 
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
+import Loading from '@components/Common/Loading';
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
 
@@ -16,6 +17,7 @@ const Feed = () => {
 
   const {
     data: feedData,
+    isLoading,
     isSuccess,
     fetchNextPage,
   } = useInfiniteQuery<
@@ -54,6 +56,10 @@ const Feed = () => {
   }, [isSuccess]);
 
   const isEmpty = !feedData?.pages[0].diaryList.length;
+
+  if (isLoading) {
+    return <Loading phrase="로딩 중이에요." />;
+  }
 
   return (
     <div className="mb-12 flex w-full flex-col items-center justify-start">

@@ -8,6 +8,7 @@ import dizzyFace from '@assets/image/dizzyFace.png';
 import { viewTypes, searchOptionsType, isViewTypes } from '@type/pages/MyDiary';
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
+import Loading from '@components/Common/Loading';
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
 import Modal from '@components/Common/Modal';
@@ -31,6 +32,7 @@ const MyDiary = () => {
   const {
     data: diaryData,
     isSuccess: diaryDataSuccess,
+    isLoading: diaryDataLoading,
     fetchNextPage: fetchNextDiaryPage,
   } = useInfiniteQuery<
     any,
@@ -69,6 +71,7 @@ const MyDiary = () => {
 
   const {
     data: searchData,
+    isLoading: searchDataLoading,
     isSuccess: searchDataSuccess,
     fetchNextPage: fetchNextSearchPage,
   } = useInfiniteQuery<
@@ -122,6 +125,10 @@ const MyDiary = () => {
   }, [state?.viewType]);
 
   const isEmpty = !diaryData?.pages[0].diaryList.length;
+
+  if (diaryDataLoading || searchDataLoading) {
+    return <Loading phrase="로딩 중이에요." />;
+  }
 
   return (
     <>

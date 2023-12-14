@@ -35,7 +35,7 @@ const Home = () => {
   const {
     data: profileData,
     isError,
-    isLoading,
+    isLoading: profileDataLoading,
   } = useQuery({
     queryKey: ['profileData', userId],
     queryFn: () => getCurrentUser(userId ? +userId : 0),
@@ -44,6 +44,7 @@ const Home = () => {
   const {
     data: diaryData,
     fetchNextPage,
+    isLoading: diaryDataLoading,
     isSuccess,
   } = useInfiniteQuery<
     any,
@@ -85,7 +86,7 @@ const Home = () => {
     return () => io.disconnect();
   }, [isSuccess]);
 
-  if (isLoading) {
+  if (profileDataLoading || diaryDataLoading) {
     return <Loading phrase="로딩 중이에요." />;
   }
 
