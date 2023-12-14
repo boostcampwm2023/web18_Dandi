@@ -116,7 +116,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           />
         </div>
       </div>
-      <div className="border-brown box-content h-56 w-full grid-flow-col rounded-lg border bg-white p-2">
+      <div className="border-brown box-content h-56 grid-flow-col rounded-lg border bg-white p-2 sm:p-3">
         <EmotionCloud emotionData={eData} />
       </div>
     </div>
