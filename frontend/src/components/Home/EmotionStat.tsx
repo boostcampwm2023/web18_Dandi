@@ -74,11 +74,13 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
   return (
     <div className="flex h-full w-full flex-col gap-2 p-5 sm:w-3/5">
       <div className="flex flex-col">
-        <h3 className="mb-5 text-lg  font-bold sm:text-2xl">
+        <h3 className="mb-5 text-lg font-bold sm:text-2xl">
           최근 {nickname}님의 감정은 어땠을까요?
         </h3>
         <div className="mb-3 flex items-center gap-3">
-          <label htmlFor="startDate">시작일</label>
+          <label className="text-sm sm:text-base" htmlFor="startDate">
+            시작일
+          </label>
           <input
             className="border-brown rounded-xl border border-solid p-1 outline-none sm:p-3"
             id="startDate"
@@ -96,7 +98,9 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
             max={formatDateDash(calPrev(period[1], PREV_INDEX))}
           />
           <p>~</p>
-          <label htmlFor="endDate">종료일</label>
+          <label className="text-sm sm:text-base" htmlFor="endDate">
+            종료일
+          </label>
           <input
             type="date"
             className="border-brown rounded-xl border border-solid p-1 outline-none sm:p-3"
@@ -116,7 +120,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
           />
         </div>
       </div>
-      <div className="border-brown box-content h-56 grid-flow-col rounded-lg border bg-white p-2 sm:p-3">
+      <div className="border-brown box-content h-56 grid-flow-col rounded-lg border bg-white p-2">
         <EmotionCloud emotionData={eData} />
       </div>
     </div>
