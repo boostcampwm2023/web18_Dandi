@@ -20,11 +20,17 @@ import EmotionStat from '@components/Home/EmotionStat';
 
 import { PAGE_TITLE_HOME, PAGE_URL } from '@util/constants';
 
+import useModal from '@hooks/useModal';
+
 const Home = () => {
   const params = useParams();
   const userId = params.userId ? params.userId : localStorage.getItem('userId');
   const infiniteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { closeModal } = useModal();
+  useEffect(() => {
+    closeModal();
+  }, [userId]);
 
   const {
     data: profileData,

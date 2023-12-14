@@ -48,7 +48,7 @@ const Detail = () => {
 
   const handleDelete = () => {
     deleteDiaryMutation.mutate();
-    showDeleteModal();
+    closeModal();
   };
 
   const showDeleteModal = () => {
