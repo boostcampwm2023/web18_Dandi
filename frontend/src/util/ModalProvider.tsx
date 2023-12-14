@@ -17,16 +17,21 @@ const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 
   const openModal = ({ children }: ModalData) => {
     setIsOpen(true);
+    document.body.style.cssText = `
+    position: fixed; 
+    top: -${window.scrollY}px;
+    overflow-y: scroll;
+    width: 100%;`;
     setModalData({ children });
-    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsOpen(false);
     setModalData({});
-    document.body.style.overflow = 'auto';
+    const scrollY = document.body.style.top;
+    document.body.style.cssText = '';
+    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
   };
-
   return (
     <ModalContext.Provider value={{ isOpen, openModal, closeModal, modalData }}>
       {children}
