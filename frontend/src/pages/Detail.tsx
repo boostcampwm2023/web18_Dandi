@@ -34,9 +34,17 @@ const Detail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['grass', localStorage.getItem('userId')],
+        refetchType: 'all',
       });
       queryClient.invalidateQueries({
         queryKey: ['emotionStat', localStorage.getItem('userId')],
+        refetchType: 'all',
+      });
+      queryClient.removeQueries({
+        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
+      });
+      queryClient.removeQueries({
+        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
       });
       navigate(-1);
       openToast('일기가 삭제되었습니다!');
