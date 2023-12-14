@@ -6,19 +6,22 @@
 작심삼일은 그만! 단디와 함께 매일매일 꾸준히 하루를 기억해봐요 🌱
 
 <br/>
-<p>
-<a href="https://dandi-ary.site">🔗 지금 바로 단디 사용하기</a>
+<p align="center">
+  <a href="https://dandi-ary.site" >🔗 지금 바로 단디 사용하기</a>
 </p>
+<br/>
+<div align="center">
+  <h3>📖 문서</h3> 
+  <p>
+    <a href="https://www.notion.so/kimyoonju/fbe671710cd9468587be6232d9697d3c?pvs=4">📘노션</a>
+    &nbsp; | &nbsp; 
+    <a href="https://www.figma.com/file/zJVmbuNXUV3cFFIFCqolXY/Dandi_Design?type=design&node-id=0-1&mode=design&t=nfkk1qWdfnKYXdta-0">🎨피그마</a>
+    &nbsp; | &nbsp; 
+    <a href="https://github.com/boostcampwm2023/web18_Dandi/wiki">✏️위키</a>
+  </p>
+</div>
 
-<h3>📖 문서</h3> 
-<p>
-  <a href="https://www.notion.so/kimyoonju/fbe671710cd9468587be6232d9697d3c?pvs=4">노션</a>
-  &nbsp; | &nbsp; 
-  <a href="https://www.figma.com/file/zJVmbuNXUV3cFFIFCqolXY/Dandi_Design?type=design&node-id=0-1&mode=design&t=nfkk1qWdfnKYXdta-0">피그마</a>
-  &nbsp; | &nbsp; 
-  <a href="https://github.com/boostcampwm2023/web18_Dandi/wiki">위키</a>
-</p>
-
+<br/>
 <h3>🚀 프로젝트 소개</h3>
 
 <b>홈</b>
@@ -61,7 +64,7 @@
   <li>선택한 단위마다 가장 효과적인 방법으로 일기를 보실 수 있도록 준비했어요.</li>
   <li>이전에 쓴 일기 내용이 궁금할 때는 제목, 일기 내용이나 키워드로 검색해보세요.</li>
 </ul>
-
+<br/>
 <h3>📚 단디 개발 일지</h3>
 <ul>
   <li>
@@ -82,13 +85,18 @@
   </li>
 </ul>
 
+<br/>
 <h3>⚙️ 프로젝트 구조</h3>
-
 <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/75190035/fad709f3-3599-4dcc-83ad-51566a65e969" alt="테크 스택"/>
+<br/>
 
-# 팀원
+<h3>🚀 인프라 구조</h3>
+<img src="https://github.com/boostcampwm2023/web18_Dandi/assets/86141652/ed822c7f-7511-4604-9d95-f4ff2568e01b" alt="인프라 구조"/>
+<br/>
 
-| <img src="https://avatars.githubusercontent.com/u/75190035?v=4" height=100 width=100 /> | <img src="https://avatars.githubusercontent.com/u/113580033?v=4" height=100 width=100 /> | <img src="https://avatars.githubusercontent.com/u/97578425?v=4" height=100 width=100 /> | <img src="https://avatars.githubusercontent.com/u/86141652?v=4" height=100 width=100 /> | <img src="https://avatars.githubusercontent.com/u/81965433?v=4" height=100 width=100 /> |
+<h2>👨‍👨‍👧‍👧 팀원</h2> 
+
+| <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/86141652/2968ee75-3357-4378-ab32-202ad12bc76f" height=150 width=150 /> | <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/86141652/0d3085f3-c588-4b21-98b1-bf6829793e0b" height=150 width=150 /> | <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/86141652/4bd0fd8a-c94f-4175-9c1e-d75a73be5858" height=150 width=150 /> | <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/86141652/06cb3533-d927-4ed1-bd8b-cddffe298e3f" height=150 width=150 /> | <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/86141652/7b8fde40-bc13-4cf2-81ea-d538d69cdf82" height=150 width=150 /> |
 | :-------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
 |                                           BE                                            |                                            BE                                            |                                           FE                                            |                                           FE                                            |                                           FE                                            |
 |                        [박효종](https://github.com/HyoJongPark)                         |                          [최수현](https://github.com/shunny822)                          |                           [김윤주](https://github.com/gimewn)                           |                          [서종현](https://github.com/surpise)                           |                           [이도훈](https://github.com/dohun2)                           |
