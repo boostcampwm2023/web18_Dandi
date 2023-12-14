@@ -85,7 +85,7 @@ const DiaryContent = ({
       const myData = data.reactionList.find(
         (item: IReactionedFriends) => item.userId === +loginUserId,
       );
-      myData && setSelectedEmoji(myData?.reaction);
+      setSelectedEmoji(myData?.reaction);
       setTotalReaction(data.reactionList.length);
     }
   }, [data]);
