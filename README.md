@@ -70,7 +70,7 @@
 <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/75190035/d0b591b5-fc70-4f7a-a6c0-ac86eb67e491" alt="API 요청 최적화 결과"/>
 
 <li>불필요한 서버 요청 비용을 줄이기 위해서 API 요청 최적화에 대해 고민했고, 이후 유지보수에서 어려움을 겪지 않도록 어떤 방식으로 API 요청을 최적화해야하는지 고민했습니다.</li>
-<li>저희 팀은 API 응답 데이터 수정해 요청을 최소화하고 디바운싱, Tanstack Query stale Time 3가지 키워드로 해당 문제에 접근했고 기존 요청들을 평균 몇 %수준으로 감소시킬 수 있었습니다.</li>
+<li>저희 팀은 API 응답 데이터 수정해 요청을 최소화하고 디바운싱, Tanstack Query stale Time 3가지 키워드로 해당 문제에 접근했고 기존 요청들을 평균 66% 수준으로 감소시킬 수 있었습니다.</li>
 
 <br/>
 
