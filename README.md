@@ -18,6 +18,8 @@
     <a href="https://www.figma.com/file/zJVmbuNXUV3cFFIFCqolXY/Dandi_Design?type=design&node-id=0-1&mode=design&t=nfkk1qWdfnKYXdta-0">🎨피그마</a>
     &nbsp; | &nbsp; 
     <a href="https://github.com/boostcampwm2023/web18_Dandi/wiki">✏️위키</a>
+    &nbsp; | &nbsp; 
+    <a href="https://docs.google.com/presentation/d/1_gDSra2qMra45Cr4_7HLSl1MXH8P7n_XEQGPdLCaG9g/edit?usp=sharing">💁발표자료</a>
   </p>
 </div>
 
