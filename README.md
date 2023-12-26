@@ -120,7 +120,7 @@
     <a href="https://velog.io/@gimewn/useRef-%EC%99%9C-%EC%93%B0%EB%8A%94-%EA%B1%B4%EA%B0%80%EC%9A%94">[React Portal | 김윤주] 리액트로 닥터스트레인지가 되는 법</a>
   </li>
   <li>
-    <a href="https://velog.io/@gimewn/useRef-%EC%99%9C-%EC%93%B0%EB%8A%94-%EA%B1%B4%EA%B0%80%EC%9A%94">[Emotion & Tailwind CSS | 이도훈] Emotion과 Tailwind CSS</a>
+    <a href="https://velog.io/@dohun2/Emotion%EA%B3%BC-Tailwind-CSS">[Emotion & Tailwind CSS | 이도훈] Emotion과 Tailwind CSS</a>
   </li>
   <li>
     <a href="https://surpise.tistory.com/6">[Query Invalidation | 서종현] 이건 무효야! Query Invalidation</a>
