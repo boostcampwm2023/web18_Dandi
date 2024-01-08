@@ -5,5 +5,8 @@
   "testMatch": ["**/{service,utils}/*.test.ts"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/../src/$1"
   }
 }
