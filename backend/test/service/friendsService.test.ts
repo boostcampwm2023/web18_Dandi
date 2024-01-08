@@ -231,3 +231,69 @@ describe('친구 신청 취소 테스트', () => {
     expect(friendsRepository.removeRelation).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('친구 삭제 테스트', () => {
+  let friendsService: FriendsService;
+  let friendsRepository: FriendsRepository;
+
+  beforeAll(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        FriendsService,
+        FriendsRepository,
+        UsersRepository,
+        { provide: dataSource.DataSource, useValue: {} },
+      ],
+    }).compile();
+
+    friendsService = module.get<FriendsService>(FriendsService);
+    friendsRepository = module.get<FriendsRepository>(FriendsRepository);
+  });
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('요청ID와 수신ID가 일치하면 예외 발생', () => {
+    //given
+    const senderId = 1;
+    const receiverId = 1;
+
+    //when - then
+    expect(() => friendsService.deleteFriendRelation(senderId, receiverId)).rejects.toThrow(
+      new BadRequestException('나와는 친구신청 관리를 할 수 없습니다.'),
+    );
+    expect(friendsRepository.findRelation).toHaveBeenCalledTimes(0);
+  });
+
+  it('친구 관계가 존재하지 않으면 예외 발생', () => {
+    //given
+    const senderId = 1;
+    const receiverId = 2;
+    (friendsRepository.findRelation as jest.Mock).mockResolvedValue(null);
+
+    //when - then
+    expect(() => friendsService.deleteFriendRelation(senderId, receiverId)).rejects.toThrow(
+      new BadRequestException('존재하지 않는 관계입니다.'),
+    );
+    expect(friendsRepository.findRelation).toHaveBeenCalledTimes(1);
+  });
+
+  it('친구 관계가 존재하면 해당 관계 삭제', async () => {
+    //given
+    const senderId = 1;
+    const receiverId = 2;
+    const mockFriends = {
+      id: 1,
+      status: FriendStatus.COMPLETE,
+      sender: { id: senderId },
+      receiver: { id: receiverId },
+    };
+    (friendsRepository.findRelation as jest.Mock).mockResolvedValue(mockFriends);
+
+    //when
+    await friendsService.deleteFriendRelation(senderId, receiverId);
+
+    //when - then
+    expect(friendsRepository.findRelation).toHaveBeenCalledTimes(1);
+    expect(friendsRepository.delete).toHaveBeenCalledTimes(1);
+  });
+});
