@@ -10,13 +10,9 @@ export class Friend extends BaseEntity {
   @Column({ default: FriendStatus.WAITING })
   status?: FriendStatus;
 
-  @ManyToOne(() => User, (user) => user.sender, {
-    nullable: false,
-  })
+  @ManyToOne(() => User, (user) => user.sender, { nullable: false })
   sender: User;
 
-  @ManyToOne(() => User, (user) => user.receiver, {
-    nullable: false,
-  })
+  @ManyToOne(() => User, (user) => user.receiver, { nullable: false })
   receiver: User;
 }
