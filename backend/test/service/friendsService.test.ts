@@ -498,3 +498,75 @@ describe('친구 목록 조회 테스트', () => {
     expect(friendsRepository.findUserRelationsByStatus).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('친구 신청 목록 조회 테스트', () => {
+  let friendsService: FriendsService;
+  let friendsRepository: FriendsRepository;
+
+  beforeAll(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        FriendsService,
+        FriendsRepository,
+        UsersRepository,
+        { provide: dataSource.DataSource, useValue: {} },
+      ],
+    }).compile();
+
+    friendsService = module.get<FriendsService>(FriendsService);
+    friendsRepository = module.get<FriendsRepository>(FriendsRepository);
+  });
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('친구 신청 정보가 존재하면, 상대방의 프로필 정보 반환', async () => {
+    //given
+    const friendA = { id: 2, email: 'test2@test.com', nickname: 'test2', profileImage: 'test2' };
+    const friendB = { id: 3, email: 'test3@test.com', nickname: 'test3', profileImage: 'test3' };
+    const friendC = { id: 4, email: 'test4@test.com', nickname: 'test4', profileImage: 'test4' };
+    const mockFriends = [
+      {
+        id: 1,
+        status: FriendStatus.WAITING,
+        sender: { id: 1, email: 'test1@test.com', nickname: 'test1', profileImage: 'test1' },
+        receiver: friendB,
+      },
+      {
+        id: 2,
+        status: FriendStatus.WAITING,
+        sender: friendA,
+        receiver: { id: 1, email: 'test1@test.com', nickname: 'test1', profileImage: 'test1' },
+      },
+      {
+        id: 4,
+        status: FriendStatus.WAITING,
+        sender: friendC,
+        receiver: { id: 1, email: 'test1@test.com', nickname: 'test1', profileImage: 'test1' },
+      },
+    ];
+    (friendsRepository.findUserRelationsByStatus as jest.Mock).mockResolvedValue(mockFriends);
+
+    //when
+    const result = await friendsService.getStrangerList(1);
+
+    //then
+    expect(result).toHaveLength(3);
+    expect(result[0].nickname).toEqual(friendA.nickname);
+    expect(result[1].nickname).toEqual(friendB.nickname);
+    expect(result[2].nickname).toEqual(friendC.nickname);
+    expect(friendsRepository.findUserRelationsByStatus).toHaveBeenCalledTimes(1);
+  });
+
+  it('친구 신청 정보가 존재하지 않으면 빈 배열 반환', async () => {
+    //given
+    (friendsRepository.findUserRelationsByStatus as jest.Mock).mockResolvedValue([]);
+
+    //when
+    const result = await friendsService.getStrangerList(1);
+
+    //then
+    expect(result).toHaveLength(0);
+    expect(result).toEqual([]);
+    expect(friendsRepository.findUserRelationsByStatus).toHaveBeenCalledTimes(1);
+  });
+});
