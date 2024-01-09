@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getDiaryDayList } from '@api/DiaryList';
@@ -17,13 +18,13 @@ import WeekContainer from '@components/MyDiary/WeekContainer';
 import ViewType from '@components/MyDiary/ViewType';
 import MonthContainer from '@components/MyDiary/MonthContainer';
 
-import { DIARY_VIEW_TYPE, PAGE_URL } from '@util/constants';
-import { useLocation, useNavigate } from 'react-router-dom';
+import useViewTypeStore from '@store/useViewTypeStore';
+
+import { DIARY_VIEW_TYPE } from '@util/constants';
 
 const MyDiary = () => {
-  const navigate = useNavigate();
   const { state } = useLocation();
-  const [viewType, setViewType] = useState<viewTypes>(state?.viewType || 'Day');
+  const { viewType, setViewType } = useViewTypeStore();
   const [keyword, setKeyword] = useState<string>('');
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
@@ -59,15 +60,6 @@ const MyDiary = () => {
         : undefined;
     },
   });
-
-  const handleViewTypeChange = (type: viewTypes) => {
-    setViewType(type);
-    navigate(`${PAGE_URL.MY_DIARY}`, {
-      state: {
-        viewType: type,
-      },
-    });
-  };
 
   const {
     data: searchData,
@@ -117,12 +109,13 @@ const MyDiary = () => {
   }, [diaryDataSuccess, searchDataSuccess]);
 
   useEffect(() => {
-    if (state?.viewType && isViewTypes(state?.viewType)) {
-      setViewType(state?.viewType);
+    const newViewType = state?.viewType || 'Day';
+    if (isViewTypes(newViewType)) {
+      setViewType(newViewType);
     } else {
       setViewType('Day');
     }
-  }, [state?.viewType]);
+  }, [state]);
 
   const isEmpty = !diaryData?.pages[0].diaryList.length;
 
@@ -143,7 +136,7 @@ const MyDiary = () => {
             setSelected={setSelected}
             setSearchFlag={setSearchFlag}
           />
-          <ViewType handleViewTypeChange={handleViewTypeChange} viewType={viewType} />
+          <ViewType />
         </header>
         <section className="flex w-full flex-col items-center sm:w-3/5">
           {isEmpty && viewType === DIARY_VIEW_TYPE.DAY && (
