@@ -48,6 +48,7 @@ export default defineConfig({
       '@api': resolve(__dirname, 'src/api'),
       '@type': resolve(__dirname, 'src/types'),
       '@hooks': resolve(__dirname, 'src/hooks'),
+      '@store': resolve(__dirname, 'src/store'),
     },
   },
 });
