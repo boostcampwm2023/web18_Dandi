@@ -1,13 +1,13 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FriendsService } from 'src/friends/friends.service';
-import { FriendsRepository } from 'src/friends/friends.repository';
-import { UsersRepository } from 'src/users/users.repository';
-import * as dataSource from 'typeorm';
-import { FriendStatus } from 'src/friends/entity/friendStatus';
+import { UsersRepository } from '../users/users.repository';
+import { FriendsRepository } from './friends.repository';
+import { FriendStatus } from './entity/friendStatus';
+import { FriendsService } from './friends.service';
+import { DataSource } from 'typeorm';
 
-jest.mock('src/friends/friends.repository');
-jest.mock('src/users/users.repository');
+jest.mock('./friends.repository');
+jest.mock('../users/users.repository');
 
 describe('친구 요청 테스트', () => {
   let friendsService: FriendsService;
@@ -20,7 +20,7 @@ describe('친구 요청 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
@@ -111,7 +111,7 @@ describe('친구 신청 취소 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
@@ -242,7 +242,7 @@ describe('친구 삭제 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
@@ -308,7 +308,7 @@ describe('친구 신청 수락 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
@@ -439,7 +439,7 @@ describe('친구 목록 조회 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
@@ -509,7 +509,7 @@ describe('친구 신청 목록 조회 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
@@ -581,7 +581,7 @@ describe('친구 검색 테스트', () => {
         FriendsService,
         FriendsRepository,
         UsersRepository,
-        { provide: dataSource.DataSource, useValue: {} },
+        { provide: DataSource, useValue: {} },
       ],
     }).compile();
 
