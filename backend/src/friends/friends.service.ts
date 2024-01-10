@@ -143,7 +143,6 @@ export class FriendsService {
     }
 
     this.checkAlreadyFriend(relation);
-
     return relation;
   }
 

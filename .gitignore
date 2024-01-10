@@ -1,6 +1,8 @@
+### APP
 node_modules
 dist
 dev-dist
+coverage
 
 ### IDE
 .vscode
