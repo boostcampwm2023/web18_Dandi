@@ -10,12 +10,12 @@ export class TagsService {
 
     return await Promise.all(
       tagNames.map(async (tagName) => {
-        let tag = await this.tagsRepository.findByName(tagName);
+        const savedTag = await this.tagsRepository.findByName(tagName);
 
-        if (!tag) {
-          tag = await this.tagsRepository.saveTag(tagName);
+        if (!savedTag) {
+          return await this.tagsRepository.saveTag(tagName);
         }
-        return tag;
+        return savedTag;
       }),
     );
   }
