@@ -76,4 +76,40 @@ describe('TagsService Test', () => {
       expect(tagsRepository.saveTag).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('태그 추천 점수 갱신 테스트', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('사용자 ID에 해당 태그 이름이 이미 존재하면, 점수 증가 ', async () => {
+      //given
+      const userId = 1;
+      const tagNames = ['tag1', 'tag2'];
+
+      (tagsRepository.zscore as jest.Mock).mockResolvedValue('1');
+
+      //when
+      await tagsService.updateDataSetScore(userId, tagNames);
+
+      //then
+      expect(tagsRepository.zscore).toHaveBeenCalledTimes(tagNames.length);
+      expect(tagsRepository.zadd).toHaveBeenCalledTimes(0);
+      expect(tagsRepository.zincrby).toHaveBeenCalledTimes(tagNames.length);
+    });
+
+    it('사용자 ID에 해당 태그 이름이 이미 존재하지 않으면, 데이터 추가', async () => {
+      //given
+      const userId = 1;
+      const tagNames = ['tag1', 'tag2'];
+
+      (tagsRepository.zscore as jest.Mock).mockResolvedValue(null);
+
+      //when
+      await tagsService.updateDataSetScore(userId, tagNames);
+
+      //then
+      expect(tagsRepository.zscore).toHaveBeenCalledTimes(tagNames.length);
+      expect(tagsRepository.zadd).toHaveBeenCalledTimes(tagNames.length);
+      expect(tagsRepository.zincrby).toHaveBeenCalledTimes(0);
+    });
+  });
 });
