@@ -141,7 +141,7 @@ describe('ReactionsService', () => {
         status: DiaryStatus.PUBLIC,
       } as Diary;
       const reactionRequestDto = { reaction: '💝' } as ReactionRequestDto;
-      const reaction = { id: 2, reaction: '😊' };
+      const reaction = { id: 2, reaction: '😊' } as Reaction;
 
       (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
       (reactionsRepository.findReactionByDiaryAndUser as jest.Mock).mockResolvedValue(reaction);
@@ -179,6 +179,74 @@ describe('ReactionsService', () => {
         new BadRequestException('리액션 기록이 존재하지 않습니다.'),
       );
       expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
+      expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('deleteReaction', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('리액션 삭제', async () => {
+      const user = {
+        id: 1,
+        email: 'test1',
+        nickname: 'test1',
+        profileImage: null,
+      } as User;
+      const diaryId = 1;
+      const diary = {
+        id: 1,
+        title: 'title',
+        content: '<p>content</p>',
+        summary: 'summary',
+        thumbnail: '',
+        emotion: '🥹',
+        mood: MoodDegree.SO_SO,
+        status: DiaryStatus.PUBLIC,
+      } as Diary;
+      const reactionRequestDto = { reaction: '💝' } as ReactionRequestDto;
+      const reaction = { id: 2, reaction: '💝' } as Reaction;
+
+      (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
+      (reactionsRepository.findReactionByDiaryAndUserAndReaction as jest.Mock).mockResolvedValue(
+        reaction,
+      );
+
+      await reactionsService.deleteReaction(user, diaryId, reactionRequestDto);
+
+      expect(reactionsRepository.remove).toHaveBeenCalledTimes(1);
+      expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('삭제하려는 리액션이 없는 경우 예외 발생', () => {
+      const user = {
+        id: 1,
+        email: 'test1',
+        nickname: 'test1',
+        profileImage: null,
+      } as User;
+      const diaryId = 1;
+      const diary = {
+        id: 1,
+        title: 'title',
+        content: '<p>content</p>',
+        summary: 'summary',
+        thumbnail: '',
+        emotion: '🥹',
+        mood: MoodDegree.SO_SO,
+        status: DiaryStatus.PUBLIC,
+      } as Diary;
+      const reactionRequestDto = { reaction: '💝' } as ReactionRequestDto;
+
+      (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
+      (reactionsRepository.findReactionByDiaryAndUserAndReaction as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      expect(reactionsService.deleteReaction(user, diaryId, reactionRequestDto)).rejects.toThrow(
+        new BadRequestException('이미 삭제된 리액션 정보입니다.'),
+      );
+      expect(reactionsRepository.remove).toHaveBeenCalledTimes(0);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(0);
     });
   });
