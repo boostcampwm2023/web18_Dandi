@@ -1,14 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { TagsRepository } from './tags.repository';
-// import { InjectRedis } from '@liaoliaots/nestjs-redis';
-// import { Redis } from 'ioredis';
 
 @Injectable()
 export class TagsService {
-  constructor(
-    private readonly tagsRepository: TagsRepository,
-    // @InjectRedis() private readonly redis: Redis,
-  ) {}
+  constructor(private readonly tagsRepository: TagsRepository) {}
 
   async mapTagNameToTagType(tagNames: string[]) {
     if (!tagNames) return null;
