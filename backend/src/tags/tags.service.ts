@@ -20,16 +20,18 @@ export class TagsService {
     );
   }
 
-  updateDataSetScore(userId: number, tagNames: string[]) {
-    tagNames.forEach(async (tag) => {
-      const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
+  async updateDataSetScore(userId: number, tagNames: string[]) {
+    await Promise.all([
+      tagNames.forEach(async (tag) => {
+        const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
 
-      if (!tagScore) {
-        this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
-      } else {
-        this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
-      }
-    });
+        if (!tagScore) {
+          await this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
+        } else {
+          await this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
+        }
+      }),
+    ]);
   }
 
   async recommendKeywords(userId: number, keyword: string) {

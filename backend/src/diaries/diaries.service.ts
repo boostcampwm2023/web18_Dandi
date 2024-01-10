@@ -43,7 +43,7 @@ export class DiariesService {
 
   async saveDiary(user: User, createDiaryDto: CreateDiaryDto) {
     const tags = await this.tagsService.mapTagNameToTagType(createDiaryDto.tagNames);
-    this.tagsService.updateDataSetScore(user.id, createDiaryDto.tagNames);
+    await this.tagsService.updateDataSetScore(user.id, createDiaryDto.tagNames);
 
     const diary = plainToClass(Diary, createDiaryDto, {
       excludePrefixes: ['tag'],
@@ -81,7 +81,7 @@ export class DiariesService {
     const existingDiary = await this.findDiary(user, diaryId);
 
     existingDiary.tags = await this.tagsService.mapTagNameToTagType(updateDiaryDto.tagNames);
-    this.tagsService.updateDataSetScore(user.id, updateDiaryDto.tagNames);
+    await this.tagsService.updateDataSetScore(user.id, updateDiaryDto.tagNames);
 
     Object.keys(updateDiaryDto).forEach((key) => {
       if (updateDiaryDto[key]) {
