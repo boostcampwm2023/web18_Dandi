@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TagsRepository } from '../tags/tag.repository';
+import { TagsRepository } from './tags.repository';
 // import { InjectRedis } from '@liaoliaots/nestjs-redis';
 // import { Redis } from 'ioredis';
 
