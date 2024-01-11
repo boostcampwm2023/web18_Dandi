@@ -75,6 +75,19 @@ describe('TagsService Test', () => {
       expect(tagsRepository.findByName).toHaveBeenCalledTimes(0);
       expect(tagsRepository.saveTag).toHaveBeenCalledTimes(0);
     });
+
+    it('태그 이름 배열이 null이라면, null 반환', async () => {
+      //given
+      const tagNames = null;
+
+      //when
+      const result = await tagsService.mapTagNameToTagType(tagNames);
+
+      //then
+      expect(result).toEqual(null);
+      expect(tagsRepository.findByName).toHaveBeenCalledTimes(0);
+      expect(tagsRepository.saveTag).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('태그 추천 점수 갱신 테스트', () => {
