@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -11,6 +11,8 @@ import Editor from '@components/Edit/Editor';
 import KeywordBox from '@components/Edit/KeywordBox';
 
 import { PAGE_URL } from '@util/constants';
+
+import useEditStore from '@store/useEditStore';
 
 import { useToast } from '@hooks/useToast';
 
@@ -29,14 +31,30 @@ const Edit = () => {
 
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [keywordList, setKeywordList] = useState<string[]>(state?.tagNames || []);
-  const [title, setTitle] = useState(state?.title || '');
-  const [emoji, setEmoji] = useState(state?.emotion || '😁');
   const [status, setStatus] = useState(
     state && state.status === 'public' ? '공개 하기' : '나만 보기',
   );
-  const [thumbnail, setThumbnail] = useState(state?.thumbnail || '');
-  const [content, setContent] = useState(state?.content || ' ');
+
+  const {
+    title,
+    setTitle,
+    emoji,
+    setEmoji,
+    thumbnail,
+    setThumbnail,
+    content,
+    setContent,
+    keywordList,
+    setKeywordList,
+  } = useEditStore();
+
+  useEffect(() => {
+    setTitle(state?.title || '');
+    setEmoji(state?.emoji || '😁');
+    setThumbnail(state?.thumbnail || '');
+    setContent(state?.setContent || ' ');
+    setKeywordList(state?.tagNames || []);
+  }, [state]);
 
   const params: CreateDiaryParams = {
     title,
@@ -115,21 +133,9 @@ const Edit = () => {
   return (
     <div className="flex flex-col items-center justify-start">
       <NavBar />
-      <Header
-        title={title}
-        emoji={emoji}
-        setTitle={setTitle}
-        setEmoji={setEmoji}
-        status={status}
-        setStatus={setStatus}
-      />
-      <Editor
-        content={content}
-        setContent={setContent}
-        thumbnail={thumbnail}
-        setThumbnail={setThumbnail}
-      />
-      <KeywordBox keywordList={keywordList} setKeywordList={setKeywordList} onSubmit={onSubmit} />
+      <Header status={status} setStatus={setStatus} />
+      <Editor />
+      <KeywordBox onSubmit={onSubmit} />
     </div>
   );
 };

@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 
+import useEditStore from '@store/useEditStore';
+
 interface HeaderProps {
-  title: string;
-  emoji: string;
   status: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
   setStatus: React.Dispatch<React.SetStateAction<string>>;
-  setEmoji: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderProps) => {
+const Header = ({ status, setStatus }: HeaderProps) => {
   const [showEmoji, setShowEmoji] = useState(false);
+  const { title, setTitle, emoji, setEmoji } = useEditStore();
 
   const toggleEmoji = () => setShowEmoji((prev) => !prev);
 

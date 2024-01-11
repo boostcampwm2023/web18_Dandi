@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
 import Keyword from '@components/Common/Keyword';
+import useEditStore from '@store/useEditStore';
 
 interface KeywordBoxProps {
-  keywordList: string[];
-  setKeywordList: React.Dispatch<React.SetStateAction<string[]>>;
   onSubmit: () => void;
 }
 
-const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) => {
+const KeywordBox = ({ onSubmit }: KeywordBoxProps) => {
   const [keyword, setKeyword] = useState<string>('');
+  const { keywordList, setKeywordList } = useEditStore();
 
   const changeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -18,7 +18,7 @@ const KeywordBox = ({ keywordList, setKeywordList, onSubmit }: KeywordBoxProps) 
   const addKeyword = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
     if (!keywordList.includes(keyword)) {
-      setKeywordList((pre) => [...pre, keyword]);
+      setKeywordList([...keywordList, keyword]);
     }
 
     setKeyword('');

@@ -3,15 +3,11 @@ import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
 import { uploadImage } from '@api/Edit';
 
-interface EditorProps {
-  content: string;
-  thumbnail: string;
-  setThumbnail: React.Dispatch<React.SetStateAction<string>>;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
-}
+import useEditStore from '@store/useEditStore';
 
-const Editor = ({ content, setContent, thumbnail, setThumbnail }: EditorProps) => {
+const Editor = () => {
   const editorRef = useRef<DiaryEditor>(null);
+  const {content, setContent, thumbnail, setThumbnail} = useEditStore();
   const onChangeContent = () => {
     setContent(editorRef.current?.getInstance().getHTML());
   };
