@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
 import { uploadImage } from '@api/Edit';
+
 import useEditStore from '@store/useEditStore';
 
 const Editor = () => {
