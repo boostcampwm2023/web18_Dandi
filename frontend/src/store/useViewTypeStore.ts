@@ -4,7 +4,7 @@ import { viewTypes } from '@type/pages/MyDiary';
 
 interface viewTypeState {
   viewType: viewTypes;
-  setViewType:(newViewType: viewTypes) => void;
+  setViewType: (newViewType: viewTypes) => void;
 }
 
 const useViewTypeStore = create<viewTypeState>((set) => ({
