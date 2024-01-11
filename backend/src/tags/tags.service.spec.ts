@@ -112,4 +112,45 @@ describe('TagsService Test', () => {
       expect(tagsRepository.zincrby).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('태그 검색어 추천 테스트', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('사용자 id에 태그 정보가 존재하면, 키워드와 일치하는 정보 반환', async () => {
+      //given
+      const userId = 1;
+      const keyword = 'tag';
+      const tagsStartWithTag = ['tag1', 'tag2'];
+      const tagsStartWithDandi = ['dandi1', 'dandi2'];
+
+      (tagsRepository.zrange as jest.Mock).mockResolvedValue([
+        ...tagsStartWithTag,
+        ...tagsStartWithDandi,
+      ]);
+
+      //when
+      const result = await tagsService.recommendKeywords(userId, keyword);
+
+      //then
+      expect(result).toEqual(tagsStartWithTag.reverse());
+      expect(result).toHaveLength(tagsStartWithTag.length);
+      expect(tagsRepository.zrange).toHaveBeenCalledTimes(1);
+    });
+
+    it('사용자 id에 태그 정보가 존재하지 않으면, 빈 배열 반환', async () => {
+      //given
+      const userId = 1;
+      const keyword = 'tag';
+
+      (tagsRepository.zrange as jest.Mock).mockResolvedValue([]);
+
+      //when
+      const result = await tagsService.recommendKeywords(userId, keyword);
+
+      //then
+      expect(result).toEqual([]);
+      expect(result).toHaveLength(0);
+      expect(tagsRepository.zrange).toHaveBeenCalledTimes(1);
+    });
+  });
 });
