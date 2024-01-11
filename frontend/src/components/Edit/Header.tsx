@@ -3,14 +3,9 @@ import EmojiPicker from 'emoji-picker-react';
 
 import useEditStore from '@store/useEditStore';
 
-interface HeaderProps {
-  status: string;
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const Header = ({ status, setStatus }: HeaderProps) => {
+const Header = () => {
   const [showEmoji, setShowEmoji] = useState(false);
-  const { title, setTitle, emoji, setEmoji } = useEditStore();
+  const { title, setTitle, emoji, setEmoji, status, setStatus } = useEditStore();
 
   const toggleEmoji = () => setShowEmoji((prev) => !prev);
 
@@ -18,7 +13,7 @@ const Header = ({ status, setStatus }: HeaderProps) => {
 
   const changeEmoji = (e: React.ChangeEvent<HTMLInputElement>) => setEmoji(e.target.value);
 
-  const toggleStatus = () => setStatus((pre) => (pre === '나만 보기' ? '공개 하기' : '나만 보기'));
+  const toggleStatus = () => setStatus(status === '나만 보기' ? '공개 하기' : '나만 보기');
 
   const onClickEmoji = (emojiData: any) => {
     setEmoji(emojiData.emoji);

@@ -15,6 +15,9 @@ interface editState {
 
   keywordList: string[];
   setKeywordList: (newKeywordList: string[]) => void;
+
+  status: '공개 하기' | '나만 보기';
+  setStatus: (newStatus: '공개 하기' | '나만 보기') => void;
 }
 
 const useEditStore = create<editState>((set) => ({
@@ -32,6 +35,9 @@ const useEditStore = create<editState>((set) => ({
 
   keywordList: [],
   setKeywordList: (newKeywordList) => set({ keywordList: newKeywordList }),
+
+  status: '나만 보기',
+  setStatus: (newStatus) => set({ status: newStatus }),
 }));
 
 export default useEditStore;

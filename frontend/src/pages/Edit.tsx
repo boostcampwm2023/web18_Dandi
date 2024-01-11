@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -31,9 +31,6 @@ const Edit = () => {
 
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [status, setStatus] = useState(
-    state && state.status === 'public' ? '공개 하기' : '나만 보기',
-  );
 
   const {
     title,
@@ -46,14 +43,17 @@ const Edit = () => {
     setContent,
     keywordList,
     setKeywordList,
+    status,
+    setStatus,
   } = useEditStore();
 
   useEffect(() => {
     setTitle(state?.title || '');
     setEmoji(state?.emoji || '😁');
     setThumbnail(state?.thumbnail || '');
-    setContent(state?.setContent || ' ');
+    setContent(state?.content || ' ');
     setKeywordList(state?.tagNames || []);
+    setStatus(state?.status === 'public' ? '공개 하기' : '나만 보기')
   }, [state]);
 
   const params: CreateDiaryParams = {
@@ -133,7 +133,7 @@ const Edit = () => {
   return (
     <div className="flex flex-col items-center justify-start">
       <NavBar />
-      <Header status={status} setStatus={setStatus} />
+      <Header />
       <Editor />
       <KeywordBox onSubmit={onSubmit} />
     </div>
