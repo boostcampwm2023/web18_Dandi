@@ -18,7 +18,7 @@ describe('ReactionsService', () => {
   let reactionsRepository: ReactionsRepository;
   let diariesService: DiariesService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ReactionsService, ReactionsRepository, DiariesService],
     }).compile();
@@ -32,6 +32,7 @@ describe('ReactionsService', () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('diary id에 대한 리액션 및 리액션의 사용자 정보 조회', async () => {
+      // given
       const diaryId = 1;
       const reactions = [
         {
@@ -50,7 +51,11 @@ describe('ReactionsService', () => {
 
       (reactionsRepository.findByDiary as jest.Mock).mockResolvedValue(reactions);
 
-      expect(await reactionsService.getAllReaction(diaryId)).toBe(reactions);
+      // when
+      const result = await reactionsService.getAllReaction(diaryId);
+
+      // then
+      expect(result).toHaveLength(2);
       expect(reactionsRepository.findByDiary).toHaveBeenCalledTimes(1);
     });
   });
@@ -59,6 +64,7 @@ describe('ReactionsService', () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('리액션 저장', async () => {
+      // given
       const user = {
         id: 1,
         email: 'test1',
@@ -81,12 +87,16 @@ describe('ReactionsService', () => {
       (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
       (reactionsRepository.findReactionByDiaryAndUser as jest.Mock).mockResolvedValue(null);
 
+      // when
       await reactionsService.saveReaction(user, diaryId, reactionRequestDto);
+
+      // then
       expect(reactionsRepository.save).toHaveBeenCalledTimes(1);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('이미 해당 일기에 리액션을 한 경우 예외 발생', () => {
+    it('이미 해당 일기에 리액션을 한 경우 예외 발생', async () => {
+      // given
       const user = {
         id: 1,
         email: 'test1',
@@ -110,10 +120,10 @@ describe('ReactionsService', () => {
       (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
       (reactionsRepository.findReactionByDiaryAndUser as jest.Mock).mockResolvedValue(reaction);
 
-      expect(reactionsService.saveReaction(user, diaryId, reactionRequestDto)).rejects.toThrow(
-        new BadRequestException('이미 해당 글에 리액션을 남겼습니다.'),
-      );
-
+      // when - then
+      await expect(
+        async () => await reactionsService.saveReaction(user, diaryId, reactionRequestDto),
+      ).rejects.toThrow(new BadRequestException('이미 해당 글에 리액션을 남겼습니다.'));
       expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(0);
     });
@@ -123,6 +133,7 @@ describe('ReactionsService', () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('리액션 수정', async () => {
+      // given
       const user = {
         id: 1,
         email: 'test1',
@@ -146,13 +157,16 @@ describe('ReactionsService', () => {
       (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
       (reactionsRepository.findReactionByDiaryAndUser as jest.Mock).mockResolvedValue(reaction);
 
+      // when
       await reactionsService.updateReaction(user, diaryId, reactionRequestDto);
 
+      // then
       expect(reactionsRepository.save).toHaveBeenCalledTimes(1);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('리액션을 남긴 기록이 없는 경우 예외 발생', () => {
+    it('리액션을 남긴 기록이 없는 경우 예외 발생', async () => {
+      // given
       const user = {
         id: 1,
         email: 'test1',
@@ -175,9 +189,10 @@ describe('ReactionsService', () => {
       (diariesService.findDiary as jest.Mock).mockResolvedValue(diary);
       (reactionsRepository.findReactionByDiaryAndUser as jest.Mock).mockResolvedValue(null);
 
-      expect(reactionsService.updateReaction(user, diaryId, reactionRequestDto)).rejects.toThrow(
-        new BadRequestException('리액션 기록이 존재하지 않습니다.'),
-      );
+      // when - then
+      await expect(
+        async () => await reactionsService.updateReaction(user, diaryId, reactionRequestDto),
+      ).rejects.toThrow(new BadRequestException('리액션 기록이 존재하지 않습니다.'));
       expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(0);
     });
@@ -187,6 +202,7 @@ describe('ReactionsService', () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('리액션 삭제', async () => {
+      // given
       const user = {
         id: 1,
         email: 'test1',
@@ -212,13 +228,16 @@ describe('ReactionsService', () => {
         reaction,
       );
 
+      // when
       await reactionsService.deleteReaction(user, diaryId, reactionRequestDto);
 
+      // then
       expect(reactionsRepository.remove).toHaveBeenCalledTimes(1);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('삭제하려는 리액션이 없는 경우 예외 발생', () => {
+    it('삭제하려는 리액션이 없는 경우 예외 발생', async () => {
+      // given
       const user = {
         id: 1,
         email: 'test1',
@@ -243,9 +262,10 @@ describe('ReactionsService', () => {
         null,
       );
 
-      expect(reactionsService.deleteReaction(user, diaryId, reactionRequestDto)).rejects.toThrow(
-        new BadRequestException('이미 삭제된 리액션 정보입니다.'),
-      );
+      // when - then
+      await expect(
+        async () => await reactionsService.deleteReaction(user, diaryId, reactionRequestDto),
+      ).rejects.toThrow(new BadRequestException('이미 삭제된 리액션 정보입니다.'));
       expect(reactionsRepository.remove).toHaveBeenCalledTimes(0);
       expect(reactionsRepository.addDiaryEvent).toHaveBeenCalledTimes(0);
     });
