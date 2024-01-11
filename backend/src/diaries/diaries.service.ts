@@ -5,7 +5,6 @@ import {
   FeedDiaryDto,
   GetAllEmotionsRequestDto,
   GetYearMoodResponseDto,
-  GetAllEmotionsResponseDto,
   ReadUserDiariesRequestDto,
   UpdateDiaryDto,
   AllDiaryInfosDto,
