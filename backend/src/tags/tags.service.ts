@@ -8,12 +8,12 @@ export class TagsService {
   async mapTagNameToTagType(tagNames: string[]) {
     if (!tagNames) return null;
 
-    return await Promise.all(
+    return Promise.all(
       tagNames.map(async (tagName) => {
         const savedTag = await this.tagsRepository.findByName(tagName);
 
         if (!savedTag) {
-          return await this.tagsRepository.saveTag(tagName);
+          return this.tagsRepository.saveTag(tagName);
         }
         return savedTag;
       }),
@@ -21,14 +21,14 @@ export class TagsService {
   }
 
   async updateDataSetScore(userId: number, tagNames: string[]) {
-    await Promise.all([
+    Promise.all([
       tagNames.forEach(async (tag) => {
         const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
 
         if (!tagScore) {
-          await this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
+          this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
         } else {
-          await this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
+          this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
         }
       }),
     ]);
