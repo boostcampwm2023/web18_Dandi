@@ -206,6 +206,65 @@ describe('UsersService', () => {
   });
 
   describe('searchUsers', () => {
-    // beforeEach(() => jest.clearAllMocks());
+    beforeEach(() => jest.clearAllMocks());
+
+    it('닉네임으로 사용자 검색', async () => {
+      // given
+      const nickname = 'test';
+      const users = [
+        {
+          id: 1,
+          email: 'test1',
+          nickname: 'test1',
+          socialId: '8JRte7e8uadfegs',
+          socialType: 'naver',
+          profileImage: null,
+        },
+        {
+          id: 2,
+          email: 'test2',
+          nickname: 'test2',
+          socialId: 'adsfa8JRte7e8u',
+          socialType: 'naver',
+          profileImage: null,
+        },
+      ];
+      const searchResult = [
+        {
+          id: 1,
+          email: 'test1',
+          nickname: 'test1',
+          profileImage: null,
+        },
+        {
+          id: 2,
+          email: 'test2',
+          nickname: 'test2',
+          profileImage: null,
+        },
+      ];
+
+      (usersRepository.findByNickname as jest.Mock).mockResolvedValue(users);
+
+      // when
+      const result = await usersService.searchUsers(nickname);
+
+      // then
+      expect(result).toEqual(searchResult);
+      expect(usersRepository.findByNickname).toHaveBeenCalledTimes(1);
+    });
+
+    it('검색 닉네임과 일치하는 사용자 없는 경우 빈 배열 반환', async () => {
+      // given
+      const nickname = '테스트';
+      (usersRepository.findByNickname as jest.Mock).mockResolvedValue([]);
+
+      // when
+      const result = await usersService.searchUsers(nickname);
+
+      // then
+      expect(result).toEqual([]);
+      expect(usersRepository.findByNickname).toHaveBeenCalledTimes(1);
+    });
   });
 });
