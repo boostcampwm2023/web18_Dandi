@@ -1,17 +1,20 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Editor as DiaryEditor } from '@toast-ui/react-editor';
 
 import { uploadImage } from '@api/Edit';
 
-interface EditorProps {
-  content: string;
-  thumbnail: string;
-  setThumbnail: React.Dispatch<React.SetStateAction<string>>;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
-}
+import useEditStore from '@store/useEditStore';
 
-const Editor = ({ content, setContent, thumbnail, setThumbnail }: EditorProps) => {
+const Editor = () => {
+  const { state } = useLocation();
   const editorRef = useRef<DiaryEditor>(null);
+  const { setContent, thumbnail, setThumbnail } = useEditStore();
+
+  useEffect(() => {
+    setThumbnail(state?.thumbnail || '');
+  }, [state]);
+
   const onChangeContent = () => {
     setContent(editorRef.current?.getInstance().getHTML());
   };
@@ -36,7 +39,7 @@ const Editor = ({ content, setContent, thumbnail, setThumbnail }: EditorProps) =
           initialEditType="wysiwyg"
           placeholder="일기를 입력하세요!"
           hideModeSwitch={true}
-          initialValue={content}
+          initialValue={state?.content || ' '}
           onChange={onChangeContent}
           hooks={{
             addImageBlobHook: onUploadImage,

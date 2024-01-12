@@ -1,17 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 
-interface HeaderProps {
-  title: string;
-  emoji: string;
-  status: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-  setEmoji: React.Dispatch<React.SetStateAction<string>>;
-}
+import useEditStore from '@store/useEditStore';
 
-const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderProps) => {
+const Header = () => {
+  const { state } = useLocation();
   const [showEmoji, setShowEmoji] = useState(false);
+  const { title, setTitle, emoji, setEmoji, status, setStatus } = useEditStore();
+
+  useEffect(() => {
+    setTitle(state?.title || '');
+    setEmoji(state?.emoji || '😁');
+    setStatus(state?.status === 'public' ? '공개 하기' : '나만 보기');
+  }, [state]);
 
   const toggleEmoji = () => setShowEmoji((prev) => !prev);
 
@@ -19,7 +21,7 @@ const Header = ({ emoji, title, status, setTitle, setStatus, setEmoji }: HeaderP
 
   const changeEmoji = (e: React.ChangeEvent<HTMLInputElement>) => setEmoji(e.target.value);
 
-  const toggleStatus = () => setStatus((pre) => (pre === '나만 보기' ? '공개 하기' : '나만 보기'));
+  const toggleStatus = () => setStatus(status === '나만 보기' ? '공개 하기' : '나만 보기');
 
   const onClickEmoji = (emojiData: any) => {
     setEmoji(emojiData.emoji);
