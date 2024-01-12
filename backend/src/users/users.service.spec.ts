@@ -87,7 +87,36 @@ describe('UsersService', () => {
     });
   });
 
-  describe('findUserById', () => {});
+  describe('findUserById', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('user id로 사용자 조회', async () => {
+      // given
+      const userId = 1;
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null };
+
+      (usersRepository.findById as jest.Mock).mockResolvedValue(user);
+
+      // when
+      const result = await usersService.findUserById(userId);
+
+      // then
+      expect(result).toBe(user);
+      expect(usersRepository.findById).toHaveBeenCalledTimes(1);
+    });
+
+    it('user id가 존재하지 않는 경우 예외 발생', async () => {
+      // given
+      const userId = 1;
+      (usersRepository.findById as jest.Mock).mockResolvedValue(null);
+
+      // when - then
+      await expect(async () => await usersService.findUserById(userId)).rejects.toThrow(
+        new BadRequestException('존재하지 않는 사용자 정보입니다.'),
+      );
+      expect(usersRepository.findById).toHaveBeenCalledTimes(1);
+    });
+  });
 
   describe('updateUserProfile', () => {});
 
