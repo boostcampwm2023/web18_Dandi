@@ -18,6 +18,7 @@ export class UsersService {
 
   async findUserInfo(userId: number, friendId: number): Promise<GetUserResponseDto> {
     const user = await this.usersRepository.findUserInfoById(friendId);
+    console.log(user);
 
     if (!user) {
       throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
