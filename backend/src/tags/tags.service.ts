@@ -1,40 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { TagsRepository } from '../tags/tag.repository';
-// import { InjectRedis } from '@liaoliaots/nestjs-redis';
-// import { Redis } from 'ioredis';
+import { TagsRepository } from './tags.repository';
 
 @Injectable()
 export class TagsService {
-  constructor(
-    private readonly tagsRepository: TagsRepository,
-    // @InjectRedis() private readonly redis: Redis,
-  ) {}
+  constructor(private readonly tagsRepository: TagsRepository) {}
 
   async mapTagNameToTagType(tagNames: string[]) {
     if (!tagNames) return null;
 
-    return await Promise.all(
+    return Promise.all(
       tagNames.map(async (tagName) => {
-        let tag = await this.tagsRepository.findByName(tagName);
+        const savedTag = await this.tagsRepository.findByName(tagName);
 
-        if (!tag) {
-          tag = await this.tagsRepository.saveTag(tagName);
+        if (!savedTag) {
+          return this.tagsRepository.saveTag(tagName);
         }
-        return tag;
+        return savedTag;
       }),
     );
   }
 
-  updateDataSetScore(userId: number, tagNames: string[]) {
-    tagNames.forEach(async (tag) => {
-      const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
+  async updateDataSetScore(userId: number, tagNames: string[]) {
+    Promise.all([
+      tagNames.forEach(async (tag) => {
+        const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
 
-      if (!tagScore) {
-        this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
-      } else {
-        this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
-      }
-    });
+        if (!tagScore) {
+          this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
+        } else {
+          this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
+        }
+      }),
+    ]);
   }
 
   async recommendKeywords(userId: number, keyword: string) {
