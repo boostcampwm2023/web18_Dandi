@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -10,20 +11,24 @@ import DiaryContent from '@components/Detail/DiaryContent';
 import Alert from '@components/Common/Alert';
 import Loading from '@components/Common/Loading';
 
-import { PAGE_URL } from '@util/constants';
+import useEditStore from '@store/useEditStore';
 
 import { useToast } from '@hooks/useToast';
 import useModal from '@hooks/useModal';
+
+import { PAGE_URL } from '@util/constants';
 
 const Detail = () => {
   const queryClient = useQueryClient();
   const openToast = useToast();
   const navigate = useNavigate();
-
+  const { setDiaryId, setTitle, setEmoji, setThumbnail, setContent, setKeywordList, setStatus } =
+    useEditStore();
   const { openModal, closeModal } = useModal();
 
   const params = useParams();
   const diaryId = Number(params.diaryId);
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['diary', diaryId],
     queryFn: () => referDiary(diaryId),
@@ -71,6 +76,18 @@ const Detail = () => {
     });
   };
 
+  useEffect(() => {
+    if (data) {
+      setDiaryId(diaryId);
+      setTitle(data.title);
+      setContent(data.content);
+      setEmoji(data.emotion);
+      setThumbnail(data.thumbnail);
+      setKeywordList(data.tagNames);
+      setStatus(data.status === 'public' ? '공개 하기' : '나만 보기');
+    }
+  }, [data]);
+
   if (isLoading) {
     return <Loading phrase="로딩 중이에요." />;
   }
@@ -96,13 +113,7 @@ const Detail = () => {
                 onClick={() =>
                   navigate(PAGE_URL.EDIT, {
                     state: {
-                      diaryId: diaryId,
-                      title: data.title,
-                      content: data.content,
-                      emotion: data.emotion,
-                      thumbnail: data.thumbnail,
-                      tagNames: data.tagNames,
-                      status: data.status,
+                      type: 'update',
                     },
                   })
                 }
