@@ -5,6 +5,8 @@ import { ImagesService } from 'src/images/images.service';
 import { User } from './entity/user.entity';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { BadRequestException } from '@nestjs/common';
+import { MoodDegree } from 'src/diaries/utils/diaries.constant';
+import { DiaryStatus } from 'src/diaries/entity/diaryStatus';
 
 jest.mock('./users.repository');
 jest.mock('src/images/images.service');
@@ -27,12 +29,66 @@ describe('UsersService', () => {
   describe('findUserInfo', () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('사용자 정보 조회', async () => {
+    it('특정 사용자 정보 조회(작성한 일기 & 친구 관계가 있을 때)', async () => {
       // given
       const userId = 1;
       const friendId = 2;
       const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
       const friend = { id: 2, email: 'test2', nickname: 'test2', profileImage: null } as User;
+      const friend2 = { id: 3, email: 'test3', nickname: 'test3', profileImage: null } as User;
+      const diary = {
+        id: 4,
+        title: '주짓수 가는 날',
+        content: '<p>오늘 드디어 체육관 등록하러 간다~</p>',
+        summary: '오늘 드디어 체육관 등록하러 간다~',
+        thumbnail: '',
+        emotion: '🤩',
+        mood: MoodDegree.SO_BAD,
+        status: DiaryStatus.PUBLIC,
+      };
+      const friendInfo = {
+        id: 2,
+        email: 'test2',
+        nickname: 'test2',
+        profileImage: null,
+        diaries: [diary],
+        sender: [
+          {
+            id: 2,
+            status: FriendStatus.WAITING,
+            receiver: friend,
+            sender: friend2,
+          },
+        ],
+        receiver: [
+          {
+            id: 1,
+            status: FriendStatus.COMPLETE,
+            receiver: user,
+            sender: friend,
+          },
+        ],
+      };
+      const relation = { senderId: 2, receiverId: 1, status: FriendStatus.COMPLETE };
+
+      (usersRepository.findUserInfoById as jest.Mock).mockResolvedValue(friendInfo);
+
+      // when
+      const result = await usersService.findUserInfo(userId, friendId);
+
+      // then
+      expect(result.nickname).toBe('test2');
+      expect(result.profileImage).toBe(null);
+      expect(result.totalFriends).toBe(1);
+      expect(result.isExistedTodayDiary).toBeTruthy();
+      expect(result.relation).toEqual(relation);
+      expect(usersRepository.findUserInfoById).toHaveBeenCalledTimes(1);
+    });
+
+    it('특정 사용자 정보 조회(작성한 일기 & 친구 관계가 없을 때)', async () => {
+      // given
+      const userId = 1;
+      const friendId = 2;
       const friendInfo = {
         id: 2,
         email: 'test2',
@@ -40,25 +96,7 @@ describe('UsersService', () => {
         profileImage: null,
         diaries: [],
         sender: [],
-        receiver: [
-          {
-            id: 1,
-            status: 'complete',
-            receiver: user,
-            sender: friend,
-          },
-        ],
-      };
-      const friendInfoResult = {
-        nickname: 'test2',
-        profileImage: null,
-        totalFriends: 1,
-        isExistedTodayDiary: false,
-        relation: {
-          senderId: 2,
-          receiverId: 1,
-          status: FriendStatus.COMPLETE,
-        },
+        receiver: [],
       };
 
       (usersRepository.findUserInfoById as jest.Mock).mockResolvedValue(friendInfo);
@@ -67,7 +105,11 @@ describe('UsersService', () => {
       const result = await usersService.findUserInfo(userId, friendId);
 
       // then
-      expect(result).toEqual(friendInfoResult);
+      expect(result.nickname).toBe('test2');
+      expect(result.profileImage).toBeNull();
+      expect(result.totalFriends).toBe(0);
+      expect(result.isExistedTodayDiary).toBeFalsy();
+      expect(result.relation).toBeNull();
       expect(usersRepository.findUserInfoById).toHaveBeenCalledTimes(1);
     });
 
@@ -251,6 +293,7 @@ describe('UsersService', () => {
 
       // then
       expect(result).toEqual(searchResult);
+      expect(result).toHaveLength(2);
       expect(usersRepository.findByNickname).toHaveBeenCalledTimes(1);
     });
 
