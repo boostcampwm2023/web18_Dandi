@@ -52,22 +52,8 @@ describe('UsersService', () => {
         nickname: 'test2',
         profileImage: null,
         diaries: [diary],
-        sender: [
-          {
-            id: 2,
-            status: FriendStatus.WAITING,
-            receiver: friend,
-            sender: friend2,
-          },
-        ],
-        receiver: [
-          {
-            id: 1,
-            status: FriendStatus.COMPLETE,
-            receiver: user,
-            sender: friend,
-          },
-        ],
+        sender: [{ id: 2, status: FriendStatus.WAITING, receiver: friend, sender: friend2 }],
+        receiver: [{ id: 1, status: FriendStatus.COMPLETE, receiver: user, sender: friend }],
       };
       const relation = { senderId: 2, receiverId: 1, status: FriendStatus.COMPLETE };
 
@@ -272,18 +258,8 @@ describe('UsersService', () => {
         },
       ];
       const searchResult = [
-        {
-          id: 1,
-          email: 'test1',
-          nickname: 'test1',
-          profileImage: null,
-        },
-        {
-          id: 2,
-          email: 'test2',
-          nickname: 'test2',
-          profileImage: null,
-        },
+        { id: 1, email: 'test1', nickname: 'test1', profileImage: null },
+        { id: 2, email: 'test2', nickname: 'test2', profileImage: null },
       ];
 
       (usersRepository.findByNickname as jest.Mock).mockResolvedValue(users);
