@@ -54,7 +54,6 @@ export class UsersService {
 
   async findUserById(userId: number) {
     const user = await this.usersRepository.findById(userId);
-    console.log(user);
 
     if (!user) {
       throw new BadRequestException('존재하지 않는 사용자 정보입니다.');
@@ -67,6 +66,7 @@ export class UsersService {
     requestDto: UpdateUserProfileRequestDto,
     file: Express.Multer.File,
   ) {
+    console.log(user);
     if (!file && !requestDto.nickname) {
       throw new BadRequestException('수정될 정보가 존재하지 않습니다.');
     }
