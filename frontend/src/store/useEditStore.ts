@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 
 interface editState {
+  diaryId: number;
+  setDiaryId: (newDiaryId: number) => void;
+
   title: string;
   setTitle: (newTitle: string) => void;
 
@@ -21,6 +24,9 @@ interface editState {
 }
 
 const useEditStore = create<editState>((set) => ({
+  diaryId: 0,
+  setDiaryId: (newDiaryId) => set({diaryId: newDiaryId}),
+
   title: '',
   setTitle: (newTitle) => set({ title: newTitle }),
 

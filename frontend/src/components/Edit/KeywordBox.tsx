@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -25,11 +25,8 @@ const KeywordBox = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [keyword, setKeyword] = useState<string>('');
-  const { title, content, emoji, status, thumbnail, keywordList, setKeywordList } = useEditStore();
-  
-  useEffect(() => {
-    setKeywordList(state?.tagNames || []);
-  }, [state])
+  const { diaryId, title, content, emoji, status, thumbnail, keywordList, setKeywordList } =
+    useEditStore();
 
   const params: CreateDiaryParams = {
     title,
@@ -63,9 +60,9 @@ const KeywordBox = () => {
   });
 
   const updateDiaryMutation = useMutation({
-    mutationFn: (params: CreateDiaryParams) => updateDiary(params, state.diaryId),
+    mutationFn: (params: CreateDiaryParams) => updateDiary(params, diaryId),
     onSuccess: () => {
-      navigate(`${PAGE_URL.DETAIL}/${state.diaryId}`);
+      navigate(`${PAGE_URL.DETAIL}/${diaryId}`);
       queryClient.invalidateQueries({
         queryKey: ['grass', localStorage.getItem('userId')],
         refetchType: 'all',
@@ -90,8 +87,8 @@ const KeywordBox = () => {
       return;
     }
 
-    if (state) {
-      updateDiaryMutation.mutate(params, state.diaryId);
+    if (state?.type == 'update') {
+      updateDiaryMutation.mutate(params);
     } else {
       createDiaryMutation.mutate(params);
     }
