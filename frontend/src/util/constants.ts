@@ -72,7 +72,7 @@ export const reactQueryKeys = {
   Diary: 'diary',
   Grass: 'grass',
   EmotionStat: 'emotionStat',
-  DayiaryListL: 'dayDiaryList',
+  DayiaryList: 'dayDiaryList',
   MyDayDiaryList: 'myDayDiaryList',
   FeedDiaryList: 'feedDiaryList',
   ProfileData: 'profileData',
