@@ -16,20 +16,12 @@ import { TagsService } from 'src/tags/tags.service';
 import { DiaryStatus } from './entity/diaryStatus';
 import { Diary } from './entity/diary.entity';
 import { plainToClass } from 'class-transformer';
-import {
-  SENTIMENT_CHUNK_SIZE,
-  CLOVA_SENTIMENT_URL,
-  SUMMARY_MAX_SENTENCE_LENGTH,
-  CLOVA_SUMMARY_URL,
-  MoodDegree,
-  MoodType,
-  SUMMARY_MINIMUM_SENTENCE_LENGTH,
-} from './utils/diaries.constant';
 import { FriendsService } from 'src/friends/friends.service';
 import { TimeUnit } from './dto/timeUnit.enum';
 import { UsersService } from 'src/users/users.service';
 import { addDays, parseISO, subMonths, subYears } from 'date-fns';
 import { load } from 'cheerio';
+import { getSummary, judgeOverallMood } from './utils/clovaRequest';
 
 @Injectable()
 export class DiariesService {
@@ -51,8 +43,8 @@ export class DiariesService {
 
     diary.author = user;
     diary.tags = tags;
-    diary.summary = await this.getSummary(diary.title, plainText);
-    diary.mood = await this.judgeOverallMood(plainText);
+    diary.summary = await getSummary(diary.title, plainText);
+    diary.mood = await judgeOverallMood(plainText);
 
     const savedDiary = await this.diariesRepository.save(diary);
     await this.diariesRepository.addDiaryEvent(savedDiary.id);
@@ -90,8 +82,8 @@ export class DiariesService {
 
     if (updateDiaryDto.content) {
       const plainText = load(updateDiaryDto.content).text();
-      existingDiary.summary = await this.getSummary(existingDiary.title, plainText);
-      existingDiary.mood = await this.judgeOverallMood(plainText);
+      existingDiary.summary = await getSummary(existingDiary.title, plainText);
+      existingDiary.mood = await judgeOverallMood(plainText);
     }
 
     await this.diariesRepository.save(existingDiary);
@@ -239,90 +231,5 @@ export class DiariesService {
     if (status === DiaryStatus.PRIVATE && authorId !== userId) {
       throw new ForbiddenException('권한이 없는 사용자입니다.');
     }
-  }
-
-  private async getSummary(title: string, plainText: string) {
-    if (this.isShortContent(plainText)) {
-      return plainText;
-    }
-    plainText = plainText.substring(0, SUMMARY_MAX_SENTENCE_LENGTH);
-
-    const response = await fetch(CLOVA_SUMMARY_URL, {
-      method: 'POST',
-      headers: {
-        'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SUMMARY_API_KEY_ID,
-        'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SUMMARY_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        document: { title, content: plainText },
-        option: { language: 'ko' },
-      }),
-    });
-
-    const body = await response.json();
-    return body.summary ?? plainText;
-  }
-
-  private isShortContent(content: string) {
-    const sentences = content.split(/[.!?]/).filter((sentence) => sentence.trim() !== '');
-
-    return sentences.length <= SUMMARY_MINIMUM_SENTENCE_LENGTH;
-  }
-
-  private async judgeOverallMood(plainText: string) {
-    const [statistics, totalNumber] = await this.sumMoodAnalysis(plainText);
-
-    const [type, sum] = Object.entries(statistics).reduce((max, cur) => {
-      return cur[1] > max[1] ? cur : max;
-    });
-
-    const figure = sum / totalNumber;
-    switch (type) {
-      case MoodType.POSITIVE:
-        if (figure > 50) {
-          return MoodDegree.SO_GOOD;
-        }
-        return MoodDegree.GOOD;
-      case MoodType.NEGATIVE:
-        if (figure > 50) {
-          return MoodDegree.SO_BAD;
-        }
-        return MoodDegree.BAD;
-      default:
-        return MoodDegree.SO_SO;
-    }
-  }
-
-  private async sumMoodAnalysis(plainText: string): Promise<[Record<string, number>, number]> {
-    const numberOfChunk = Math.floor(plainText.length / SENTIMENT_CHUNK_SIZE) + 1;
-    const moodStatistics = {
-      [MoodType.POSITIVE]: 0,
-      [MoodType.NEGATIVE]: 0,
-      [MoodType.NEUTRAL]: 0,
-    };
-
-    for (let start = 0; start < plainText.length; start += SENTIMENT_CHUNK_SIZE) {
-      const analysis = await this.analyzeMood(plainText.slice(start, start + SENTIMENT_CHUNK_SIZE));
-
-      Object.keys(analysis).forEach((key) => (moodStatistics[key] += analysis[key]));
-    }
-    return [moodStatistics, numberOfChunk];
-  }
-
-  private async analyzeMood(content: string): Promise<Record<string, number>> {
-    const response = await fetch(CLOVA_SENTIMENT_URL, {
-      method: 'POST',
-      headers: {
-        'X-NCP-APIGW-API-KEY-ID': process.env.NCP_CLOVA_SENTIMENT_API_KEY_ID,
-        'X-NCP-APIGW-API-KEY': process.env.NCP_CLOVA_SENTIMENT_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content }),
-    });
-
-    const jsonResponse = await response.json();
-
-    return jsonResponse.document.confidence;
   }
 }
