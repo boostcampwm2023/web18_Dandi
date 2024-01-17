@@ -1,8 +1,8 @@
 import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
-import useReceivedListQuery from '@hooks/useReceivedListQuery';
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import useRequestListQuery from '@hooks/useRequestListQuery';
+import { PROFILE_BUTTON_TYPE, reactQueryKeys } from '@util/constants';
 
 interface ReceivedListResponse {
   senderId: number;
@@ -24,7 +24,7 @@ interface ReceivedList {
 }
 
 const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
-  const {data, isLoading, isError} = useReceivedListQuery(userId);
+  const { data, isLoading, isError } = useRequestListQuery(reactQueryKeys.ReceivedList, userId);
 
   if (isLoading) {
     return <p>받은 친구 신청목록을 불러오는 중...</p>;

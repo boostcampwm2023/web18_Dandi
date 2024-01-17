@@ -1,16 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import dizzyFace from '@assets/image/dizzyFace.png';
-
-import { getDiaryWeekAndMonthList } from '@api/DiaryList';
-
-import { IDiaryContent } from '@type/components/Common/DiaryList';
 
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 import DateController from '@components/MyDiary/DateController';
 import useMyWeekDiaryQuery from '@hooks/useMyWeekDiaryQuery';
-import { getNowWeek, formatDate, formatDateDash } from '@util/funcs';
+import { getNowWeek, formatDate } from '@util/funcs';
 import { PAGE_URL } from '@util/constants';
 
 const calPeriod = () => {

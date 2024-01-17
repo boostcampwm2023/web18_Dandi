@@ -1,8 +1,8 @@
 import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
-import useSendListQuery from '@hooks/useSendListQuery';
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import useSendListQuery from '@/hooks/useRequestListQuery';
+import { PROFILE_BUTTON_TYPE, reactQueryKeys } from '@util/constants';
 
 interface SendRequestProps {
   userId: number;
@@ -23,7 +23,7 @@ interface SendList {
 }
 
 const SendRequest = ({ userId }: SendRequestProps) => {
-  const { data, isLoading, isError } = useSendListQuery(userId);
+  const { data, isLoading, isError } = useSendListQuery(reactQueryKeys.SendList, userId);
 
   if (isLoading) {
     return <p>보낸 친구 신청목록을 불러오는 중...</p>;
