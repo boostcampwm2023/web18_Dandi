@@ -124,7 +124,7 @@ describe('DiariesService', () => {
       );
     });
 
-    it('private 일기를 다른 사용자가 조회하려할 때 예외 발생', async () => {
+    it('private 일기를 다른 사용자가 조회하려 할 때 예외 발생', async () => {
       // given
       const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
       const diaryId = 1;
@@ -147,6 +147,67 @@ describe('DiariesService', () => {
 
       // when - then
       await expect(async () => await diariesService.findDiaryDetail(user, diaryId)).rejects.toThrow(
+        new ForbiddenException('권한이 없는 사용자입니다.'),
+      );
+    });
+  });
+
+  describe('findDiary', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('일기 조회', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const diaryId = 1;
+      const diary = {
+        title: '제목',
+        content: '<p>일기 내용</p>',
+        thumbnail: '',
+        emotion: '🔥',
+        status: DiaryStatus.PUBLIC,
+        author: user,
+      };
+
+      (diariesRepository.findById as jest.Mock).mockResolvedValue(diary);
+
+      // when
+      const result = await diariesService.findDiary(user, diaryId);
+
+      // then
+      expect(result).toEqual(diary);
+    });
+
+    it('해당 id의 일기가 존재하지 않는 경우 예외 발생', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const diaryId = 1;
+
+      (diariesRepository.findById as jest.Mock).mockResolvedValue(null);
+
+      // when - then
+      await expect(async () => await diariesService.findDiary(user, diaryId)).rejects.toThrow(
+        new BadRequestException('존재하지 않는 일기입니다.'),
+      );
+    });
+
+    it('private 일기를 다른 사용자가 조회하려 할 때 예외 발생', async () => {
+      // given
+      const user1 = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const user2 = { id: 2, email: 'test2', nickname: 'test2', profileImage: null } as User;
+      const diaryId = 1;
+      const diary = {
+        title: '제목',
+        content: '<p>일기 내용</p>',
+        thumbnail: '',
+        emotion: '🔥',
+        status: DiaryStatus.PRIVATE,
+        author: user2,
+      };
+
+      (diariesRepository.findById as jest.Mock).mockResolvedValue(diary);
+
+      // when - then
+      await expect(async () => await diariesService.findDiary(user1, diaryId)).rejects.toThrow(
         new ForbiddenException('권한이 없는 사용자입니다.'),
       );
     });
