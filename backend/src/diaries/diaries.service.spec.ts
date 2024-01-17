@@ -8,8 +8,9 @@ import { User } from 'src/users/entity/user.entity';
 import { DiaryStatus } from './entity/diaryStatus';
 import { MoodDegree } from './utils/diaries.constant';
 import { getSummary, judgeOverallMood } from './utils/clovaRequest';
-import { GetDiaryResponseDto } from './dto/diary.dto';
+import { GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Diary } from './entity/diary.entity';
 
 jest.mock('src/users/users.service');
 jest.mock('./diaries.repository');
@@ -210,6 +211,82 @@ describe('DiariesService', () => {
       await expect(async () => await diariesService.findDiary(user1, diaryId)).rejects.toThrow(
         new ForbiddenException('권한이 없는 사용자입니다.'),
       );
+    });
+  });
+
+  describe('updateDiary', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('일기 수정(일기 내용 수정된 경우)', async () => {
+      // given
+      const diaryId = 1;
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const updateDiaryDto = { content: '<p>일기 내용 수정</p>' } as UpdateDiaryDto;
+      const diary = {
+        title: '제목',
+        content: '<p>일기 내용</p>',
+        thumbnail: '',
+        emotion: '🔥',
+        status: DiaryStatus.PUBLIC,
+        author: user,
+      } as Diary;
+      const tags = [
+        { id: 1, name: 'tag1' },
+        { id: 2, name: 'tag2' },
+      ];
+
+      jest.spyOn(diariesService, 'findDiary').mockResolvedValue(diary);
+
+      (tagsService.mapTagNameToTagType as jest.Mock).mockResolvedValue(tags);
+      (getSummary as jest.Mock).mockResolvedValue('수정된 일기 요약');
+      (judgeOverallMood as jest.Mock).mockResolvedValue(MoodDegree.SO_SO);
+
+      // when
+      await diariesService.updateDiary(diaryId, user, updateDiaryDto);
+
+      // then
+      expect(tagsService.mapTagNameToTagType).toHaveBeenCalledTimes(1);
+      expect(tagsService.updateDataSetScore).toHaveBeenCalledTimes(1);
+      expect(getSummary).toHaveBeenCalledTimes(1);
+      expect(judgeOverallMood).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.save).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('일기 수정(일기 내용 수정 안된 경우)', async () => {
+      // given
+      const diaryId = 1;
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const updateDiaryDto = { title: '제목 수정' } as UpdateDiaryDto;
+      const diary = {
+        title: '제목',
+        content: '<p>일기 내용</p>',
+        thumbnail: '',
+        emotion: '🔥',
+        status: DiaryStatus.PUBLIC,
+        author: user,
+      } as Diary;
+      const tags = [
+        { id: 1, name: 'tag1' },
+        { id: 2, name: 'tag2' },
+      ];
+
+      jest.spyOn(diariesService, 'findDiary').mockResolvedValue(diary);
+
+      (tagsService.mapTagNameToTagType as jest.Mock).mockResolvedValue(tags);
+      (getSummary as jest.Mock).mockResolvedValue('수정된 일기 요약');
+      (judgeOverallMood as jest.Mock).mockResolvedValue(MoodDegree.SO_SO);
+
+      // when
+      await diariesService.updateDiary(diaryId, user, updateDiaryDto);
+
+      // then
+      expect(tagsService.mapTagNameToTagType).toHaveBeenCalledTimes(1);
+      expect(tagsService.updateDataSetScore).toHaveBeenCalledTimes(1);
+      expect(getSummary).toHaveBeenCalledTimes(0);
+      expect(judgeOverallMood).toHaveBeenCalledTimes(0);
+      expect(diariesRepository.save).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
     });
   });
 });
