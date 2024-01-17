@@ -281,11 +281,32 @@ describe('DiariesService', () => {
       await diariesService.updateDiary(diaryId, user, updateDiaryDto);
 
       // then
+      expect(diariesService.findDiary).toHaveBeenCalledTimes(1);
       expect(tagsService.mapTagNameToTagType).toHaveBeenCalledTimes(1);
       expect(tagsService.updateDataSetScore).toHaveBeenCalledTimes(1);
       expect(getSummary).toHaveBeenCalledTimes(0);
       expect(judgeOverallMood).toHaveBeenCalledTimes(0);
       expect(diariesRepository.save).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('deleteDiary', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('일기 삭제', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const diaryId = 1;
+
+      jest.spyOn(diariesService, 'deleteDiary');
+
+      // when
+      await diariesService.deleteDiary(user, diaryId);
+
+      // then
+      expect(diariesService.findDiary).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.softDelete).toHaveBeenCalledTimes(1);
       expect(diariesRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
     });
   });
