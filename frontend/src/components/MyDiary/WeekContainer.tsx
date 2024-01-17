@@ -9,7 +9,7 @@ import { IDiaryContent } from '@type/components/Common/DiaryList';
 
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 import DateController from '@components/MyDiary/DateController';
-
+import useMyWeekDiaryQuery from '@hooks/useMyWeekDiaryQuery';
 import { getNowWeek, formatDate, formatDateDash } from '@util/funcs';
 import { PAGE_URL } from '@util/constants';
 
@@ -27,21 +27,9 @@ const WeekContainer = () => {
   const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
   const [period, setPeriod] = useState(calPeriod());
 
-  const { data } = useQuery<{ nickname: string; diaryList: IDiaryContent[] }>({
-    queryKey: [
-      'myWeekDiary',
-      localStorage.getItem('userId'),
-      formatDateDash(period[0]),
-      formatDateDash(period[1]),
-    ],
-    queryFn: () =>
-      getDiaryWeekAndMonthList({
-        userId: localStorage.getItem('userId') as string,
-        type: 'Week',
-        startDate: formatDateDash(period[0]),
-        endDate: formatDateDash(period[1]),
-      }),
-  });
+  const userId = localStorage.getItem('userId') as string;
+
+  const { data } = useMyWeekDiaryQuery(userId, period);
 
   const setPrevOrNextWeek = (plus: number) => {
     const [newStartDate, newEndDate] = changePeriod(plus);

@@ -1,11 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-
-import getGrass from '@api/Grass';
 
 import GrassTooltip from '@components/Home/GrassTooltip';
-
+import useGrassQuery from '@hooks/useGrassQuery';
 import { EMOTION_LEVELS } from '@util/constants';
 
 interface GrassDataProps {
@@ -15,7 +12,7 @@ interface GrassDataProps {
 
 const Grass = () => {
   const params = useParams();
-  const userId = params.userId || localStorage.getItem('userId');
+  const userId = params.userId || (localStorage.getItem('userId') as string);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,11 +27,7 @@ const Grass = () => {
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
   const dates = Array.from({ length: 366 }, () => 0);
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['grass', userId],
-    queryFn: () => getGrass(Number(userId)),
-    staleTime: Infinity,
-  });
+  const { data, isLoading, isError } = useGrassQuery(userId);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -49,6 +42,7 @@ const Grass = () => {
     const index = Math.floor((dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000));
     dates[index] = mood;
   });
+  
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
   const getTooltipContent = (index: number) => {
     const tmpDate = new Date(lastYear);

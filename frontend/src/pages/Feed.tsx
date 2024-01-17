@@ -1,45 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import disappointedFace from '@assets/image/disappointedFace.png';
-
-import { getFeed } from '@api/Feed';
-
-import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
 import Loading from '@components/Common/Loading';
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
-
+import useFeedDiaryListQuery from '@hooks/useFeedDiaryListQuery';
 import { PAGE_TITLE_FEED, FEED } from '@util/constants';
 
 const Feed = () => {
+  const userId = localStorage.getItem('userId') as string;
   const infiniteRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data: feedData,
-    isLoading,
-    isSuccess,
-    fetchNextPage,
-  } = useInfiniteQuery<
-    any,
-    Error,
-    InfiniteDiaryListProps,
-    [string, string | null],
-    { lastIndex: number }
-  >({
-    queryKey: ['feedDiaryList', localStorage.getItem('userId')],
-    queryFn: getFeed,
-    initialPageParam: {
-      lastIndex: 2e9,
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage && lastPage.diaryList.length >= 5
-        ? {
-            lastIndex: lastPage?.diaryList.at(-1).diaryId,
-          }
-        : undefined;
-    },
-  });
+  const { data: feedData, isLoading, isSuccess, fetchNextPage } = useFeedDiaryListQuery(userId);
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {

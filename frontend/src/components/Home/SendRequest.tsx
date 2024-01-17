@@ -1,10 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { getRequestList } from '@api/FriendModal';
 import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
-
+import useSendListQuery from '@hooks/useSendListQuery';
 import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface SendRequestProps {
@@ -26,20 +23,17 @@ interface SendList {
 }
 
 const SendRequest = ({ userId }: SendRequestProps) => {
-  const sendData = useQuery({
-    queryKey: ['sendList', userId],
-    queryFn: () => getRequestList(userId),
-  });
+  const { data, isLoading, isError } = useSendListQuery(userId);
 
-  if (sendData.isLoading) {
+  if (isLoading) {
     return <p>보낸 친구 신청목록을 불러오는 중...</p>;
   }
 
-  if (sendData.isError) {
+  if (isError) {
     return <p>보낸 친구 신청목록을 불러오지 못했습니다!</p>;
   }
 
-  const sendList = sendData.data.strangers
+  const sendList = data.strangers
     .filter((v: SendListResponse) => v.senderId === userId)
     .map((v: SendListResponse) => {
       const newObj = {

@@ -6,7 +6,7 @@ import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 import { reactQueryKeys } from '@util/constants';
 import { formatDateDash } from '@util/funcs';
 
-const useMonthDiaryData = (userId: string, nowMonth: Date, first: Date, last: Date) => {
+const useMonthDiaryDataQuery = (userId: string, nowMonth: Date, first: Date, last: Date) => {
   return useQuery({
     queryKey: [reactQueryKeys.MonthDiaryData, userId, formatDateDash(nowMonth)],
     queryFn: () =>
@@ -28,4 +28,4 @@ const useMonthDiaryData = (userId: string, nowMonth: Date, first: Date, last: Da
   });
 };
 
-export default useMonthDiaryData;
+export default useMonthDiaryDataQuery;

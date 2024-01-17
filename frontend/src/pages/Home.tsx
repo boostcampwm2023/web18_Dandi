@@ -1,15 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import dizzyFace from '@assets/image/dizzyFace.png';
-
-import { getCurrentUser } from '@api/Profile';
-import { getDiaryDayList } from '@api/DiaryList';
-
-import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
-import { viewTypes } from '@type/pages/MyDiary';
-
 import NavBar from '@components/Common/NavBar';
 import Loading from '@components/Common/Loading';
 import DiaryListItem from '@components/Common/DiaryListItem';
@@ -17,14 +9,14 @@ import Modal from '@components/Common/Modal';
 import Profile from '@components/Home/Profile';
 import Grass from '@components/Home/Grass';
 import EmotionStat from '@components/Home/EmotionStat';
-
-import { PAGE_TITLE_HOME, PAGE_URL } from '@util/constants';
-
 import useModal from '@hooks/useModal';
+import useProfileDataQuery from '@hooks/useProfileDataQuery';
+import useDayDiaryListQuery from '@hooks/useDayDiaryListQuery';
+import { PAGE_TITLE_HOME, PAGE_URL } from '@util/constants';
 
 const Home = () => {
   const params = useParams();
-  const userId = params.userId ? params.userId : localStorage.getItem('userId');
+  const userId = params.userId || (localStorage.getItem('userId') as string);
   const infiniteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { closeModal } = useModal();
@@ -32,45 +24,14 @@ const Home = () => {
     closeModal();
   }, [userId]);
 
-  const {
-    data: profileData,
-    isError,
-    isLoading: profileDataLoading,
-  } = useQuery({
-    queryKey: ['profileData', userId],
-    queryFn: () => getCurrentUser(userId ? +userId : 0),
-  });
+  const { data: profileData, isError, isLoading: profileDataLoading } = useProfileDataQuery(userId);
 
   const {
     data: diaryData,
     fetchNextPage,
     isLoading: diaryDataLoading,
     isSuccess,
-  } = useInfiniteQuery<
-    any,
-    Error,
-    InfiniteDiaryListProps,
-    [string, string | null],
-    { userId: string; type: viewTypes; lastIndex: number }
-  >({
-    queryKey: ['dayDiaryList', userId],
-    queryFn: getDiaryDayList,
-    initialPageParam: {
-      userId: userId as string,
-      type: 'Day',
-      lastIndex: 2e9,
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage && lastPage.diaryList.length >= 5
-        ? {
-            userId: userId as string,
-            type: 'Day',
-            lastIndex: lastPage?.diaryList.at(-1).diaryId,
-          }
-        : undefined;
-    },
-    enabled: !!userId,
-  });
+  } = useDayDiaryListQuery(userId);
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {

@@ -4,7 +4,7 @@ import { getFeed } from '@api/Feed';
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import { reactQueryKeys } from '@util/constants';
 
-const useFeedDiaryList = (userId: string) => {
+const useFeedDiaryListQuery = (userId: string) => {
   return useInfiniteQuery<
     any,
     Error,
@@ -27,4 +27,4 @@ const useFeedDiaryList = (userId: string) => {
   });
 };
 
-export default useFeedDiaryList;
+export default useFeedDiaryListQuery;

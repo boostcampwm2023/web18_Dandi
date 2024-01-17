@@ -15,6 +15,7 @@ import {
   TEXT_ABOUT_EXISTED_TODAY,
   LARGE,
   PAGE_URL,
+  reactQueryKeys,
 } from '@util/constants';
 
 import { useToast } from '@hooks/useToast';
@@ -73,10 +74,10 @@ const Profile = ({ userId, userData }: ProfileProps) => {
       openToast('친구 요청을 보냈습니다.');
       setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['sendList'],
+          queryKey: [reactQueryKeys.SendList],
         });
         queryClient.invalidateQueries({
-          queryKey: ['profileData'],
+          queryKey: [reactQueryKeys.ProfileData],
         });
       }, 100);
     },
@@ -87,10 +88,10 @@ const Profile = ({ userId, userData }: ProfileProps) => {
     onSuccess() {
       openToast('친구 삭제가 완료되었습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['friendList'],
+        queryKey: [reactQueryKeys.FriendList],
       });
       queryClient.invalidateQueries({
-        queryKey: ['profileData'],
+        queryKey: [reactQueryKeys.ProfileData],
       });
     },
   });

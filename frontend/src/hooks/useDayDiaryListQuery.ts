@@ -5,7 +5,7 @@ import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import { viewTypes } from '@type/pages/MyDiary';
 import { reactQueryKeys, DIARY_VIEW_TYPE_LIST } from '@util/constants';
 
-const useDayDiaryList = (userId: string) => {
+const useDayDiaryListQuery = (userId: string) => {
   return useInfiniteQuery<
     any,
     Error,
@@ -33,4 +33,4 @@ const useDayDiaryList = (userId: string) => {
   });
 };
 
-export default useDayDiaryList;
+export default useDayDiaryListQuery;

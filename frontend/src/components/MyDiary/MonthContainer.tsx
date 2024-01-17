@@ -1,44 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-
-import { getDiaryWeekAndMonthList } from '@api/DiaryList';
-
-import { IDiaryContent } from '@type/components/Common/DiaryList';
-import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 
 import DateController from '@components/MyDiary/DateController';
 import Calendar from '@components/MyDiary/Calendar';
-
+import useMonthDiaryDataQuery from '@hooks/useMonthDiaryDataQuery';
 import { NEXT_INDEX, PAGE_URL } from '@util/constants';
-import { formatDateDash, getNowMonth } from '@util/funcs';
+import { getNowMonth } from '@util/funcs';
 
 const MonthContainer = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [nowMonth, setNowMonth] = useState(new Date());
+  const userId = localStorage.getItem('userId') as string;
   const first = new Date(nowMonth.getFullYear(), nowMonth.getMonth(), 1);
   const last = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + NEXT_INDEX, 0);
 
-  const { data } = useQuery({
-    queryKey: ['monthDiaryData', localStorage.getItem('userId'), formatDateDash(nowMonth)],
-    queryFn: () =>
-      getDiaryWeekAndMonthList({
-        userId: localStorage.getItem('userId') as string,
-        type: 'Month',
-        startDate: formatDateDash(first),
-        endDate: formatDateDash(last),
-      }),
-    select: (data) => {
-      const emotionObject: EmotionData = {};
-      data.diaryList.forEach((diary: IDiaryContent) => {
-        const { diaryId, emotion, createdAt } = diary;
-        const day = new Date(createdAt).getDate();
-        emotionObject[day] = { diaryId: +diaryId, emotion: emotion };
-      });
-      return emotionObject;
-    },
-  });
+  const { data } = useMonthDiaryDataQuery(userId, nowMonth, first, last);
 
   const setPrevOrNextMonth = (plus: number) => {
     const month = new Date(nowMonth);

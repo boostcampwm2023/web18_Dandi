@@ -5,7 +5,7 @@ import { IDiaryContent } from '@type/components/Common/DiaryList';
 import { reactQueryKeys } from '@util/constants';
 import { formatDateDash } from '@util/funcs';
 
-const useMyWeekDiary = (userId: string, period: Date[]) => {
+const useMyWeekDiaryQuery = (userId: string, period: Date[]) => {
   return useQuery<{ nickname: string; diaryList: IDiaryContent[] }>({
     queryKey: [
       reactQueryKeys.MyWeekDiary,
@@ -23,4 +23,4 @@ const useMyWeekDiary = (userId: string, period: Date[]) => {
   });
 };
 
-export default useMyWeekDiary;
+export default useMyWeekDiaryQuery;

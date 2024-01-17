@@ -15,7 +15,7 @@ import useEditStore from '@store/useEditStore';
 
 import { useToast } from '@hooks/useToast';
 import useModal from '@hooks/useModal';
-
+import useDiaryQuery from '@hooks/useDiaryQuery';
 import { PAGE_URL } from '@util/constants';
 
 const Detail = () => {
@@ -29,10 +29,7 @@ const Detail = () => {
   const params = useParams();
   const diaryId = Number(params.diaryId);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['diary', diaryId],
-    queryFn: () => referDiary(diaryId),
-  });
+  const { data, isLoading, isError } = useDiaryQuery(diaryId);
 
   const deleteDiaryMutation = useMutation({
     mutationFn: () => deleteDiary(diaryId),

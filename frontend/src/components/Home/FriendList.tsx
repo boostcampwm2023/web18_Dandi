@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 
-import { getFriendList } from '@api/FriendModal';
 import cryingCat from '@assets/image/cryingCat.png';
-
 import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
 import FriendSearchContent from '@components/Home/FriendSearchContent';
-
+import useFriendListDataQuery from '@hooks/useFriendListQuery';
 import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface FriendListProps {
@@ -28,10 +25,7 @@ const FriendList = ({ userId }: FriendListProps) => {
     setNickname(e.target.value);
   };
 
-  const friendListData = useQuery({
-    queryKey: ['friendList', userId],
-    queryFn: () => getFriendList(userId),
-  });
+  const friendListData = useFriendListDataQuery(userId);
 
   if (friendListData.isLoading) {
     return <p>친구목록 가져오는 중...</p>;
