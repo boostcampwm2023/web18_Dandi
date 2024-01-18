@@ -8,7 +8,7 @@ import { User } from 'src/users/entity/user.entity';
 import { DiaryStatus } from './entity/diaryStatus';
 import { MoodDegree } from './utils/diaries.constant';
 import { getSummary, judgeOverallMood } from './utils/clovaRequest';
-import { GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
+import { GetAllEmotionsResponseDto, GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Diary } from './entity/diary.entity';
 
@@ -308,6 +308,84 @@ describe('DiariesService', () => {
       expect(diariesService.findDiary).toHaveBeenCalledTimes(1);
       expect(diariesRepository.softDelete).toHaveBeenCalledTimes(1);
       expect(diariesRepository.addDiaryEvent).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findAllDiaryEmotions', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('특정 기간의 감정 통계', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const userId = 1;
+      const getAllEmotionsRequestDto = { startDate: '2024-01-01', lastDate: '2024-01-08' };
+      const getAllEmotionsResponse = {
+        emotion: '😊',
+        diaryInfos: [
+          {
+            id: 7,
+            title: '졸려',
+            createdAt: new Date('2024-01-17 01:11:31.757747'),
+          },
+          {
+            id: 6,
+            title: '고양이 귀여워',
+            createdAt: new Date('2024-01-15 05:16:00.363941'),
+          },
+        ],
+      } as GetAllEmotionsResponseDto;
+
+      (diariesRepository.findAllDiaryBetweenDates as jest.Mock).mockResolvedValue([
+        getAllEmotionsResponse,
+      ]);
+
+      // when
+      const result = await diariesService.findAllDiaryEmotions(
+        user,
+        userId,
+        getAllEmotionsRequestDto,
+      );
+
+      // then
+      expect(result).toHaveLength(1);
+      expect(diariesRepository.findAllDiaryBetweenDates).toHaveBeenCalledTimes(1);
+    });
+
+    it('기간이 주어지지 않은 경우 감정 통계', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const userId = 1;
+      const getAllEmotionsRequestDto = { startDate: undefined, lastDate: undefined };
+      const getAllEmotionsResponseDto = {
+        emotion: '😊',
+        diaryInfos: [
+          {
+            id: 7,
+            title: '졸려',
+            createdAt: new Date('2024-01-17 01:11:31.757747'),
+          },
+          {
+            id: 6,
+            title: '고양이 귀여워',
+            createdAt: new Date('2024-01-15 05:16:00.363941'),
+          },
+        ],
+      } as GetAllEmotionsResponseDto;
+
+      (diariesRepository.findAllDiaryBetweenDates as jest.Mock).mockResolvedValue([
+        getAllEmotionsResponseDto,
+      ]);
+
+      // when
+      const result = await diariesService.findAllDiaryEmotions(
+        user,
+        userId,
+        getAllEmotionsRequestDto,
+      );
+
+      // then
+      expect(result).toHaveLength(1);
+      expect(diariesRepository.findAllDiaryBetweenDates).toHaveBeenCalledTimes(1);
     });
   });
 });
