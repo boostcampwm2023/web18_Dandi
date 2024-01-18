@@ -1,7 +1,9 @@
 import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
+
 import useRequestListQuery from '@hooks/useRequestListQuery';
+
 import { PROFILE_BUTTON_TYPE, reactQueryKeys } from '@util/constants';
 
 interface ReceivedListResponse {

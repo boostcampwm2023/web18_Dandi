@@ -1,10 +1,13 @@
 import { useState } from 'react';
 
 import cryingCat from '@assets/image/cryingCat.png';
+
 import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
 import FriendSearchContent from '@components/Home/FriendSearchContent';
+
 import useFriendListDataQuery from '@hooks/useFriendListQuery';
+
 import { PROFILE_BUTTON_TYPE } from '@util/constants';
 
 interface FriendListProps {

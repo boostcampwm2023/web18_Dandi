@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+
 import { viewTypes } from '@type/pages/MyDiary';
+
 import useViewTypeStore from '@store/useViewTypeStore';
+
 import { DIARY_VIEW_TYPE_LIST, PAGE_URL } from '@util/constants';
 
 const ViewType = () => {

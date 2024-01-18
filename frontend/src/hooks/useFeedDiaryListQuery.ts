@@ -1,7 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getFeed } from '@api/Feed';
+
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
+
 import { reactQueryKeys } from '@util/constants';
 
 const useFeedDiaryListQuery = (userId: string) => {

@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import dizzyFace from '@assets/image/dizzyFace.png';
+
 import { searchOptionsType, isViewTypes } from '@type/pages/MyDiary';
+
 import Loading from '@components/Common/Loading';
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
@@ -11,9 +13,11 @@ import KeywordSearch from '@components/MyDiary/KeywordSearch';
 import WeekContainer from '@components/MyDiary/WeekContainer';
 import ViewType from '@components/MyDiary/ViewType';
 import MonthContainer from '@components/MyDiary/MonthContainer';
+
+import useViewTypeStore from '@store/useViewTypeStore';
+
 import useMyDayDiaryListQuery from '@hooks/useMyDayDiaryListQuery';
 import useSearchDataListQuery from '@hooks/useSearchDataListQuery';
-import useViewTypeStore from '@store/useViewTypeStore';
 
 import { DIARY_VIEW_TYPE } from '@util/constants';
 

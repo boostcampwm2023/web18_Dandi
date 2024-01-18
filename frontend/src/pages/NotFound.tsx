@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import chick from '@assets/image/chick.png';
 
 import Button from '@components/Common/Button';

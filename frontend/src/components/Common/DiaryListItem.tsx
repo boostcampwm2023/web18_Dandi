@@ -12,11 +12,11 @@ import ProfileItem from '@components/Common/ProfileItem';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
 
-import { FEED, PAGE_URL } from '@util/constants';
-import { formatDateString } from '@util/funcs';
-
 import useModal from '@hooks/useModal';
 import { useToast } from '@/hooks/useToast';
+
+import { FEED, PAGE_URL } from '@util/constants';
+import { formatDateString } from '@util/funcs';
 
 interface DiaryListItemProps {
   pageType?: string;

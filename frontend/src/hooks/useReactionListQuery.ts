@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getReactionList } from '@api/Reaction';
+
 import { reactQueryKeys } from '@util/constants';
 
 const useReactionListQuery = (diaryId: number) => {

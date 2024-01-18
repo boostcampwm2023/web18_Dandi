@@ -2,7 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
+
 import { useToast } from '@hooks/useToast';
+
 import { PROFILE_BUTTON_TYPE, PAGE_URL, reactQueryKeys } from '@util/constants';
 
 interface FriendModalItemProps {

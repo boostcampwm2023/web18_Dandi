@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
+
 import disappointedFace from '@assets/image/disappointedFace.png';
 
 import Loading from '@components/Common/Loading';
 import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
+
 import useFeedDiaryListQuery from '@hooks/useFeedDiaryListQuery';
+
 import { PAGE_TITLE_FEED, FEED } from '@util/constants';
 
 const Feed = () => {

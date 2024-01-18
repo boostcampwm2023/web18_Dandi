@@ -1,8 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getDiaryDayList } from '@api/DiaryList';
+
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 import { viewTypes } from '@type/pages/MyDiary';
+
 import { reactQueryKeys, DIARY_VIEW_TYPE_LIST } from '@util/constants';
 
 const useDayDiaryListQuery = (userId: string) => {

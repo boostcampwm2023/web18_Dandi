@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { recommendFriend } from '@api/FriendModal';
 import cryingCat from '@assets/image/cryingCat.png';
+
+import { recommendFriend } from '@api/FriendModal';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 

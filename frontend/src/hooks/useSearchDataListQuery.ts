@@ -1,11 +1,17 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getSearchResults } from '@api/KeywordSearch';
+
 import { searchOptionsType } from '@type/pages/MyDiary';
 import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
+
 import { reactQueryKeys } from '@util/constants';
 
-const useSearchDataListQuery = (keyword: string, selected: searchOptionsType, searchFlag: boolean) => {
+const useSearchDataListQuery = (
+  keyword: string,
+  selected: searchOptionsType,
+  searchFlag: boolean,
+) => {
   return useInfiniteQuery<
     any,
     Error,

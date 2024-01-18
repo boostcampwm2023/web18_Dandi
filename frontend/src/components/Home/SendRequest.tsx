@@ -1,7 +1,9 @@
 import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
-import useSendListQuery from '@/hooks/useRequestListQuery';
+
+import useSendListQuery from '@hooks/useRequestListQuery';
+
 import { PROFILE_BUTTON_TYPE, reactQueryKeys } from '@util/constants';
 
 interface SendRequestProps {

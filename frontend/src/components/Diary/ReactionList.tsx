@@ -1,5 +1,7 @@
 import dashingAway from '@assets/image/dashingAway.png';
+
 import ProfileItem from '@components/Common/ProfileItem';
+
 import useReactionListQuery from '@hooks/useReactionListQuery';
 
 interface ReactionListProps {

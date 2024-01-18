@@ -2,7 +2,9 @@ import { useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import GrassTooltip from '@components/Home/GrassTooltip';
+
 import useGrassQuery from '@hooks/useGrassQuery';
+
 import { EMOTION_LEVELS } from '@util/constants';
 
 interface GrassDataProps {
@@ -42,7 +44,7 @@ const Grass = () => {
     const index = Math.floor((dataDate.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000));
     dates[index] = mood;
   });
-  
+
   const grassData = [...Array(lastYear.getDay()).fill(undefined), ...dates];
   const getTooltipContent = (index: number) => {
     const tmpDate = new Date(lastYear);

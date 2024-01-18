@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { deleteDiary } from '@api/Detail';
 
@@ -16,6 +16,7 @@ import useEditStore from '@store/useEditStore';
 import { useToast } from '@hooks/useToast';
 import useModal from '@hooks/useModal';
 import useDiaryQuery from '@hooks/useDiaryQuery';
+
 import { PAGE_URL } from '@util/constants';
 
 const Detail = () => {
