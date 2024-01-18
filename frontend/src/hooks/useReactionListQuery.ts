@@ -6,7 +6,7 @@ import { reactQueryKeys } from '@util/constants';
 
 const useReactionListQuery = (diaryId: number) => {
   return useQuery({
-    queryKey: [reactQueryKeys, diaryId],
+    queryKey: [reactQueryKeys.ReactionList, diaryId],
     queryFn: () => getReactionList(diaryId),
   });
 };
