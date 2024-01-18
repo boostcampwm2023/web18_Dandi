@@ -6,7 +6,7 @@ import { useToast } from '@hooks/useToast';
 
 import { reactQueryKeys } from '@util/constants';
 
-const useDeleteReactionMutation = (userId: string, diaryId: number, selectedEmoji: string) => {
+const useDeleteReactionMutation = (userId: number, diaryId: number, selectedEmoji: string) => {
   const queryClient = useQueryClient();
   const openToast = useToast();
   return useMutation({

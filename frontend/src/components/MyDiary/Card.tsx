@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
-
-import { postReaction, deleteReaction } from '@api/Reaction';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
@@ -12,6 +9,8 @@ import Reaction from '@components/Common/Reaction';
 import ReactionList from '@components/Diary/ReactionList';
 
 import useModal from '@hooks/useModal';
+import usePostReactionMutation from '@hooks/usePostReactionMutation';
+import useDeleteReactionMutation from '@hooks/useDeleteReactionMutation';
 
 import { formatDateString } from '@util/funcs';
 import { PAGE_URL, SMALL } from '@util/constants';
@@ -23,32 +22,25 @@ interface CardProps {
 }
 
 const Card = ({ diaryItem, styles, size }: CardProps) => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(diaryItem.leavedReaction);
   const [totalReaction, setTotalReaction] = useState(diaryItem.reactionCount);
   const { openModal } = useModal();
 
-  const postReactionMutation = useMutation({
-    mutationFn: () => postReaction(Number(diaryItem.diaryId), selectedEmoji),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reactionList', diaryItem.diaryId],
-        refetchType: 'active',
-      });
-    },
-  });
+  const userId = localStorage.getItem('userId') as string;
 
-  const deleteReactionMutation = useMutation({
-    mutationFn: () => deleteReaction(Number(diaryItem.diaryId), selectedEmoji),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reactionList', diaryItem.diaryId],
-        refetchType: 'active',
-      });
-    },
-  });
+  const postReactionMutation = usePostReactionMutation(
+    Number(userId),
+    Number(diaryItem.diaryId),
+    selectedEmoji,
+  );
+
+  const deleteReactionMutation = useDeleteReactionMutation(
+    Number(userId),
+    Number(diaryItem.diaryId),
+    selectedEmoji,
+  );
 
   const handleDeleteReaction = async () => {
     await deleteReactionMutation.mutate();
