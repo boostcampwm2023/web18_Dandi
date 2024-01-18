@@ -5,7 +5,7 @@ import { getDiaryWeekAndMonthList } from '@api/DiaryList';
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 import { EmotionData } from '@type/components/MyDiary/MonthContainer';
 
-import { reactQueryKeys } from '@util/constants';
+import { reactQueryKeys, DIARY_VIEW_TYPE_LIST } from '@util/constants';
 import { formatDateDash } from '@util/funcs';
 
 const useMonthDiaryDataQuery = (userId: string, nowMonth: Date, first: Date, last: Date) => {
@@ -14,7 +14,7 @@ const useMonthDiaryDataQuery = (userId: string, nowMonth: Date, first: Date, las
     queryFn: () =>
       getDiaryWeekAndMonthList({
         userId: userId,
-        type: 'Month',
+        type: DIARY_VIEW_TYPE_LIST[2],
         startDate: formatDateDash(first),
         endDate: formatDateDash(last),
       }),

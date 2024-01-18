@@ -4,7 +4,7 @@ import { getDiaryWeekAndMonthList } from '@api/DiaryList';
 
 import { IDiaryContent } from '@type/components/Common/DiaryList';
 
-import { reactQueryKeys } from '@util/constants';
+import { reactQueryKeys, DIARY_VIEW_TYPE_LIST } from '@util/constants';
 import { formatDateDash } from '@util/funcs';
 
 const useMyWeekDiaryQuery = (userId: string, period: Date[]) => {
@@ -18,7 +18,7 @@ const useMyWeekDiaryQuery = (userId: string, period: Date[]) => {
     queryFn: () =>
       getDiaryWeekAndMonthList({
         userId: userId,
-        type: 'Week',
+        type: DIARY_VIEW_TYPE_LIST[1],
         startDate: formatDateDash(period[0]),
         endDate: formatDateDash(period[1]),
       }),
