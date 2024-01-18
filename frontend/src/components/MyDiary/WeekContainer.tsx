@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import dizzyFace from '@assets/image/dizzyFace.png';
-
-import { getDiaryWeekAndMonthList } from '@api/DiaryList';
-
-import { IDiaryContent } from '@type/components/Common/DiaryList';
 
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 import DateController from '@components/MyDiary/DateController';
 
-import { getNowWeek, formatDate, formatDateDash } from '@util/funcs';
+import useMyWeekDiaryQuery from '@hooks/useMyWeekDiaryQuery';
+
+import { getNowWeek, formatDate } from '@util/funcs';
 import { PAGE_URL } from '@util/constants';
 
 const calPeriod = () => {
@@ -27,21 +25,9 @@ const WeekContainer = () => {
   const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
   const [period, setPeriod] = useState(calPeriod());
 
-  const { data } = useQuery<{ nickname: string; diaryList: IDiaryContent[] }>({
-    queryKey: [
-      'myWeekDiary',
-      localStorage.getItem('userId'),
-      formatDateDash(period[0]),
-      formatDateDash(period[1]),
-    ],
-    queryFn: () =>
-      getDiaryWeekAndMonthList({
-        userId: localStorage.getItem('userId') as string,
-        type: 'Week',
-        startDate: formatDateDash(period[0]),
-        endDate: formatDateDash(period[1]),
-      }),
-  });
+  const userId = localStorage.getItem('userId') as string;
+
+  const { data } = useMyWeekDiaryQuery(userId, period);
 
   const setPrevOrNextWeek = (plus: number) => {
     const [newStartDate, newEndDate] = changePeriod(plus);

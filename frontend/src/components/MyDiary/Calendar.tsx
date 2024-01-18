@@ -1,6 +1,6 @@
-import DayItem from '@components/MyDiary/DayItem';
-
 import { EmotionData } from '@type/components/MyDiary/MonthContainer';
+
+import DayItem from '@components/MyDiary/DayItem';
 
 import { DAY_OF_WEEK, SM, START_INDEX, WEEK_INDEX } from '@util/constants';
 

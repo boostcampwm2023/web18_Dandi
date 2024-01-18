@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import EmojiPicker from 'emoji-picker-react';
 import Parser from 'html-react-parser';
-import { getReactionList, postReaction, deleteReaction } from '@api/Reaction';
+
+import { postReaction, deleteReaction } from '@api/Reaction';
+
 import { IReactionedFriends } from '@type/components/Common/ReactionList';
+
 import ProfileItem from '@components/Common/ProfileItem';
 import Reaction from '@components/Common/Reaction';
 import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
-import { formatDateString } from '@util/funcs';
-
 import useModal from '@hooks/useModal';
-import { useToast } from '@/hooks/useToast';
+import { useToast } from '@hooks/useToast';
+import useReactionListQuery from '@hooks/useReactionListQuery';
+
+import { formatDateString } from '@util/funcs';
 
 interface DiaryContentProps {
   diaryId: number;
@@ -44,10 +48,7 @@ const DiaryContent = ({
   const openToast = useToast();
   const queryClient = useQueryClient();
 
-  const { data, isError, isSuccess } = useQuery({
-    queryKey: ['reactionList', diaryId],
-    queryFn: () => getReactionList(diaryId),
-  });
+  const { data, isError, isSuccess } = useReactionListQuery(diaryId);
 
   if (isError) {
     return <p>Error fetching data</p>;

@@ -1,11 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { getRequestList } from '@api/FriendModal';
 import faceWithPeekingEye from '@assets/image/faceWithPeekingEye.png';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 
-import { PROFILE_BUTTON_TYPE } from '@util/constants';
+import useRequestListQuery from '@hooks/useRequestListQuery';
+
+import { PROFILE_BUTTON_TYPE, reactQueryKeys } from '@util/constants';
 
 interface ReceivedListResponse {
   senderId: number;
@@ -27,20 +26,17 @@ interface ReceivedList {
 }
 
 const ReceivedRequest = ({ userId }: ReceivedRequestProps) => {
-  const ReceivedData = useQuery({
-    queryKey: ['receivedList', userId],
-    queryFn: () => getRequestList(userId),
-  });
+  const { data, isLoading, isError } = useRequestListQuery(reactQueryKeys.ReceivedList, userId);
 
-  if (ReceivedData.isLoading) {
+  if (isLoading) {
     return <p>받은 친구 신청목록을 불러오는 중...</p>;
   }
 
-  if (ReceivedData.isError) {
+  if (isError) {
     return <p>받은 친구 신청목록을 불러오지 못했습니다!</p>;
   }
 
-  const ReceivedList = ReceivedData.data.strangers
+  const ReceivedList = data.strangers
     .filter((v: ReceivedListResponse) => v.receiverId === userId)
     .map((v: ReceivedListResponse) => {
       const newObj = {

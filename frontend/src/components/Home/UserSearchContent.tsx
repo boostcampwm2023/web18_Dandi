@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { getSearchUserList } from '@api/FriendModal';
 import cryingFace from '@assets/image/cryingFace.png';
+
+import { getSearchUserList } from '@api/FriendModal';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 

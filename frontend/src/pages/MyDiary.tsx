@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { getDiaryDayList } from '@api/DiaryList';
-import { getSearchResults } from '@api/KeywordSearch';
 import dizzyFace from '@assets/image/dizzyFace.png';
 
-import { viewTypes, searchOptionsType, isViewTypes } from '@type/pages/MyDiary';
-import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
+import { searchOptionsType, isViewTypes } from '@type/pages/MyDiary';
 
 import Loading from '@components/Common/Loading';
 import NavBar from '@components/Common/NavBar';
@@ -20,6 +16,9 @@ import MonthContainer from '@components/MyDiary/MonthContainer';
 
 import useViewTypeStore from '@store/useViewTypeStore';
 
+import useMyDayDiaryListQuery from '@hooks/useMyDayDiaryListQuery';
+import useSearchDataListQuery from '@hooks/useSearchDataListQuery';
+
 import { DIARY_VIEW_TYPE } from '@util/constants';
 
 const MyDiary = () => {
@@ -28,6 +27,8 @@ const MyDiary = () => {
   const [keyword, setKeyword] = useState<string>('');
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
+
+  const userId = localStorage.getItem('userId') as string;
   const infiniteRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -35,62 +36,14 @@ const MyDiary = () => {
     isSuccess: diaryDataSuccess,
     isLoading: diaryDataLoading,
     fetchNextPage: fetchNextDiaryPage,
-  } = useInfiniteQuery<
-    any,
-    Error,
-    InfiniteDiaryListProps,
-    [string, string | null],
-    { userId: string; type: viewTypes; lastIndex: number }
-  >({
-    queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
-
-    queryFn: getDiaryDayList,
-    initialPageParam: {
-      userId: localStorage.getItem('userId') as string,
-      type: 'Day',
-      lastIndex: 2e9,
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage && lastPage.diaryList.length >= 5
-        ? {
-            userId: localStorage.getItem('userId') as string,
-            type: 'Day',
-            lastIndex: lastPage?.diaryList.at(-1).diaryId,
-          }
-        : undefined;
-    },
-  });
+  } = useMyDayDiaryListQuery(userId);
 
   const {
     data: searchData,
     isLoading: searchDataLoading,
     isSuccess: searchDataSuccess,
     fetchNextPage: fetchNextSearchPage,
-  } = useInfiniteQuery<
-    any,
-    Error,
-    InfiniteDiaryListProps,
-    [string, string | null, searchOptionsType],
-    { keyword: string; lastIndex: number; type: searchOptionsType }
-  >({
-    queryKey: ['searchDataList', keyword, selected],
-    queryFn: getSearchResults,
-    initialPageParam: {
-      keyword: keyword,
-      type: selected,
-      lastIndex: 2e9,
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage && lastPage.diaryList.length >= 5
-        ? {
-            keyword: keyword,
-            type: selected,
-            lastIndex: lastPage?.diaryList.at(-1).diaryId,
-          }
-        : undefined;
-    },
-    enabled: searchFlag && !!keyword,
-  });
+  } = useSearchDataListQuery(keyword, selected, searchFlag);
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {

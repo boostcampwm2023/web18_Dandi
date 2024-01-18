@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { referDiary, deleteDiary } from '@api/Detail';
+import { deleteDiary } from '@api/Detail';
 
 import NavBar from '@components/Common/NavBar';
 import Button from '@components/Common/Button';
@@ -15,6 +15,7 @@ import useEditStore from '@store/useEditStore';
 
 import { useToast } from '@hooks/useToast';
 import useModal from '@hooks/useModal';
+import useDiaryQuery from '@hooks/useDiaryQuery';
 
 import { PAGE_URL } from '@util/constants';
 
@@ -29,10 +30,7 @@ const Detail = () => {
   const params = useParams();
   const diaryId = Number(params.diaryId);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['diary', diaryId],
-    queryFn: () => referDiary(diaryId),
-  });
+  const { data, isLoading, isError } = useDiaryQuery(diaryId);
 
   const deleteDiaryMutation = useMutation({
     mutationFn: () => deleteDiary(diaryId),

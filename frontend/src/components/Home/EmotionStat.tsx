@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import getEmotionStat from '@api/EmotionStat';
 import EmotionCloud from '@components/Home/EmotionCloud';
+
+import useEmotionStatQuery from '@hooks/useEmotionStatQuery';
 
 import { formatDateDash, calPrev } from '@util/funcs';
 import { DEBOUNCE_TIME, NEXT_INDEX, PAGE_URL, PREV_INDEX, PREV_WEEK } from '@util/constants';
@@ -29,7 +29,7 @@ interface diaryInfoProps {
 
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const params = useParams();
-  const userId = params.userId ? params.userId : localStorage.getItem('userId');
+  const userId = params.userId || (localStorage.getItem('userId') as string);
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -47,12 +47,7 @@ const EmotionStat = ({ nickname }: EmotionStatProps) => {
     return () => clearTimeout(timer);
   }, [state?.startDate, state?.endDate]);
 
-  const { data, isError } = useQuery({
-    queryKey: ['emotionStat', userId, formatDateDash(period[0]), formatDateDash(period[1])],
-    queryFn: () =>
-      getEmotionStat(Number(userId), formatDateDash(period[0]), formatDateDash(period[1])),
-    staleTime: Infinity,
-  });
+  const { data, isError } = useEmotionStatQuery(userId, period);
 
   const navigatedURL = `${params.userId ? `/${params.userId}` : PAGE_URL.HOME}`;
 

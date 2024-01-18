@@ -11,10 +11,10 @@ import Keyword from '@components/Common/Keyword';
 import Reaction from '@components/Common/Reaction';
 import ReactionList from '@components/Diary/ReactionList';
 
+import useModal from '@hooks/useModal';
+
 import { formatDateString } from '@util/funcs';
 import { PAGE_URL, SMALL } from '@util/constants';
-
-import useModal from '@hooks/useModal';
 
 interface CardProps {
   diaryItem: IDiaryContent;

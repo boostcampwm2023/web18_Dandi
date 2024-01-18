@@ -1,9 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { getReactionList } from '@api/Reaction';
 import dashingAway from '@assets/image/dashingAway.png';
 
 import ProfileItem from '@components/Common/ProfileItem';
+
+import useReactionListQuery from '@hooks/useReactionListQuery';
 
 interface ReactionListProps {
   diaryId: number;
@@ -21,10 +20,8 @@ interface GroupedReactions {
 }
 
 const ReactionList = ({ diaryId }: ReactionListProps) => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['reactionList', diaryId],
-    queryFn: () => getReactionList(diaryId),
-  });
+  const { data, isLoading, isError } = useReactionListQuery(diaryId);
+
   if (isLoading) {
     return <p>Loading...</p>;
   }

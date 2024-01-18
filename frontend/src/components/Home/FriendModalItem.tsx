@@ -3,8 +3,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
 
-import { PROFILE_BUTTON_TYPE, PAGE_URL } from '@util/constants';
 import { useToast } from '@hooks/useToast';
+
+import { PROFILE_BUTTON_TYPE, PAGE_URL, reactQueryKeys } from '@util/constants';
 
 interface FriendModalItemProps {
   email: string;
@@ -24,7 +25,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
   const goFriendHome = () => {
     navigate(`${PAGE_URL.HOME}${id}`);
     queryClient.removeQueries({
-      queryKey: ['profileData'],
+      queryKey: [reactQueryKeys.ProfileData],
     });
   };
 
@@ -34,7 +35,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
       openToast('친구 신청을 취소했습니다.');
       setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['sendList'],
+          queryKey: [reactQueryKeys.SendList],
         });
       }, DB_WAITING_TIME);
     },
@@ -45,10 +46,10 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     onSuccess() {
       openToast('친구가 삭제되었습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['friendList'],
+        queryKey: [reactQueryKeys.FriendList],
       });
       queryClient.invalidateQueries({
-        queryKey: ['profileData'],
+        queryKey: [reactQueryKeys.ProfileData],
       });
     },
   });
@@ -58,10 +59,10 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     onSuccess() {
       openToast('친구 요청을 수락하였습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['receivedList'],
+        queryKey: [reactQueryKeys.ReceivedList],
       });
       queryClient.invalidateQueries({
-        queryKey: ['profileData'],
+        queryKey: [reactQueryKeys.ProfileData],
       });
     },
   });
@@ -72,7 +73,7 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
       openToast('친구 요청을 거절하였습니다.');
       setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['receivedList'],
+          queryKey: [reactQueryKeys.ReceivedList],
         });
       }, DB_WAITING_TIME);
     },
