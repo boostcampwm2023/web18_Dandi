@@ -716,10 +716,10 @@ describe('DiariesService', () => {
         },
       ] as AllDiaryInfosDto[];
 
-      (diariesRepository.findDiaryByKeywordV1 as jest.Mock).mockResolvedValue(diaries);
+      (diariesRepository.findDiaryByKeywordV2 as jest.Mock).mockResolvedValue(diaries);
 
       // when
-      const result = await diariesService.findDiaryByKeywordV1(user, keyword, lastIndex);
+      const result = await diariesService.findDiaryByKeywordV2(user, keyword, lastIndex);
 
       // then
       expect(result.nickname).toBe(user.nickname);
@@ -816,6 +816,48 @@ describe('DiariesService', () => {
       // then
       expect(result).toEqual(allDiaryInfos);
       expect(diariesRepository.findDiaryByKeywordV3).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findDiaryByTag', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('태그로 일기 조회', async () => {
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const tagName = 'tag1';
+      const lastIndex = undefined;
+      const diaries = [
+        {
+          diaryId: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-10 01:11:31.757747'),
+        },
+        {
+          diaryId: 2,
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as AllDiaryInfosDto[];
+
+      (diariesRepository.findDiaryByTag as jest.Mock).mockResolvedValue(diaries);
+
+      // when
+      const result = await diariesService.findDiaryByTag(user, tagName, lastIndex);
+
+      // then
+      expect(result.nickname).toBe(user.nickname);
+      expect(result.diaryList).toBe(diaries);
+      expect(diariesRepository.findDiaryByTag).toHaveBeenCalledTimes(1);
     });
   });
 });
