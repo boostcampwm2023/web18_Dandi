@@ -8,7 +8,12 @@ import { User } from 'src/users/entity/user.entity';
 import { DiaryStatus } from './entity/diaryStatus';
 import { MoodDegree } from './utils/diaries.constant';
 import { getSummary, judgeOverallMood } from './utils/clovaRequest';
-import { GetAllEmotionsResponseDto, GetDiaryResponseDto, UpdateDiaryDto } from './dto/diary.dto';
+import {
+  FeedDiaryDto,
+  GetAllEmotionsResponseDto,
+  GetDiaryResponseDto,
+  UpdateDiaryDto,
+} from './dto/diary.dto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Diary } from './entity/diary.entity';
 
@@ -386,6 +391,129 @@ describe('DiariesService', () => {
       // then
       expect(result).toHaveLength(1);
       expect(diariesRepository.findAllDiaryBetweenDates).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findFeedDiary', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('피드 조회(최초 조회로 lastIndex가 undefined인 경우)', async () => {
+      // given
+      const userId = 1;
+      const lastIndex = undefined;
+      const friends = [
+        { id: 2, email: 'test2', nickname: 'test2', profileImage: null },
+        { id: 3, email: 'test3', nickname: 'test3', profileImage: null },
+      ];
+      const feedDiary = [
+        {
+          diaryId: 1,
+          authorId: 2,
+          createdAt: new Date('2024-01-17 01:11:31.757747'),
+          profileImage: null,
+          nickname: 'test2',
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          reactionCount: 2,
+          leavedReaction: null,
+        },
+        {
+          diaryId: 2,
+          authorId: 2,
+          createdAt: new Date('2024-01-16 01:11:31.757747'),
+          profileImage: null,
+          nickname: 'test2',
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          reactionCount: 2,
+          leavedReaction: null,
+        },
+      ] as FeedDiaryDto[];
+
+      (friendsService.getFriendsList as jest.Mock).mockResolvedValue(friends);
+      (diariesRepository.findPaginatedDiaryByDateAndIdList as jest.Mock).mockResolvedValue(
+        feedDiary,
+      );
+
+      // when
+      const result = await diariesService.findFeedDiary(userId, lastIndex);
+
+      // then
+      expect(result).toBe(feedDiary);
+      expect(friendsService.getFriendsList).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.findPaginatedDiaryByDateAndIdList).toHaveBeenCalledTimes(1);
+    });
+
+    it('피드 조회(lastIndex값이 있는 경우)', async () => {
+      // given
+      const userId = 1;
+      const lastIndex = 11;
+      const friends = [
+        { id: 2, email: 'test2', nickname: 'test2', profileImage: null },
+        { id: 3, email: 'test3', nickname: 'test3', profileImage: null },
+      ];
+      const feedDiary = [
+        {
+          diaryId: 12,
+          authorId: 2,
+          createdAt: new Date('2024-01-17 01:11:31.757747'),
+          profileImage: null,
+          nickname: 'test2',
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          reactionCount: 2,
+          leavedReaction: null,
+        },
+        {
+          diaryId: 13,
+          authorId: 2,
+          createdAt: new Date('2024-01-16 01:11:31.757747'),
+          profileImage: null,
+          nickname: 'test2',
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          reactionCount: 2,
+          leavedReaction: null,
+        },
+      ] as FeedDiaryDto[];
+
+      (friendsService.getFriendsList as jest.Mock).mockResolvedValue(friends);
+      (diariesRepository.findPaginatedDiaryByDateAndIdList as jest.Mock).mockResolvedValue(
+        feedDiary,
+      );
+
+      // when
+      const result = await diariesService.findFeedDiary(userId, lastIndex);
+
+      // then
+      expect(result).toBe(feedDiary);
+      expect(friendsService.getFriendsList).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.findPaginatedDiaryByDateAndIdList).toHaveBeenCalledTimes(1);
+    });
+
+    it('친구가 없는 경우 빈 배열 반환', async () => {
+      // given
+      const userId = 1;
+      const lastIndex = undefined;
+      const friends = [];
+
+      (friendsService.getFriendsList as jest.Mock).mockResolvedValue(friends);
+
+      // when
+      const result = await diariesService.findFeedDiary(userId, lastIndex);
+
+      // then
+      expect(result).toHaveLength(0);
+      expect(friendsService.getFriendsList).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.findPaginatedDiaryByDateAndIdList).toHaveBeenCalledTimes(0);
     });
   });
 });
