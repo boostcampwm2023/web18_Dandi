@@ -39,7 +39,7 @@ export class AuthService {
     const accessKey = uuidv4();
     this.authRepository.setRefreshToken(accessKey);
 
-    const accessToken = this.jwtService.sign({
+    const accessToken = await this.jwtService.sign({
       id: user.id,
       nickname: user.nickname,
       accessKey,
