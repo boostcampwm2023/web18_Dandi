@@ -787,7 +787,7 @@ describe('DiariesService', () => {
           thumbnail: null,
           title: '일기1',
           summary: '일기 요약',
-          tagnames: [],
+          tagnames: null,
           emotion: '😊',
           reactions: ['😘', '🔥'],
           reactionUsers: [6, 2],
