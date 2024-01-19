@@ -51,7 +51,7 @@ export class AuthService {
     };
   }
 
-  async signUp(user: AuthUserDto, socialType: SocialType): Promise<User> {
+  private async signUp(user: AuthUserDto, socialType: SocialType): Promise<User> {
     return await this.usersRepository.createUser(user, socialType);
   }
 
