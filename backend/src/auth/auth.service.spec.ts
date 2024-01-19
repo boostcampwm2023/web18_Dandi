@@ -205,4 +205,45 @@ describe('FriendsService Test', () => {
       expect(usersRepository.findBySocialIdAndSocialType).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('refreshAccessToken 테스트', () => {
+    const mockReq: any = {
+      cookies: { utk: 'mock_token' },
+    };
+    const mockPayload = {
+      id: 1,
+      nickname: 'testNickname',
+      accessKey: 'testKey',
+    };
+
+    beforeEach(() => jest.clearAllMocks());
+
+    it('저장소에 리프레시 토큰이 존재하면 새 access token 발급', async () => {
+      //given
+      (jwtService.decode as jest.Mock).mockResolvedValue(mockPayload);
+      (authRepository.getRefreshToken as jest.Mock).mockResolvedValue('mock_token');
+
+      //when
+      const result = await authService.refreshAccessToken(mockReq);
+
+      //then
+      expect(jwtService.decode).toHaveBeenCalledTimes(1);
+      expect(authRepository.getRefreshToken).toHaveBeenCalledTimes(1);
+      expect(jwtService.sign).toHaveBeenCalledTimes(1);
+    });
+
+    it('저장소에 리프레시 토큰이 존재하지 않으면 예외 발생', async () => {
+      //given
+      (jwtService.decode as jest.Mock).mockResolvedValue(mockPayload);
+      (authRepository.getRefreshToken as jest.Mock).mockResolvedValue(null);
+
+      //when-then
+      await expect(async () => await authService.refreshAccessToken(mockReq)).rejects.toThrow(
+        new UnauthorizedException('로그인이 필요합니다.'),
+      );
+      expect(jwtService.decode).toHaveBeenCalledTimes(1);
+      expect(authRepository.getRefreshToken).toHaveBeenCalledTimes(1);
+      expect(jwtService.sign).toHaveBeenCalledTimes(0);
+    });
+  });
 });
