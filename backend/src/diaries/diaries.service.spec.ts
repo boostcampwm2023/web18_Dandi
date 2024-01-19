@@ -9,6 +9,7 @@ import { DiaryStatus } from './entity/diaryStatus';
 import { MoodDegree } from './utils/diaries.constant';
 import { getSummary, judgeOverallMood } from './utils/clovaRequest';
 import {
+  AllDiaryInfosDto,
   FeedDiaryDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
@@ -16,6 +17,7 @@ import {
 } from './dto/diary.dto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Diary } from './entity/diary.entity';
+import { TimeUnit } from './dto/timeUnit.enum';
 
 jest.mock('src/users/users.service');
 jest.mock('./diaries.repository');
@@ -514,6 +516,104 @@ describe('DiariesService', () => {
       expect(result).toHaveLength(0);
       expect(friendsService.getFriendsList).toHaveBeenCalledTimes(1);
       expect(diariesRepository.findPaginatedDiaryByDateAndIdList).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('findDiaryByAuthorId', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('사용자 id로 일기 조회, Day 타입인 경우', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const userId = 1;
+      const requestDto = {
+        type: TimeUnit.Day,
+        startDate: '2024-01-01',
+        endDate: '2024-01-15',
+        lastIndex: null,
+      };
+      const diaries = [
+        {
+          diaryId: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-10 01:11:31.757747'),
+        },
+        {
+          diaryId: 2,
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as AllDiaryInfosDto[];
+
+      (usersService.findUserById as jest.Mock).mockResolvedValue(user);
+      (diariesRepository.findDiariesByAuthorIdWithPagination as jest.Mock).mockResolvedValue(
+        diaries,
+      );
+
+      // when
+      const result = await diariesService.findDiaryByAuthorId(user, userId, requestDto);
+
+      // then
+      expect(result.nickname).toBe(user.nickname);
+      expect(result.diaryList).toBe(diaries);
+      expect(diariesRepository.findDiariesByAuthorIdWithPagination).toHaveBeenCalledTimes(1);
+      expect(diariesRepository.findDiariesByAuthorIdWithDates).toHaveBeenCalledTimes(0);
+    });
+
+    it('사용자 id로 일기 조회, Day 타입이 아닌 경우', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const userId = 1;
+      const requestDto = {
+        type: TimeUnit.Month,
+        startDate: '2024-01-01',
+        endDate: '2024-01-15',
+        lastIndex: null,
+      };
+      const diaries = [
+        {
+          diaryId: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-10 01:11:31.757747'),
+        },
+        {
+          diaryId: 2,
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as AllDiaryInfosDto[];
+
+      (usersService.findUserById as jest.Mock).mockResolvedValue(user);
+      (diariesRepository.findDiariesByAuthorIdWithDates as jest.Mock).mockResolvedValue(diaries);
+
+      // when
+      const result = await diariesService.findDiaryByAuthorId(user, userId, requestDto);
+
+      // then
+      expect(result.nickname).toBe(user.nickname);
+      expect(result.diaryList).toBe(diaries);
+      expect(diariesRepository.findDiariesByAuthorIdWithPagination).toHaveBeenCalledTimes(0);
+      expect(diariesRepository.findDiariesByAuthorIdWithDates).toHaveBeenCalledTimes(1);
     });
   });
 });
