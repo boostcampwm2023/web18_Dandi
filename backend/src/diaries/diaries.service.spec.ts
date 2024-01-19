@@ -616,4 +616,29 @@ describe('DiariesService', () => {
       expect(diariesRepository.findDiariesByAuthorIdWithDates).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('getMoodForYear', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('최근 1년의 일기 mood 조회', async () => {
+      // given
+      const userId = 1;
+      const moodForYear = [
+        { date: new Date('2024-01-11 01:11:31.757747'), mood: MoodDegree.BAD },
+        { date: new Date('2024-01-12 01:11:31.757747'), mood: MoodDegree.GOOD },
+        { date: new Date('2024-01-13 01:11:31.757747'), mood: MoodDegree.SO_BAD },
+        { date: new Date('2024-01-14 01:11:31.757747'), mood: MoodDegree.SO_GOOD },
+        { date: new Date('2024-01-15 01:11:31.757747'), mood: MoodDegree.SO_SO },
+      ];
+
+      (diariesRepository.findLatestDiaryByDate as jest.Mock).mockResolvedValue(moodForYear);
+
+      // when
+      const result = await diariesService.getMoodForYear(userId);
+
+      // then
+      expect(result).toBe(moodForYear);
+      expect(diariesRepository.findLatestDiaryByDate).toHaveBeenCalledTimes(1);
+    });
+  });
 });
