@@ -58,7 +58,7 @@ describe('FriendsService Test', () => {
       (imagesRepository.uploadImage as jest.Mock).mockResolvedValue(data);
 
       //when
-      const result = await imagesService.uploadDiaryImage(userId, file);
+      const result = await imagesService.uploadProfileImage(userId, file);
 
       //then
       expect(imagesRepository.uploadImage).toHaveBeenCalledTimes(1);
