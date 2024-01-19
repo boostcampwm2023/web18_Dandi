@@ -36,23 +36,4 @@ export class ImagesController {
 
     return { imageURL: uploadedFile.Location };
   }
-
-  @Post('/profile')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
-  @ApiOperation({ description: '프로필 이미지 업로드 API' })
-  @ApiCreatedResponse({ description: '이미지 업로드 성공' })
-  async uploadProfileImage(
-    @User() user: UserEntity,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: IMAGE_TYPE_REGEX })],
-      }),
-    )
-    file: Express.Multer.File,
-  ): Promise<Record<string, string>> {
-    const uploadedFile = await this.imagesService.uploadProfileImage(user.id, file);
-
-    return { imageURL: uploadedFile.Location };
-  }
 }
