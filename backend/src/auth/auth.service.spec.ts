@@ -246,4 +246,21 @@ describe('FriendsService Test', () => {
       expect(jwtService.sign).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('removeRefreshToken 테스트', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('존재 유무에 상관없이 refreshToken 삭제 요청 가능', async () => {
+      //given
+      const mockReq: any = {
+        cookies: { utk: 'mock_token' },
+      };
+
+      //when
+      await authService.removeRefreshToken(mockReq);
+
+      //then
+      expect(authRepository.removeRefreshToken).toHaveBeenCalledTimes(1);
+    });
+  });
 });
