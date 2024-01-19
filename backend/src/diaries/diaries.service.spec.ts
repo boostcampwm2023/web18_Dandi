@@ -13,6 +13,7 @@ import {
   FeedDiaryDto,
   GetAllEmotionsResponseDto,
   GetDiaryResponseDto,
+  SearchDiaryDataForm,
   UpdateDiaryDto,
 } from './dto/diary.dto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
@@ -639,6 +640,182 @@ describe('DiariesService', () => {
       // then
       expect(result).toBe(moodForYear);
       expect(diariesRepository.findLatestDiaryByDate).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findDiaryByKeywordV1', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('키워드로 일기 검색 V1', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const keyword = '검색';
+      const lastIndex = 10;
+      const diaries = [
+        {
+          diaryId: 11,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-10 01:11:31.757747'),
+        },
+        {
+          diaryId: 12,
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as AllDiaryInfosDto[];
+
+      (diariesRepository.findDiaryByKeywordV1 as jest.Mock).mockResolvedValue(diaries);
+
+      // when
+      const result = await diariesService.findDiaryByKeywordV1(user, keyword, lastIndex);
+
+      // then
+      expect(result.nickname).toBe(user.nickname);
+      expect(result.diaryList).toBe(diaries);
+    });
+  });
+
+  describe('findDiaryByKeywordV2', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('키워드로 일기 검색 V2', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const keyword = '검색';
+      const lastIndex = 10;
+      const diaries = [
+        {
+          diaryId: 11,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-10 01:11:31.757747'),
+        },
+        {
+          diaryId: 12,
+          thumbnail: null,
+          title: '일기2',
+          summary: '일기 내용 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as AllDiaryInfosDto[];
+
+      (diariesRepository.findDiaryByKeywordV1 as jest.Mock).mockResolvedValue(diaries);
+
+      // when
+      const result = await diariesService.findDiaryByKeywordV1(user, keyword, lastIndex);
+
+      // then
+      expect(result.nickname).toBe(user.nickname);
+      expect(result.diaryList).toBe(diaries);
+    });
+  });
+
+  describe('findDiaryByKeywordV3', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('키워드로 일기 검색 V3', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const keyword = '검색';
+      const lastIndex = 10;
+      const diaries = [
+        {
+          authorid: 1,
+          authorname: 'test1',
+          diaryid: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 요약',
+          tagnames: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactions: ['😘', '🔥'],
+          reactionUsers: [1, 2],
+          createdat: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as SearchDiaryDataForm[];
+      const allDiaryInfos = [
+        {
+          diaryId: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 요약',
+          tags: ['tag1', 'tag2'],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+          leavedReaction: '😘',
+        },
+      ];
+
+      (diariesRepository.findDiaryByKeywordV3 as jest.Mock).mockResolvedValue(diaries);
+
+      // when
+      const result = await diariesService.findDiaryByKeywordV3(user, keyword, lastIndex);
+
+      // then
+      expect(result).toEqual(allDiaryInfos);
+      expect(diariesRepository.findDiaryByKeywordV3).toHaveBeenCalledTimes(1);
+    });
+
+    it('키워드로 일기 검색 V3(태그가 없고, 사용자가 리액션을 남기지 않은 경우)', async () => {
+      // given
+      const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
+      const keyword = '검색';
+      const lastIndex = 10;
+      const diaries = [
+        {
+          authorid: 1,
+          authorname: 'test1',
+          diaryid: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 요약',
+          tagnames: [],
+          emotion: '😊',
+          reactions: ['😘', '🔥'],
+          reactionUsers: [6, 2],
+          createdat: new Date('2024-01-11 01:11:31.757747'),
+        },
+      ] as SearchDiaryDataForm[];
+      const allDiaryInfos = [
+        {
+          diaryId: 1,
+          thumbnail: null,
+          title: '일기1',
+          summary: '일기 요약',
+          tags: [],
+          emotion: '😊',
+          reactionCount: 2,
+          createdAt: new Date('2024-01-11 01:11:31.757747'),
+          leavedReaction: null,
+        },
+      ];
+
+      (diariesRepository.findDiaryByKeywordV3 as jest.Mock).mockResolvedValue(diaries);
+
+      // when
+      const result = await diariesService.findDiaryByKeywordV3(user, keyword, lastIndex);
+
+      // then
+      expect(result).toEqual(allDiaryInfos);
+      expect(diariesRepository.findDiaryByKeywordV3).toHaveBeenCalledTimes(1);
     });
   });
 });
