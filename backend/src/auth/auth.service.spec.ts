@@ -72,7 +72,7 @@ describe('FriendsService Test', () => {
 
       (usersRepository.findBySocialIdAndSocialType as jest.Mock).mockResolvedValue(null);
       (usersRepository.createUser as jest.Mock).mockResolvedValue(mockUser);
-      (jwtService.sign as jest.Mock).mockResolvedValue('mocked_token');
+      (jwtService.sign as jest.Mock).mockReturnValue('mocked_token');
       global.fetch = jest.fn().mockImplementation((url: string) => {
         if (url === NAVER_OAUTH_URL) {
           return tokenResponse;
@@ -100,7 +100,7 @@ describe('FriendsService Test', () => {
       profileResponse.status = 200;
 
       (usersRepository.findBySocialIdAndSocialType as jest.Mock).mockResolvedValue(mockUser);
-      (jwtService.sign as jest.Mock).mockResolvedValue('mocked_token');
+      (jwtService.sign as jest.Mock).mockReturnValue('mocked_token');
       global.fetch = jest.fn().mockImplementation((url: string) => {
         if (url === NAVER_OAUTH_URL) {
           return tokenResponse;
