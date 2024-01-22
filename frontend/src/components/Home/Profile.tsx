@@ -1,12 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { deleteFriend, requestFriend } from '@api/FriendModal';
 
 import Button from '@components/Common/Button';
 import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
+
+import useModal from '@hooks/useModal';
+import useRequestFriendMutation from '@hooks/useRequestFriendMutation';
+import useDeleteFriendMutation from '@hooks/useDeleteFriendMutation';
 
 import {
   DEFAULT,
@@ -15,11 +16,7 @@ import {
   TEXT_ABOUT_EXISTED_TODAY,
   LARGE,
   PAGE_URL,
-  reactQueryKeys,
 } from '@util/constants';
-
-import { useToast } from '@hooks/useToast';
-import useModal from '@hooks/useModal';
 
 interface ProfileProps {
   userId: number;
@@ -42,8 +39,6 @@ interface relationData {
 
 const Profile = ({ userId, userData }: ProfileProps) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const openToast = useToast();
 
   const loginUserId = localStorage.getItem('userId');
   const paramsUserId = useParams().userId ?? false;
@@ -68,33 +63,9 @@ const Profile = ({ userId, userData }: ProfileProps) => {
 
   const getRandomIndex = Math.floor(Math.random() * GREET_MESSAGES.length);
 
-  const requestFriendMutation = useMutation({
-    mutationFn: (receiverId: number) => requestFriend(receiverId),
-    onSuccess() {
-      openToast('친구 요청을 보냈습니다.');
-      setTimeout(() => {
-        queryClient.invalidateQueries({
-          queryKey: [reactQueryKeys.SendList],
-        });
-        queryClient.invalidateQueries({
-          queryKey: [reactQueryKeys.ProfileData],
-        });
-      }, 100);
-    },
-  });
+  const requestFriendMutation = useRequestFriendMutation();
 
-  const deleteFriendMutation = useMutation({
-    mutationFn: (friendId: number) => deleteFriend(friendId),
-    onSuccess() {
-      openToast('친구 삭제가 완료되었습니다.');
-      queryClient.invalidateQueries({
-        queryKey: [reactQueryKeys.FriendList],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [reactQueryKeys.ProfileData],
-      });
-    },
-  });
+  const deleteFriendMutation = useDeleteFriendMutation();
 
   const getRelationContent = () => {
     if (relation === null) {

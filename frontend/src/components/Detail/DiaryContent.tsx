@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import EmojiPicker from 'emoji-picker-react';
 import Parser from 'html-react-parser';
-
-import { postReaction, deleteReaction } from '@api/Reaction';
 
 import { IReactionedFriends } from '@type/components/Common/ReactionList';
 
@@ -13,8 +10,9 @@ import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
 import useModal from '@hooks/useModal';
-import { useToast } from '@hooks/useToast';
 import useReactionListQuery from '@hooks/useReactionListQuery';
+import usePostReactionMutation from '@hooks/usePostReactionMutation';
+import useDeleteReactionMutation from '@hooks/useDeleteReactionMutation';
 
 import { formatDateString } from '@util/funcs';
 
@@ -45,8 +43,6 @@ const DiaryContent = ({
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [totalReaction, setTotalReaction] = useState(reactionCount);
   const { openModal } = useModal();
-  const openToast = useToast();
-  const queryClient = useQueryClient();
 
   const { data, isError, isSuccess } = useReactionListQuery(diaryId);
 
@@ -54,31 +50,9 @@ const DiaryContent = ({
     return <p>Error fetching data</p>;
   }
 
-  const postReactionMutation = useMutation({
-    mutationFn: () => postReaction(diaryId, selectedEmoji),
-    onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
-      });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
-      });
-      openToast('공감을 남겼습니다!');
-    },
-  });
+  const postReactionMutation = usePostReactionMutation(userId, diaryId, selectedEmoji);
 
-  const deleteReactionMutation = useMutation({
-    mutationFn: () => deleteReaction(diaryId, selectedEmoji),
-    onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
-      });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
-      });
-      openToast('공감을 취소했습니다!');
-    },
-  });
+  const deleteReactionMutation = useDeleteReactionMutation(userId, diaryId, selectedEmoji);
 
   const handleDeleteReaction = async () => {
     await deleteReactionMutation.mutate();

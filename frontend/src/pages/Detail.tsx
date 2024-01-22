@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { deleteDiary } from '@api/Detail';
 
 import NavBar from '@components/Common/NavBar';
 import Button from '@components/Common/Button';
@@ -13,49 +10,25 @@ import Loading from '@components/Common/Loading';
 
 import useEditStore from '@store/useEditStore';
 
-import { useToast } from '@hooks/useToast';
 import useModal from '@hooks/useModal';
 import useDiaryQuery from '@hooks/useDiaryQuery';
+import useDeleteDiaryMutation from '@hooks/useDeleteDiaryMutation';
 
 import { PAGE_URL } from '@util/constants';
 
 const Detail = () => {
-  const queryClient = useQueryClient();
-  const openToast = useToast();
   const navigate = useNavigate();
   const { setDiaryId, setTitle, setEmoji, setThumbnail, setContent, setKeywordList, setStatus } =
     useEditStore();
   const { openModal, closeModal } = useModal();
 
   const params = useParams();
+  const userId = localStorage.getItem('userId') as string;
   const diaryId = Number(params.diaryId);
 
   const { data, isLoading, isError } = useDiaryQuery(diaryId);
 
-  const deleteDiaryMutation = useMutation({
-    mutationFn: () => deleteDiary(diaryId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['grass', localStorage.getItem('userId')],
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['emotionStat', localStorage.getItem('userId')],
-        refetchType: 'all',
-      });
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
-      });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
-      });
-      navigate(-1);
-      openToast('일기가 삭제되었습니다!');
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
+  const deleteDiaryMutation = useDeleteDiaryMutation(userId, diaryId);
 
   const handleDelete = () => {
     deleteDiaryMutation.mutate();

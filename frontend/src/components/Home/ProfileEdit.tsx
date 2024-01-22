@@ -1,9 +1,6 @@
 import { useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { updateProfile } from '@api/FriendModal';
-
-import { useToast } from '@hooks/useToast';
+import useUpdateProfileMutation from '@hooks/useUpdateProfileMutation';
 
 interface ProfileEditProps {
   profileImage: string;
@@ -11,27 +8,14 @@ interface ProfileEditProps {
 }
 
 const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
-  const queryClient = useQueryClient();
-  const openToast = useToast();
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId') as string;
 
   const [newNickname, setNewNickname] = useState('');
   const [imageSrc, setImageSrc] = useState(profileImage);
   const [newProfileImage, setNewProfileImage] = useState<File>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const updateMutation = useMutation({
-    mutationFn: (formData: FormData) => updateProfile(formData),
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ['profileData', userId],
-      });
-      openToast('프로필 정보가 수정되었습니다.');
-    },
-    onError() {
-      openToast('사진의 크기는 최대 10MB입니다.');
-    },
-  });
+  const updateMutation = useUpdateProfileMutation(userId);
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewNickname(e.target.value);

@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { cancelRequestFriend, deleteFriend, allowFriend, rejectFriend } from '@api/FriendModal';
-
-import { useToast } from '@hooks/useToast';
+import useCancelRequestMutation from '@hooks/useCancelRequestMutation';
+import useDeleteFriendMutation from '@hooks/useDeleteFriendMutation';
+import useAllowFriendMutation from '@hooks/useAllowFriendMutation';
+import useRejectFriendMutation from '@hooks/useRejectFriendMutation';
 
 import { PROFILE_BUTTON_TYPE, PAGE_URL, reactQueryKeys } from '@util/constants';
 
@@ -15,12 +16,9 @@ interface FriendModalItemProps {
   type: string;
 }
 
-const DB_WAITING_TIME = 100;
-
 const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModalItemProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const openToast = useToast();
 
   const goFriendHome = () => {
     navigate(`${PAGE_URL.HOME}${id}`);
@@ -29,55 +27,13 @@ const FriendModalItem = ({ email, profileImage, nickname, id, type }: FriendModa
     });
   };
 
-  const cancelRequestMutation = useMutation({
-    mutationFn: (receiverId: number) => cancelRequestFriend(receiverId),
-    onSuccess() {
-      openToast('친구 신청을 취소했습니다.');
-      setTimeout(() => {
-        queryClient.invalidateQueries({
-          queryKey: [reactQueryKeys.SendList],
-        });
-      }, DB_WAITING_TIME);
-    },
-  });
+  const cancelRequestMutation = useCancelRequestMutation();
 
-  const deleteFriendMutation = useMutation({
-    mutationFn: (friendId: number) => deleteFriend(friendId),
-    onSuccess() {
-      openToast('친구가 삭제되었습니다.');
-      queryClient.invalidateQueries({
-        queryKey: [reactQueryKeys.FriendList],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [reactQueryKeys.ProfileData],
-      });
-    },
-  });
+  const deleteFriendMutation = useDeleteFriendMutation();
 
-  const allowFriendMutation = useMutation({
-    mutationFn: (senderId: number) => allowFriend(senderId),
-    onSuccess() {
-      openToast('친구 요청을 수락하였습니다.');
-      queryClient.invalidateQueries({
-        queryKey: [reactQueryKeys.ReceivedList],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [reactQueryKeys.ProfileData],
-      });
-    },
-  });
+  const allowFriendMutation = useAllowFriendMutation();
 
-  const rejectFriendMutation = useMutation({
-    mutationFn: (senderId: number) => rejectFriend(senderId),
-    onSuccess() {
-      openToast('친구 요청을 거절하였습니다.');
-      setTimeout(() => {
-        queryClient.invalidateQueries({
-          queryKey: [reactQueryKeys.ReceivedList],
-        });
-      }, DB_WAITING_TIME);
-    },
-  });
+  const rejectFriendMutation = useRejectFriendMutation();
 
   const getButtonElement = (type: string) => {
     switch (type) {

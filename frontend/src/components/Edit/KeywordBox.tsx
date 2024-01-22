@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { createDiary, updateDiary } from '@api/Edit';
+import { useLocation } from 'react-router-dom';
 
 import Loading from '@components/Common/Loading';
 import Keyword from '@components/Common/Keyword';
@@ -10,8 +7,8 @@ import Keyword from '@components/Common/Keyword';
 import useEditStore from '@store/useEditStore';
 
 import { useToast } from '@hooks/useToast';
-
-import { PAGE_URL } from '@util/constants';
+import useCreateDiaryMutation from '@hooks/useCreateDiaryMutation';
+import useUpdateDiaryMutation from '@hooks/useUpdateDiaryMutation';
 
 interface CreateDiaryParams {
   title: string;
@@ -23,10 +20,9 @@ interface CreateDiaryParams {
 }
 
 const KeywordBox = () => {
-  const queryClient = useQueryClient();
   const openToast = useToast();
 
-  const navigate = useNavigate();
+  const userId = localStorage.getItem('userid') as string;
   const { state } = useLocation();
   const [keyword, setKeyword] = useState<string>('');
   const { diaryId, title, content, emoji, status, thumbnail, keywordList, setKeywordList } =
@@ -41,49 +37,9 @@ const KeywordBox = () => {
     thumbnail,
   };
 
-  const createDiaryMutation = useMutation({
-    mutationFn: (params: CreateDiaryParams) => createDiary(params),
-    onSuccess: () => {
-      navigate(PAGE_URL.MY_DIARY);
-      queryClient.invalidateQueries({
-        queryKey: ['grass', localStorage.getItem('userId')],
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['emotionStat', localStorage.getItem('userId')],
-        refetchType: 'all',
-      });
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
-      });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
-      });
-      openToast('일기가 작성되었습니다!');
-    },
-  });
+  const createDiaryMutation = useCreateDiaryMutation(userId);
 
-  const updateDiaryMutation = useMutation({
-    mutationFn: (params: CreateDiaryParams) => updateDiary(params, diaryId),
-    onSuccess: () => {
-      navigate(`${PAGE_URL.DETAIL}/${diaryId}`);
-      queryClient.invalidateQueries({
-        queryKey: ['grass', localStorage.getItem('userId')],
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['emotionStat', localStorage.getItem('userId')],
-        refetchType: 'all',
-      });
-      queryClient.removeQueries({
-        queryKey: ['dayDiaryList', localStorage.getItem('userId')],
-      });
-      queryClient.removeQueries({
-        queryKey: ['myDayDiaryList', localStorage.getItem('userId')],
-      });
-      openToast('일기가 수정되었습니다!');
-    },
-  });
+  const updateDiaryMutation = useUpdateDiaryMutation(userId, diaryId);
 
   const onSubmit = () => {
     if (!title || title.trim() === '' || !content || content.trim() === '') {
