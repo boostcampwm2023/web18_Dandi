@@ -118,6 +118,7 @@ describe('DiariesService', () => {
 
       // then
       expect(result).toEqual(diary);
+      expect(diariesRepository.findDiaryDetailById).toHaveBeenCalledTimes(1);
     });
 
     it('해당 id의 일기가 존재하지 않는 경우 예외 발생', async () => {
@@ -131,6 +132,7 @@ describe('DiariesService', () => {
       await expect(async () => await diariesService.findDiaryDetail(user, diaryId)).rejects.toThrow(
         new BadRequestException('존재하지 않는 일기입니다.'),
       );
+      expect(diariesRepository.findDiaryDetailById).toHaveBeenCalledTimes(1);
     });
 
     it('private 일기를 다른 사용자가 조회하려 할 때 예외 발생', async () => {
@@ -158,6 +160,7 @@ describe('DiariesService', () => {
       await expect(async () => await diariesService.findDiaryDetail(user, diaryId)).rejects.toThrow(
         new ForbiddenException('권한이 없는 사용자입니다.'),
       );
+      expect(diariesRepository.findDiaryDetailById).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -359,7 +362,7 @@ describe('DiariesService', () => {
       expect(diariesRepository.findAllDiaryBetweenDates).toHaveBeenCalledTimes(1);
     });
 
-    it('기간이 주어지지 않은 경우 감정 통계', async () => {
+    it('기간이 주어지지 않은 경우 최근 1주일의 감정 통계', async () => {
       // given
       const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
       const userId = 1;
@@ -400,7 +403,7 @@ describe('DiariesService', () => {
   describe('findFeedDiary', () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('피드 조회(최초 조회로 lastIndex가 undefined인 경우)', async () => {
+    it('피드 조회(최초 조회로 lastIndex가 undefined인 경우 최근 일기 최대 5개 조회)', async () => {
       // given
       const userId = 1;
       const lastIndex = undefined;
@@ -451,7 +454,7 @@ describe('DiariesService', () => {
       expect(diariesRepository.findPaginatedDiaryByDateAndIdList).toHaveBeenCalledTimes(1);
     });
 
-    it('피드 조회(lastIndex값이 있는 경우)', async () => {
+    it('피드 조회(lastIndex값이 있는 경우 id가 lastIndex 미만인 일기 최대 5개 조회)', async () => {
       // given
       const userId = 1;
       const lastIndex = 11;
@@ -461,7 +464,7 @@ describe('DiariesService', () => {
       ];
       const feedDiary = [
         {
-          diaryId: 12,
+          diaryId: 10,
           authorId: 2,
           createdAt: new Date('2024-01-17 01:11:31.757747'),
           profileImage: null,
@@ -474,7 +477,7 @@ describe('DiariesService', () => {
           leavedReaction: null,
         },
         {
-          diaryId: 13,
+          diaryId: 9,
           authorId: 2,
           createdAt: new Date('2024-01-16 01:11:31.757747'),
           profileImage: null,
@@ -523,7 +526,7 @@ describe('DiariesService', () => {
   describe('findDiaryByAuthorId', () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('사용자 id로 일기 조회, Day 타입인 경우', async () => {
+    it('사용자 id로 일기 조회(Day 타입인 경우 lastIndex로 페이지네이션 적용된 일기 조회)', async () => {
       // given
       const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
       const userId = 1;
@@ -571,7 +574,7 @@ describe('DiariesService', () => {
       expect(diariesRepository.findDiariesByAuthorIdWithDates).toHaveBeenCalledTimes(0);
     });
 
-    it('사용자 id로 일기 조회, Day 타입이 아닌 경우', async () => {
+    it('사용자 id로 일기 조회(Day 타입이 아닌 경우 기간 내 일기 조회)', async () => {
       // given
       const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
       const userId = 1;
@@ -774,7 +777,7 @@ describe('DiariesService', () => {
       expect(diariesRepository.findDiaryByKeywordV3).toHaveBeenCalledTimes(1);
     });
 
-    it('키워드로 일기 검색 V3(태그가 없고, 사용자가 리액션을 남기지 않은 경우)', async () => {
+    it('키워드로 일기 검색 V3(태그가 없고, 사용자가 리액션을 남기지 않은 경우 정상 동작)', async () => {
       // given
       const user = { id: 1, email: 'test1', nickname: 'test1', profileImage: null } as User;
       const keyword = '검색';
