@@ -7,6 +7,7 @@
     font-family: 'SUIT Variable', 'Noto Sans KR', sans-serif;
     color: #4b4b4b;
     background-color: #fffef9;
+    overflow-y: scroll;
   }
 }
 
