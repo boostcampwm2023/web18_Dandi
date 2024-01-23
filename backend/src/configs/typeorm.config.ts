@@ -22,3 +22,15 @@ export const typeORMProdConfig: TypeOrmModuleOptions = {
   database: process.env.DB_NAME,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
 };
+
+export const typeORMTestConfig: TypeOrmModuleOptions = {
+  type: 'mysql',
+  host: process.env.TEST_DB_HOST,
+  port: Number(process.env.TEST_DB_PORT),
+  username: process.env.TEST_DB_USER,
+  password: process.env.TEST_DB_PASS,
+  database: process.env.TEST_DB_NAME,
+  entities: [__dirname + '/../**/*.entity.{js,ts}'],
+  dropSchema: true,
+  synchronize: true,
+};
