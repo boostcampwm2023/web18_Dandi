@@ -2,26 +2,29 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let dataSource: DataSource;
+  let queryRunner: QueryRunner;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
+    const dataSource = module.get<DataSource>(DataSource);
 
     app = module.createNestApplication();
-    dataSource = module.get<DataSource>(DataSource);
+    queryRunner = dataSource.createQueryRunner();
     await app.init();
   });
 
   afterAll(async () => {
-    await dataSource.destroy();
     await app.close();
   });
+
+  beforeEach(async () => await queryRunner.startTransaction());
+  afterEach(async () => await queryRunner.rollbackTransaction());
 
   it('/ (GET)', async () => {
     const response = await request(app.getHttpServer()).get('/');
