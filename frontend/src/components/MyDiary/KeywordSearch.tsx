@@ -73,12 +73,12 @@ const KeywordSearch = ({
     }
   }, [keyword]);
 
-  const searchOptions: searchOptionsType[] = ['키워드', '제목 + 내용'];
+  const searchOptions: searchOptionsType[] = ['키워드', '제목+내용'];
 
   const onChangeSearchOption = (option: searchOptionsType) => {
     setSelected(option);
     setShowSelect(false);
-    if (option === '제목 + 내용' && keywordLengthError) {
+    if (option === '제목+내용' && keywordLengthError) {
       return;
     }
     setSearchFlag(false);
@@ -87,7 +87,7 @@ const KeywordSearch = ({
   const onClickKeywordOption = (option: string) => {
     setKeyword(option);
     setShowKeyword(false);
-    if (selected === '제목 + 내용' && keywordLengthError) {
+    if (selected === '제목+내용' && keywordLengthError) {
       return;
     }
     setSearchFlag(true);
@@ -101,7 +101,7 @@ const KeywordSearch = ({
     if (
       e.key === 'Enter' &&
       !e.nativeEvent.isComposing &&
-      selected === '제목 + 내용' &&
+      selected === '제목+내용' &&
       !keywordLengthError
     ) {
       setSearchFlag(true);
@@ -138,7 +138,7 @@ const KeywordSearch = ({
           </ul>
         )}
       </div>
-      <div className="border-brown absolute left-36 z-50 ml-4 flex w-auto flex-col rounded-xl border border-solid bg-white sm:ml-0">
+      <div className="border-brown absolute left-36 ml-4 flex w-auto flex-col rounded-xl border border-solid bg-white sm:ml-0">
         <div className="relative flex justify-between py-3 pl-4 pr-3">
           <input
             className="w-40 outline-none"
@@ -152,7 +152,7 @@ const KeywordSearch = ({
           />
           <button
             onClick={() => {
-              if (selected === '제목 + 내용' && keywordLengthError) {
+              if (selected === '제목+내용' && keywordLengthError) {
                 return;
               }
               setSearchFlag(true);
@@ -162,7 +162,7 @@ const KeywordSearch = ({
             <Icon id="search" />
           </button>
         </div>
-        {keywordLengthError && selected === '제목 + 내용' && (
+        {keywordLengthError && selected === '제목+내용' && (
           <p className="text-red absolute mt-14 text-sm">! 검색어는 2자 이상이어야 합니다.</p>
         )}
         {showKeyword && selected === '키워드' && (
