@@ -18,6 +18,10 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
 
+      - name: make BE .env
+        run: |
+          echo "${{ secrets.BE_ENV }}" > .env
+
       - name: install dependencies
         run: yarn install
 
@@ -32,12 +36,3 @@ jobs:
 
       - name: run e2e test
         run: yarn backend test:e2e
-        env:
-          TEST_REDIS_HOST: ${{ secrets.TEST_REDIS_HOST }}
-          TEST_REDIS_PORT: ${{ secrets.TEST_REDIS_PORT }}
-          TEST_REDIS_PASSWORD: ${{ secrets.TEST_REDIS_PASSWORD }}
-          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
-          TEST_DB_PORT: ${{ secrets.TEST_DB_PORT }}
-          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
-          TEST_DB_NAME: ${{ secrets.TEST_DB_NAME }}
-          TEST_DB_PASS: ${{ secrets.TEST_DB_PASS }}
