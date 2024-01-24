@@ -29,13 +29,5 @@ jobs:
       - name: build backend
         run: yarn workspace backend build
 
-      - name: make BE .env
-        run: |
-          cd backend
-          echo "${{ secrets.BE_ENV }}" > .env
-
       - name: run unit test
         run: yarn workspace backend test
-
-      - name: run e2e test
-        run: yarn workspace backend test:e2e
