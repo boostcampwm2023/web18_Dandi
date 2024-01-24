@@ -8,18 +8,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source code.
+        uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20.x'
 
-      - name: install dependencies
-        run: yarn install
+      - name: Install yarn
+        run: npm install -g yarn
 
       - name: build frontend
         run: yarn frontend build
