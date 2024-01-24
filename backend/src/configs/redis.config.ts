@@ -5,7 +5,7 @@ export const redisConfig = {
 };
 
 export const testRedisConfig = {
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT),
-  password: process.env.REDIS_PASSWORD,
+  host: process.env.TEST_REDIS_HOST,
+  port: Number(process.env.TEST_REDIS_PORT),
+  password: process.env.TEST_REDIS_PASSWORD,
 };
