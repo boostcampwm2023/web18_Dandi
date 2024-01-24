@@ -20,11 +20,14 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
 
+      - name: install dependency
+        run: yarn install
+
       - name: build frontend
-        run: yarn frontend build
+        run: yarn workspace frontend build
 
       - name: build backend
-        run: yarn backend build
+        run: yarn workspace backend build
 
       - name: make BE .env
         run: |
