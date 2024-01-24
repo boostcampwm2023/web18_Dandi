@@ -39,4 +39,11 @@ describe('AppController (e2e)', () => {
     expect(response.status).toEqual(401);
     expect(body.message).toEqual('Unauthorized');
   });
+  it('/diaries/:id (GET)', async () => {
+    const response = await request(app.getHttpServer()).get('/diaries/1');
+    const body = response.body;
+
+    expect(response.status).toEqual(401);
+    expect(body.message).toEqual('Unauthorized');
+  });
 });

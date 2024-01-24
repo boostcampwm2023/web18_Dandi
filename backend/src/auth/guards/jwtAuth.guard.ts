@@ -5,7 +5,7 @@ import { JWT_EXPIRED_ERROR, JWT_EXPIRE_DATE } from '../utils/auth.constant';
 import { cookieExtractor } from '../strategy/jwtAuth.strategy';
 import Redis from 'ioredis';
 import { JwtService } from '@nestjs/jwt';
-import { redisConfig } from 'src/configs/redis.config';
+import { redisConfig, testRedisConfig } from 'src/configs/redis.config';
 import { ExpiredTokenException } from '../utils/customException';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class JwtAuthGuard extends AuthGuard(JWT) {
       } catch (err) {
         if (err.name === JWT_EXPIRED_ERROR) {
           // refresh token 확인
-          const redis = new Redis(redisConfig);
+          const redis = new Redis(process.env.NODE_ENV === 'test' ? testRedisConfig : redisConfig);
           const refreshTokenData = await redis.get(userJwt);
 
           if (refreshTokenData) {
