@@ -18,10 +18,6 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
 
-      - name: make BE .env
-        run: |
-          echo "${{ secrets.BE_ENV }}" > .env
-
       - name: install dependencies
         run: yarn install
 
@@ -30,6 +26,10 @@ jobs:
 
       - name: build backend
         run: yarn backend build
+
+      - name: make BE .env
+        run: |
+          echo "${{ secrets.BE_ENV }}" > .env
 
       - name: run unit test
         run: yarn backend test
