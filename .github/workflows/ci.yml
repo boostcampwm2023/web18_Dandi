@@ -27,5 +27,8 @@ jobs:
       - name: build backend
         run: yarn backend build
 
-      - name: run test
+      - name: run unit test
         run: yarn backend test
+
+      - name: run e2e test
+        run: yarn backend test:e2e
