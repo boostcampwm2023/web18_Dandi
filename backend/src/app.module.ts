@@ -3,7 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMDevConfig, typeORMProdConfig, typeORMTestConfig } from './configs/typeorm.config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { redisConfig } from './configs/redis.config';
+import { redisConfig, testRedisConfig } from './configs/redis.config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { DiariesModule } from './diaries/diaries.module';
 import { UsersModule } from './users/users.module';
@@ -23,7 +23,9 @@ import { ImagesModule } from './images/images.module';
           ? typeORMTestConfig
           : typeORMDevConfig,
     ),
-    RedisModule.forRoot({ config: redisConfig }),
+    RedisModule.forRoot({
+      config: process.env.NODE_ENV === 'test' ? testRedisConfig : redisConfig,
+    }),
     DiariesModule,
     TagsModule,
     FriendsModule,
