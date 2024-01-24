@@ -32,3 +32,7 @@ jobs:
 
       - name: run e2e test
         run: yarn backend test:e2e
+        env:
+          TEST_REDIS_HOST: ${{ secrets.TEST_REDIS_HOST }}
+          TEST_REDIS_PORT: ${{ secrets.TEST_REDIS_PORT }}
+          TEST_REDIS_PASSWORD: ${{ secrets.TEST_REDIS_PASSWORD }}
