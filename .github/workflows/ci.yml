@@ -31,10 +31,11 @@ jobs:
 
       - name: make BE .env
         run: |
+          cd backend
           echo "${{ secrets.BE_ENV }}" > .env
 
       - name: run unit test
-        run: yarn backend test
+        run: yarn workspace backend test
 
       - name: run e2e test
-        run: yarn backend test:e2e
+        run: yarn workspace backend test:e2e
