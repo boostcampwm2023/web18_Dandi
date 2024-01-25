@@ -1,42 +1,44 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { ExecutionContext, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
 import { DataSource, QueryRunner } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { JwtAuthStrategy } from 'src/auth/strategy/jwtAuth.strategy';
 
-describe('AppController (e2e)', () => {
+/*
+  테스트 흐름
+  1. 사용자 정보 생성 -> beforeAll
+  2. 사용자 정보를 반환하도록 jwt 모킹 -> beforeAll
+  3. 해당 사용자 정보를 사용해 테스트 이전 필요한 정보 DB 저장 -> given
+  4. 
+*/
+describe('TagsController (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
 
   const mockUser = {
     id: 1,
-    nickname: test,
   };
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [
-        {
-          provide: JwtAuthGuard,
-          useValue: {
-            canActive: jest.fn(),
-          },
-        },
-        {
-          provide: JwtAuthStrategy,
-          useValue: {
-            validate: jest.fn().mockImplementation((payload, done) => {
-              return done(null, mockUser);
-            }),
-          },
-        },
-      ],
-    }).compile();
-    const dataSource = module.get<DataSource>(DataSource);
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          const req = context.switchToHttp().getRequest();
+          req.user = mockUser;
 
+          console.log(req);
+          console.log(req.user);
+          return true;
+        },
+      })
+      .compile();
+
+    const dataSource = module.get<DataSource>(DataSource);
     app = module.createNestApplication();
     queryRunner = dataSource.createQueryRunner();
     await app.init();
@@ -46,10 +48,16 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  beforeEach(async () => await queryRunner.startTransaction());
-  afterEach(async () => await queryRunner.rollbackTransaction());
+  describe('/search/:keyword (GET)', () => {
+    beforeEach(async () => await queryRunner.startTransaction());
+    afterEach(async () => await queryRunner.rollbackTransaction());
 
-  it('/ (GET)', async () => {
-    return request(app.getHttpServer()).get('/').expect(404);
+    it('일치하는 키워드가 없으면 빈 문자열 리스트 반환', () => {
+      //given
+      const url = `/tags/search/${encodeURIComponent('안녕')}`;
+
+      //when - then
+      return request(app.getHttpServer()).get(url).expect(200, { keywords: [] });
+    });
   });
 });
