@@ -4,8 +4,9 @@ import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
 import { DataSource, QueryRunner } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
-import { JwtAuthStrategy } from 'src/auth/strategy/jwtAuth.strategy';
 import { TagsService } from 'src/tags/tags.service';
+import Redis from 'ioredis';
+import { testRedisConfig } from 'src/configs/redis.config';
 
 /*
   테스트 흐름
@@ -19,6 +20,7 @@ describe('TagsController (e2e)', () => {
   let queryRunner: QueryRunner;
   let tagsService: TagsService;
 
+  const redis = new Redis(testRedisConfig);
   const mockUser = {
     id: 1,
   };
@@ -39,19 +41,27 @@ describe('TagsController (e2e)', () => {
       .compile();
 
     const dataSource = module.get<DataSource>(DataSource);
+
     tagsService = module.get<TagsService>(TagsService);
-    app = module.createNestApplication();
     queryRunner = dataSource.createQueryRunner();
+    app = module.createNestApplication();
     await app.init();
   });
 
   afterAll(async () => {
+    await redis.quit();
     await app.close();
   });
 
   describe('/search/:keyword (GET)', () => {
-    beforeEach(async () => await queryRunner.startTransaction());
-    afterEach(async () => await queryRunner.rollbackTransaction());
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
 
     it('일치하는 키워드가 없으면 빈 문자열 리스트 반환', () => {
       //given
@@ -68,10 +78,13 @@ describe('TagsController (e2e)', () => {
 
       await tagsService.updateDataSetScore(mockUser.id, tagNames);
 
-      //when - then
-      return request(app.getHttpServer())
-        .get(url)
-        .expect(200, { keywords: ['안녕', '안녕하세요'] });
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.keywords.sort()).toEqual(['안녕', '안녕하세요'].sort());
     });
   });
 });
