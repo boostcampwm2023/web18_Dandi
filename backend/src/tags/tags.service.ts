@@ -31,7 +31,7 @@ export class TagsService {
       }
     });
 
-    Promise.all(promises);
+    await Promise.all(promises);
   }
 
   async recommendKeywords(userId: number, keyword: string) {
