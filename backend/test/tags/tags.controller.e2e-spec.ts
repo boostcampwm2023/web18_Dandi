@@ -5,6 +5,7 @@ import { AppModule } from 'src/app.module';
 import { DataSource, QueryRunner } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { JwtAuthStrategy } from 'src/auth/strategy/jwtAuth.strategy';
+import { TagsService } from 'src/tags/tags.service';
 
 /*
   테스트 흐름
@@ -16,6 +17,7 @@ import { JwtAuthStrategy } from 'src/auth/strategy/jwtAuth.strategy';
 describe('TagsController (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
+  let tagsService: TagsService;
 
   const mockUser = {
     id: 1,
@@ -31,14 +33,13 @@ describe('TagsController (e2e)', () => {
           const req = context.switchToHttp().getRequest();
           req.user = mockUser;
 
-          console.log(req);
-          console.log(req.user);
           return true;
         },
       })
       .compile();
 
     const dataSource = module.get<DataSource>(DataSource);
+    tagsService = module.get<TagsService>(TagsService);
     app = module.createNestApplication();
     queryRunner = dataSource.createQueryRunner();
     await app.init();
@@ -58,6 +59,19 @@ describe('TagsController (e2e)', () => {
 
       //when - then
       return request(app.getHttpServer()).get(url).expect(200, { keywords: [] });
+    });
+
+    it('일치하는 키워드가 있으면 모든 유사 문자열 리스트 반환', async () => {
+      //given
+      const url = `/tags/search/${encodeURIComponent('안녕')}`;
+      const tagNames = ['안녕', '안녕하세요', '저리가세욧'];
+
+      await tagsService.updateDataSetScore(mockUser.id, tagNames);
+
+      //when - then
+      return request(app.getHttpServer())
+        .get(url)
+        .expect(200, { keywords: ['안녕', '안녕하세요'] });
     });
   });
 });
