@@ -61,6 +61,9 @@ export class DiariesRepository extends Repository<Diary> {
       .groupBy('diary.id')
       .getRawOne();
 
+    if (!diaryInfo) {
+      return diaryInfo;
+    }
     diaryInfo.tagNames = diaryInfo.tagNames ? diaryInfo.tagNames.split(',') : [];
     diaryInfo.reactionCount = Number(diaryInfo.reactionCount);
 

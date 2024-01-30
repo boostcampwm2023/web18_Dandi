@@ -2,19 +2,32 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
-import { DataSource, QueryRunner } from 'typeorm';
+import { DataSource, EntityManager, QueryRunner } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import Redis from 'ioredis';
 import { testRedisConfig } from 'src/configs/redis.config';
+import { DiariesRepository } from 'src/diaries/diaries.repository';
+import { Diary } from 'src/diaries/entity/diary.entity';
+import { DiaryStatus } from 'src/diaries/entity/diaryStatus';
+import { MoodDegree } from 'src/diaries/utils/diaries.constant';
+import { User } from 'src/users/entity/user.entity';
+import { UsersRepository } from 'src/users/users.repository';
+import { SocialType } from 'src/users/entity/socialType';
 
-describe('TagsController (e2e)', () => {
+describe('Dairies Controller (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
+  let diariesRepository: DiariesRepository;
+  let usersRepository: UsersRepository;
 
   const redis = new Redis(testRedisConfig);
   const mockUser = {
-    id: 1,
-  };
+    email: 'test@test.com',
+    nickname: 'test',
+    socialId: 'test123',
+    socialType: SocialType.NAVER,
+    profileImage: 'testImage',
+  } as User;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,8 +45,11 @@ describe('TagsController (e2e)', () => {
       .compile();
 
     const dataSource = module.get<DataSource>(DataSource);
-
     queryRunner = dataSource.createQueryRunner();
+
+    diariesRepository = module.get<DiariesRepository>(DiariesRepository);
+    usersRepository = module.get<UsersRepository>(UsersRepository);
+
     app = module.createNestApplication();
     await app.init();
   });
@@ -63,9 +79,54 @@ describe('TagsController (e2e)', () => {
         tagNames,
         status: 'private',
       };
+      const savedUser = await usersRepository.save(mockUser);
 
       //when - then
       return request(app.getHttpServer()).post('/diaries').send(mockDiary).expect(201);
+    });
+  });
+
+  describe('/diaries/:id (GET)', () => {
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('일기 존재 시 일기 상세 정보 반환', async () => {
+      //given
+      const mockDiary = {
+        title: '일기 제목',
+        content: '일기 내용',
+        emotion: '🐶',
+        status: DiaryStatus.PRIVATE,
+        summary: '요약',
+        mood: MoodDegree.BAD,
+        author: mockUser,
+      } as Diary;
+
+      const savedUser = await usersRepository.save(mockUser);
+      const savedDiary = await diariesRepository.save(mockDiary);
+
+      //when
+      const response = await request(app.getHttpServer()).get(`/diaries/${savedDiary.id}`);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.emotion).toEqual('🐶');
+    });
+
+    it('일기 정보가 존재하지 않으면 예외 발생', async () => {
+      //when
+      const response = await request(app.getHttpServer()).get(`/diaries/1`);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(400);
     });
   });
 });
