@@ -46,6 +46,9 @@ describe('Dairies Controller (e2e)', () => {
 
     const dataSource = module.get<DataSource>(DataSource);
     queryRunner = dataSource.createQueryRunner();
+    dataSource.createQueryRunner = jest.fn();
+    queryRunner.release = jest.fn();
+    (dataSource.createQueryRunner as jest.Mock).mockReturnValue(queryRunner);
 
     diariesRepository = module.get<DiariesRepository>(DiariesRepository);
     usersRepository = module.get<UsersRepository>(UsersRepository);
