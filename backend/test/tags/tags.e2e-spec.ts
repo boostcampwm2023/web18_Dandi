@@ -34,6 +34,10 @@ describe('TagsController (e2e)', () => {
       .compile();
 
     const dataSource = module.get<DataSource>(DataSource);
+    queryRunner = dataSource.createQueryRunner();
+    dataSource.createQueryRunner = jest.fn();
+    queryRunner.release = jest.fn();
+    (dataSource.createQueryRunner as jest.Mock).mockReturnValue(queryRunner);
 
     tagsService = module.get<TagsService>(TagsService);
     queryRunner = dataSource.createQueryRunner();
