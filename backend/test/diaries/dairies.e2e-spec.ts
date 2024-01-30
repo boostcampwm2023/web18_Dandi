@@ -123,13 +123,9 @@ describe('Dairies Controller (e2e)', () => {
       expect(body.emotion).toEqual('🐶');
     });
 
-    it('일기 정보가 존재하지 않으면 예외 발생', async () => {
-      //when
-      const response = await request(app.getHttpServer()).get(`/diaries/1`);
-      const body = response.body;
-
-      //then
-      expect(response.status).toEqual(400);
+    it('일기 정보가 존재하지 않으면 400 에러 발생', async () => {
+      //when - then
+      return request(app.getHttpServer()).get(`/diaries/1`).expect(400);
     });
   });
 });
