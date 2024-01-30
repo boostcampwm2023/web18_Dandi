@@ -13,15 +13,20 @@ import { MoodDegree } from 'src/diaries/utils/diaries.constant';
 import { User } from 'src/users/entity/user.entity';
 import { UsersRepository } from 'src/users/users.repository';
 import { SocialType } from 'src/users/entity/socialType';
+import { Friend } from 'src/friends/entity/friend.entity';
+import { FriendsRepository } from 'src/friends/friends.repository';
+import { FriendStatus } from 'src/friends/entity/friendStatus';
 
 describe('Dairies Controller (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
   let diariesRepository: DiariesRepository;
   let usersRepository: UsersRepository;
+  let friendsRepository: FriendsRepository;
 
   const redis = new Redis(testRedisConfig);
   const mockUser = {
+    id: 1,
     email: 'test@test.com',
     nickname: 'test',
     socialId: 'test123',
@@ -52,6 +57,7 @@ describe('Dairies Controller (e2e)', () => {
 
     diariesRepository = module.get<DiariesRepository>(DiariesRepository);
     usersRepository = module.get<UsersRepository>(UsersRepository);
+    friendsRepository = module.get<FriendsRepository>(FriendsRepository);
 
     app = module.createNestApplication();
     await app.init();
@@ -86,6 +92,112 @@ describe('Dairies Controller (e2e)', () => {
 
       //when - then
       return request(app.getHttpServer()).post('/diaries').send(mockDiary).expect(201);
+    });
+  });
+
+  describe('/diaries/friends (GET)', () => {
+    const mockFriend = {
+      email: 'test2@test.com',
+      nickname: 'test2',
+      socialId: 'test2',
+      socialType: SocialType.NAVER,
+      profileImage: 'testImage',
+    } as User;
+    const mockFriendRelation = {
+      sender: mockFriend,
+      receiver: mockUser,
+      status: FriendStatus.COMPLETE,
+    } as Friend;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await usersRepository.save(mockFriend);
+      await friendsRepository.save(mockFriendRelation);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('일기 존재 시 일기 상세 정보 반환', async () => {
+      //given
+      const mockDiary = {
+        title: '일기 제목',
+        content: '일기 내용',
+        emotion: '🐶',
+        status: DiaryStatus.PUBLIC,
+        summary: '요약',
+        mood: MoodDegree.BAD,
+        author: mockFriend,
+      } as Diary;
+
+      const savedDiary = await diariesRepository.save(mockDiary);
+
+      //when
+      const response = await request(app.getHttpServer()).get(`/diaries/friends`);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].diaryId).toEqual(savedDiary.id);
+    });
+
+    it('private으로 설정된 친구 일기 조회 불가', async () => {
+      //given
+      const mockDiary = {
+        title: '일기 제목',
+        content: '일기 내용',
+        emotion: '🐶',
+        status: DiaryStatus.PRIVATE,
+        summary: '요약',
+        mood: MoodDegree.BAD,
+        author: mockFriend,
+      } as Diary;
+
+      await diariesRepository.save(mockDiary);
+
+      //when
+      const response = await request(app.getHttpServer()).get(`/diaries/friends`);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.diaryList).toHaveLength(0);
+    });
+
+    it('lastIndex를 설정하면 해당 index보다 id가 작은 일기 정보 반환', async () => {
+      //given
+      let lastIndex = 0;
+      for (let i = 0; i < 5; i++) {
+        const mockDiary = {
+          title: '일기 제목',
+          content: '일기 내용',
+          emotion: '🐶',
+          status: DiaryStatus.PUBLIC,
+          summary: '요약',
+          mood: MoodDegree.BAD,
+          author: mockFriend,
+        } as Diary;
+
+        await diariesRepository.save(mockDiary);
+        if (i == 2) {
+          lastIndex = mockDiary.id;
+        }
+      }
+
+      //when
+      const response = await request(app.getHttpServer()).get(
+        `/diaries/friends?lastIndex=${lastIndex}`,
+      );
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.diaryList).toHaveLength(2);
     });
   });
 
