@@ -8,13 +8,6 @@ import { TagsService } from 'src/tags/tags.service';
 import Redis from 'ioredis';
 import { testRedisConfig } from 'src/configs/redis.config';
 
-/*
-  테스트 흐름
-  1. 사용자 정보 생성 -> beforeAll
-  2. 사용자 정보를 반환하도록 jwt 모킹 -> beforeAll
-  3. 해당 사용자 정보를 사용해 테스트 이전 필요한 정보 DB 저장 -> given
-  4. 
-*/
 describe('TagsController (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
