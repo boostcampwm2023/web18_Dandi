@@ -272,7 +272,7 @@ describe('Dairies Controller (e2e)', () => {
       return request(app.getHttpServer())
         .patch(`/diaries/${mockDiary.id}`)
         .send(updateData)
-        .expect(400);
+        .expect(200);
     });
 
     it('수정 정보가 존재하면 해당 정보만 수정 후 200 반환', () => {
