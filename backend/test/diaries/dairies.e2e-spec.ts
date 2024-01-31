@@ -240,4 +240,54 @@ describe('Dairies Controller (e2e)', () => {
       return request(app.getHttpServer()).get(`/diaries/1`).expect(400);
     });
   });
+
+  describe('/diaries/:id (PATCH)', () => {
+    const mockDiary = {
+      title: '일기 제목',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      const savedUser = await usersRepository.save(mockUser);
+      const savedDiary = await diariesRepository.save(mockDiary);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('수정 정보가 존재하지 않아도 200 반환', () => {
+      //given
+      const updateData = {};
+
+      //when - then
+      return request(app.getHttpServer())
+        .patch(`/diaries/${mockDiary.id}`)
+        .send(updateData)
+        .expect(400);
+    });
+
+    it('수정 정보가 존재하면 해당 정보만 수정 후 200 반환', () => {
+      //given
+      const updateData = {
+        title: 'update title',
+      };
+
+      //when - then
+      return request(app.getHttpServer())
+        .patch(`/diaries/${mockDiary.id}`)
+        .send(updateData)
+        .expect(200);
+    });
+  });
+
+  describe('/diaries/:id (DELETE)', () => {});
 });
