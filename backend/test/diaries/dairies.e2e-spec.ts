@@ -256,12 +256,23 @@ describe('Dairies Controller (e2e)', () => {
       await redis.flushall();
       await queryRunner.startTransaction();
 
-      const savedUser = await usersRepository.save(mockUser);
-      const savedDiary = await diariesRepository.save(mockDiary);
+      await usersRepository.save(mockUser);
+      await diariesRepository.save(mockDiary);
     });
 
     afterEach(async () => {
       await queryRunner.rollbackTransaction();
+    });
+
+    it('존재하지 않는 일기에 수정 요청을 하면 400 반환', () => {
+      //given
+      const updateData = {};
+
+      //when - then
+      return request(app.getHttpServer())
+        .patch(`/diaries/${mockDiary.id + 1}`)
+        .send(updateData)
+        .expect(400);
     });
 
     it('수정 정보가 존재하지 않아도 200 반환', () => {
@@ -289,5 +300,43 @@ describe('Dairies Controller (e2e)', () => {
     });
   });
 
-  describe('/diaries/:id (DELETE)', () => {});
+  describe('/diaries/:id (DELETE)', () => {
+    const mockDiary = {
+      title: '일기 제목',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await diariesRepository.save(mockDiary);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('존재하지 않는 일기에 삭제 요청을 보내면 400 반환', () => {
+      //given
+      const diaryId = mockDiary.id + 1;
+
+      //when - then
+      return request(app.getHttpServer()).delete(`/diaries/${diaryId}`).expect(400);
+    });
+
+    it('존재하는 일기에 삭제 요청을 보내면 200 반환', () => {
+      //given
+      const diaryId = mockDiary.id;
+
+      //when - then
+      return request(app.getHttpServer()).delete(`/diaries/${diaryId}`).expect(200);
+    });
+  });
 });
