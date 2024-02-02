@@ -16,6 +16,7 @@ import { SocialType } from 'src/users/entity/socialType';
 import { Friend } from 'src/friends/entity/friend.entity';
 import { FriendsRepository } from 'src/friends/friends.repository';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
+import { TimeUnit } from 'src/diaries/dto/timeUnit.enum';
 
 describe('Dairies Controller (e2e)', () => {
   let app: INestApplication;
@@ -337,6 +338,158 @@ describe('Dairies Controller (e2e)', () => {
 
       //when - then
       return request(app.getHttpServer()).delete(`/diaries/${diaryId}`).expect(200);
+    });
+  });
+
+  describe('/diaries/users/:id (GET)', () => {
+    const mockDiary = {
+      title: '일기 제목',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await diariesRepository.save(mockDiary);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    //TODO
+    it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', () => {
+      //given
+      const dto = {
+        type: 'wrongType',
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when - then
+      return request(app.getHttpServer()).get(url).expect(400);
+    });
+
+    it('일자 타입이 Day가 아니고, 유효하지 않은 일자 형식으로 요청이 오면 400에러 발생', () => {
+      //given
+      const dto = {
+        type: TimeUnit.Month,
+        startDate: '24-01-01',
+        endDate: '24-01-01',
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when - then
+      return request(app.getHttpServer()).get(url).expect(400);
+    });
+
+    it('일자 타입이 Day가 아니면, 기간 내 일기 조회 정보 반환', async () => {
+      const now = new Date();
+      const endDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+        now.getDate(),
+      ).padStart(2, '0')}`;
+      const dto = {
+        type: TimeUnit.Month,
+        startDate: '2024-01-01',
+        endDate,
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.nickname).toEqual(mockUser.nickname);
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].diaryId).toEqual(mockDiary.id);
+    });
+
+    it('일자 타입이 Day가 아니고, 기간 내 일기가 없으면 빈 리스트 반환', async () => {
+      const dto = {
+        type: TimeUnit.Month,
+        startDate: '2024-01-01',
+        endDate: '2024-02-01',
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.nickname).toEqual(mockUser.nickname);
+      expect(body.diaryList).toHaveLength(0);
+    });
+
+    it('일자 타입이 Day, lastIndex와 함께 요청이 오면 lastIndex보다 낮은 ID의 일기 조회 정보 반환', async () => {
+      //given
+      const dto = {
+        type: TimeUnit.Day,
+        lastIndex: String(mockDiary.id + 1),
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.nickname).toEqual(mockUser.nickname);
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].diaryId).toEqual(mockDiary.id);
+    });
+
+    it('일자 타입이 Day, lastIndex보다 낮은 ID의 일기가 존재하지 않으면 빈 배열 반환', async () => {
+      //given
+      const dto = {
+        type: TimeUnit.Day,
+        lastIndex: String(mockDiary.id - 1),
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.nickname).toEqual(mockUser.nickname);
+      expect(body.diaryList).toHaveLength(0);
+    });
+
+    it('일자 타입이 Day, lastIndex 없이 요청이 오면 가장 최신의 일기 조회 정보 반환', async () => {
+      //given
+      const dto = {
+        type: TimeUnit.Day,
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/users/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.nickname).toEqual(mockUser.nickname);
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].diaryId).toEqual(mockDiary.id);
     });
   });
 });
