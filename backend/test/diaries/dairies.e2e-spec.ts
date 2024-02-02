@@ -17,6 +17,7 @@ import { Friend } from 'src/friends/entity/friend.entity';
 import { FriendsRepository } from 'src/friends/friends.repository';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { TimeUnit } from 'src/diaries/dto/timeUnit.enum';
+import { format, subMonths } from 'date-fns';
 
 describe('Dairies Controller (e2e)', () => {
   let app: INestApplication;
@@ -490,6 +491,111 @@ describe('Dairies Controller (e2e)', () => {
       expect(body.nickname).toEqual(mockUser.nickname);
       expect(body.diaryList).toHaveLength(1);
       expect(body.diaryList[0].diaryId).toEqual(mockDiary.id);
+    });
+  });
+
+  describe('/diaries/emotions/:userId (GET)', () => {
+    const mockDiaryA = {
+      title: '일기 제목',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+    const mockDiaryB = {
+      title: '일기 제목',
+      content: '일기 내용',
+      emotion: '🌱',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+      createdAt: subMonths(new Date(), 2),
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await diariesRepository.save(mockDiaryA);
+      await diariesRepository.save(mockDiaryB);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', () => {
+      //given
+      const dto = {
+        startDate: '24-02-01',
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/emotions/${mockUser.id}?${query}`;
+
+      //when - then
+      return request(app.getHttpServer()).get(url).expect(400);
+    });
+
+    it('일자 정보가 없다면, 현재 일자로부터 한달 이내의 일기 감정 정보 반환', async () => {
+      //given
+      const url = `/diaries/emotions/${mockUser.id}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.emotions).toHaveLength(1);
+      expect(body.emotions[0].emotion).toEqual(mockDiaryA.emotion);
+    });
+
+    it('시작/종료 일자 중 하나라도 없다면, 현재 일자로부터 한달 이내의 일기 감정 정보 반환', async () => {
+      //given
+      const dto = {
+        startDate: '2024-01-01',
+      };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/emotions/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.emotions).toHaveLength(1);
+      expect(body.emotions[0].emotion).toEqual(mockDiaryA.emotion);
+    });
+
+    it('시작/종료 일자 모두 존재하면, 해당 일자 사이의 일기 감정 정보 반환', async () => {
+      //given
+      const now = new Date();
+      const startDate = `${mockDiaryB.createdAt.getFullYear()}-${String(
+        mockDiaryB.createdAt.getMonth(),
+      ).padStart(2, '0')}-${String(mockDiaryB.createdAt.getDate()).padStart(2, '0')}`;
+      const lastDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        '0',
+      )}-${String(now.getDate()).padStart(2, '0')}`;
+
+      const dto = { startDate, lastDate };
+      const query = new URLSearchParams(dto).toString();
+      const url = `/diaries/emotions/${mockUser.id}?${query}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.emotions).toHaveLength(2);
+      expect([mockDiaryA.emotion, mockDiaryB.emotion]).toContain(body.emotions[0].emotion);
+      expect([mockDiaryA.emotion, mockDiaryB.emotion]).toContain(body.emotions[1].emotion);
     });
   });
 });
