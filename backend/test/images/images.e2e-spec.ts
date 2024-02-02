@@ -1,15 +1,12 @@
 import * as request from 'supertest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { ImagesService } from 'src/images/images.service';
 import { AppModule } from 'src/app.module';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
-import * as fs from 'fs';
 import { ImagesRepository } from 'src/images/images.repository';
 
 describe('ImagesController (e2e)', () => {
   let app: INestApplication;
-  let imagesService: ImagesService;
   let imagesRepository: ImagesRepository;
   const user = { id: 1, nickname: 'testUser' };
 
@@ -28,7 +25,6 @@ describe('ImagesController (e2e)', () => {
       })
       .compile();
 
-    imagesService = module.get<ImagesService>(ImagesService);
     imagesRepository = module.get<ImagesRepository>(ImagesRepository);
     app = module.createNestApplication();
     await app.init();
@@ -50,6 +46,17 @@ describe('ImagesController (e2e)', () => {
       // then
       expect(response.status).toEqual(201);
       expect(response.body.imageURL).toEqual(uploadedLocation);
+    });
+
+    it('파일의 MIME type이 맞지 않는 경우 예외 발생', async () => {
+      // given
+      const imageFilePath = './test/images/testFile.txt';
+
+      // when
+      const response = await request(app.getHttpServer()).post(url).attach('image', imageFilePath);
+
+      // then
+      expect(response.status).toEqual(400);
     });
   });
 
