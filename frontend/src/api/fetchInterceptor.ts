@@ -10,7 +10,6 @@ const interceptor = async (url: string, option: any) => {
   const refreshResponse = await refresh();
 
   if (refreshResponse?.status === 401 || refreshResponse?.status === 500) {
-    console.log('asdf')
     window.location.href = PAGE_URL.LOGIN;
     return refreshResponse;
   }
