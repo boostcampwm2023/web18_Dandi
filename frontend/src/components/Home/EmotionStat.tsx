@@ -3,6 +3,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import EmotionCloud from '@components/Home/EmotionCloud';
 
+import useUserStore from '@store/useUserStore';
+
 import useEmotionStatQuery from '@hooks/useEmotionStatQuery';
 
 import { formatDateDash, calPrev } from '@util/funcs';
@@ -29,7 +31,7 @@ interface diaryInfoProps {
 
 const EmotionStat = ({ nickname }: EmotionStatProps) => {
   const params = useParams();
-  const userId = params.userId || (localStorage.getItem('userId') as string);
+  const userId = Number(params.userId) || useUserStore().userId;
   const navigate = useNavigate();
   const { state } = useLocation();
 

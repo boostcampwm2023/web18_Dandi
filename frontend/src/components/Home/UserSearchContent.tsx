@@ -6,6 +6,8 @@ import { getSearchUserList } from '@api/FriendModal';
 
 import FriendModalItem from '@components/Home/FriendModalItem';
 
+import useUserStore from '@store/useUserStore';
+
 import { PROFILE_BUTTON_TYPE, DEBOUNCE_TIME } from '@util/constants';
 
 interface UserSearchContentProps {
@@ -31,8 +33,9 @@ const UserSearchContent = ({ nickname }: UserSearchContentProps) => {
     return () => clearTimeout(timer);
   }, [nickname]);
 
-  const loginUserId = localStorage.getItem('userId') ?? 0;
-  const AnotherUserData = userList.filter((data: UserListResponse) => +data.id !== +loginUserId);
+  const AnotherUserData = userList.filter(
+    (data: UserListResponse) => +data.id !== useUserStore().userId,
+  );
 
   if (AnotherUserData.length === 0) {
     return (

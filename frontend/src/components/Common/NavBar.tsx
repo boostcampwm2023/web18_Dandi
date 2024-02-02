@@ -4,14 +4,17 @@ import logo from '@assets/image/text_logo.webp';
 
 import { logout } from '@api/Login';
 
+import useUserStore from '@store/useUserStore';
+
 const NavBar = () => {
   const navigate = useNavigate();
+  const { setUserId } = useUserStore();
 
   const onClickLogout = async () => {
     const isLogout = await logout();
 
     if (isLogout) {
-      localStorage.setItem('userId', '');
+      setUserId(0);
       navigate('/login');
     }
   };

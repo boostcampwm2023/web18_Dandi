@@ -16,7 +16,7 @@ interface CreateDiaryParams {
   status: string;
 }
 
-const useUpdateDiaryMutation = (userId: string, diaryId: number) => {
+const useUpdateDiaryMutation = (userId: number, diaryId: number) => {
   const queryClient = useQueryClient();
   const openToast = useToast();
   const navigate = useNavigate();

@@ -4,10 +4,10 @@ import getGrass from '@api/Grass';
 
 import { reactQueryKeys } from '@util/constants';
 
-const useGrassQuery = (userId: string) => {
+const useGrassQuery = (userId: number) => {
   return useQuery({
     queryKey: [reactQueryKeys.Grass, userId],
-    queryFn: () => getGrass(Number(userId)),
+    queryFn: () => getGrass(userId),
     staleTime: Infinity,
   });
 };

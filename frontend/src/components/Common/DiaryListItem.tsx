@@ -9,6 +9,8 @@ import ProfileItem from '@components/Common/ProfileItem';
 import ReactionList from '@components/Diary/ReactionList';
 import Keyword from '@components/Common/Keyword';
 
+import useUserStore from '@store/useUserStore';
+
 import useModal from '@hooks/useModal';
 import usePostReactionMutation from '@hooks/usePostReactionMutation';
 import useDeleteReactionMutation from '@hooks/useDeleteReactionMutation';
@@ -28,7 +30,7 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   const [totalReaction, setTotalReaction] = useState(0);
   const { isOpen, openModal } = useModal();
 
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
 
   useEffect(() => {
     setSelectedEmoji(diaryItem.leavedReaction);
@@ -36,13 +38,13 @@ const DiaryListItem = ({ pageType, diaryItem }: DiaryListItemProps) => {
   }, [diaryItem]);
 
   const postReactionMutation = usePostReactionMutation(
-    Number(userId),
+    userId,
     Number(diaryItem.diaryId),
     selectedEmoji,
   );
 
   const deleteReactionMutation = useDeleteReactionMutation(
-    Number(userId),
+    userId,
     Number(diaryItem.diaryId),
     selectedEmoji,
   );

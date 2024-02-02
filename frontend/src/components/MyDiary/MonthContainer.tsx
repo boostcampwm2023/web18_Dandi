@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DateController from '@components/MyDiary/DateController';
 import Calendar from '@components/MyDiary/Calendar';
 
+import useUserStore from '@store/useUserStore';
+
 import useMonthDiaryDataQuery from '@hooks/useMonthDiaryDataQuery';
 
 import { NEXT_INDEX, PAGE_URL } from '@util/constants';
@@ -13,7 +15,7 @@ const MonthContainer = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [nowMonth, setNowMonth] = useState(new Date());
-  const userId = localStorage.getItem('userId') as string;
+  const {userId} = useUserStore();
   const first = new Date(nowMonth.getFullYear(), nowMonth.getMonth(), 1);
   const last = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + NEXT_INDEX, 0);
 

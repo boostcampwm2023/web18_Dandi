@@ -8,6 +8,8 @@ import Keyword from '@components/Common/Keyword';
 import Reaction from '@components/Common/Reaction';
 import ReactionList from '@components/Diary/ReactionList';
 
+import useUserStore from '@store/useUserStore';
+
 import useModal from '@hooks/useModal';
 import usePostReactionMutation from '@hooks/usePostReactionMutation';
 import useDeleteReactionMutation from '@hooks/useDeleteReactionMutation';
@@ -28,16 +30,16 @@ const Card = ({ diaryItem, styles, size }: CardProps) => {
   const [totalReaction, setTotalReaction] = useState(diaryItem.reactionCount);
   const { openModal } = useModal();
 
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
 
   const postReactionMutation = usePostReactionMutation(
-    Number(userId),
+    userId,
     Number(diaryItem.diaryId),
     selectedEmoji,
   );
 
   const deleteReactionMutation = useDeleteReactionMutation(
-    Number(userId),
+    userId,
     Number(diaryItem.diaryId),
     selectedEmoji,
   );

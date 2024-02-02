@@ -15,6 +15,7 @@ import ViewType from '@components/MyDiary/ViewType';
 import MonthContainer from '@components/MyDiary/MonthContainer';
 
 import useViewTypeStore from '@store/useViewTypeStore';
+import useUserStore from '@store/useUserStore';
 
 import useMyDayDiaryListQuery from '@hooks/useMyDayDiaryListQuery';
 import useSearchDataListQuery from '@hooks/useSearchDataListQuery';
@@ -28,7 +29,7 @@ const MyDiary = () => {
   const [searchFlag, setSearchFlag] = useState(false);
   const [selected, setSelected] = useState<searchOptionsType>('키워드');
 
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
   const infiniteRef = useRef<HTMLDivElement>(null);
 
   const {

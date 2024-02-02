@@ -7,7 +7,7 @@ import { useToast } from '@hooks/useToast';
 
 import { reactQueryKeys } from '@util/constants';
 
-const useDeleteDiaryMutation = (userId: string, diaryId: number) => {
+const useDeleteDiaryMutation = (userId: number, diaryId: number) => {
   const queryClient = useQueryClient();
   const openToast = useToast();
   const navigate = useNavigate();

@@ -7,12 +7,14 @@ import NavBar from '@components/Common/NavBar';
 import DiaryListItem from '@components/Common/DiaryListItem';
 import Modal from '@components/Common/Modal';
 
+import useUserStore from '@store/useUserStore';
+
 import useFeedDiaryListQuery from '@hooks/useFeedDiaryListQuery';
 
 import { PAGE_TITLE_FEED, FEED } from '@util/constants';
 
 const Feed = () => {
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
   const infiniteRef = useRef<HTMLDivElement>(null);
 
   const { data: feedData, isLoading, isSuccess, fetchNextPage } = useFeedDiaryListQuery(userId);

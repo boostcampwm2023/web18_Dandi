@@ -6,6 +6,8 @@ import dizzyFace from '@assets/image/dizzyFace.png';
 import CarouselContainer from '@components/MyDiary/CarouselContainer';
 import DateController from '@components/MyDiary/DateController';
 
+import useUserStore from '@store/useUserStore';
+
 import useMyWeekDiaryQuery from '@hooks/useMyWeekDiaryQuery';
 
 import { getNowWeek, formatDate } from '@util/funcs';
@@ -25,7 +27,7 @@ const WeekContainer = () => {
   const [nowWeek, setNowWeek] = useState(getNowWeek(new Date()));
   const [period, setPeriod] = useState(calPeriod());
 
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
 
   const { data } = useMyWeekDiaryQuery(userId, period);
 

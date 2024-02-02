@@ -7,13 +7,13 @@ import { viewTypes } from '@type/pages/MyDiary';
 
 import { reactQueryKeys, DIARY_VIEW_TYPE_LIST } from '@util/constants';
 
-const useMyDayDiaryListQuery = (userId: string) => {
+const useMyDayDiaryListQuery = (userId: number) => {
   return useInfiniteQuery<
     any,
     Error,
     InfiniteDiaryListProps,
-    [string, string | null],
-    { userId: string; type: viewTypes; lastIndex: number }
+    [string, number],
+    { userId: number; type: viewTypes; lastIndex: number }
   >({
     queryKey: [reactQueryKeys.MyDayDiaryList, userId],
 
