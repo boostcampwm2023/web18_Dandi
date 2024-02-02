@@ -7,7 +7,7 @@ import { IDiaryContent } from '@type/components/Common/DiaryList';
 import { reactQueryKeys, DIARY_VIEW_TYPE_LIST } from '@util/constants';
 import { formatDateDash } from '@util/funcs';
 
-const useMyWeekDiaryQuery = (userId: string, period: Date[]) => {
+const useMyWeekDiaryQuery = (userId: number, period: Date[]) => {
   return useQuery<{ nickname: string; diaryList: IDiaryContent[] }>({
     queryKey: [
       reactQueryKeys.MyWeekDiary,

@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import GrassTooltip from '@components/Home/GrassTooltip';
 
+import useUserStore from '@store/useUserStore';
+
 import useGrassQuery from '@hooks/useGrassQuery';
 
 import { EMOTION_LEVELS } from '@util/constants';
@@ -14,7 +16,7 @@ interface GrassDataProps {
 
 const Grass = () => {
   const params = useParams();
-  const userId = params.userId || (localStorage.getItem('userId') as string);
+  const userId = Number(params.userId) || useUserStore().userId;
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

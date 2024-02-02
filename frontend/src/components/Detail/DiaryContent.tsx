@@ -9,6 +9,8 @@ import Reaction from '@components/Common/Reaction';
 import Keyword from '@components/Common/Keyword';
 import ReactionList from '@components/Diary/ReactionList';
 
+import useUserStore from '@store/useUserStore';
+
 import useModal from '@hooks/useModal';
 import useReactionListQuery from '@hooks/useReactionListQuery';
 import usePostReactionMutation from '@hooks/usePostReactionMutation';
@@ -77,11 +79,10 @@ const DiaryContent = ({
 
   useEffect(() => {
     if (isSuccess) {
-      const loginUserId = localStorage.getItem('userId') ?? 0;
       const myData = data.reactionList.find(
-        (item: IReactionedFriends) => item.userId === +loginUserId,
+        (item: IReactionedFriends) => item.userId === useUserStore().userId,
       );
-      if(myData) setSelectedEmoji(myData?.reaction);
+      if (myData) setSelectedEmoji(myData?.reaction);
       setTotalReaction(data.reactionList.length);
     }
   }, [data]);

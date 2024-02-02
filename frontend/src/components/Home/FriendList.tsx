@@ -6,6 +6,8 @@ import Icon from '@components/Common/Icon';
 import FriendModalItem from '@components/Home/FriendModalItem';
 import FriendSearchContent from '@components/Home/FriendSearchContent';
 
+import useUserStore from '@store/useUserStore';
+
 import useFriendListDataQuery from '@hooks/useFriendListQuery';
 
 import { PROFILE_BUTTON_TYPE } from '@util/constants';
@@ -23,6 +25,7 @@ interface FriendListResponse {
 
 const FriendList = ({ userId }: FriendListProps) => {
   const [nickname, setNickname] = useState('');
+  const loginUser = useUserStore().userId;
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -38,7 +41,6 @@ const FriendList = ({ userId }: FriendListProps) => {
     return <p>친구목록을 불러오지 못했습니다!</p>;
   }
 
-  const loginUser = localStorage.getItem('userId') ?? 0;
   const profileItemType =
     +loginUser === userId ? PROFILE_BUTTON_TYPE.LIST : PROFILE_BUTTON_TYPE.STRANGER;
 

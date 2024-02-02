@@ -11,6 +11,8 @@ import Profile from '@components/Home/Profile';
 import Grass from '@components/Home/Grass';
 import EmotionStat from '@components/Home/EmotionStat';
 
+import useUserStore from '@store/useUserStore';
+
 import useModal from '@hooks/useModal';
 import useProfileDataQuery from '@hooks/useProfileDataQuery';
 import useDayDiaryListQuery from '@hooks/useDayDiaryListQuery';
@@ -19,13 +21,11 @@ import { PAGE_TITLE_HOME, PAGE_URL } from '@util/constants';
 
 const Home = () => {
   const params = useParams();
-  const userId = params.userId || (localStorage.getItem('userId') as string);
+  const { userId: contextUserId } = useUserStore();
+  const userId = Number(params.userId) || contextUserId;
   const infiniteRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { closeModal } = useModal();
-  useEffect(() => {
-    closeModal();
-  }, [userId]);
 
   const { data: profileData, isError, isLoading: profileDataLoading } = useProfileDataQuery(userId);
 
@@ -35,6 +35,10 @@ const Home = () => {
     isLoading: diaryDataLoading,
     isSuccess,
   } = useDayDiaryListQuery(userId);
+
+  useEffect(() => {
+    closeModal();
+  }, [userId]);
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {
@@ -64,7 +68,7 @@ const Home = () => {
     <>
       <main className="mb-12 flex flex-col items-center justify-start">
         <NavBar />
-        <Profile userId={userId ? +userId : 0} userData={profileData} />
+        <Profile userId={userId} userData={profileData} />
         <Grass />
         <EmotionStat nickname={profileData.nickname} />
 

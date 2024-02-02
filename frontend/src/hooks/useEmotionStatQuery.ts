@@ -5,7 +5,7 @@ import getEmotionStat from '@api/EmotionStat';
 import { reactQueryKeys } from '@util/constants';
 import { formatDateDash } from '@util/funcs';
 
-const useEmotionStatQuery = (userId: string, period: Date[]) => {
+const useEmotionStatQuery = (userId: number, period: Date[]) => {
   return useQuery({
     queryKey: [
       reactQueryKeys.EmotionStat,
