@@ -30,6 +30,10 @@ describe('ImagesController (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('/images/diaries (POST)', () => {
     const url = '/images/diaries';
 
@@ -58,9 +62,5 @@ describe('ImagesController (e2e)', () => {
       // then
       expect(response.status).toEqual(400);
     });
-  });
-
-  afterAll(async () => {
-    await app.close();
   });
 });
