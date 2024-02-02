@@ -9,12 +9,14 @@ import useUserStore from '@store/useUserStore';
 const NavBar = () => {
   const navigate = useNavigate();
   const { setUserId } = useUserStore();
+  const clearUserIdStorage = useUserStore.persist.clearStorage;
 
   const onClickLogout = async () => {
     const isLogout = await logout();
 
     if (isLogout) {
       setUserId(0);
+      clearUserIdStorage();
       navigate('/login');
     }
   };

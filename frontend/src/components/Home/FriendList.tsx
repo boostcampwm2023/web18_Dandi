@@ -25,6 +25,7 @@ interface FriendListResponse {
 
 const FriendList = ({ userId }: FriendListProps) => {
   const [nickname, setNickname] = useState('');
+  const loginUser = useUserStore().userId;
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -40,7 +41,6 @@ const FriendList = ({ userId }: FriendListProps) => {
     return <p>친구목록을 불러오지 못했습니다!</p>;
   }
 
-  const loginUser = useUserStore().userId;
   const profileItemType =
     +loginUser === userId ? PROFILE_BUTTON_TYPE.LIST : PROFILE_BUTTON_TYPE.STRANGER;
 
