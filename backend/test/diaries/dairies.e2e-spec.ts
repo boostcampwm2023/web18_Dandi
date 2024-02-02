@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
-import { DataSource, EntityManager, QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import Redis from 'ioredis';
 import { testRedisConfig } from 'src/configs/redis.config';
@@ -17,7 +17,7 @@ import { Friend } from 'src/friends/entity/friend.entity';
 import { FriendsRepository } from 'src/friends/friends.repository';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { TimeUnit } from 'src/diaries/dto/timeUnit.enum';
-import { format, subMonths } from 'date-fns';
+import { subMonths } from 'date-fns';
 
 describe('Dairies Controller (e2e)', () => {
   let app: INestApplication;
@@ -596,6 +596,43 @@ describe('Dairies Controller (e2e)', () => {
       expect(body.emotions).toHaveLength(2);
       expect([mockDiaryA.emotion, mockDiaryB.emotion]).toContain(body.emotions[0].emotion);
       expect([mockDiaryA.emotion, mockDiaryB.emotion]).toContain(body.emotions[1].emotion);
+    });
+  });
+
+  describe('/diaries/mood/:userId (GET)', () => {
+    const mockDiary = {
+      title: '일기 제목',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await diariesRepository.save(mockDiary);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('1년내 일기 정보가 존재하면 해당 감정 통계 반환', async () => {
+      //given
+      const url = `/diaries/emotions/${mockUser.id}`;
+
+      //when - then
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(body.emotions).toHaveLength(1);
+      expect(body.emotions[0].emotion).toEqual(mockDiary.emotion);
     });
   });
 });
