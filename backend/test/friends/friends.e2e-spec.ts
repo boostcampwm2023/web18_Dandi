@@ -70,23 +70,7 @@ describe('FriendsController (e2e)', () => {
       await queryRunner.rollbackTransaction();
     });
 
-    it('친구 목록 조회, 친구가 없는 경우 빈 배열 반환', async () => {
-      // given
-      const user = await usersRepository.save(userInfo);
-      const accessToken = await testLogin(user);
-      const url = `/friends/${user.id}`;
-
-      // when
-      const response = await request(app.getHttpServer())
-        .get(url)
-        .set('Cookie', [`utk=${accessToken}`]);
-
-      // then
-      expect(response.statusCode).toEqual(200);
-      expect(response.body.friends).toEqual([]);
-    });
-
-    it('친구 목록 정상 조회', async () => {
+    it('친구 목록 조회', async () => {
       // given
       const user = await usersRepository.save(userInfo);
       const accessToken = await testLogin(user);
@@ -107,6 +91,22 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(200);
       expect(response.body.friends).toHaveLength(2);
+    });
+
+    it('친구가 없는 경우 빈 배열 반환', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const url = `/friends/${user.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.friends).toEqual([]);
     });
   });
 
@@ -188,6 +188,53 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual('존재하지 않는 관계입니다.');
+    });
+  });
+
+  describe('/friends/request/:userId', () => {
+    beforeEach(async () => {
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('특정 사용자의 친구신청 목록 조회', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const url = `/friends/request/${user.id}`;
+
+      const friend1 = await usersRepository.save(friend1Info);
+      const friend2 = await usersRepository.save(friend2Info);
+      await friendsRepository.save({ sender: user, receiver: friend1 });
+      await friendsRepository.save({ sender: friend2, receiver: user });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.strangers).toHaveLength(2);
+    });
+
+    it('진행 중인 친구신청이 없는 경우 빈 배열 반환', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const url = `/friends/request/${user.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.strangers).toEqual([]);
     });
   });
 });
