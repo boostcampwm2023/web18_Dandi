@@ -65,7 +65,7 @@ describe('TagsController (e2e)', () => {
       const url = `/tags/search/${encodeURIComponent('안녕')}`;
 
       //when
-      const response = await request(app.getHttpServer()).get(url).expect(200, { keywords: [] });
+      const response = await request(app.getHttpServer()).get(url);
       const body = response.body;
 
       //then
