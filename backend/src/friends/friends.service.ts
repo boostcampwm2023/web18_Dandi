@@ -51,6 +51,7 @@ export class FriendsService {
     }
 
     const friendRelation = await this.friendsRepository.findRelation(userId, friendId);
+
     if (!friendRelation) {
       throw new BadRequestException('존재하지 않는 관계입니다.');
     }
