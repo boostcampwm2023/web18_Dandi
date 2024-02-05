@@ -665,4 +665,87 @@ describe('Dairies Controller (e2e)', () => {
       expect(body.emotions[0].emotion).toEqual(mockDiary.emotion);
     });
   });
+
+  describe('/diaries/search/v1/:keyword (GET)', () => {
+    const mockDiaryA = {
+      title: '테스트 일기A',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+
+    const mockDiaryB = {
+      title: '테스트 메모A',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await diariesRepository.save(mockDiaryA);
+      await diariesRepository.save(mockDiaryB);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('패턴이 일치하지 않는 일기는 반환 x', async () => {
+      //given
+      const keyword = encodeURIComponent('메모');
+      const url = `/diaries/search/v1/${keyword}`;
+
+      //when - then
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].title.includes('메모')).toBeTruthy();
+    });
+
+    it('패턴이 일치하는 일기 반환', async () => {
+      //given
+      const keyword = encodeURIComponent('테스트');
+      const url = `/diaries/search/v1/${keyword}`;
+
+      //when - then
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(body.diaryList).toHaveLength(2);
+      for (let i = 0; i < body.diaryList.length; i++) {
+        expect(body.diaryList[i].title.includes('테스트')).toBeTruthy();
+      }
+    });
+
+    it('패턴이 일치하면서, lastIndex 이전의 일기 반환', async () => {
+      //given
+      const keyword = encodeURIComponent('테스트');
+      const lastIndex = mockDiaryB.id;
+      const url = `/diaries/search/v1/${keyword}?lastIndex=${lastIndex}`;
+
+      //when - then
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].title.includes('테스트')).toBeTruthy();
+      expect(body.diaryList[0].diaryId < lastIndex).toBeTruthy();
+    });
+  });
+
+  describe('/diaries/tags/:tagName (GET)', () => {});
 });
