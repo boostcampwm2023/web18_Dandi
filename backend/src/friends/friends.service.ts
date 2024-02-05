@@ -43,7 +43,7 @@ export class FriendsService {
 
     // 예외처리
     if (senderId === receiverId) {
-      throw new BadRequestException('나에게 친구신청 보낼 수 없습니다.');
+      throw new BadRequestException('친구 정보가 잘못되었습니다.');
     }
 
     const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
@@ -73,6 +73,19 @@ export class FriendsService {
   }
 
   async allowFriendRequest(friendRelationDto: FriendRelationDto): Promise<void> {
+    const { senderId, receiverId } = friendRelationDto;
+
+    // 예외처리
+    if (senderId === receiverId) {
+      throw new BadRequestException('친구 정보가 잘못되었습니다.');
+    }
+
+    const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
+
+    if (!relation) {
+      throw new BadRequestException('받은 친구신청이 없습니다.');
+    }
+
     const friendRequest = await this.checkFriendData(
       friendRelationDto.senderId,
       friendRelationDto.receiverId,
