@@ -317,4 +317,65 @@ describe('FriendsController (e2e)', () => {
       expect(response.body.message).toEqual('상대의 친구신청을 확인해주세요.');
     });
   });
+
+  describe('/friends/request/:receiverId (DELETE)', () => {
+    beforeEach(async () => {
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('내가 보낸 친구신청 취소', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/request/${friend.id}`;
+
+      await friendsRepository.save({ sender: user, receiver: friend });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+    });
+
+    it('자신에게 친구신청 보낸 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const url = `/friends/request/${user.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('나에게 친구신청 보낼 수 없습니다.');
+    });
+
+    it('이전에 보낸 친구신청이 없는 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/request/${friend.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('보낸 친구신청이 없습니다.');
+    });
+  });
 });
