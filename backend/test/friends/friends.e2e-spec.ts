@@ -191,7 +191,7 @@ describe('FriendsController (e2e)', () => {
     });
   });
 
-  describe('/friends/request/:userId', () => {
+  describe('/friends/request/:userId (GET)', () => {
     beforeEach(async () => {
       await queryRunner.startTransaction();
     });
@@ -235,6 +235,86 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(200);
       expect(response.body.strangers).toEqual([]);
+    });
+  });
+
+  describe('/friends/request/:userId (POST)', () => {
+    beforeEach(async () => {
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('친구 신청하기', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/request/${friend.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(201);
+    });
+
+    it('자신에게 친구신청 보낸 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const url = `/friends/request/${user.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('나에게 친구신청 보낼 수 없습니다.');
+    });
+
+    it('해당 사용자에게 중복으로 친구신청한 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/request/${friend.id}`;
+
+      await friendsRepository.save({ sender: user, receiver: friend });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('이미 친구신청을 하셨습니다.');
+    });
+
+    it('해당 사용자에게 이미 친구신청을 받은 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/request/${friend.id}`;
+
+      await friendsRepository.save({ sender: friend, receiver: user });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('상대의 친구신청을 확인해주세요.');
     });
   });
 });
