@@ -90,10 +90,13 @@ describe('Dairies Controller (e2e)', () => {
         tagNames,
         status: 'private',
       };
-      const savedUser = await usersRepository.save(mockUser);
+      await usersRepository.save(mockUser);
 
-      //when - then
-      return request(app.getHttpServer()).post('/diaries').send(mockDiary).expect(201);
+      //when
+      const response = await request(app.getHttpServer()).post('/diaries').send(mockDiary);
+
+      //then
+      expect(response.status).toEqual(201);
     });
   });
 
@@ -238,8 +241,14 @@ describe('Dairies Controller (e2e)', () => {
     });
 
     it('일기 정보가 존재하지 않으면 400 에러 발생', async () => {
-      //when - then
-      return request(app.getHttpServer()).get(`/diaries/1`).expect(400);
+      //given
+      const diaryId = 1;
+
+      //when
+      const response = await request(app.getHttpServer()).get(`/diaries/${diaryId}`);
+
+      //then
+      expect(response.status).toEqual(400);
     });
   });
 
@@ -266,39 +275,45 @@ describe('Dairies Controller (e2e)', () => {
       await queryRunner.rollbackTransaction();
     });
 
-    it('존재하지 않는 일기에 수정 요청을 하면 400 반환', () => {
+    it('존재하지 않는 일기에 수정 요청을 하면 400 반환', async () => {
       //given
       const updateData = {};
 
-      //when - then
-      return request(app.getHttpServer())
+      //when
+      const response = await request(app.getHttpServer())
         .patch(`/diaries/${mockDiary.id + 1}`)
-        .send(updateData)
-        .expect(400);
+        .send(updateData);
+
+      //then
+      expect(response.status).toEqual(400);
     });
 
-    it('수정 정보가 존재하지 않아도 200 반환', () => {
+    it('수정 정보가 존재하지 않아도 200 반환', async () => {
       //given
       const updateData = {};
 
-      //when - then
-      return request(app.getHttpServer())
+      //when
+      const response = await request(app.getHttpServer())
         .patch(`/diaries/${mockDiary.id}`)
-        .send(updateData)
-        .expect(200);
+        .send(updateData);
+
+      //then
+      expect(response.status).toEqual(200);
     });
 
-    it('수정 정보가 존재하면 해당 정보만 수정 후 200 반환', () => {
+    it('수정 정보가 존재하면 해당 정보만 수정 후 200 반환', async () => {
       //given
       const updateData = {
         title: 'update title',
       };
 
-      //when - then
-      return request(app.getHttpServer())
+      //when
+      const response = await request(app.getHttpServer())
         .patch(`/diaries/${mockDiary.id}`)
-        .send(updateData)
-        .expect(200);
+        .send(updateData);
+
+      //then
+      expect(response.status).toEqual(200);
     });
   });
 
@@ -325,20 +340,26 @@ describe('Dairies Controller (e2e)', () => {
       await queryRunner.rollbackTransaction();
     });
 
-    it('존재하지 않는 일기에 삭제 요청을 보내면 400 반환', () => {
+    it('존재하지 않는 일기에 삭제 요청을 보내면 400 반환', async () => {
       //given
       const diaryId = mockDiary.id + 1;
 
-      //when - then
-      return request(app.getHttpServer()).delete(`/diaries/${diaryId}`).expect(400);
+      //when
+      const response = await request(app.getHttpServer()).delete(`/diaries/${diaryId}`);
+
+      //then
+      expect(response.status).toEqual(400);
     });
 
-    it('존재하는 일기에 삭제 요청을 보내면 200 반환', () => {
+    it('존재하는 일기에 삭제 요청을 보내면 200 반환', async () => {
       //given
       const diaryId = mockDiary.id;
 
-      //when - then
-      return request(app.getHttpServer()).delete(`/diaries/${diaryId}`).expect(200);
+      //when
+      const response = await request(app.getHttpServer()).delete(`/diaries/${diaryId}`);
+
+      //then
+      expect(response.status).toEqual(200);
     });
   });
 
@@ -366,7 +387,7 @@ describe('Dairies Controller (e2e)', () => {
     });
 
     //TODO
-    it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', () => {
+    it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', async () => {
       //given
       const dto = {
         type: 'wrongType',
@@ -374,11 +395,14 @@ describe('Dairies Controller (e2e)', () => {
       const query = new URLSearchParams(dto).toString();
       const url = `/diaries/users/${mockUser.id}?${query}`;
 
-      //when - then
-      return request(app.getHttpServer()).get(url).expect(400);
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+
+      //then
+      expect(response.status).toEqual(400);
     });
 
-    it('일자 타입이 Day가 아니고, 유효하지 않은 일자 형식으로 요청이 오면 400에러 발생', () => {
+    it('일자 타입이 Day가 아니고, 유효하지 않은 일자 형식으로 요청이 오면 400에러 발생', async () => {
       //given
       const dto = {
         type: TimeUnit.Month,
@@ -388,8 +412,11 @@ describe('Dairies Controller (e2e)', () => {
       const query = new URLSearchParams(dto).toString();
       const url = `/diaries/users/${mockUser.id}?${query}`;
 
-      //when - then
-      return request(app.getHttpServer()).get(url).expect(400);
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+
+      //then
+      expect(response.status).toEqual(400);
     });
 
     it('일자 타입이 Day가 아니면, 기간 내 일기 조회 정보 반환', async () => {
@@ -528,7 +555,7 @@ describe('Dairies Controller (e2e)', () => {
       await queryRunner.rollbackTransaction();
     });
 
-    it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', () => {
+    it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', async () => {
       //given
       const dto = {
         startDate: '24-02-01',
@@ -536,8 +563,11 @@ describe('Dairies Controller (e2e)', () => {
       const query = new URLSearchParams(dto).toString();
       const url = `/diaries/emotions/${mockUser.id}?${query}`;
 
-      //when - then
-      return request(app.getHttpServer()).get(url).expect(400);
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+
+      //then
+      expect(response.status).toEqual(400);
     });
 
     it('일자 정보가 없다면, 현재 일자로부터 한달 이내의 일기 감정 정보 반환', async () => {
