@@ -2,13 +2,13 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
-import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
 import { DataSource, QueryRunner } from 'typeorm';
-import { TestAuthGuard } from 'test/utils/testAuthGuard';
 import { UsersRepository } from 'src/users/users.repository';
 import { SocialType } from 'src/users/entity/socialType';
 import { FriendsRepository } from 'src/friends/friends.repository';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
+import * as cookieParser from 'cookie-parser';
+import { testLogin } from 'test/utils/testLogin';
 
 describe('FriendsController (e2e)', () => {
   let app: INestApplication;
@@ -19,15 +19,7 @@ describe('FriendsController (e2e)', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [TestAuthGuard],
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({
-        canActivate: () => {
-          return true;
-        },
-      })
-      .compile();
+    }).compile();
 
     const dataSource = module.get<DataSource>(DataSource);
     queryRunner = dataSource.createQueryRunner();
@@ -37,7 +29,9 @@ describe('FriendsController (e2e)', () => {
 
     friendsRepository = module.get<FriendsRepository>(FriendsRepository);
     usersRepository = module.get<UsersRepository>(UsersRepository);
+
     app = module.createNestApplication();
+    app.use(cookieParser());
     await app.init();
   });
 
@@ -76,15 +70,16 @@ describe('FriendsController (e2e)', () => {
       await queryRunner.rollbackTransaction();
     });
 
-    it('친구목록 조회, 친구가 없는 경우 빈 배열 반환', async () => {
+    it('친구 목록 조회, 친구가 없는 경우 빈 배열 반환', async () => {
       // given
       const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
       const url = `/friends/${user.id}`;
 
       // when
       const response = await request(app.getHttpServer())
         .get(url)
-        .use(() => new TestAuthGuard(user));
+        .set('Cookie', [`utk=${accessToken}`]);
 
       // then
       expect(response.statusCode).toEqual(200);
@@ -94,6 +89,7 @@ describe('FriendsController (e2e)', () => {
     it('친구 목록 정상 조회', async () => {
       // given
       const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
       const url = `/friends/${user.id}`;
 
       const friend1 = await usersRepository.save(friend1Info);
@@ -106,11 +102,38 @@ describe('FriendsController (e2e)', () => {
       // when
       const response = await request(app.getHttpServer())
         .get(url)
-        .use(() => new TestAuthGuard(user));
+        .set('Cookie', [`utk=${accessToken}`]);
 
       // then
       expect(response.statusCode).toEqual(200);
       expect(response.body.friends).toHaveLength(2);
     });
   });
+
+  // describe('/friends/:friendId (DELETE)', () => {
+  //   beforeEach(async () => {
+  //     await queryRunner.startTransaction();
+  //   });
+
+  //   afterEach(async () => {
+  //     await queryRunner.rollbackTransaction();
+  //   });
+
+  //   it('친구 삭제', async () => {
+  //     // given
+  //     const user = await usersRepository.save(userInfo);
+  //     const friend = await usersRepository.save(friend1Info);
+  //     const url = `/friends/${friend.id}`;
+  //     const relation = await friendsRepository.save({ sender: user, receiver: friend });
+
+  //     await friendsRepository.update(relation.id, { status: FriendStatus.COMPLETE });
+
+  //     // when
+  //     const response = await request(app.getHttpServer()).delete(url).set('Cookie');
+
+  //     // then
+  //     console.log(response.body);
+  //     expect(response.statusCode).toEqual(200);
+  //   });
+  // });
 });
