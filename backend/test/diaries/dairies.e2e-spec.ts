@@ -18,6 +18,7 @@ import { FriendsRepository } from 'src/friends/friends.repository';
 import { FriendStatus } from 'src/friends/entity/friendStatus';
 import { TimeUnit } from 'src/diaries/dto/timeUnit.enum';
 import { subMonths } from 'date-fns';
+import { TagsRepository } from 'src/tags/tags.repository';
 
 describe('Dairies Controller (e2e)', () => {
   let app: INestApplication;
@@ -25,6 +26,7 @@ describe('Dairies Controller (e2e)', () => {
   let diariesRepository: DiariesRepository;
   let usersRepository: UsersRepository;
   let friendsRepository: FriendsRepository;
+  let tagsRepository: TagsRepository;
 
   const redis = new Redis(testRedisConfig);
   const mockUser = {
@@ -60,6 +62,7 @@ describe('Dairies Controller (e2e)', () => {
     diariesRepository = module.get<DiariesRepository>(DiariesRepository);
     usersRepository = module.get<UsersRepository>(UsersRepository);
     friendsRepository = module.get<FriendsRepository>(FriendsRepository);
+    tagsRepository = module.get<TagsRepository>(TagsRepository);
 
     app = module.createNestApplication();
     await app.init();
@@ -656,7 +659,7 @@ describe('Dairies Controller (e2e)', () => {
       //given
       const url = `/diaries/emotions/${mockUser.id}`;
 
-      //when - then
+      //when
       const response = await request(app.getHttpServer()).get(url);
       const body = response.body;
 
@@ -705,7 +708,7 @@ describe('Dairies Controller (e2e)', () => {
       const keyword = encodeURIComponent('메모');
       const url = `/diaries/search/v1/${keyword}`;
 
-      //when - then
+      //when
       const response = await request(app.getHttpServer()).get(url);
       const body = response.body;
 
@@ -719,7 +722,7 @@ describe('Dairies Controller (e2e)', () => {
       const keyword = encodeURIComponent('테스트');
       const url = `/diaries/search/v1/${keyword}`;
 
-      //when - then
+      //when
       const response = await request(app.getHttpServer()).get(url);
       const body = response.body;
 
@@ -736,7 +739,7 @@ describe('Dairies Controller (e2e)', () => {
       const lastIndex = mockDiaryB.id;
       const url = `/diaries/search/v1/${keyword}?lastIndex=${lastIndex}`;
 
-      //when - then
+      //when
       const response = await request(app.getHttpServer()).get(url);
       const body = response.body;
 
@@ -747,5 +750,59 @@ describe('Dairies Controller (e2e)', () => {
     });
   });
 
-  describe('/diaries/tags/:tagName (GET)', () => {});
+  describe('/diaries/tags/:tagName (GET)', () => {
+    const mockTag = { name: '테스트 태그' };
+    const mockDiary = {
+      title: '테스트 일기A',
+      content: '일기 내용',
+      emotion: '🐶',
+      status: DiaryStatus.PRIVATE,
+      summary: '요약',
+      mood: MoodDegree.BAD,
+      author: mockUser,
+      tags: [mockTag],
+    } as Diary;
+
+    beforeEach(async () => {
+      await redis.flushall();
+      await queryRunner.startTransaction();
+
+      await usersRepository.save(mockUser);
+      await tagsRepository.save(mockTag);
+      await diariesRepository.save(mockDiary);
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('특정 태그가 포함된 일기 모두 조회', async () => {
+      //given
+      const tagName = encodeURIComponent('테스트 태그');
+      const url = `/diaries/tags/${tagName}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.diaryList).toHaveLength(1);
+      expect(body.diaryList[0].tags).toContain('테스트 태그');
+    });
+
+    it('특정 태그가 포함된 일기가 없다면 빈배열 반환', async () => {
+      //given
+      const tagName = encodeURIComponent('테스트');
+      const url = `/diaries/tags/${tagName}`;
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body.diaryList).toHaveLength(0);
+    });
+  });
 });
