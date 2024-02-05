@@ -60,12 +60,17 @@ describe('TagsController (e2e)', () => {
       await queryRunner.rollbackTransaction();
     });
 
-    it('일치하는 키워드가 없으면 빈 문자열 리스트 반환', () => {
+    it('일치하는 키워드가 없으면 빈 문자열 리스트 반환', async () => {
       //given
       const url = `/tags/search/${encodeURIComponent('안녕')}`;
 
-      //when - then
-      return request(app.getHttpServer()).get(url).expect(200, { keywords: [] });
+      //when
+      const response = await request(app.getHttpServer()).get(url).expect(200, { keywords: [] });
+      const body = response.body;
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(body).toHaveLength(0);
     });
 
     it('일치하는 키워드가 있으면 모든 유사 문자열 리스트 반환', async () => {
