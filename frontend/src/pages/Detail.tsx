@@ -9,6 +9,7 @@ import Alert from '@components/Common/Alert';
 import Loading from '@components/Common/Loading';
 
 import useEditStore from '@store/useEditStore';
+import useUserStore from '@store/useUserStore';
 
 import useModal from '@hooks/useModal';
 import useDiaryQuery from '@hooks/useDiaryQuery';
@@ -23,7 +24,7 @@ const Detail = () => {
   const { openModal, closeModal } = useModal();
 
   const params = useParams();
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
   const diaryId = Number(params.diaryId);
 
   const { data, isLoading, isError } = useDiaryQuery(diaryId);
@@ -68,8 +69,7 @@ const Detail = () => {
   }
 
   const content = <DiaryContent diaryId={diaryId} {...data} />;
-  const loginUser = localStorage.getItem('userId') ?? 0;
-  const isMyDiary = +loginUser === data.userId;
+  const isMyDiary = userId === data.userId;
   return (
     <>
       <div className="flex flex-col items-center">

@@ -6,12 +6,12 @@ import { InfiniteDiaryListProps } from '@type/components/Common/DiaryList';
 
 import { reactQueryKeys } from '@util/constants';
 
-const useFeedDiaryListQuery = (userId: string) => {
+const useFeedDiaryListQuery = (userId: number) => {
   return useInfiniteQuery<
     any,
     Error,
     InfiniteDiaryListProps,
-    [string, string | null],
+    [string, number],
     { lastIndex: number }
   >({
     queryKey: [reactQueryKeys.FeedDiaryList, userId],

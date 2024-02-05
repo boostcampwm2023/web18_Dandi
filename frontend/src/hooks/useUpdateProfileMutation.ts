@@ -6,7 +6,7 @@ import { useToast } from '@hooks/useToast';
 
 import { reactQueryKeys } from '@util/constants';
 
-const useUpdateProfileMutation = (userId: string) => {
+const useUpdateProfileMutation = (userId: number) => {
   const queryClient = useQueryClient();
   const openToast = useToast();
 

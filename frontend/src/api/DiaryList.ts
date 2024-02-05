@@ -5,7 +5,7 @@ import interceptor from '@api/fetchInterceptor';
 import API_PATH from '@util/apiPath';
 
 interface getDiaryListProps {
-  userId: string;
+  userId: number;
   type: viewTypes;
 }
 
@@ -17,7 +17,7 @@ interface getDiaryWeekAndMonthListProps extends getDiaryListProps {
 export const getDiaryDayList = async ({
   pageParam,
 }: {
-  pageParam: { userId: string; type: viewTypes; lastIndex: number };
+  pageParam: { userId: number; type: viewTypes; lastIndex: number };
 }) => {
   try {
     const { userId, type, lastIndex } = pageParam;

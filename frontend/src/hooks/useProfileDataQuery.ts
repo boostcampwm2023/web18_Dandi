@@ -4,10 +4,10 @@ import { getCurrentUser } from '@api/Profile';
 
 import { reactQueryKeys } from '@util/constants';
 
-const useProfileDataQuery = (userId: string) => {
+const useProfileDataQuery = (userId: number) => {
   return useQuery({
     queryKey: [reactQueryKeys.ProfileData, userId],
-    queryFn: () => getCurrentUser(userId ? +userId : 0),
+    queryFn: () => getCurrentUser(userId),
   });
 };
 

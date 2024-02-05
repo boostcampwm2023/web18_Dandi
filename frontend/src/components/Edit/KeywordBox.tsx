@@ -5,6 +5,7 @@ import Loading from '@components/Common/Loading';
 import Keyword from '@components/Common/Keyword';
 
 import useEditStore from '@store/useEditStore';
+import useUserStore from '@store/useUserStore';
 
 import { useToast } from '@hooks/useToast';
 import useCreateDiaryMutation from '@hooks/useCreateDiaryMutation';
@@ -22,7 +23,7 @@ interface CreateDiaryParams {
 const KeywordBox = () => {
   const openToast = useToast();
 
-  const userId = localStorage.getItem('userid') as string;
+  const { userId } = useUserStore();
   const { state } = useLocation();
   const [keyword, setKeyword] = useState<string>('');
   const { diaryId, title, content, emoji, status, thumbnail, keywordList, setKeywordList } =

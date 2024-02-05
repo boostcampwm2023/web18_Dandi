@@ -5,9 +5,13 @@ import { uploadImage } from '@api/Edit';
 
 import useEditStore from '@store/useEditStore';
 
-const Editor = () => {
+interface EditorProps {
+  initialContent: string;
+}
+
+const Editor = ({ initialContent }: EditorProps) => {
   const editorRef = useRef<DiaryEditor>(null);
-  const { content, setContent, thumbnail, setThumbnail } = useEditStore();
+  const { setContent, thumbnail, setThumbnail } = useEditStore();
 
   const onChangeContent = () => {
     setContent(editorRef.current?.getInstance().getHTML());
@@ -33,7 +37,7 @@ const Editor = () => {
           initialEditType="wysiwyg"
           placeholder="일기를 입력하세요!"
           hideModeSwitch={true}
-          initialValue={content}
+          initialValue={initialContent}
           onChange={onChangeContent}
           hooks={{
             addImageBlobHook: onUploadImage,

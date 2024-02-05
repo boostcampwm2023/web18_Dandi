@@ -5,6 +5,8 @@ import FriendList from '@components/Home/FriendList';
 import FriendRequest from '@components/Home/FriendRequest';
 import ProfileEdit from '@components/Home/ProfileEdit';
 
+import useUserStore from '@store/useUserStore';
+
 import useModal from '@hooks/useModal';
 import useRequestFriendMutation from '@hooks/useRequestFriendMutation';
 import useDeleteFriendMutation from '@hooks/useDeleteFriendMutation';
@@ -40,9 +42,9 @@ interface relationData {
 const Profile = ({ userId, userData }: ProfileProps) => {
   const navigate = useNavigate();
 
-  const loginUserId = localStorage.getItem('userId');
+  const loginUserId = useUserStore().userId;
   const paramsUserId = useParams().userId ?? false;
-  const isFriendHome = loginUserId !== paramsUserId && paramsUserId;
+  const isFriendHome = String(loginUserId) !== paramsUserId && paramsUserId;
 
   const { openModal } = useModal();
 

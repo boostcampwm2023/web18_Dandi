@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
 
+import useUserStore from '@store/useUserStore';
+
 import useUpdateProfileMutation from '@hooks/useUpdateProfileMutation';
 
 interface ProfileEditProps {
@@ -8,7 +10,7 @@ interface ProfileEditProps {
 }
 
 const ProfileEdit = ({ profileImage, nickname }: ProfileEditProps) => {
-  const userId = localStorage.getItem('userId') as string;
+  const { userId } = useUserStore();
 
   const [newNickname, setNewNickname] = useState('');
   const [imageSrc, setImageSrc] = useState(profileImage);
