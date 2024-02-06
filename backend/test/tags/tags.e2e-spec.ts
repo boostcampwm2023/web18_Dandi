@@ -19,6 +19,8 @@ describe('TagsController (e2e)', () => {
   };
 
   beforeAll(async () => {
+    await redis.flushall();
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
