@@ -39,6 +39,8 @@ describe('Dairies Controller (e2e)', () => {
   } as User;
 
   beforeAll(async () => {
+    await redis.flushall();
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
@@ -74,11 +76,11 @@ describe('Dairies Controller (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await redis.flushall();
     await queryRunner.startTransaction();
   });
 
   afterEach(async () => {
+    await redis.flushall();
     await queryRunner.rollbackTransaction();
   });
 
@@ -101,6 +103,47 @@ describe('Dairies Controller (e2e)', () => {
       //then
       expect(response.status).toEqual(201);
     });
+
+    it('request에 필요 값이 없다면, 400에러 반환', async () => {
+      //given
+      const mockDiary = {};
+      await usersRepository.save(mockUser);
+
+      //when
+      const response = await request(app.getHttpServer()).post('/diaries').send(mockDiary);
+
+      //then
+      expect(response.status).toEqual(400);
+      expect(response.body.message).toHaveLength(5);
+      expect(response.body.message).toContain('title should not be empty');
+      expect(response.body.message).toContain('content should not be empty');
+      expect(response.body.message).toContain('emotion should not be empty');
+      expect(response.body.message).toContain(
+        'status must be one of the following values: private, public',
+      );
+      expect(response.body.message).toContain('status should not be empty');
+    });
+
+    it('유효하지 않은 status 값으로 요청 시, 400에러 반환', async () => {
+      //given
+      const mockDiary = {
+        title: '일기 제목',
+        content: '일기 내용',
+        emotion: '🐶',
+        status: 'wrong status',
+      };
+      await usersRepository.save(mockUser);
+
+      //when
+      const response = await request(app.getHttpServer()).post('/diaries').send(mockDiary);
+
+      //then
+      expect(response.status).toEqual(400);
+      expect(response.body.message).toHaveLength(1);
+      expect(response.body.message).toContain(
+        'status must be one of the following values: private, public',
+      );
+    });
   });
 
   describe('/diaries/friends (GET)', () => {
@@ -118,16 +161,9 @@ describe('Dairies Controller (e2e)', () => {
     } as Friend;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await usersRepository.save(mockFriend);
       await friendsRepository.save(mockFriendRelation);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('일기 존재 시 일기 상세 정보 반환', async () => {
@@ -244,6 +280,39 @@ describe('Dairies Controller (e2e)', () => {
       //then
       expect(response.status).toEqual(400);
     });
+
+    it('상대의 private 일기에 접근하면, 403에러 발생', async () => {
+      //given
+      const anotherUser = {
+        id: 2,
+        email: 'test@test.com',
+        nickname: 'test',
+        socialId: 'test123',
+        socialType: SocialType.NAVER,
+        profileImage: 'testImage',
+      } as User;
+      const mockDiary = {
+        title: '일기 제목',
+        content: '일기 내용',
+        emotion: '🐶',
+        status: DiaryStatus.PRIVATE,
+        summary: '요약',
+        mood: MoodDegree.BAD,
+        author: anotherUser,
+      } as Diary;
+
+      await usersRepository.save(anotherUser);
+      await diariesRepository.save(mockDiary);
+
+      const diaryId = mockDiary.id;
+
+      //when
+      const response = await request(app.getHttpServer()).get(`/diaries/${diaryId}`);
+
+      //then
+      expect(response.status).toEqual(403);
+      expect(response.body.message).toEqual('권한이 없는 사용자입니다.');
+    });
   });
 
   describe('/diaries/:id (PATCH)', () => {
@@ -359,7 +428,6 @@ describe('Dairies Controller (e2e)', () => {
       await diariesRepository.save(mockDiary);
     });
 
-    //TODO
     it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', async () => {
       //given
       const dto = {
