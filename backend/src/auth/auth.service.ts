@@ -77,15 +77,14 @@ export class AuthService {
     const payload = this.jwtService.decode(userJwt);
     const refreshToken = await this.authRepository.getRefreshToken(payload.accessKey);
 
-    if (refreshToken) {
-      return this.jwtService.sign({
-        id: payload.id,
-        nickname: payload.nickname,
-        accessKey: payload.accessKey,
-      });
-    } else {
+    if (!refreshToken) {
       throw new UnauthorizedException('로그인이 필요합니다.');
     }
+    return this.jwtService.sign({
+      id: payload.id,
+      nickname: payload.nickname,
+      accessKey: payload.accessKey,
+    });
   }
 
   removeRefreshToken(req: Request) {
