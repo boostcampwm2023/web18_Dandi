@@ -49,14 +49,14 @@ describe('FriendsController (e2e)', () => {
   const friend1Info = {
     socialId: '1',
     socialType: SocialType.NAVER,
-    nickname: 'friend1',
+    nickname: '친구1',
     email: 'friend1@abc.com',
     profileImage: 'profile image',
   };
   const friend2Info = {
     socialId: '2',
     socialType: SocialType.NAVER,
-    nickname: 'friend2',
+    nickname: '친구2',
     email: 'friend2@abc.com',
     profileImage: 'profile image',
   };
@@ -498,6 +498,71 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual('진행 중인 친구신청이 없습니다.');
+    });
+  });
+
+  describe('/friends/search/:nickname (GET)', () => {
+    beforeEach(async () => {
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    const friend3Info = {
+      socialId: '3',
+      socialType: SocialType.NAVER,
+      nickname: '나는프렌드',
+      email: 'friend3@abc.com',
+      profileImage: 'profile image',
+    };
+
+    it('친구목록에서 검색어를 포함하는 닉네임의 사용자 조회', async () => {
+      // given
+      const url = `/friends/search/${encodeURIComponent('친구')}`;
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend1 = await usersRepository.save(friend1Info);
+      const friend2 = await usersRepository.save(friend2Info);
+      const friend3 = await usersRepository.save(friend3Info);
+
+      const relation1 = await friendsRepository.save({ sender: user, receiver: friend1 });
+      const relation2 = await friendsRepository.save({ sender: user, receiver: friend2 });
+      const relation3 = await friendsRepository.save({ sender: user, receiver: friend3 });
+
+      await friendsRepository.update(relation1.id, { status: FriendStatus.COMPLETE });
+      await friendsRepository.update(relation2.id, { status: FriendStatus.COMPLETE });
+      await friendsRepository.update(relation3.id, { status: FriendStatus.COMPLETE });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toHaveLength(2);
+    });
+
+    it('검색어를 포함하는 닉네임의 친구가 없는 경우 빈 배열 반환', async () => {
+      // given
+      const url = `/friends/search/${encodeURIComponent('친구')}`;
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend3 = await usersRepository.save(friend3Info);
+      const relation3 = await friendsRepository.save({ sender: user, receiver: friend3 });
+
+      await friendsRepository.update(relation3.id, { status: FriendStatus.COMPLETE });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toEqual([]);
     });
   });
 });
