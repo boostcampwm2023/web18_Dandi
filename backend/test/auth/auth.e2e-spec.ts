@@ -1,48 +1,116 @@
 import * as request from 'supertest';
-import { ExecutionContext, INestApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
-import { JwtAuthGuard } from 'src/auth/guards/jwtAuth.guard';
-import { ImagesRepository } from 'src/images/images.repository';
+import { AuthService } from 'src/auth/auth.service';
+import { testRedisConfig } from 'src/configs/redis.config';
+import Redis from 'ioredis';
+import { DataSource, QueryRunner } from 'typeorm';
+import { UsersRepository } from 'src/users/users.repository';
+import { SocialType } from 'src/users/entity/socialType';
+import { User } from 'src/users/entity/user.entity';
 
-describe('ImagesController (e2e)', () => {
+/**
+ * naver 쪽에서 처리하는 의존성을 제거했습니다.
+ * 1. query로 넘어오는 code, state, socialType 또한 naver에서 반환해주는 값이기 때문에 정상적이라고 가정
+ * 2. AuthService의 getProfile, getToken 또한 naver에 query로 넘어온 정보로 요청을 보내기 때문에 정상적이라고 가정
+ */
+describe('AuthController (e2e)', () => {
   let app: INestApplication;
-  let imagesRepository: ImagesRepository;
-  const user = { id: 1, nickname: 'testUser' };
+  let authService: AuthService;
+  let usersRepository: UsersRepository;
+  let queryRunner: QueryRunner;
+  const redis = new Redis(testRedisConfig);
+
+  const mockProfile = {
+    id: '1',
+    email: 'test@test.com',
+    nickname: 'testUser',
+    profile_image: 'testImage',
+  };
+  const mockAccessToken = 'mock token';
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({
-        canActivate: (context: ExecutionContext) => {
-          const req = context.switchToHttp().getRequest();
-          req.user = user;
+    }).compile();
 
-          return true;
-        },
-      })
-      .compile();
+    const dataSource = module.get<DataSource>(DataSource);
+    queryRunner = dataSource.createQueryRunner();
+    dataSource.createQueryRunner = jest.fn();
+    queryRunner.release = jest.fn();
+    (dataSource.createQueryRunner as jest.Mock).mockReturnValue(queryRunner);
 
-    imagesRepository = module.get<ImagesRepository>(ImagesRepository);
+    authService = module.get<AuthService>(AuthService);
+    usersRepository = module.get<UsersRepository>(UsersRepository);
     app = module.createNestApplication();
     await app.init();
   });
 
   afterAll(async () => {
+    await redis.quit();
     await app.close();
   });
 
+  beforeEach(async () => {
+    await redis.flushall();
+    await queryRunner.startTransaction();
+  });
+
+  afterEach(async () => {
+    await queryRunner.rollbackTransaction();
+  });
+
   describe('/login (POST)', () => {
-    //TODO: 회원가입 정보가 존재하면, 로그인
-    //TODO: 회원가입 정보가 존재하지 않으면, 회원가입 후 로그인
-    //TODO: 잘못된 access 요청 시 401
-    /**
-     * access까지 요청해야함.
-     * -> 이전에 fetch api로 거기까지 요청 보내는 것을 구현
-     * -> response에서 꺼내서 사용하기
-     * -> 로그인과 권한 동의를 어떻게 시킬 것인지...?
-     */
+    beforeAll(() => {
+      jest.spyOn(authService, <keyof AuthService>'getToken').mockResolvedValue(mockAccessToken);
+      jest
+        .spyOn(authService, <keyof AuthService>'getUserProfile')
+        .mockResolvedValue(mockProfile as any);
+      jest.spyOn(usersRepository, 'createUser');
+    });
+
+    afterEach(() => {
+      (usersRepository.createUser as jest.Mock).mockClear();
+    });
+
+    it('DB에 존재하지 않는 socialId로 로그인 요청이 오면, 회원가입 후 토큰 반환', async () => {
+      //given
+      const url = '/auth/login';
+      const body = { code: 'code', state: 'state', socialType: 'naver' };
+
+      //when
+      const response = await request(app.getHttpServer()).post(url).send(body);
+
+      //then
+      expect(response.status).toEqual(201);
+      expect(response.header['set-cookie']).toBeTruthy();
+      expect(usersRepository.createUser).toHaveBeenCalled();
+    });
+
+    it('DB에 존재하는 않는 socialId로 로그인 요청이 오면, 회원가입 후 토큰 반환', async () => {
+      //given
+      const user = {
+        id: 1,
+        email: mockProfile.email,
+        nickname: mockProfile.nickname,
+        socialId: mockProfile.id,
+        socialType: SocialType.NAVER,
+        profileImage: mockProfile.profile_image,
+      } as User;
+      const url = '/auth/login';
+      const body = { code: 'code', state: 'state', socialType: 'naver' };
+
+      await usersRepository.save(user);
+
+      //when
+      const response = await request(app.getHttpServer()).post(url).send(body);
+
+      //then
+      console.log(response);
+      expect(response.status).toEqual(201);
+      expect(response.header['set-cookie']).toBeTruthy();
+      expect(usersRepository.createUser).not.toHaveBeenCalled();
+    });
   });
 });

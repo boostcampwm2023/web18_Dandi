@@ -70,7 +70,7 @@ describe('TagsController (e2e)', () => {
 
       //then
       expect(response.status).toEqual(200);
-      expect(body).toHaveLength(0);
+      expect(body.keywords).toHaveLength(0);
     });
 
     it('일치하는 키워드가 있으면 모든 유사 문자열 리스트 반환', async () => {
