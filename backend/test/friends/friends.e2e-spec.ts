@@ -375,7 +375,7 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('보낸 친구신청이 없습니다.');
+      expect(response.body.message).toEqual('진행 중인 친구신청이 없습니다.');
     });
   });
 
@@ -437,6 +437,67 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual('받은 친구신청이 없습니다.');
+    });
+  });
+
+  describe('/friends/allow/:senderId (DELETE)', () => {
+    beforeEach(async () => {
+      await queryRunner.startTransaction();
+    });
+
+    afterEach(async () => {
+      await queryRunner.rollbackTransaction();
+    });
+
+    it('친구신청 거절', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/allow/${friend.id}`;
+
+      await friendsRepository.save({ sender: friend, receiver: user });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+    });
+
+    it('사용자 id와 친구 id가 일치하는 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const url = `/friends/allow/${user.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('친구 정보가 잘못되었습니다.');
+    });
+
+    it('이전에 받은 친구신청이 없는 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/allow/${friend.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('진행 중인 친구신청이 없습니다.');
     });
   });
 });

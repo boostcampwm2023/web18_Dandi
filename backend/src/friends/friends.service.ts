@@ -49,7 +49,7 @@ export class FriendsService {
     const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
 
     if (!relation) {
-      throw new BadRequestException('보낸 친구신청이 없습니다.');
+      throw new BadRequestException('진행 중인 친구신청이 없습니다.');
     }
 
     const friendRequest = await this.checkFriendData(
