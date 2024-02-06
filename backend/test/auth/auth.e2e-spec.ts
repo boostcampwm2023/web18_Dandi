@@ -49,6 +49,11 @@ describe('AuthController (e2e)', () => {
     app = module.createNestApplication();
     app.use(cookieParser());
     await app.init();
+
+    jest.spyOn(authService, <keyof AuthService>'getToken').mockResolvedValue(mockAccessToken);
+    jest
+      .spyOn(authService, <keyof AuthService>'getUserProfile')
+      .mockResolvedValue(mockProfile as any);
   });
 
   afterAll(async () => {
@@ -68,10 +73,6 @@ describe('AuthController (e2e)', () => {
 
   describe('/login (POST)', () => {
     beforeAll(() => {
-      jest.spyOn(authService, <keyof AuthService>'getToken').mockResolvedValue(mockAccessToken);
-      jest
-        .spyOn(authService, <keyof AuthService>'getUserProfile')
-        .mockResolvedValue(mockProfile as any);
       jest.spyOn(usersRepository, 'createUser');
     });
 
@@ -117,21 +118,6 @@ describe('AuthController (e2e)', () => {
   });
 
   describe('/refresh_token (GET)', () => {
-    /**
-     * 로그인 후 토큰 만료 시키고, 리프레쉬 되는지 확인
-     */
-    beforeAll(() => {
-      jest.spyOn(authService, <keyof AuthService>'getToken').mockResolvedValue(mockAccessToken);
-      jest
-        .spyOn(authService, <keyof AuthService>'getUserProfile')
-        .mockResolvedValue(mockProfile as any);
-      jest.spyOn(usersRepository, 'createUser');
-    });
-
-    afterEach(() => {
-      (usersRepository.createUser as jest.Mock).mockClear();
-    });
-
     it('유효한 jwt 토큰으로 refresh 요청 시 새 토큰 발급', async () => {
       //given
       const url = '/auth/refresh_token';
@@ -174,6 +160,40 @@ describe('AuthController (e2e)', () => {
       //then
       expect(response.status).toEqual(401);
       expect(response.body.message).toEqual('로그인이 필요합니다.');
+    });
+  });
+
+  describe('/logout (POST)', () => {
+    /**
+     * 로그인 후 토큰 만료 시키고, 리프레쉬 되는지 확인
+     */
+    it('유효한 jwt 토큰으로 logout 요청 시 201 반환', async () => {
+      //given
+      const url = '/auth/logout';
+      const agent = request.agent(app.getHttpServer());
+
+      await agent.post('/auth/login').send(body);
+
+      //when
+      const response = await agent.post(url);
+
+      //then
+      expect(response.status).toEqual(201);
+      expect(response.header['set-cookie']).toHaveLength(1);
+      expect(response.header['set-cookie'][0]).toContain('Max-Age=0;');
+    });
+
+    it('비로그인 사용자가 로그아웃 요청을 보내면 201 반환', async () => {
+      //given
+      const url = '/auth/logout';
+
+      //when
+      const response = await request(app.getHttpServer()).post(url);
+
+      //then
+      expect(response.status).toEqual(201);
+      expect(response.header['set-cookie']).toHaveLength(1);
+      expect(response.header['set-cookie'][0]).toContain('Max-Age=0;');
     });
   });
 });
