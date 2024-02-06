@@ -73,16 +73,16 @@ describe('Dairies Controller (e2e)', () => {
     await app.close();
   });
 
+  beforeEach(async () => {
+    await redis.flushall();
+    await queryRunner.startTransaction();
+  });
+
+  afterEach(async () => {
+    await queryRunner.rollbackTransaction();
+  });
+
   describe('/diaries (POST)', () => {
-    beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('일기 저장 완료 후 완료 메시지 반환', async () => {
       //given
       const tagNames = ['안녕', '안녕하세요', '저리가세욧'];
@@ -210,15 +210,6 @@ describe('Dairies Controller (e2e)', () => {
   });
 
   describe('/diaries/:id (GET)', () => {
-    beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('일기 존재 시 일기 상세 정보 반환', async () => {
       //given
       const mockDiary = {
@@ -267,15 +258,8 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await diariesRepository.save(mockDiary);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('존재하지 않는 일기에 수정 요청을 하면 400 반환', async () => {
@@ -332,15 +316,8 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await diariesRepository.save(mockDiary);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('존재하지 않는 일기에 삭제 요청을 보내면 400 반환', async () => {
@@ -378,15 +355,8 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await diariesRepository.save(mockDiary);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     //TODO
@@ -546,16 +516,9 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await diariesRepository.save(mockDiaryA);
       await diariesRepository.save(mockDiaryB);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('유효하지 않은 일자 타입으로 요청이 오면 400에러 발생', async () => {
@@ -644,15 +607,8 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await diariesRepository.save(mockDiary);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('1년내 일기 정보가 존재하면 해당 감정 통계 반환', async () => {
@@ -691,16 +647,9 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await diariesRepository.save(mockDiaryA);
       await diariesRepository.save(mockDiaryB);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('패턴이 일치하지 않는 일기는 반환 x', async () => {
@@ -764,16 +713,9 @@ describe('Dairies Controller (e2e)', () => {
     } as Diary;
 
     beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-
       await usersRepository.save(mockUser);
       await tagsRepository.save(mockTag);
       await diariesRepository.save(mockDiary);
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
     });
 
     it('특정 태그가 포함된 일기 모두 조회', async () => {
