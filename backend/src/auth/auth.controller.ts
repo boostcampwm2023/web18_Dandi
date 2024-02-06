@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { OAuthLoginDto, OAuthLoginResponseDto } from './dto/auth.dto';
+import { JwtAuthGuard } from './guards/jwtAuth.guard';
 
 @ApiTags('Authentication API')
 @Controller('auth')
@@ -20,6 +21,7 @@ export class AuthController {
   }
 
   @Get('refresh_token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: 'access token 갱신 API' })
   @ApiOkResponse({ description: 'access token 갱신 성공' })
   async refreshAccessToken(@Req() req: Request, @Res() res: Response): Promise<void> {
