@@ -9,6 +9,7 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { UsersRepository } from 'src/users/users.repository';
 import { SocialType } from 'src/users/entity/socialType';
 import { User } from 'src/users/entity/user.entity';
+import * as cookieParser from 'cookie-parser';
 
 /**
  * naver 쪽에서 처리하는 의존성을 제거했습니다.
@@ -29,8 +30,10 @@ describe('AuthController (e2e)', () => {
     profile_image: 'testImage',
   };
   const mockAccessToken = 'mock token';
+  const body = { code: 'code', state: 'state', socialType: 'naver' };
 
   beforeAll(async () => {
+    await redis.flushall();
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -44,6 +47,7 @@ describe('AuthController (e2e)', () => {
     authService = module.get<AuthService>(AuthService);
     usersRepository = module.get<UsersRepository>(UsersRepository);
     app = module.createNestApplication();
+    app.use(cookieParser());
     await app.init();
   });
 
@@ -58,6 +62,7 @@ describe('AuthController (e2e)', () => {
   });
 
   afterEach(async () => {
+    await redis.flushall();
     await queryRunner.rollbackTransaction();
   });
 
@@ -77,7 +82,6 @@ describe('AuthController (e2e)', () => {
     it('DB에 존재하지 않는 socialId로 로그인 요청이 오면, 회원가입 후 토큰 반환', async () => {
       //given
       const url = '/auth/login';
-      const body = { code: 'code', state: 'state', socialType: 'naver' };
 
       //when
       const response = await request(app.getHttpServer()).post(url).send(body);
@@ -99,7 +103,6 @@ describe('AuthController (e2e)', () => {
         profileImage: mockProfile.profile_image,
       } as User;
       const url = '/auth/login';
-      const body = { code: 'code', state: 'state', socialType: 'naver' };
 
       await usersRepository.save(user);
 
@@ -107,10 +110,70 @@ describe('AuthController (e2e)', () => {
       const response = await request(app.getHttpServer()).post(url).send(body);
 
       //then
-      console.log(response);
       expect(response.status).toEqual(201);
       expect(response.header['set-cookie']).toBeTruthy();
       expect(usersRepository.createUser).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('/refresh_token (GET)', () => {
+    /**
+     * 로그인 후 토큰 만료 시키고, 리프레쉬 되는지 확인
+     */
+    beforeAll(() => {
+      jest.spyOn(authService, <keyof AuthService>'getToken').mockResolvedValue(mockAccessToken);
+      jest
+        .spyOn(authService, <keyof AuthService>'getUserProfile')
+        .mockResolvedValue(mockProfile as any);
+      jest.spyOn(usersRepository, 'createUser');
+    });
+
+    afterEach(() => {
+      (usersRepository.createUser as jest.Mock).mockClear();
+    });
+
+    it('유효한 jwt 토큰으로 refresh 요청 시 새 토큰 발급', async () => {
+      //given
+      const url = '/auth/refresh_token';
+      const agent = request.agent(app.getHttpServer());
+      await agent.post('/auth/login').send(body);
+
+      //when
+      const response = await agent.get(url);
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(response.header['set-cookie']).toBeTruthy();
+    });
+
+    it('jwt 없이 refresh 요청 시 401 에러 발생', async () => {
+      //given
+      const url = '/auth/refresh_token';
+      const agent = request.agent(app.getHttpServer());
+      await agent.post('/auth/login').send(body);
+
+      //when
+      const response = await request(app.getHttpServer()).get(url);
+
+      //then
+      expect(response.status).toEqual(401);
+      expect(response.body.message).toEqual('Unauthorized');
+    });
+
+    it('redis에 저장되지 않은 토큰으로 요청 시 401 에러 발생', async () => {
+      //given
+      const url = '/auth/refresh_token';
+      const agent = request.agent(app.getHttpServer());
+
+      await agent.post('/auth/login').send(body);
+      redis.flushall();
+
+      //when
+      const response = await agent.get(url);
+
+      //then
+      expect(response.status).toEqual(401);
+      expect(response.body.message).toEqual('로그인이 필요합니다.');
     });
   });
 });
