@@ -358,7 +358,7 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('친구 정보가 잘못되었습니다.');
+      expect(response.body.message).toEqual('나와는 친구신청 관리를 할 수 없습니다.');
     });
 
     it('이전에 보낸 친구신청이 없는 경우 예외 발생', async () => {
@@ -375,7 +375,26 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('진행 중인 친구신청이 없습니다.');
+      expect(response.body.message).toEqual('해당 사용자 사이의 친구신청 기록이 없습니다.');
+    });
+
+    it('이전에 보낸 친구신청이 없고, 상대가 친구신청을 보낸 경우 예외 발생', async () => {
+      // given
+      const user = await usersRepository.save(userInfo);
+      const accessToken = await testLogin(user);
+      const friend = await usersRepository.save(friend1Info);
+      const url = `/friends/request/${friend.id}`;
+
+      await friendsRepository.save({ sender: friend, receiver: user });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('상대의 친구신청을 확인하세요.');
     });
   });
 
@@ -419,7 +438,7 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('친구 정보가 잘못되었습니다.');
+      expect(response.body.message).toEqual('나와는 친구신청 관리를 할 수 없습니다.');
     });
 
     it('이전에 받은 친구신청이 없는 경우 예외 발생', async () => {
@@ -436,7 +455,7 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('받은 친구신청이 없습니다.');
+      expect(response.body.message).toEqual('해당 사용자 사이의 친구신청 기록이 없습니다.');
     });
   });
 
@@ -480,7 +499,7 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('친구 정보가 잘못되었습니다.');
+      expect(response.body.message).toEqual('나와는 친구신청 관리를 할 수 없습니다.');
     });
 
     it('이전에 받은 친구신청이 없는 경우 예외 발생', async () => {
@@ -497,7 +516,7 @@ describe('FriendsController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
-      expect(response.body.message).toEqual('진행 중인 친구신청이 없습니다.');
+      expect(response.body.message).toEqual('해당 사용자 사이의 친구신청 기록이 없습니다.');
     });
   });
 
