@@ -158,9 +158,6 @@ describe('AuthController (e2e)', () => {
   });
 
   describe('/logout (POST)', () => {
-    /**
-     * 로그인 후 토큰 만료 시키고, 리프레쉬 되는지 확인
-     */
     it('유효한 jwt 토큰으로 logout 요청 시 201 반환', async () => {
       //given
       const url = '/auth/logout';
