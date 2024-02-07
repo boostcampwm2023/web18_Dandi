@@ -11,11 +11,6 @@ import { SocialType } from 'src/users/entity/socialType';
 import { User } from 'src/users/entity/user.entity';
 import * as cookieParser from 'cookie-parser';
 
-/**
- * naver 쪽에서 처리하는 의존성을 제거했습니다.
- * 1. query로 넘어오는 code, state, socialType 또한 naver에서 반환해주는 값이기 때문에 정상적이라고 가정
- * 2. AuthService의 getProfile, getToken 또한 naver에 query로 넘어온 정보로 요청을 보내기 때문에 정상적이라고 가정
- */
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let authService: AuthService;
