@@ -57,7 +57,6 @@ describe('AuthController (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await redis.flushall();
     await queryRunner.startTransaction();
   });
 
