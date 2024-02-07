@@ -96,6 +96,7 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(200);
       expect(response.body.friends).toHaveLength(2);
+      expect(response.body.friends[0].nickname).toEqual('친구1');
     });
 
     it('친구가 없는 경우 빈 배열 반환', async () => {
@@ -196,6 +197,7 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(200);
       expect(response.body.strangers).toHaveLength(2);
+      expect(response.body.strangers[0].nickname).toEqual('친구1');
     });
 
     it('진행 중인 친구신청이 없는 경우 빈 배열 반환', async () => {
@@ -467,6 +469,7 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(200);
       expect(response.body).toHaveLength(2);
+      expect(response.body[0].nickname).toEqual('친구1');
     });
 
     it('검색어를 포함하는 닉네임의 친구가 없는 경우 빈 배열 반환', async () => {
