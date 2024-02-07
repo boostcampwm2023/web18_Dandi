@@ -66,19 +66,17 @@ describe('FriendsController (e2e)', () => {
   };
 
   beforeEach(async () => {
+    await queryRunner.startTransaction();
+
     user = await usersRepository.save(userInfo);
     accessToken = await testLogin(user);
   });
 
+  afterEach(async () => {
+    await queryRunner.rollbackTransaction();
+  });
+
   describe('/friends/:userId (GET)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('친구 목록 조회', async () => {
       // given
       const url = `/friends/${user.id}`;
@@ -116,14 +114,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/:friendId (DELETE)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('친구 삭제', async () => {
       // given
       const friend = await usersRepository.save(friend1Info);
@@ -189,14 +179,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/request/:userId (GET)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('특정 사용자의 친구신청 목록 조회', async () => {
       // given
       const url = `/friends/request/${user.id}`;
@@ -232,14 +214,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/request/:userId (POST)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('친구 신청하기', async () => {
       // given
       const friend = await usersRepository.save(friend1Info);
@@ -304,14 +278,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/request/:receiverId (DELETE)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('내가 보낸 친구신청 취소', async () => {
       // given
       const friend = await usersRepository.save(friend1Info);
@@ -376,14 +342,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/allow/:senderId (POST)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('받은 친구신청 수락', async () => {
       // given
       const friend = await usersRepository.save(friend1Info);
@@ -431,14 +389,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/allow/:senderId (DELETE)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('친구신청 거절', async () => {
       // given
       const friend = await usersRepository.save(friend1Info);
@@ -486,14 +436,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/friends/search/:nickname (GET)', () => {
-    beforeEach(async () => {
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     const friend3Info = {
       socialId: '3',
       socialType: SocialType.NAVER,
