@@ -40,8 +40,22 @@ describe('UsersController (e2e)', () => {
     await app.close();
   });
 
+  let user: User;
+  let accessToken: string;
+
+  const userInfo = {
+    socialId: '1234',
+    socialType: SocialType.NAVER,
+    nickname: 'test',
+    email: 'test@abc.com',
+    profileImage: 'profile image',
+  };
+
   beforeEach(async () => {
     await queryRunner.startTransaction();
+
+    user = await usersRepository.save(userInfo);
+    accessToken = await testLogin(user);
   });
 
   afterEach(async () => {
@@ -50,21 +64,6 @@ describe('UsersController (e2e)', () => {
 
   describe('/users (PATCH)', () => {
     const url = '/users';
-    let user: User;
-    let accessToken: string;
-
-    beforeEach(async () => {
-      const userInfo = {
-        socialId: '1234',
-        socialType: SocialType.NAVER,
-        nickname: 'test',
-        email: 'test@abc.com',
-        profileImage: 'profile image',
-      };
-
-      user = await usersRepository.save(userInfo);
-      accessToken = await testLogin(user);
-    });
 
     it('프로필 사진과 사용자 닉네임 수정', async () => {
       // given
@@ -132,9 +131,6 @@ describe('UsersController (e2e)', () => {
   });
 
   describe('/users/:userId (GET)', () => {
-    let user: User;
-    let accessToken: string;
-
     const friendInfo = {
       socialId: '1',
       socialType: SocialType.NAVER,
@@ -142,19 +138,6 @@ describe('UsersController (e2e)', () => {
       email: 'friend@abc.com',
       profileImage: 'profile image',
     };
-
-    beforeEach(async () => {
-      const userInfo = {
-        socialId: '1234',
-        socialType: SocialType.NAVER,
-        nickname: 'test',
-        email: 'test@abc.com',
-        profileImage: 'profile image',
-      };
-
-      user = await usersRepository.save(userInfo);
-      accessToken = await testLogin(user);
-    });
 
     it('친구가 아닌 사용자 정보 조회', async () => {
       // given
@@ -203,6 +186,71 @@ describe('UsersController (e2e)', () => {
 
       // then
       expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/users/search/:nickname', () => {
+    const url = '/users/search/friend';
+
+    it('닉네임으로 사용자 검색', async () => {
+      // given
+      const friend1Info = {
+        socialId: '1',
+        socialType: SocialType.NAVER,
+        nickname: 'friend1',
+        email: 'friend1@abc.com',
+        profileImage: 'profile image',
+      };
+      const friend2Info = {
+        socialId: '2',
+        socialType: SocialType.NAVER,
+        nickname: 'friend2',
+        email: 'friend2@abc.com',
+        profileImage: 'profile image',
+      };
+
+      await usersRepository.save(friend1Info);
+      await usersRepository.save(friend2Info);
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toHaveLength(2);
+      expect(response.body[0].nickname).toEqual('friend1');
+    });
+
+    it('검색어를 포함하는 닉네임의 사용자가 없는 경우 빈 배열 반환', async () => {
+      // given
+      const friend1Info = {
+        socialId: '1',
+        socialType: SocialType.NAVER,
+        nickname: '친구1',
+        email: 'friend1@abc.com',
+        profileImage: 'profile image',
+      };
+      const friend2Info = {
+        socialId: '2',
+        socialType: SocialType.NAVER,
+        nickname: '친구2',
+        email: 'friend2@abc.com',
+        profileImage: 'profile image',
+      };
+
+      await usersRepository.save(friend1Info);
+      await usersRepository.save(friend2Info);
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toHaveLength(0);
     });
   });
 });
