@@ -23,6 +23,7 @@ export class FriendsService {
     }
 
     const relation = await this.friendsRepository.findFriendRequest(senderId, receiverId);
+
     if (relation) {
       throw new BadRequestException('이미 친구신청을 하셨습니다.');
     }
@@ -51,6 +52,7 @@ export class FriendsService {
     }
 
     const friendRelation = await this.friendsRepository.findRelation(userId, friendId);
+
     if (!friendRelation) {
       throw new BadRequestException('존재하지 않는 관계입니다.');
     }

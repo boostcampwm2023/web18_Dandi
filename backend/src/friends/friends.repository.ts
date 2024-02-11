@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Friend } from './entity/friend.entity';
-import { DataSource, Equal, Repository } from 'typeorm';
+import { Brackets, DataSource, Equal, Repository } from 'typeorm';
 import { User } from 'src/users/entity/user.entity';
 import { FriendStatus } from './entity/friendStatus';
 
@@ -27,8 +27,21 @@ export class FriendsRepository extends Repository<Friend> {
     return this.createQueryBuilder('relation')
       .where('relation.status = :status', { status: FriendStatus.COMPLETE })
       .andWhere(
-        '(relation.receiverId = :userId AND relation.senderId = :friendId) OR (relation.receiverId = :friendId AND relation.senderId = :userId)',
-        { userId, friendId },
+        new Brackets((qb) => {
+          qb.where(
+            new Brackets((sqb) => {
+              sqb
+                .where('relation.receiverId = :userId', { userId })
+                .andWhere('relation.senderId = :friendId', { friendId });
+            }),
+          ).orWhere(
+            new Brackets((sqb) => {
+              sqb
+                .where('relation.receiverId = :friendId', { friendId })
+                .andWhere('relation.senderId = :userId', { userId });
+            }),
+          );
+        }),
       )
       .getOne();
   }
