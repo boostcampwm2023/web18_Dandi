@@ -19,6 +19,8 @@ describe('TagsController (e2e)', () => {
   };
 
   beforeAll(async () => {
+    await redis.flushall();
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
@@ -50,16 +52,16 @@ describe('TagsController (e2e)', () => {
     await app.close();
   });
 
+  beforeEach(async () => {
+    await queryRunner.startTransaction();
+  });
+
+  afterEach(async () => {
+    await redis.flushall();
+    await queryRunner.rollbackTransaction();
+  });
+
   describe('/search/:keyword (GET)', () => {
-    beforeEach(async () => {
-      await redis.flushall();
-      await queryRunner.startTransaction();
-    });
-
-    afterEach(async () => {
-      await queryRunner.rollbackTransaction();
-    });
-
     it('일치하는 키워드가 없으면 빈 문자열 리스트 반환', async () => {
       //given
       const url = `/tags/search/${encodeURIComponent('안녕')}`;
@@ -70,7 +72,7 @@ describe('TagsController (e2e)', () => {
 
       //then
       expect(response.status).toEqual(200);
-      expect(body).toHaveLength(0);
+      expect(body.keywords).toHaveLength(0);
     });
 
     it('일치하는 키워드가 있으면 모든 유사 문자열 리스트 반환', async () => {

@@ -6,7 +6,9 @@ export class TagsService {
   constructor(private readonly tagsRepository: TagsRepository) {}
 
   async mapTagNameToTagType(tagNames: string[]) {
-    if (!tagNames) return null;
+    if (!tagNames) {
+      return null;
+    }
 
     return Promise.all(
       tagNames.map(async (tagName) => {
@@ -21,6 +23,10 @@ export class TagsService {
   }
 
   async updateDataSetScore(userId: number, tagNames: string[]) {
+    if (!tagNames) {
+      return;
+    }
+
     const promises = tagNames.map(async (tag) => {
       const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
 
