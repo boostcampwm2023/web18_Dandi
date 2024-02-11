@@ -32,6 +32,5 @@ export const typeORMTestConfig: TypeOrmModuleOptions = {
   database: process.env.TEST_DB_NAME,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
-  logging: true,
   dropSchema: true,
 };
