@@ -8,11 +8,14 @@ import { UsersRepository } from 'src/users/users.repository';
 import { User } from 'src/users/entity/user.entity';
 import { SocialType } from 'src/users/entity/socialType';
 import { testLogin } from 'test/utils/testLogin';
+import { FriendsRepository } from 'src/friends/friends.repository';
+import { FriendStatus } from 'src/friends/entity/friendStatus';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
   let usersRepository: UsersRepository;
+  let friendsRepository: FriendsRepository;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -20,6 +23,7 @@ describe('UsersController (e2e)', () => {
     }).compile();
 
     usersRepository = module.get<UsersRepository>(UsersRepository);
+    friendsRepository = module.get<FriendsRepository>(FriendsRepository);
 
     const dataSource = module.get<DataSource>(DataSource);
     queryRunner = dataSource.createQueryRunner();
@@ -120,6 +124,81 @@ describe('UsersController (e2e)', () => {
       // when
       const response = await request(app.getHttpServer())
         .patch(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/users/:userId (GET)', () => {
+    let user: User;
+    let accessToken: string;
+
+    const friendInfo = {
+      socialId: '1',
+      socialType: SocialType.NAVER,
+      nickname: 'friend',
+      email: 'friend@abc.com',
+      profileImage: 'profile image',
+    };
+
+    beforeEach(async () => {
+      const userInfo = {
+        socialId: '1234',
+        socialType: SocialType.NAVER,
+        nickname: 'test',
+        email: 'test@abc.com',
+        profileImage: 'profile image',
+      };
+
+      user = await usersRepository.save(userInfo);
+      accessToken = await testLogin(user);
+    });
+
+    it('친구가 아닌 사용자 정보 조회', async () => {
+      // given
+      const friend = await usersRepository.save(friendInfo);
+      const url = `/users/${friend.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.nickname).toEqual('friend');
+      expect(response.body.relation).toBeNull();
+    });
+
+    it('친구인 사용자 정보 조회', async () => {
+      // given
+      const friend = await usersRepository.save(friendInfo);
+      const url = `/users/${friend.id}`;
+      const relation = await friendsRepository.save({ sender: user, receiver: friend });
+
+      await friendsRepository.update(relation.id, { status: FriendStatus.COMPLETE });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.nickname).toEqual('friend');
+      expect(response.body.totalFriends).toEqual(1);
+      expect(response.body.relation.status).toEqual(FriendStatus.COMPLETE);
+    });
+
+    it('존재하지 않는 사용자를 조회하는 경우 예외 발생', async () => {
+      // given
+      const url = '/users/999999';
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
         .set('Cookie', [`utk=${accessToken}`]);
 
       // then
