@@ -189,7 +189,7 @@ describe('UsersController (e2e)', () => {
     });
   });
 
-  describe('/users/search/:nickname', () => {
+  describe('/users/search/:nickname (GET)', () => {
     const url = '/users/search/friend';
 
     it('닉네임으로 사용자 검색', async () => {
