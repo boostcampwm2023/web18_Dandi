@@ -33,4 +33,5 @@ export const typeORMTestConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
   logging: true,
+  dropSchema: true,
 };

@@ -7,7 +7,7 @@
 
 <br/>
 <p align="center">
-  <a href="https://dandi-ary.site" >🔗 지금 바로 단디 사용하기</a>
+  <a href="https://dandi-ary.site" ><del>🔗 지금 바로 단디 사용하기</del></a>
 </p>
 <br/>
 <div align="center">

@@ -6,7 +6,9 @@ export class TagsService {
   constructor(private readonly tagsRepository: TagsRepository) {}
 
   async mapTagNameToTagType(tagNames: string[]) {
-    if (!tagNames) return null;
+    if (!tagNames) {
+      return null;
+    }
 
     return Promise.all(
       tagNames.map(async (tagName) => {
@@ -21,17 +23,21 @@ export class TagsService {
   }
 
   async updateDataSetScore(userId: number, tagNames: string[]) {
-    Promise.all([
-      tagNames.forEach(async (tag) => {
-        const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
+    if (!tagNames) {
+      return;
+    }
 
-        if (!tagScore) {
-          this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
-        } else {
-          this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
-        }
-      }),
-    ]);
+    const promises = tagNames.map(async (tag) => {
+      const tagScore = await this.tagsRepository.zscore(`${userId}`, tag);
+
+      if (!tagScore) {
+        this.tagsRepository.zadd(`${userId}`, tag); // 데이터셋에 추가
+      } else {
+        this.tagsRepository.zincrby(`${userId}`, tag); // 점수 +1
+      }
+    });
+
+    await Promise.all(promises);
   }
 
   async recommendKeywords(userId: number, keyword: string) {
