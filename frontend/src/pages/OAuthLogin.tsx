@@ -8,6 +8,7 @@ import useUserStore from '@store/useUserStore';
 const AuthLogin = () => {
   const navigate = useNavigate();
   const { setUserId } = useUserStore();
+  
   useEffect(() => {
     const getUserId = async () => {
       const code = new URL(window.location.href).searchParams.get('code') ?? '';
