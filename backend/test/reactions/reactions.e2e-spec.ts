@@ -48,6 +48,7 @@ describe('FriendsController (e2e)', () => {
   let user: User;
   let accessToken: string;
   let diary: Diary;
+  let url: string;
 
   const userInfo = {
     socialId: '1234',
@@ -81,6 +82,7 @@ describe('FriendsController (e2e)', () => {
     accessToken = await testLogin(user);
     diaryInfo['author'] = user;
     diary = await diariesRepository.save(diaryInfo);
+    url = `/reactions/${diary.id}`;
   });
 
   afterEach(async () => {
@@ -90,7 +92,6 @@ describe('FriendsController (e2e)', () => {
   describe('/reactions/:diaryId (GET)', () => {
     it('특정 일기의 리액션 조회', async () => {
       // given
-      const url = `/reactions/${diary.id}`;
       const friend = await usersRepository.save(friendInfo);
 
       await reactionsRepository.save({ user, diary, reaction: '🔥' });
@@ -108,9 +109,6 @@ describe('FriendsController (e2e)', () => {
     });
 
     it('일기의 리액션 없는 경우 빈 배열 반환', async () => {
-      // given
-      const url = `/reactions/${diary.id}`;
-
       // when
       const response = await request(app.getHttpServer())
         .get(url)
@@ -128,9 +126,6 @@ describe('FriendsController (e2e)', () => {
     });
 
     it('리액션 저장', async () => {
-      // given
-      const url = `/reactions/${diary.id}`;
-
       // when
       const response = await request(app.getHttpServer())
         .post(url)
@@ -144,8 +139,6 @@ describe('FriendsController (e2e)', () => {
 
     it('해당 일기에 이미 리액션을 남긴 경우 예외 발생', async () => {
       // given
-      const url = `/reactions/${diary.id}`;
-
       await reactionsRepository.save({ user, diary, reaction: '🔥' });
       jest.clearAllMocks();
 
@@ -158,6 +151,43 @@ describe('FriendsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual('이미 해당 글에 리액션을 남겼습니다.');
+      expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('/reactions/:diaryId (PUT)', () => {
+    beforeEach(() => {
+      jest.spyOn(reactionsRepository, 'save');
+    });
+
+    it('리액션 수정', async () => {
+      // given
+      await reactionsRepository.save({ user, diary, reaction: '🔥' });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .put(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🥰' });
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(reactionsRepository.save).toHaveBeenCalledTimes(2);
+    });
+
+    it('리액션이 존재하지 않는데 해당 요청을 보낸 경우 예외 발생', async () => {
+      // given
+      jest.clearAllMocks();
+
+      // when
+      const response = await request(app.getHttpServer())
+        .put(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🥰' });
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('리액션 기록이 존재하지 않습니다.');
       expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
     });
   });
