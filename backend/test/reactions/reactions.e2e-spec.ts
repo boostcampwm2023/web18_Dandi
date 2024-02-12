@@ -121,4 +121,44 @@ describe('FriendsController (e2e)', () => {
       expect(response.body.reactionList).toEqual([]);
     });
   });
+
+  describe('/reactions/:diaryId (POST)', () => {
+    beforeEach(() => {
+      jest.spyOn(reactionsRepository, 'save');
+    });
+
+    it('리액션 저장', async () => {
+      // given
+      const url = `/reactions/${diary.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🥰' });
+
+      // then
+      expect(response.statusCode).toEqual(201);
+      expect(reactionsRepository.save).toHaveBeenCalled();
+    });
+
+    it('해당 일기에 이미 리액션을 남긴 경우 예외 발생', async () => {
+      // given
+      const url = `/reactions/${diary.id}`;
+
+      await reactionsRepository.save({ user, diary, reaction: '🔥' });
+      jest.clearAllMocks();
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🥰' });
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('이미 해당 글에 리액션을 남겼습니다.');
+      expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
+    });
+  });
 });
