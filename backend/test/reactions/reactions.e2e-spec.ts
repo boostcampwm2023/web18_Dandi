@@ -14,7 +14,7 @@ import * as cookieParser from 'cookie-parser';
 import { User } from 'src/users/entity/user.entity';
 import { testLogin } from 'test/utils/testLogin';
 
-describe('FriendsController (e2e)', () => {
+describe('ReactionsController (e2e)', () => {
   let app: INestApplication;
   let queryRunner: QueryRunner;
   let reactionsRepository: ReactionsRepository;
@@ -60,13 +60,6 @@ describe('FriendsController (e2e)', () => {
     email: 'test@abc.com',
     profileImage: 'profile image',
   };
-  const friendInfo = {
-    socialId: '12345',
-    socialType: SocialType.NAVER,
-    nickname: 'friend',
-    email: 'friend@abc.com',
-    profileImage: 'profile image',
-  };
   const diaryInfo = {
     title: '제목',
     content: '<p>내용</p>',
@@ -95,6 +88,13 @@ describe('FriendsController (e2e)', () => {
   describe('/reactions/:diaryId (GET)', () => {
     it('특정 일기의 리액션 조회', async () => {
       // given
+      const friendInfo = {
+        socialId: '12345',
+        socialType: SocialType.NAVER,
+        nickname: 'friend',
+        email: 'friend@abc.com',
+        profileImage: 'profile image',
+      };
       const friend = await usersRepository.save(friendInfo);
 
       await reactionsRepository.save({ user, diary, reaction: '🔥' });
