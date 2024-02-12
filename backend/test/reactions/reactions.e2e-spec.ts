@@ -87,24 +87,38 @@ describe('FriendsController (e2e)', () => {
     await queryRunner.rollbackTransaction();
   });
 
-  // describe('/reactions/:diaryId (GET)', () => {
-  //   it('특정 일기의 리액션 조회', async () => {
-  //     // given
-  //     const url = `/reactions/${diary.id}`;
-  //     const friend = await usersRepository.save(friendInfo);
+  describe('/reactions/:diaryId (GET)', () => {
+    it('특정 일기의 리액션 조회', async () => {
+      // given
+      const url = `/reactions/${diary.id}`;
+      const friend = await usersRepository.save(friendInfo);
 
-  //     await reactionsRepository.save({ user, diary, reaction: '🔥' });
-  //     await reactionsRepository.save({ user: friend, diary, reaction: '🥰' });
+      await reactionsRepository.save({ user, diary, reaction: '🔥' });
+      await reactionsRepository.save({ user: friend, diary, reaction: '🥰' });
 
-  //     // when
-  //     const response = await request(app.getHttpServer())
-  //       .get(url)
-  //       .set('Cookie', [`utk=${accessToken}`]);
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
 
-  //     // then
-  //     expect(response.statusCode).toEqual(200);
-  //     expect(response.body.reactionList).toHaveLength(2);
-  //     expect(response.body.reactionList[0].reaction).toEqual('🔥');
-  //   });
-  // });
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.reactionList).toHaveLength(2);
+      expect(response.body.reactionList[0].reaction).toEqual('🔥');
+    });
+
+    it('일기의 리액션 없는 경우 빈 배열 반환', async () => {
+      // given
+      const url = `/reactions/${diary.id}`;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${accessToken}`]);
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.reactionList).toEqual([]);
+    });
+  });
 });
