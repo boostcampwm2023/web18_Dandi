@@ -39,6 +39,9 @@ describe('FriendsController (e2e)', () => {
     app = module.createNestApplication();
     app.use(cookieParser());
     await app.init();
+
+    jest.spyOn(reactionsRepository, 'save');
+    jest.spyOn(reactionsRepository, 'remove');
   });
 
   afterAll(async () => {
@@ -121,10 +124,6 @@ describe('FriendsController (e2e)', () => {
   });
 
   describe('/reactions/:diaryId (POST)', () => {
-    beforeEach(() => {
-      jest.spyOn(reactionsRepository, 'save');
-    });
-
     it('리액션 저장', async () => {
       // when
       const response = await request(app.getHttpServer())
@@ -157,7 +156,7 @@ describe('FriendsController (e2e)', () => {
 
   describe('/reactions/:diaryId (PUT)', () => {
     beforeEach(() => {
-      jest.spyOn(reactionsRepository, 'save');
+      jest.clearAllMocks();
     });
 
     it('리액션 수정', async () => {
@@ -176,9 +175,6 @@ describe('FriendsController (e2e)', () => {
     });
 
     it('리액션이 존재하지 않는데 해당 요청을 보낸 경우 예외 발생', async () => {
-      // given
-      jest.clearAllMocks();
-
       // when
       const response = await request(app.getHttpServer())
         .put(url)
@@ -189,6 +185,56 @@ describe('FriendsController (e2e)', () => {
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual('리액션 기록이 존재하지 않습니다.');
       expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('/reactions/:diaryId (DELETE)', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('리액션 삭제', async () => {
+      // given
+      await reactionsRepository.save({ user, diary, reaction: '🔥' });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🔥' });
+
+      // then
+      expect(response.statusCode).toEqual(200);
+      expect(reactionsRepository.remove).toHaveBeenCalled();
+    });
+
+    it('삭제하려는 리액션이 존재하지 않는 경우 예외 발생', async () => {
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🔥' });
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('이미 삭제된 리액션 정보입니다.');
+      expect(reactionsRepository.remove).toHaveBeenCalledTimes(0);
+    });
+
+    it('기존에 남긴 리액션과 삭제하려는 리액션이 일치하지 않는 경우 예외 발생', async () => {
+      // given
+      await reactionsRepository.save({ user, diary, reaction: '🔥' });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(url)
+        .set('Cookie', [`utk=${accessToken}`])
+        .send({ reaction: '🥰' });
+
+      // then
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.message).toEqual('이미 삭제된 리액션 정보입니다.');
+      expect(reactionsRepository.remove).toHaveBeenCalledTimes(0);
     });
   });
 });
