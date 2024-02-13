@@ -169,7 +169,7 @@ describe('AuthController (e2e)', () => {
       const response = await agent.post(url);
 
       //then
-      expect(response.status).toEqual(201);
+      expect(response.status).toEqual(200);
       expect(response.header['set-cookie']).toHaveLength(1);
       expect(response.header['set-cookie'][0]).toContain('Max-Age=0;');
     });
@@ -182,7 +182,7 @@ describe('AuthController (e2e)', () => {
       const response = await request(app.getHttpServer()).post(url);
 
       //then
-      expect(response.status).toEqual(201);
+      expect(response.status).toEqual(200);
       expect(response.header['set-cookie']).toHaveLength(1);
       expect(response.header['set-cookie'][0]).toContain('Max-Age=0;');
     });
