@@ -79,7 +79,6 @@ export class AuthService {
     }
 
     const payload = this.jwtService.decode(userJwt);
-    console.log(payload.accessKey);
     const refreshToken = await this.authRepository.getRefreshToken(payload.accessKey);
 
     if (!refreshToken) {
