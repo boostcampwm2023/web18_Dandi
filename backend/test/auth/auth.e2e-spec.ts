@@ -10,6 +10,9 @@ import { UsersRepository } from 'src/users/users.repository';
 import { SocialType } from 'src/users/entity/socialType';
 import { User } from 'src/users/entity/user.entity';
 import * as cookieParser from 'cookie-parser';
+import { getExpiredJwtToken } from 'test/utils/testLogin';
+import { REFRESH_TOKEN_EXPIRE_DATE } from 'src/auth/utils/auth.constant';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -65,7 +68,7 @@ describe('AuthController (e2e)', () => {
     await queryRunner.rollbackTransaction();
   });
 
-  describe('/login (POST)', () => {
+  describe('/auth/login (POST)', () => {
     beforeAll(() => {
       jest.spyOn(usersRepository, 'createUser');
     });
@@ -87,7 +90,7 @@ describe('AuthController (e2e)', () => {
       expect(usersRepository.createUser).toHaveBeenCalled();
     });
 
-    it('DB에 존재하는 않는 socialId로 로그인 요청이 오면, 회원가입 후 토큰 반환', async () => {
+    it('DB에 존재하는 socialId로 로그인 요청이 오면, 토큰 반환', async () => {
       //given
       const user = {
         id: 1,
@@ -111,7 +114,7 @@ describe('AuthController (e2e)', () => {
     });
   });
 
-  describe('/refresh_token (GET)', () => {
+  describe('/auth/refresh_token (GET)', () => {
     it('유효한 jwt 토큰으로 refresh 요청 시 새 토큰 발급', async () => {
       //given
       const url = '/auth/refresh_token';
@@ -124,6 +127,34 @@ describe('AuthController (e2e)', () => {
       //then
       expect(response.status).toEqual(200);
       expect(response.header['set-cookie']).toBeTruthy();
+    });
+
+    it('만료된 토큰으로 refresh 요청 시 새 토큰 발급', async () => {
+      //given
+      const url = '/auth/refresh_token';
+      const user = {
+        id: 1,
+        email: mockProfile.email,
+        nickname: mockProfile.nickname,
+        socialId: mockProfile.id,
+        socialType: SocialType.NAVER,
+        profileImage: mockProfile.profile_image,
+      } as User;
+
+      await usersRepository.save(user);
+
+      const { accessKey, token } = await getExpiredJwtToken(user);
+      const refreshToken = uuidv4();
+      await redis.set(accessKey, refreshToken, 'EX', REFRESH_TOKEN_EXPIRE_DATE);
+
+      //when
+      const response = await request(app.getHttpServer())
+        .get(url)
+        .set('Cookie', [`utk=${token}`]);
+
+      //then
+      expect(response.status).toEqual(200);
+      expect(response.body.message).toEqual('access token 갱신에 성공했습니다.');
     });
 
     it('jwt 없이 refresh 요청 시 401 에러 발생', async () => {
@@ -157,7 +188,7 @@ describe('AuthController (e2e)', () => {
     });
   });
 
-  describe('/logout (POST)', () => {
+  describe('/auth/logout (POST)', () => {
     it('유효한 jwt 토큰으로 logout 요청 시 201 반환', async () => {
       //given
       const url = '/auth/logout';
