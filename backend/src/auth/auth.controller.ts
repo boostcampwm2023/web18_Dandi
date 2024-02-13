@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { OAuthLoginDto, OAuthLoginResponseDto } from './dto/auth.dto';
+import { JwtAuthGuard } from './guards/jwtAuth.guard';
 
 @ApiTags('Authentication API')
 @Controller('auth')
@@ -30,6 +31,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @HttpCode(200)
   @ApiOperation({ description: '로그아웃 API' })
   @ApiOkResponse({ description: '로그아웃 성공' })
   logout(@Req() req: Request, @Res() res: Response): void {

@@ -10,6 +10,13 @@ const jwtService = new JwtService({
   },
 });
 
+const expiredJwtService = new JwtService({
+  secret: process.env.JWT_SECRET,
+  signOptions: {
+    expiresIn: 0,
+  },
+});
+
 // accessToken 반환만을 위한 로그인 함수
 export const testLogin = async (user: User) => {
   const accessKey = uuidv4();
@@ -19,4 +26,15 @@ export const testLogin = async (user: User) => {
     nickname: user.nickname,
     accessKey,
   });
+};
+
+export const getExpiredJwtToken = async (user: User) => {
+  const accessKey = uuidv4();
+  const token = expiredJwtService.sign({
+    id: user.id,
+    nickname: user.nickname,
+    accessKey,
+  });
+
+  return { accessKey, token };
 };
