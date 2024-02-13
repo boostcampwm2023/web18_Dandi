@@ -21,6 +21,11 @@ describe('ReactionsController (e2e)', () => {
   let diariesRepository: DiariesRepository;
   let usersRepository: UsersRepository;
 
+  let user: User;
+  let accessToken: string;
+  let diary: Diary;
+  let url: string;
+
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
@@ -42,43 +47,40 @@ describe('ReactionsController (e2e)', () => {
 
     jest.spyOn(reactionsRepository, 'save');
     jest.spyOn(reactionsRepository, 'remove');
+
+    const userInfo = {
+      socialId: '1234',
+      socialType: SocialType.NAVER,
+      nickname: 'test',
+      email: 'test@abc.com',
+      profileImage: 'profile image',
+    };
+
+    user = await usersRepository.save(userInfo);
+    accessToken = await testLogin(user);
+
+    const diaryInfo = {
+      author: user,
+      title: '제목',
+      content: '<p>내용</p>',
+      thumbnail: null,
+      emotion: '🥰',
+      tagNames: ['일기', '안녕'],
+      status: DiaryStatus.PUBLIC,
+      summary: '일기 요약',
+      mood: MoodDegree.SO_SO,
+    };
+
+    diary = await diariesRepository.save(diaryInfo);
+    url = `/reactions/${diary.id}`;
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  let user: User;
-  let accessToken: string;
-  let diary: Diary;
-  let url: string;
-
-  const userInfo = {
-    socialId: '1234',
-    socialType: SocialType.NAVER,
-    nickname: 'test',
-    email: 'test@abc.com',
-    profileImage: 'profile image',
-  };
-  const diaryInfo = {
-    title: '제목',
-    content: '<p>내용</p>',
-    thumbnail: null,
-    emotion: '🥰',
-    tagNames: ['일기', '안녕'],
-    status: DiaryStatus.PUBLIC,
-    summary: '일기 요약',
-    mood: MoodDegree.SO_SO,
-  };
-
   beforeEach(async () => {
     await queryRunner.startTransaction();
-
-    user = await usersRepository.save(userInfo);
-    accessToken = await testLogin(user);
-    diaryInfo['author'] = user;
-    diary = await diariesRepository.save(diaryInfo);
-    url = `/reactions/${diary.id}`;
   });
 
   afterEach(async () => {
@@ -124,6 +126,10 @@ describe('ReactionsController (e2e)', () => {
   });
 
   describe('/reactions/:diaryId (POST)', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('리액션 저장', async () => {
       // when
       const response = await request(app.getHttpServer())
@@ -139,7 +145,6 @@ describe('ReactionsController (e2e)', () => {
     it('해당 일기에 이미 리액션을 남긴 경우 예외 발생', async () => {
       // given
       await reactionsRepository.save({ user, diary, reaction: '🔥' });
-      jest.clearAllMocks();
 
       // when
       const response = await request(app.getHttpServer())
@@ -150,7 +155,7 @@ describe('ReactionsController (e2e)', () => {
       // then
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual('이미 해당 글에 리액션을 남겼습니다.');
-      expect(reactionsRepository.save).toHaveBeenCalledTimes(0);
+      expect(reactionsRepository.save).toHaveBeenCalledTimes(1);
     });
   });
 
