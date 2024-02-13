@@ -74,6 +74,10 @@ export class AuthService {
 
   async refreshAccessToken(req: Request) {
     const userJwt = cookieExtractor(req);
+    if (!userJwt) {
+      throw new UnauthorizedException('토큰 정보가 존재하지 않습니다.');
+    }
+
     const payload = this.jwtService.decode(userJwt);
     const refreshToken = await this.authRepository.getRefreshToken(payload.accessKey);
 

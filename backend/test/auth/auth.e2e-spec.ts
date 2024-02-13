@@ -137,7 +137,7 @@ describe('AuthController (e2e)', () => {
 
       //then
       expect(response.status).toEqual(401);
-      expect(response.body.message).toEqual('Unauthorized');
+      expect(response.body.message).toEqual('토큰 정보가 존재하지 않습니다.');
     });
 
     it('redis에 저장되지 않은 토큰으로 요청 시 401 에러 발생', async () => {

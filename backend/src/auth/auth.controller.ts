@@ -21,7 +21,6 @@ export class AuthController {
   }
 
   @Get('refresh_token')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: 'access token 갱신 API' })
   @ApiOkResponse({ description: 'access token 갱신 성공' })
   async refreshAccessToken(@Req() req: Request, @Res() res: Response): Promise<void> {
