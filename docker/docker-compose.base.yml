@@ -17,7 +17,7 @@ services:
     image: suhyun9252/dandi-be:GITHUB_SHA
     restart: always
     volumes:
-      - /dandi/was/logs:/app/logs  # log 보존
+      - /dandi/logs:/app/logs  # log 보존
     ports:
       - "3000:3000"
     env_file:
