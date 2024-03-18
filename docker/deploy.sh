@@ -46,12 +46,14 @@ sleep 60
 # nginx 설정 및 reload
 echo "<<< Reload nginx $(date +'%Y-%m-%d %H:%M:%S')" >> $DEBUG_LOG
 
-NGINX_ID=$(docker ps --filter "name=nginx-reverse-proxy" -q)
-NGINX_CONFIG="/dandi/nginx/nginx.conf"
+NGINX_CONFIG="/etc/nginx/conf.d/default.conf"
+STOP_WEB_SERVER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' frontend-$NOW_COLOR)
+NEW_WEB_SERVER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' frontend-$TARGET_COLOR)
 
-sed -i "s/frontend-$NOW_COLOR:$WEB_SERVER_STOP_PORT/frontend-$TARGET_COLOR:$WEB_SERVER_TARGET_PORT/g" $NGINX_CONFIG
+sed -i "s/$WEB_SERVER_STOP_PORT/$WEB_SERVER_TARGET_PORT/g" $NGINX_CONFIG
 sed -i "s/frontend-$NOW_COLOR/frontend-$TARGET_COLOR/g" $NGINX_CONFIG
-docker restart nginx-reverse-proxy
+sed -i "s/$STOP_WEB_SERVER_IP/$NEW_WEB_SERVER_IP/g" $NGINX_CONFIG
+sudo nginx -s reload
 
 echo ">>> Complete reload $(date +'%Y-%m-%d %H:%M:%S')" >> $DEBUG_LOG
 
