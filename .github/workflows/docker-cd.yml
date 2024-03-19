@@ -1,8 +1,8 @@
-name: develop CD
+name: deploy
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -36,7 +36,6 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}
-        key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         source: .env
         target: /dandi
@@ -61,7 +60,7 @@ jobs:
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-fe:${{ github.sha }}
     
     - name: make docker-compose files
-      run: |  
+      run: |
         sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.blue.yml
         sed -i "s/GITHUB_SHA/${{ github.sha }}/g" ./docker/docker-compose.green.yml
     
@@ -71,7 +70,6 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}
-        key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         source: "nginx/dandi-blue.conf,nginx/dandi-green.conf,docker/docker-compose.blue.yml,docker/docker-compose.green.yml,docker/deploy.sh"
         target: /dandi
@@ -83,7 +81,6 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}
-        key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/dandi-be:${{ github.sha }}

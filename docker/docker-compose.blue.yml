@@ -6,7 +6,7 @@ services:
     image: suhyun9252/dandi-be:GITHUB_SHA
     restart: always
     volumes:
-      - /dandi/logs:/dandi/logs  # log 보존
+      - /dandi/logs:/app/logs  # log 보존
     ports:
       - "3000:3000"
     env_file:
@@ -19,7 +19,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /dandi/nginx/dandi-blue.conf:/etc/nginx/conf.d/dandi.conf
+      - /dandi/nginx/dandi-blue.conf:/etc/nginx/conf.d/default.conf
       - /var/log/nginx/blue:/var/log/nginx
     depends_on:
       - was-blue
