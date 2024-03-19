@@ -1,6 +1,10 @@
 <h1>📔 단디</h1>
 
-<img  src="https://cdn.discordapp.com/attachments/1170919342456700992/1176352843448451153/52d1f8d5a948a299.png?ex=656e8ef5&is=655c19f5&hm=7104f6e4ce7497f81ad8b8eb2e27bc1e24d2f743fc61c5068ea74803f911b5e0&"/>
+<div align="center">
+  <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/113580033/7b6e620e-36ff-41f0-b9f4-9a65afb04d5d"/>
+</div>
+
+<br/>
 
 > 다가오는 새해, 부푼 마음으로 다이어리를 고르고 있는 당신! 마음과는 다르게 갈수록 비어가는 다이어리가 고민이지 않았나요?
 > 작심삼일은 그만! 단디와 함께 매일매일 꾸준히 하루를 기억해봐요 🌱
@@ -86,11 +90,12 @@
 <img src="https://github.com/boostcampwm2023/web18_Dandi/assets/75190035/d0ff1dc3-5a4a-44e9-bafc-0a5f80050172" alt=""/>
 
 <li>서버 이전 과정에서 이전 서버와 동일하게 프로그램을 설치/세팅하는 과정에 번거로움을 느껴 도커를 도입했습니다. 도커 도입 후 배포 과정에서 불가피하게 5분의 다운 타임이 발생했는데 해당 문제 해결을 어떤 방식으로 배포를 진행해야하는지 고민했습니다.</li>
-<li>해당 문제 해결을 위해서 블루-그린 방식으로 무중단 배포를 도입하기로 결정했고, 다운 타임을 5분 -> 1초 미만으로 줄일 수 있었습니다.</li>
+<li>해당 문제 해결을 위해서 블루-그린 방식으로 무중단 배포를 도입하기로 결정했고, 다운 타임을 5분 -> 0.3초로 줄일 수 있었습니다.</li>
 
 <br/>
 
-> 글 작성 예정
+> - <a href="https://velog.io/@shunny/Docker%EC%99%80-Nginx%EB%A1%9C-%EB%AC%B4%EC%A4%91%EB%8B%A8-%EB%B0%B0%ED%8F%AC%EB%A5%BC-%ED%95%B4%EB%B3%B4%EC%9E%90">무중단 배포 도입기</a>
+> - <a href="https://velog.io/@shunny/Zero-Downtime%EC%9D%84-%EC%9C%84%ED%95%B4">Zero-Downtime을 위한 노력</a>
 
 <br/>
 
@@ -111,10 +116,10 @@
 <h3>📚 단디 개발 일지</h3>
 <ul>
   <li>
-    <a href="https://www.notion.so/kimyoonju/af665439840e4367b379c7a2d1b0125a?v=e112c574bbc74ee09e0ddf14a9893c2e&p=c247882f2f6846c883a417ef4681b3e2&pm=s">[Elasticsearch | 박효종]DB 데이터를 가져오는데 할게 왜이리 많죠?</a>
+    <a href="https://www.notion.so/kimyoonju/af665439840e4367b379c7a2d1b0125a?v=e112c574bbc74ee09e0ddf14a9893c2e&p=c247882f2f6846c883a417ef4681b3e2&pm=s">[Elasticsearch | 박효종] DB 데이터를 가져오는데 할게 왜이리 많죠?</a>
   </li>
   <li>
-    <a href="https://velog.io/@shunny/Web-%EC%95%8C%EA%B3%A0-%EB%B3%B4%EB%A9%B4-%EC%A2%8B%EC%9D%80-%EB%86%88...-CORS">[CORS | 최수현]알고보면 좋은 놈 CORS</a>
+    <a href="https://velog.io/@shunny/Web-%EC%95%8C%EA%B3%A0-%EB%B3%B4%EB%A9%B4-%EC%A2%8B%EC%9D%80-%EB%86%88...-CORS">[CORS | 최수현] 알고보면 좋은 놈 CORS</a>
   </li>
   <li>
     <a href="https://velog.io/@gimewn/useRef-%EC%99%9C-%EC%93%B0%EB%8A%94-%EA%B1%B4%EA%B0%80%EC%9A%94">[React Portal | 김윤주] 리액트로 닥터스트레인지가 되는 법</a>
