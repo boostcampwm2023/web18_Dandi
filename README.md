@@ -116,7 +116,7 @@
 <h3>📚 단디 개발 일지</h3>
 <ul>
   <li>
-    <a href="https://www.notion.so/kimyoonju/af665439840e4367b379c7a2d1b0125a?v=e112c574bbc74ee09e0ddf14a9893c2e&p=c247882f2f6846c883a417ef4681b3e2&pm=s">[Elasticsearch | 박효종] DB 데이터를 가져오는데 할게 왜이리 많죠?</a>
+    <a href="https://www.notion.so/kimyoonju/DB-cfaa6625be3842d6a41dd341bf777039?pvs=4">[Elasticsearch | 박효종] DB 데이터를 가져오는데 할게 왜이리 많죠?</a>
   </li>
   <li>
     <a href="https://velog.io/@shunny/Web-%EC%95%8C%EA%B3%A0-%EB%B3%B4%EB%A9%B4-%EC%A2%8B%EC%9D%80-%EB%86%88...-CORS">[CORS | 최수현] 알고보면 좋은 놈 CORS</a>
